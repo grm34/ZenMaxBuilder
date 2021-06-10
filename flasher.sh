@@ -79,10 +79,14 @@ Development is Life ~ t.me\/neternels/g" anykernel.sh
 
 _sign_flashable_zip() {
     _note "Signing Zip file with AOSP keys..."
+
+    # Send build status to Telegram
     if [[ ${BUILD_STATUS} == True ]]; then
         _send_msg "<b>${CODENAME}-${LINUX_VERSION}</b> | \
 <code>Signing Zip file with AOSP keys</code>"
     fi
+
+    # Sign flashable zip
     _check java -jar "${DIR}"/AnyKernel/zipsigner-3.0.jar \
 "${DIR}"/AnyKernel/NetErnels-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}".zip \
 "${DIR}"/builds/NetErnels-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}"\

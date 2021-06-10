@@ -90,12 +90,14 @@ export KBUILD_BUILD_HOST=${HOST}
 OUT_DIR=${DIR}/out/${CODENAME}
 mkdir -p "${OUT_DIR}"
 
-# Make
+# Make version, clean, defconfig, menuconfig
 _note "Make kernel version..."
 LINUX_VERSION=$(make -C "${KERNEL_DIR}" kernelversion | grep -v make)
 _make_clean_build | tee -a "${LOG}"
 _make_defconfig | tee -a "${LOG}"
-_make_menuconfig
+if [[ ${MENUCONFIG} == True ]]; then _make_menuconfig; fi
+
+# Make new build
 _confirm "Do you wish to start NetErnels-${CODENAME}-${LINUX_VERSION}"
 case ${CONFIRM} in
     n|N|no|No|NO)
@@ -108,7 +110,7 @@ case ${CONFIRM} in
         sleep 5
 esac
 
-# Build status
+# Send build status to Terminal
 END_TIME=$(TZ=${TIMEZONE} date +%s)
 BUILD_TIME=$((END_TIME - START_TIME))
 _note "Successfully compiled NetErnels-${CODENAME}-${LINUX_VERSION} \
@@ -121,15 +123,17 @@ if [[ ${BUILD_STATUS} == True ]]; then
 $((BUILD_TIME % 60)) seconds</code>"
 fi
 
-# Flashable zip
+# Create and sign flashable zip
 _create_flashable_zip | tee -a "${LOG}"
 _sign_flashable_zip | tee -a "${LOG}"
 
 # Upload build on Telegram
 if [[ ${BUILD_STATUS} == True ]]; then
     _note "Uploading build on Telegram..."
+
     MD5=$(md5sum "${DIR}/builds/NetErnels-${CODENAME}-${LINUX_VERSION}-\
 ${DATE}-signed.zip" | cut -d' ' -f1)
+
     _send_build "builds/NetErnels-${CODENAME}-${LINUX_VERSION}-${DATE}\
 -signed.zip" "<b>${CODENAME}-${LINUX_VERSION}</b> | \
 <b>MD5 Checksum</b>: <code>${MD5}</code>"
@@ -144,5 +148,5 @@ printf "\n### USER INPUT LOGS ###\n" >> "${LOG}"
 diff /tmp/old_vars.log /tmp/new_vars.log | grep -E \
     "^> [A-Z_]{3,18}=" >> "${LOG}"
 
-# Exit
+# Say goodbye and exit
 _clean_anykernel && _goodbye_msg && _exit

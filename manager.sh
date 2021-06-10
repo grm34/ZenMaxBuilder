@@ -100,16 +100,22 @@ _check() {
 
 # Exit with 5s timeout
 _exit() {
+
+    # Send build status with logs to Telegram
     if [[ ${BUILD_STATUS} == True ]] && [[ ${START_TIME} ]] && \
             [[ ! $BUILD_TIME ]]; then
         END_TIME=$(TZ=${TIMEZONE} date +%s)
         BUILD_TIME=$((END_TIME - START_TIME))
+
         _send_msg "<b>${CODENAME}-${LINUX_VERSION}</b> | \
 Build failed to compile after $((BUILD_TIME / 60)) minutes \
 and $((BUILD_TIME % 60)) seconds</code>"
+
         _send_build \
 "${LOG}" "<b>${CODENAME}-${LINUX_VERSION} build logs</b>"
     fi
+
+    # Clean AnyKernel folder and kill
     _clean_anykernel
     for (( SECOND=5; SECOND>=1; SECOND-- )); do
         echo -ne "\r\033[K${BLUE}Exit building script in ${SECOND}s...${NC}"
@@ -122,6 +128,7 @@ and $((BUILD_TIME % 60)) seconds</code>"
 # Clean AnyKernel Folder
 _clean_anykernel() {
     _note "Cleaning AnyKernel folder..."
+
     UNWANTED=(Image.gz-dtb init.spectrum.rc)
     for UW in "${UNWANTED[@]}"; do
         rm -f "${DIR}"/AnyKernel/"${UW}"

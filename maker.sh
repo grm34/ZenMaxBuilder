@@ -24,6 +24,7 @@
 
 _make_clean_build() {
     _confirm "Do you wish to make clean build (${LINUX_VERSION})?"
+
     case ${CONFIRM} in
         n|N|no|No|NO)
             _note "Make dirty build..."
@@ -54,41 +55,39 @@ _make_defconfig() {
 
 
 _make_menuconfig() {
-    if [ "${MENUCONFIG}" == True ]; then
-        _note "Make menuconfig..."
+    _note "Make menuconfig..."
 
-        # Send build status to Telegram
-        if [[ ${BUILD_STATUS} == True ]]; then
-            _send_msg "<b>${CODENAME}-${LINUX_VERSION}</b> | \
+    # Send build status to Telegram
+    if [[ ${BUILD_STATUS} == True ]]; then
+        _send_msg "<b>${CODENAME}-${LINUX_VERSION}</b> | \
 <code>Started menuconfig</code>"
-        fi
-
-        # Make Menuconfig
-        _check make -C "${KERNEL_DIR}" O="${OUT_DIR}" ARCH=arm64 \
-            menuconfig "${OUT_DIR}"/.config
-
-        # Save new defconfig
-        _confirm "Do you wish to save and use ${DEFCONFIG}"
-        case ${CONFIRM} in
-            n|N|no|No|NO)
-                _confirm "Do you wish to continue"
-                case ${CONFIRM} in
-                    n|N|no|No|NO)
-                        _error "aborted by user!"
-                        _exit
-                        ;;
-                    *)
-                        return
-                esac
-                ;;
-            *)
-                _note "Saving ${DEFCONFIG} in arch/arm64/configs..."
-                _check cp "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}" \
-                    "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}"_save
-                _check cp "${OUT_DIR}"/.config \
-                    "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}"
-        esac
     fi
+
+    # Make Menuconfig
+    _check make -C "${KERNEL_DIR}" O="${OUT_DIR}" ARCH=arm64 \
+        menuconfig "${OUT_DIR}"/.config
+
+    # Save new defconfig
+    _confirm "Do you wish to save and use ${DEFCONFIG}"
+    case ${CONFIRM} in
+        n|N|no|No|NO)
+            _confirm "Do you wish to continue"
+            case ${CONFIRM} in
+                n|N|no|No|NO)
+                    _error "aborted by user!"
+                    _exit
+                    ;;
+                *)
+                    return
+            esac
+            ;;
+        *)
+            _note "Saving ${DEFCONFIG} in arch/arm64/configs..."
+            _check cp "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}" \
+                "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}"_save
+            _check cp "${OUT_DIR}"/.config \
+                "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}"
+    esac
 }
 
 
