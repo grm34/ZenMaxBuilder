@@ -10,6 +10,6 @@
 
 2. `cd Neternels-Builder`
 
-3. edit user.sh to set your settings (optional)
+3. Edit [user.sh](https://github.com/grm34/Neternels-Builder/blob/main/user.sh) to set your settings *(optional)*
 
 4. `./neternels.sh`
