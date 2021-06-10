@@ -94,6 +94,12 @@ _make_build() {
 <code>Started compiling kernel</code>"
     fi
 
+    # Link Time Optimization (LTO)
+    if [[ ${LTO} == True ]];then
+		export LD=ld.lld
+        export LD_LIBRARY_PATH=${DIR}/toolchains/proton/lib
+	fi
+
     # Get compiler string
     KBUILD_COMPILER_STRING=\
 $(toolchains/proton/bin/clang --version | head -n 1 | \
@@ -104,8 +110,7 @@ perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
 
         PROTON)
             export KBUILD_COMPILER_STRING
-            export PATH=\
-${DIR}/toolchains/proton/bin:${DIR}/toolchains/proton/lib:/usr/bin:${PATH}
+            export PATH=${DIR}/toolchains/proton/bin:${PATH}
 
             _check make -C "${KERNEL_DIR}" -j"${CORES}" \
                 O="${OUT_DIR}" \
@@ -118,16 +123,14 @@ ${DIR}/toolchains/proton/bin:${DIR}/toolchains/proton/lib:/usr/bin:${PATH}
                 NM=llvm-nm \
                 OBJCOPY=llvm-objcopy \
                 OBJDUMP=llvm-objdump \
-                STRIP=llvm-strip \
-                LD=ld.lld \
-                LD_LIBRARY_PATH="${DIR}"/toolchains/proton/lib
+                STRIP=llvm-strip
             ;;
 
         PROTONxGCC)
             export KBUILD_COMPILER_STRING
             export PATH=\
-${DIR}/toolchains/proton/bin:${DIR}/toolchains/proton/lib:\
-${DIR}/toolchains/gcc64/bin:${DIR}/toolchains/gcc32/bin:/usr/bin:${PATH}
+${DIR}/toolchains/proton/bin:${DIR}/toolchains/gcc64/bin:\
+${DIR}/toolchains/gcc32/bin:/usr/bin:${PATH}
 
             _check make -C "${KERNEL_DIR}" -j"${CORES}" \
                 O="${OUT_DIR}" \
@@ -147,9 +150,7 @@ ${DIR}/toolchains/gcc64/bin:${DIR}/toolchains/gcc32/bin:/usr/bin:${PATH}
                 HOSTCC=clang \
                 HOSTCXX=clang++ \
                 HOSTAR=llvm-ar \
-                CLANG_TRIPLE=aarch64-linux-gnu- \
-                LD=ld.lld \
-                LD_LIBRARY_PATH="${DIR}"/toolchains/proton/lib
+                CLANG_TRIPLE=aarch64-linux-gnu-
             ;;
 
         GCC)
@@ -157,8 +158,7 @@ ${DIR}/toolchains/gcc64/bin:${DIR}/toolchains/gcc32/bin:/usr/bin:${PATH}
 $(toolchains/gcc64/bin/aarch64-elf-gcc --version | head -n 1)
             export KBUILD_COMPILER_STRING
             export PATH=\
-${DIR}/toolchains/gcc32/bin:${DIR}/toolchains/gcc64/bin:\
-${DIR}/toolchains/proton/lib:/usr/bin/:${PATH}
+${DIR}/toolchains/gcc32/bin:${DIR}/toolchains/gcc64/bin:/usr/bin/:${PATH}
 
             _check make -C "${KERNEL_DIR}" -j"${CORES}" \
                 O="${OUT_DIR}" \
@@ -168,8 +168,6 @@ ${DIR}/toolchains/proton/lib:/usr/bin/:${PATH}
                 CROSS_COMPILE=aarch64-elf- \
                 AR=aarch64-elf-ar \
                 OBJDUMP=aarch64-elf-objdump \
-                STRIP=aarch64-elf-strip \
-                LD=ld.lld \
-                LD_LIBRARY_PATH="${DIR}"/toolchains/proton/lib
+                STRIP=aarch64-elf-strip
     esac
 }

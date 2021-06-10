@@ -34,7 +34,10 @@ DEFAULT_COMPILER=PROTON
 KERNEL_DIR=default
 
 # Kernel variant
-KERNEL_VARIANT=CAF
+KERNEL_VARIANT=NetHunter
+
+# Link Time Optimization (LTO)
+LTO=False
 
 # Toolchains URL
 PROTON="https://github.com/kdrag0n/proton-clang"
