@@ -47,9 +47,9 @@ KERNEL_VARIANT=NetHunter
 LTO=False
 
 # Toolchains URL
-PROTON="https://github.com/kdrag0n/proton-clang"
-GCC_64="https://github.com/mvaisakh/gcc-arm64"
-GCC_32="https://github.com/mvaisakh/gcc-arm"
+PROTON="https://github.com/kdrag0n/proton-clang.git"
+GCC_64="https://github.com/mvaisakh/gcc-arm64.git"
+GCC_32="https://github.com/mvaisakh/gcc-arm.git"
 
 # AnyKernel URL
 ANYKERNEL="https://github.com/grm34/AnyKernel3-X00TD.git"
