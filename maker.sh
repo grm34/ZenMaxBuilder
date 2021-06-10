@@ -105,7 +105,7 @@ _make_build() {
     if [[ ${LTO} == True ]]; then
         export LD=ld.lld
         export LD_LIBRARY_PATH=${DIR}/toolchains/proton/lib
-	fi
+    fi
 
     # Get compiler string
     KBUILD_COMPILER_STRING=\
