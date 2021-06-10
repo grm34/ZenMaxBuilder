@@ -49,8 +49,8 @@ fi
 # Create missing folders
 FOLDERS=(builds logs toolchains)
 for FOLDER in "${FOLDERS[@]}"; do
-    if [[ ! -d ${DIR}/toolchains/${FOLDER} ]]; then
-        mkdir "${DIR}"/toolchains/"${FOLDER}"
+    if [[ ! -d ${DIR}/${FOLDER} ]]; then
+        mkdir "${DIR}"/"${FOLDER}"
     fi
 done
 
