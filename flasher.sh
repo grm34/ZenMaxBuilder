@@ -50,16 +50,16 @@ ${LINUX_VERSION}-${CODENAME}-NetErnels/g" init.spectrum.rc
     _check sed -i "s/kernel.compiler=.*/kernel.compiler=${COMPILER}/g" \
         anykernel.sh
     _check sed -i "s/kernel.made=.*/kernel.made=${BUILDER}/g" anykernel.sh
-    _check sed -i "s/kernel.version=.*/kernel.version=$LINUX_VERSION/g" \
+    _check sed -i "s/kernel.version=.*/kernel.version=${LINUX_VERSION}/g" \
         anykernel.sh
     _check sed -i "s/message.word=.*/message.word=NetEnerls ~ \
 Development is Life ~ t.me\/neternels/g" anykernel.sh
     _check sed -i "s/build.date=.*/build.date=$DATE/g" anykernel.sh
-    _check sed -i "s/device.name1=.*/device.name1=$CODENAME/g" anykernel.sh
-    _check sed -i "s/device.name2=.*/device.name2=$CODENAME/g" anykernel.sh
-    _check sed -i "s/device.name3=.*/device.name3=$CODENAME/g" anykernel.sh
-    _check sed -i "s/device.name4=.*/device.name4=$CODENAME/g" anykernel.sh
-    _check sed -i "s/device.name5=.*/device.name5=$CODENAME/g" anykernel.sh
+    _check sed -i "s/device.name1=.*/device.name1=${CODENAME}/g" anykernel.sh
+    _check sed -i "s/device.name2=.*/device.name2=${CODENAME}/g" anykernel.sh
+    _check sed -i "s/device.name3=.*/device.name3=${CODENAME}/g" anykernel.sh
+    _check sed -i "s/device.name4=.*/device.name4=${CODENAME}/g" anykernel.sh
+    _check sed -i "s/device.name5=.*/device.name5=${CODENAME}/g" anykernel.sh
 
     # Create flashable zip
     _check zip -r9 NetErnels-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}".zip \
