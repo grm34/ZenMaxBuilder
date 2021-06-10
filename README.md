@@ -6,8 +6,6 @@
 
 ## Usage
 
-***
-
 1. `git clone https://github.com/grm34/Neternels-Builder.git`
 
 2. `cd Neternels-Builder`
@@ -17,8 +15,6 @@
 4. `./neternels.sh`
 
 ## Updates
-
-***
 
 ### ➡️ Neternels Builder
 
