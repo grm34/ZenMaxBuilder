@@ -90,7 +90,7 @@ perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
         PROTON)
             export KBUILD_COMPILER_STRING
             export PATH=\
-toolchains/proton/bin:toolchains/proton/lib:/usr/bin:${PATH}
+${DIR}/toolchains/proton/bin:${DIR}/toolchains/proton/lib:/usr/bin:${PATH}
             _check make -C "${KERNEL_DIR}" -j"${CORES}" \
                 O="${OUT_DIR}" \
                 ARCH=arm64 \
@@ -104,14 +104,14 @@ toolchains/proton/bin:toolchains/proton/lib:/usr/bin:${PATH}
                 OBJDUMP=llvm-objdump \
                 STRIP=llvm-strip \
                 LD=ld.lld \
-                LD_LIBRARY_PATH=toolchains/proton/lib
+                LD_LIBRARY_PATH="${DIR}"/toolchains/proton/lib
             ;;
 
         PROTONxGCC)
             export KBUILD_COMPILER_STRING
             export PATH=\
-toolchains/proton/bin:toolchains/proton/lib:\
-toolchains/gcc64/bin:toolchains/gcc32/bin:/usr/bin:${PATH}
+${DIR}/toolchains/proton/bin:${DIR}/toolchains/proton/lib:\
+${DIR}/toolchains/gcc64/bin:${DIR}/toolchains/gcc32/bin:/usr/bin:${PATH}
             _check make -C "${KERNEL_DIR}" -j"${CORES}" \
                 O="${OUT_DIR}" \
                 ARCH=arm64 \
@@ -132,7 +132,7 @@ toolchains/gcc64/bin:toolchains/gcc32/bin:/usr/bin:${PATH}
                 HOSTAR=llvm-ar \
                 CLANG_TRIPLE=aarch64-linux-gnu- \
                 LD=ld.lld \
-                LD_LIBRARY_PATH=toolchains/proton/lib
+                LD_LIBRARY_PATH="${DIR}"/toolchains/proton/lib
             ;;
 
         GCC)
@@ -140,8 +140,8 @@ toolchains/gcc64/bin:toolchains/gcc32/bin:/usr/bin:${PATH}
 $(toolchains/gcc64/bin/aarch64-elf-gcc --version | head -n 1)
             export KBUILD_COMPILER_STRING
             export PATH=\
-toolchains/gcc32/bin:toolchains/gcc64/bin:\
-toolchains/proton/lib:/usr/bin/:${PATH}
+${DIR}/toolchains/gcc32/bin:${DIR}/toolchains/gcc64/bin:\
+${DIR}/toolchains/proton/lib:/usr/bin/:${PATH}
             _check make -C "${KERNEL_DIR}" -j"${CORES}" \
                 O="${OUT_DIR}" \
                 ARCH=arm64 \
@@ -152,6 +152,6 @@ toolchains/proton/lib:/usr/bin/:${PATH}
                 OBJDUMP=aarch64-elf-objdump \
                 STRIP=aarch64-elf-strip \
                 LD=ld.lld \
-                LD_LIBRARY_PATH=toolchains/proton/lib
+                LD_LIBRARY_PATH="${DIR}"/toolchains/proton/lib
     esac
 }

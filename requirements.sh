@@ -54,43 +54,47 @@ _install_dependencies() {
 _clone_toolchains() {
     case ${COMPILER} in
         PROTON)
-            if [[ ! -d toolchains/proton ]]; then
+            if [[ ! -d ${DIR}/toolchains/proton ]]; then
                 _note "Proton repository not found! Cloning..."
-                _check git clone --depth=1 "${PROTON}" toolchains/proton
+                _check \
+                    git clone --depth=1 "${PROTON}" "${DIR}"/toolchains/proton
             fi
             ;;
 
         GCC)
-            if [[ ! -d toolchains/gcc32 ]]; then
+            if [[ ! -d ${DIR}/toolchains/gcc32 ]]; then
                 _note "GCC arm repository not found! Cloning..."
-                _check git clone "${GCC_32}" toolchains/gcc32
+                _check git clone "${GCC_32}" "${DIR}"/toolchains/gcc32
             fi
-            if [[ ! -d toolchains/gcc64 ]]; then
+            if [[ ! -d ${DIR}/toolchains/gcc64 ]]; then
                 _note "GCC arm64 repository not found! Cloning..."
-                _check git clone "${GCC_64}" toolchains/gcc64
+                _check git clone "${GCC_64}" "${DIR}"/toolchains/gcc64
             fi
             ;;
 
         PROTONxGCC)
-            if [[ ! -d toolchains/proton ]]; then
+            if [[ ! -d ${DIR}/toolchains/proton ]]; then
                 _note "Proton repository not found! Cloning..."
-                _check git clone --depth=1 "${PROTON}" toolchains/proton
+                _check \
+                    git clone --depth=1 "${PROTON}" "${DIR}"/toolchains/proton
             fi
-            if [[ ! -d toolchains/gcc32 ]]; then
+            if [[ ! -d ${DIR}/toolchains/gcc32 ]]; then
                 _note "GCC arm repository not found! Cloning..."
-                _check git clone --depth=1 "${GCC_32}" toolchains/gcc32
+                _check \
+                    git clone --depth=1 "${GCC_32}" "${DIR}"/toolchains/gcc32
             fi
-            if [[ ! -d toolchains/gcc64 ]]; then
+            if [[ ! -d ${DIR}/toolchains/gcc64 ]]; then
                 _note "GCC arm64 repository not found! Cloning..."
-                _check git clone --depth=1 "${GCC_64}" toolchains/gcc64
+                _check \
+                    git clone --depth=1 "${GCC_64}" "${DIR}"/toolchains/gcc64
             fi
     esac
 }
 
 
 _clone_anykernel() {
-    if [[ ! -d AnyKernel ]]; then
+    if [[ ! -d ${DIR}/AnyKernel ]]; then
         _note "AnyKernel repository not found! Cloning..."
-        _check git clone "${ANYKERNEL}" AnyKernel
+        _check git clone "${ANYKERNEL}" "${DIR}"/AnyKernel
     fi
 }

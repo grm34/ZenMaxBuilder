@@ -29,6 +29,9 @@ source prompter.sh
 # Build date
 DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
 
+# Script dir
+DIR=${PWD}
+
 # Start
 _banner
 _note "Starting new kernel build on ${DATE} (...)"
@@ -38,7 +41,7 @@ trap '_error keyboard interrupt!; _exit' 1 2 3 6
 if [[ $(uname) != Linux ]]; then
     _error "run this script on Linux!"
     _exit
-elif [ ! -f user.sh ] || [ ! -f maker.sh ] || [ ! -f prompter.sh ]; then
+elif [[ ! -f ${DIR}/user.sh ]] || [[ ! -f ${DIR}/maker.sh ]]; then
     _error "run this script from Neternels-Builder folder!"
     _exit
 fi
@@ -46,8 +49,8 @@ fi
 # Create missing folders
 FOLDERS=(builds logs toolchains)
 for FOLDER in "${FOLDERS[@]}"; do
-    if [[ ! -d toolchains/${FOLDER} ]]; then
-        mkdir toolchains/"${FOLDER}"
+    if [[ ! -d ${DIR}/toolchains/${FOLDER} ]]; then
+        mkdir "${DIR}"/toolchains/"${FOLDER}"
     fi
 done
 
@@ -62,7 +65,7 @@ _ask_for_telegram
 
 # Set logs
 TIME=$(TZ=${TIMEZONE} date +%H-%M-%S)
-LOG=logs/${CODENAME}_${DATE}_${TIME}.log
+LOG=${DIR}/logs/${CODENAME}_${DATE}_${TIME}.log
 printf "NetErnels Team @ Development is Life\n" > "${LOG}"
 
 # Install and clone requirements
@@ -77,7 +80,7 @@ export KBUILD_BUILD_USER=${BUILDER}
 export KBUILD_BUILD_HOST=${HOST}
 
 # Set out folder
-OUT_DIR=${PWD}/out/${CODENAME}
+OUT_DIR=${DIR}/out/${CODENAME}
 mkdir -p "${OUT_DIR}"
 
 # Make
@@ -118,8 +121,8 @@ _sign_flashable_zip | tee -a "${LOG}"
 # Upload build on Telegram
 if [[ ${BUILD_STATUS} == True ]]; then
     _note "Uploading build on Telegram..."
-    MD5=$(md5sum "builds/NetErnels-${CODENAME}-${LINUX_VERSION}-${DATE}\
--signed.zip" | cut -d' ' -f1)
+    MD5=$(md5sum "${DIR}/builds/NetErnels-${CODENAME}-${LINUX_VERSION}-\
+${DATE}-signed.zip" | cut -d' ' -f1)
     _send_build "builds/NetErnels-${CODENAME}-${LINUX_VERSION}-${DATE}\
 -signed.zip" "<b>${CODENAME}-${LINUX_VERSION}</b> | \
 <b>MD5 Checksum</b>: <code>${MD5}</code>"

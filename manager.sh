@@ -117,14 +117,14 @@ _clean_anykernel() {
     _note "Cleaning AnyKernel folder..."
     UNWANTED=(Image.gz-dtb init.spectrum.rc)
     for UW in "${UNWANTED[@]}"; do
-        rm -f AnyKernel/"${UW}"
+        rm -f "${DIR}"/AnyKernel/"${UW}"
     done
-    if [ ! -f AnyKernel/NetErnels-"${CODENAME}"-\
-"${LINUX_VERSION}"-"${DATE}"-signed.zip ]; then
-        rm -f AnyKernel/*.zip
+    if [[ ! -f ${DIR}/AnyKernel/NetErnels-\
+${CODENAME}-${LINUX_VERSION}-${DATE}-signed.zip ]]; then
+        rm -f "${DIR}"/AnyKernel/*.zip
     fi
-    if [[ -f AnyKernel/anykernel-real.sh ]]; then
-        rm -f AnyKernel/anykernel.sh
+    if [[ -f ${DIR}/AnyKernel/anykernel-real.sh ]]; then
+        rm -f "${DIR}"/AnyKernel/anykernel.sh
     fi
 }
 
@@ -137,5 +137,5 @@ _wget() {
 
 # Say goodbye
 _goodbye_msg() {
-    echo -e "\n${GREEN}<<< NetErnels Team @ Development is Life >>>${NC}"
+    echo -e "\n${GREEN}<<< Neternels Team @ Development is Life >>>${NC}"
 }
