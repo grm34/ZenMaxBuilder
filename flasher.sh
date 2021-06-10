@@ -16,7 +16,7 @@
 
 
 _create_flashable_zip() {
-    _note "Creating ${LINUX_VERSION}-${CODENAME}-NetErnels-${DATE}.zip..."
+    _note "Creating NetErnels-${CODENAME}-${LINUX_VERSION}-${DATE}.zip..."
 
     # Send build status to Telegram
     if [[ ${BUILD_STATUS} == True ]]; then
