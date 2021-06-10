@@ -66,7 +66,7 @@ _ask_for_telegram
 # Set logs
 TIME=$(TZ=${TIMEZONE} date +%H-%M-%S)
 LOG=${DIR}/logs/${CODENAME}_${DATE}_${TIME}.log
-printf "NetErnels Team @ Development is Life\n" > "${LOG}"
+printf "Neternels Team @ Development is Life\n" > "${LOG}"
 
 # Install and clone requirements
 _install_dependencies | tee -a "${LOG}"

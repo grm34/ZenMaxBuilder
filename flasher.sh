@@ -17,6 +17,8 @@
 
 _create_flashable_zip() {
     _note "Creating ${LINUX_VERSION}-${CODENAME}-NetErnels-${DATE}.zip..."
+
+    # Send build status to Telegram
     if [[ ${BUILD_STATUS} == True ]]; then
         _send_msg "<b>${CODENAME}-${LINUX_VERSION}</b> | \
 <code>Started flashable zip creation</code>"
@@ -59,10 +61,12 @@ Development is Life ~ t.me\/neternels/g" anykernel.sh
     _check sed -i "s/device.name4=.*/device.name4=$CODENAME/g" anykernel.sh
     _check sed -i "s/device.name5=.*/device.name5=$CODENAME/g" anykernel.sh
 
-# Create flashable zip
+    # Create flashable zip
     _check zip -r9 NetErnels-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}".zip \
 ./* -x .git README.md ./*placeholder
-    cd "${KERNEL_DIR}" || (_error "${KERNEL_DIR} not found!"; _exit)
+
+    # Back to script dir
+    cd "${DIR}" || (_error "${DIR} not found!"; _exit)
 }
 
 

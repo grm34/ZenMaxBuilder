@@ -34,10 +34,14 @@ _make_clean_build() {
 
 _make_defconfig() {
     _note "Make ${DEFCONFIG} (${LINUX_VERSION})..."
+
+    # Send build status to Telegram
     if [[ ${BUILD_STATUS} == True ]]; then
         _send_msg "<b>${CODENAME}-${LINUX_VERSION}</b> | \
 <code>New build started by ${BUILDER} with ${COMPILER} compiler</code>"
     fi
+
+    # Make defconfig
     _check make -C "${KERNEL_DIR}" O="${OUT_DIR}" ARCH=arm64 "${DEFCONFIG}"
 }
 
@@ -45,13 +49,18 @@ _make_defconfig() {
 _make_menuconfig() {
     if [ "${MENUCONFIG}" == True ]; then
         _note "Make menuconfig..."
+
+        # Send build status to Telegram
         if [[ ${BUILD_STATUS} == True ]]; then
             _send_msg "<b>${CODENAME}-${LINUX_VERSION}</b> | \
 <code>Started menuconfig</code>"
         fi
+
+        # Make Menuconfig
         _check make -C "${KERNEL_DIR}" O="${OUT_DIR}" ARCH=arm64 \
             menuconfig "${OUT_DIR}"/.config
 
+        # Save new defconfig
         _confirm "Do you wish to save and use ${DEFCONFIG}"
         case ${CONFIRM} in
             n|N|no|No|NO)
@@ -78,19 +87,26 @@ _make_menuconfig() {
 
 _make_build() {
     _note "Starting new build for ${CODENAME} (${LINUX_VERSION})..."
+
+    # Send build status to Telegram
     if [[ ${BUILD_STATUS} == True ]]; then
         _send_msg "<b>${CODENAME}-${LINUX_VERSION}</b> | \
 <code>Started compiling kernel</code>"
     fi
+
+    # Get compiler string
     KBUILD_COMPILER_STRING=\
 $(toolchains/proton/bin/clang --version | head -n 1 | \
 perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
+
+    # Make build
     case ${COMPILER} in
 
         PROTON)
             export KBUILD_COMPILER_STRING
             export PATH=\
 ${DIR}/toolchains/proton/bin:${DIR}/toolchains/proton/lib:/usr/bin:${PATH}
+
             _check make -C "${KERNEL_DIR}" -j"${CORES}" \
                 O="${OUT_DIR}" \
                 ARCH=arm64 \
@@ -112,6 +128,7 @@ ${DIR}/toolchains/proton/bin:${DIR}/toolchains/proton/lib:/usr/bin:${PATH}
             export PATH=\
 ${DIR}/toolchains/proton/bin:${DIR}/toolchains/proton/lib:\
 ${DIR}/toolchains/gcc64/bin:${DIR}/toolchains/gcc32/bin:/usr/bin:${PATH}
+
             _check make -C "${KERNEL_DIR}" -j"${CORES}" \
                 O="${OUT_DIR}" \
                 ARCH=arm64 \
@@ -142,6 +159,7 @@ $(toolchains/gcc64/bin/aarch64-elf-gcc --version | head -n 1)
             export PATH=\
 ${DIR}/toolchains/gcc32/bin:${DIR}/toolchains/gcc64/bin:\
 ${DIR}/toolchains/proton/lib:/usr/bin/:${PATH}
+
             _check make -C "${KERNEL_DIR}" -j"${CORES}" \
                 O="${OUT_DIR}" \
                 ARCH=arm64 \
