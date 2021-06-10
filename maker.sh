@@ -102,8 +102,8 @@ _make_build() {
     fi
 
     # Link Time Optimization (LTO)
-    if [[ ${LTO} == True ]];then
-		export LD=ld.lld
+    if [[ ${LTO} == True ]]; then
+        export LD=ld.lld
         export LD_LIBRARY_PATH=${DIR}/toolchains/proton/lib
 	fi
 
