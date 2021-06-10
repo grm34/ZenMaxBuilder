@@ -19,18 +19,20 @@ API="https://api.telegram.org/${TELEGRAM_BOT}:${TELEGRAM_TOKEN}"
 
 
 _send_msg() {
-    curl -fsSL -X POST "${API}"/sendMessage \
+    curl --progress-bar -o /dev/null -fL \
+        -X POST "${API}"/sendMessage \
         -d "parse_mode=html" \
         -d "chat_id=${TELEGRAM_ID}" \
         -d "text=${1}" \
-        &>/dev/null
+        | tee /dev/null
 }
 
 
 _send_build() {
-    curl -fsSL -X POST -F document=@"${1}" "${API}"/sendDocument \
+    curl --progress-bar -o /dev/null -fL \
+        -X POST -F document=@"${1}" "${API}"/sendDocument \
         -F "chat_id=${TELEGRAM_ID}" \
         -F "disable_web_page_preview=true" \
         -F "caption=${2}" \
-        &>/dev/null
+        | tee /dev/null
 }
