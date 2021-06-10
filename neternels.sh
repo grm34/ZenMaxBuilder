@@ -130,9 +130,9 @@ fi
 
 # Get clean inputs logs
 set | grep -v "RED=\|GREEN=\|YELLOW=\|BLUE=\|CYAN=\|BOLD=\|NC=\|\
-TELEGRAM_ID=\|TELEGRAM_TOKEN=\|TELEGRAM_BOT\|API=\|CHATID=\|BOT=\|TOKEN=\|\
-CONFIRM\|COUNT=\|LENTH=\|NUMBER=\|BASH_ARGC=\|BASH_REMATCH=\|CHAR=\|\
-COLUMNS=\|LINES=\|PIPESTATUS=\|TIME=" > /tmp/new_vars.log
+TELEGRAM_ID=\|TELEGRAM_TOKEN=\|TELEGRAM_BOT\|API=\|CONFIRM\|COUNT=\|\
+LENTH=\|NUMBER=\|BASH_ARGC=\|BASH_REMATCH=\|CHAR=\|COLUMNS=\|LINES=\|\
+PIPESTATUS=\|TIME=" > /tmp/new_vars.log
 printf "\n### USER INPUT LOGS ###\n" >> "${LOG}"
 diff /tmp/old_vars.log /tmp/new_vars.log | grep -E \
     "^> [A-Z_]{3,18}=" >> "${LOG}"
