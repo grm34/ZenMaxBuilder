@@ -134,7 +134,7 @@ if [[ ${BUILD_STATUS} == True ]]; then
 ${DATE}-signed.zip" | cut -d' ' -f1)
 
     _send_build "${DIR}/builds/NetErnels-${CODENAME}-${LINUX_VERSION}-\
-${DATE}-signed.zip" "${CODENAME}-${LINUX_VERSION} | MD5 Checksum: ${MD5}"
+${DATE}-signed.zip" "MD5 Checksum: ${MD5}"
 fi
 
 # Get clean inputs logs
