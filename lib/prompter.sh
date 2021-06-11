@@ -25,22 +25,24 @@
 
 _ask_for_kernel_dir() {
     if [[ ${KERNEL_DIR} == default ]]; then
-        until [[ -d ${KERNEL_DIR} ]]; do
-            _prompt "Enter kernel path (e.q. /home/user/mykernel)"
-            read -r -e KERNEL_DIR
+        QUESTION="Enter kernel path (e.q. /home/user/mykernel) :"
+        _prompt "${QUESTION}"; read -r -e KERNEL_DIR
+        until [[ -d ${KERNEL_DIR}/arch/arm64/configs ]]; do
+            _error "${KERNEL_DIR} is not a valid kernel directory"
+            _prompt "${QUESTION}"; read -r -e KERNEL_DIR
         done
     fi
 }
 
 
 _ask_for_toolchain() {
-    _confirm "Do you wish to use default compiler? (${DEFAULT_COMPILER})"
+    _confirm "Do you wish to use default compiler: ${DEFAULT_COMPILER}"
     case ${CONFIRM} in
         n|N|no|No|NO)
             _note "Select Toolchain compiler:"
-            TOOLCHAINS=(PROTON GCC PROTONxGCC)
+            TOOLCHAINS=(Proton-Clang Eva-GCC Proton-GCC)
             until [[ ${COMPILER} =~ ^[1-3]$ ]]; do
-                _select PROTON GCC PROTONxGCC
+                _select Proton-Clang Eva-GCC Proton-GCC
                 read -r COMPILER
             done
             COMPILER=${TOOLCHAINS[${COMPILER}-1]}
@@ -53,7 +55,7 @@ _ask_for_toolchain() {
 
 _ask_for_codename() {
     if [[ ${CODENAME} == default ]]; then
-        _prompt "Enter android device codename (e.q. X00TD)"
+        _prompt "Enter android device codename (e.q. X00TD) :"
         read -r CODENAME
     fi
 }
@@ -61,9 +63,11 @@ _ask_for_codename() {
 
 _ask_for_defconfig() {
     cd "${KERNEL_DIR}"/arch/arm64/configs/ || (_error "${KERNEL_DIR}"; _exit)
-    until [[ -f ${DEFCONFIG} ]]; do
-        _prompt "Enter defconfig name (e.q. neternels_defconfig)"
-        read -r -e DEFCONFIG
+    QUESTION="Enter defconfig name (e.q. neternels_defconfig) :"
+    _prompt "${QUESTION}"; read -r -e DEFCONFIG
+    until [[ -f ${DEFCONFIG} ]] && [[ ${DEFCONFIG} == *defconfig ]]; do
+        _error "${DEFCONFIG} is not a valid defconfig file"
+        _prompt "${QUESTION}"; read -r -e DEFCONFIG
     done
     cd "${DIR}" || (_error "${DIR} not found!"; _exit)
 }

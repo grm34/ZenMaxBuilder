@@ -34,8 +34,8 @@ BUILDER=default
 # Builder host (displayed in proc/version)
 HOST=default
 
-# Default compiler (choices: PROTON - GCC - PROTONxGCC)
-DEFAULT_COMPILER=PROTON
+# Default compiler (Proton-Clang | Eva-GCC | Proton-GCC)
+DEFAULT_COMPILER=Proton-Clang
 
 # Kernel dir
 KERNEL_DIR=default

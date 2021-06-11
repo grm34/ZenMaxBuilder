@@ -23,7 +23,7 @@
 
 
 _make_clean_build() {
-    _confirm "Do you wish to make clean build? (${LINUX_VERSION})"
+    _confirm "Do you wish to make clean build: ${LINUX_VERSION}"
 
     case ${CONFIRM} in
         n|N|no|No|NO)
@@ -46,7 +46,7 @@ _make_defconfig() {
     # Send build status to Telegram
     if [[ ${BUILD_STATUS} == True ]]; then
         _send_msg "<b>${CODENAME}-${LINUX_VERSION}</b> | \
-<code>New build started by ${BUILDER} with ${COMPILER} compiler</code>"
+<code>New build started by ${BUILDER} with ${COMPILER}</code>"
     fi
 
     # Make defconfig
@@ -68,7 +68,7 @@ _make_menuconfig() {
         menuconfig "${OUT_DIR}"/.config
 
     # Save new defconfig
-    _confirm "Do you wish to save and use ${DEFCONFIG}"
+    _confirm "Do you wish to save and use: ${DEFCONFIG}"
     case ${CONFIRM} in
         n|N|no|No|NO)
             _confirm "Do you wish to continue"
@@ -114,7 +114,7 @@ perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
     # Make build
     case ${COMPILER} in
 
-        PROTON)
+        Proton-Clang)
             export KBUILD_COMPILER_STRING
             export PATH=${DIR}/toolchains/proton/bin:${PATH}
 
@@ -132,7 +132,7 @@ perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
                 STRIP=llvm-strip
             ;;
 
-        PROTONxGCC)
+        Proton-GCC)
             export KBUILD_COMPILER_STRING
             export PATH=\
 ${DIR}/toolchains/proton/bin:${DIR}/toolchains/gcc64/bin:\
@@ -159,7 +159,7 @@ ${DIR}/toolchains/gcc32/bin:/usr/bin:${PATH}
                 CLANG_TRIPLE=aarch64-linux-gnu-
             ;;
 
-        GCC)
+        Eva-GCC)
             KBUILD_COMPILER_STRING=\
 $(toolchains/gcc64/bin/aarch64-elf-gcc --version | head -n 1)
             export KBUILD_COMPILER_STRING
