@@ -24,14 +24,14 @@ set > /tmp/old_vars.log
 #    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # Load modules
-source manager.sh
-source requirements.sh
-source secret.sh
-source telegram.sh
 source user.sh
-source flasher.sh
-source maker.sh
-source prompter.sh
+source secret.sh
+source lib/manager.sh
+source lib/requirements.sh
+source lib/telegram.sh
+source lib/flasher.sh
+source lib/maker.sh
+source lib/prompter.sh
 
 # Build date
 DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
@@ -48,7 +48,7 @@ trap '_error keyboard interrupt!; _exit' 1 2 3 6
 if [[ $(uname) != Linux ]]; then
     _error "run this script on Linux!"
     _exit
-elif [[ ! -f ${DIR}/user.sh ]] || [[ ! -f ${DIR}/maker.sh ]]; then
+elif [[ ! -f ${DIR}/user.sh ]] || [[ ! -f ${DIR}/lib/maker.sh ]]; then
     _error "run this script from Neternels-Builder folder!"
     _exit
 fi
