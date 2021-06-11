@@ -53,3 +53,8 @@ GCC_32="https://github.com/mvaisakh/gcc-arm.git"
 
 # AnyKernel URL
 ANYKERNEL="https://github.com/grm34/AnyKernel3-X00TD.git"
+
+# Telegram API configuration
+TELEGRAM_ID=""
+TELEGRAM_BOT=""
+TELEGRAM_TOKEN=""

@@ -25,7 +25,6 @@ set > /tmp/old_vars.log
 
 # Load modules
 source user.sh
-source secret.sh
 source lib/manager.sh
 source lib/requirements.sh
 source lib/telegram.sh
