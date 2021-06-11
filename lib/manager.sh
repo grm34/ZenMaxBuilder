@@ -42,13 +42,13 @@ _usage() {
     echo -e "${BOLD}Usage:${NC} ./neternels.sh [MODE]
 
     ${BOLD}Options${NC}
-        -h, --help          show this help message
+        -h, --help          show this message and exit
 
     ${BOLD}Modes${NC}
         -a, --auto          start new build
-        -c, --config        create new defconfig
-        -z, --zip [file]    create flashable zip
+        -c, --config        create or edit defconfig
         -u, --update        update script and toolchains
+        -z, --zip [file]    create flashable zip
 
 ${BOLD}More information at: \
 ${CYAN}http://github.com/grm34/Neternels-Builder${NC}"
