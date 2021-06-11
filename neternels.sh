@@ -53,10 +53,10 @@ while getopts ':hm:f:acuz:' OPTION; do
     case ${OPTION} in
         h)  _usage; exit 0;;
         m)  _note "Sending message on Telegram...";
-            _send_msg "${OPTARG}"; exit 0;;
+            _send_msg "${OPTARG}"; _exit;;
         f)  if [[ -f ${OPTARG} ]]; then
                 _note "Uploading ${OPTARG} on Telegram..."
-                _send_build "${OPTARG}"; exit 0
+                _send_build "${OPTARG}"; _exit
             else
                 _error "<${OPTARG}> file not found"; exit 1
             fi;;
