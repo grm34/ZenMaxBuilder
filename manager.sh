@@ -111,8 +111,7 @@ _exit() {
 Build failed to compile after $((BUILD_TIME / 60)) minutes \
 and $((BUILD_TIME % 60)) seconds</code>"
 
-        _send_build \
-"${LOG}" "<b>${CODENAME}-${LINUX_VERSION} build logs</b>"
+        _send_build "${LOG}" "${CODENAME}-${LINUX_VERSION} build logs"
     fi
 
     # Clean AnyKernel folder and kill

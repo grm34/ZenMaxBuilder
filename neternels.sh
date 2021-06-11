@@ -134,9 +134,8 @@ if [[ ${BUILD_STATUS} == True ]]; then
     MD5=$(md5sum "${DIR}/builds/NetErnels-${CODENAME}-${LINUX_VERSION}-\
 ${DATE}-signed.zip" | cut -d' ' -f1)
 
-    _send_build "builds/NetErnels-${CODENAME}-${LINUX_VERSION}-${DATE}\
--signed.zip" "<b>${CODENAME}-${LINUX_VERSION}</b> | \
-<b>MD5 Checksum</b>: <code>${MD5}</code>"
+    _send_build "${DIR}/builds/NetErnels-${CODENAME}-${LINUX_VERSION}-\
+${DATE}-signed.zip" "${CODENAME}-${LINUX_VERSION} | MD5 Checksum: ${MD5}"
 fi
 
 # Get clean inputs logs
