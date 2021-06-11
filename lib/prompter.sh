@@ -24,8 +24,8 @@
 
 
 _ask_for_kernel_dir() {
-    if [ "${KERNEL_DIR}" == default ]; then
-        until [ -d "${KERNEL_DIR}" ]; do
+    if [[ ${KERNEL_DIR} == default ]]; then
+        until [[ -d ${KERNEL_DIR} ]]; do
             _prompt "Enter kernel path (e.q. /home/user/mykernel)"
             read -r -e KERNEL_DIR
         done
@@ -52,7 +52,7 @@ _ask_for_toolchain() {
 
 
 _ask_for_codename() {
-    if [ "${CODENAME}" == default ]; then
+    if [[ ${CODENAME} == default ]]; then
         _prompt "Enter android device codename (e.q. X00TD)"
         read -r CODENAME
     fi
@@ -60,10 +60,12 @@ _ask_for_codename() {
 
 
 _ask_for_defconfig() {
-    until [ -f "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}" ]; do
+    cd "${KERNEL_DIR}"/arch/arm64/configs/ || (_error "${KERNEL_DIR}"; _exit)
+    until [[ -f ${DEFCONFIG} ]]; do
         _prompt "Enter defconfig name (e.q. neternels_defconfig)"
-        read -r DEFCONFIG
+        read -r -e DEFCONFIG
     done
+    cd "${DIR}" || (_error "${DIR} not found!"; _exit)
 }
 
 
