@@ -52,20 +52,21 @@ if [[ $# -eq 0 ]] ; then _usage; exit 0; fi
 while getopts ':hm:f:acuz:' OPTION; do
     case ${OPTION} in
         h)  _usage; exit 0;;
-        m)  _send_msg "${OPTARG}"; exit 0;;
+        m)  _note "Sending message..."; _send_msg "${OPTARG}"; exit 0;;
         f)  if [[ -f ${OPTARG} ]]; then
+                _note "Uploading ${OPTARG} on Telegram..."
                 _send_build "${OPTARG}"; exit 0
             else
-                echo -e "${RED}Error:${NC} '${OPTARG}' not found"; exit 1
+                _note "${RED}Error:${NC} '${OPTARG}' file not found"; exit 1
             fi;;
         a)  MODE=auto;;
         c)  MODE=config;;
         u)  MODE=update;;
         z)  if [[ ! -f ${OPTARG} ]]; then
-                echo -e "${RED}Error:${NC} '${OPTARG}' not found"; exit 1
+                _note "${RED}Error:${NC} '${OPTARG}' file not found"; exit 1
             fi; MODE=zip;;
-        :)  echo -e "${RED}Error:${NC} missing arg for -${OPTARG}"; exit 1;;
-        \?) echo -e "${RED}Error:${NC} invalid option -${OPTARG}"; exit 1
+        :)  _note "${RED}Error:${NC} missing arg for -${OPTARG}"; exit 1;;
+        \?) _note "${RED}Error:${NC} invalid option -${OPTARG}"; exit 1
     esac
 done
 
