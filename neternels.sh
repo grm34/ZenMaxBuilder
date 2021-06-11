@@ -37,6 +37,8 @@ for OPT in "${@}"; do
     shift
     case ${OPT} in
         "--help") set -- "${@}" "-h"; break;;
+        "--msg") set -- "${@}" "-m";;
+        "--file") set -- "${@}" "-f";;
         "--auto") set -- "${@}" "-a";;
         "--config") set -- "${@}" "-c";;
         "--zip") set -- "${@}" "-z";;
@@ -47,9 +49,15 @@ done
 
 # Handle opts
 if [[ $# -eq 0 ]] ; then _usage; exit 0; fi
-while getopts ':hacuz:' OPTION; do
+while getopts ':hm:f:acuz:' OPTION; do
     case ${OPTION} in
         h)  _usage; exit 0;;
+        m)  _send_msg "${OPTARG}"; exit 0;;
+        f)  if [[ -f ${OPTARG} ]]; then
+                _send_build "${OPTARG}"; exit 0
+            else
+                echo -e "${RED}Error:${NC} '${OPTARG}' not found"; exit 1
+            fi;;
         a)  MODE=auto;;
         c)  MODE=config;;
         u)  MODE=update;;

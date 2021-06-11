@@ -39,16 +39,18 @@ _banner() {
 
 # Help (--help or -h)
 _usage() {
-    echo -e "${BOLD}Usage:${NC} ./neternels.sh [MODE]
+    echo -e "${BOLD}Usage:${NC} ./neternels.sh OPTION/MODE [ARGUMENT]
 
     ${BOLD}Options${NC}
-        -h, --help          show this message and exit
+        -h, --help              show this message and exit
+        -m, --msg    [message]  send message on Telegram
+        -f, --file   [file]     send file on Telegram
 
     ${BOLD}Modes${NC}
-        -a, --auto          start new build
-        -c, --config        create or edit defconfig
-        -u, --update        update script and toolchains
-        -z, --zip [file]    create flashable zip
+        -a, --auto              start new build
+        -c, --config            create or edit defconfig
+        -u, --update            update script and toolchains
+        -z, --zip    [file]     create flashable zip
 
 ${BOLD}More information at: \
 ${CYAN}http://github.com/grm34/Neternels-Builder${NC}"
