@@ -58,3 +58,6 @@ ANYKERNEL="https://github.com/grm34/AnyKernel3-X00TD.git"
 TELEGRAM_ID=""
 TELEGRAM_BOT=""
 TELEGRAM_TOKEN=""
+
+# Tag
+TAG=NetErnels

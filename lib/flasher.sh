@@ -23,7 +23,7 @@
 
 
 _create_flashable_zip() {
-    _note "Creating NetErnels-${CODENAME}-${LINUX_VERSION}-${DATE}.zip..."
+    _note "Creating ${TAG}-${CODENAME}-${LINUX_VERSION}-${DATE}.zip..."
 
     # Send build status to Telegram
     if [[ ${BUILD_STATUS} == True ]]; then
@@ -41,7 +41,7 @@ _create_flashable_zip() {
     if [[ -f ${KERNEL_DIR}/init.ElectroSpectrum.rc ]]; then
         _check cp -af "${KERNEL_DIR}"/init.ElectroSpectrum.rc init.spectrum.rc
         _check sed -i "s/persist.spectrum.kernel.*/persist.spectrum.kernel \
-${LINUX_VERSION}-${CODENAME}-NetErnels/g" init.spectrum.rc
+${TAG}-${CODENAME}-${LINUX_VERSION}/g" init.spectrum.rc
     fi
 
     # Create anykernel.sh
@@ -50,7 +50,7 @@ ${LINUX_VERSION}-${CODENAME}-NetErnels/g" init.spectrum.rc
     fi
 
     # Set anykernel.sh
-    _check sed -i "s/kernel.string=.*/kernel.string=NetErnels-${CODENAME}/g" \
+    _check sed -i "s/kernel.string=.*/kernel.string=${TAG}-${CODENAME}/g" \
         anykernel.sh
     _check sed -i "s/kernel.for=.*/kernel.for=${KERNEL_VARIANT}/g" \
         anykernel.sh
@@ -69,7 +69,7 @@ Development is Life ~ t.me\/neternels/g" anykernel.sh
     _check sed -i "s/device.name5=.*/device.name5=${CODENAME}/g" anykernel.sh
 
     # Create flashable zip
-    _check zip -r9 NetErnels-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}".zip \
+    _check zip -r9 "${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}".zip \
 ./* -x .git README.md ./*placeholder
 
     # Back to script dir
@@ -88,7 +88,7 @@ _sign_flashable_zip() {
 
     # Sign flashable zip
     _check java -jar "${DIR}"/AnyKernel/zipsigner-3.0.jar \
-"${DIR}"/AnyKernel/NetErnels-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}".zip \
-"${DIR}"/builds/NetErnels-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}"\
+"${DIR}"/AnyKernel/"${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}".zip \
+"${DIR}"/builds/"${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}"\
 -signed.zip
 }

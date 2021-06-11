@@ -95,7 +95,7 @@ _ask_for_cores() {
 
 
 _ask_for_telegram() {
-    _confirm "Do you wish to send build status to NetErnels Team?"
+    _confirm "Do you wish to send build status to Telegram?"
     case ${CONFIRM} in
         n|N|no|No|NO)
             BUILD_STATUS=False

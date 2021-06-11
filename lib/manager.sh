@@ -132,8 +132,8 @@ _clean_anykernel() {
     for UW in "${UNWANTED[@]}"; do
         rm -f "${DIR}"/AnyKernel/"${UW}"
     done
-    if [[ ! -f ${DIR}/AnyKernel/NetErnels-\
-${CODENAME}-${LINUX_VERSION}-${DATE}-signed.zip ]]; then
+    if [[ ! -f ${DIR}/AnyKernel/${TAG}-${CODENAME}-\
+${LINUX_VERSION}-${DATE}-signed.zip ]]; then
         rm -f "${DIR}"/AnyKernel/*.zip
     fi
     if [[ -f ${DIR}/AnyKernel/anykernel-real.sh ]]; then

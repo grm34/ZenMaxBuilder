@@ -97,7 +97,7 @@ _make_defconfig | tee -a "${LOG}"
 if [[ ${MENUCONFIG} == True ]]; then _make_menuconfig; fi
 
 # Make new build
-_confirm "Do you wish to start NetErnels-${CODENAME}-${LINUX_VERSION}"
+_confirm "Do you wish to start ${TAG}-${CODENAME}-${LINUX_VERSION}"
 case ${CONFIRM} in
     n|N|no|No|NO)
         _error "aborted by user!"
@@ -112,7 +112,7 @@ esac
 # Send build status to Terminal
 END_TIME=$(TZ=${TIMEZONE} date +%s)
 BUILD_TIME=$((END_TIME - START_TIME))
-_note "Successfully compiled NetErnels-${CODENAME}-${LINUX_VERSION} \
+_note "Successfully compiled ${TAG}-${CODENAME}-${LINUX_VERSION} \
 after $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds"
 
 # Send build status to Telegram
@@ -130,10 +130,10 @@ _sign_flashable_zip | tee -a "${LOG}"
 if [[ ${BUILD_STATUS} == True ]]; then
     _note "Uploading build on Telegram..."
 
-    MD5=$(md5sum "${DIR}/builds/NetErnels-${CODENAME}-${LINUX_VERSION}-\
+    MD5=$(md5sum "${DIR}/builds/${TAG}-${CODENAME}-${LINUX_VERSION}-\
 ${DATE}-signed.zip" | cut -d' ' -f1)
 
-    _send_build "${DIR}/builds/NetErnels-${CODENAME}-${LINUX_VERSION}-\
+    _send_build "${DIR}/builds/${TAG}-${CODENAME}-${LINUX_VERSION}-\
 ${DATE}-signed.zip" "MD5 Checksum: ${MD5}"
 fi
 
