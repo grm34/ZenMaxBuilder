@@ -23,7 +23,7 @@
 
 
 _make_clean_build() {
-    _confirm "Do you wish to make clean build (${LINUX_VERSION})?"
+    _confirm "Do you wish to make clean build? (${LINUX_VERSION})"
 
     case ${CONFIRM} in
         n|N|no|No|NO)

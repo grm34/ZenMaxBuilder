@@ -34,7 +34,7 @@ _ask_for_kernel_dir() {
 
 
 _ask_for_toolchain() {
-    _confirm "Do you wish to use default compiler (${DEFAULT_COMPILER})?"
+    _confirm "Do you wish to use default compiler? (${DEFAULT_COMPILER})"
     case ${CONFIRM} in
         n|N|no|No|NO)
             _note "Select Toolchain compiler:"
@@ -68,7 +68,7 @@ _ask_for_defconfig() {
 
 
 _ask_for_menuconfig() {
-    _confirm "Do you wish to edit kernel with menuconfig"
+    _confirm "Do you wish to edit kernel with menuconfig?"
     case ${CONFIRM} in
         n|N|no|No|NO)
             MENUCONFIG=False

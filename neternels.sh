@@ -97,7 +97,7 @@ _make_defconfig | tee -a "${LOG}"
 if [[ ${MENUCONFIG} == True ]]; then _make_menuconfig; fi
 
 # Make new build
-_confirm "Do you wish to start ${TAG}-${CODENAME}-${LINUX_VERSION}"
+_confirm "Do you wish to start ${TAG}-${CODENAME}-${LINUX_VERSION}?"
 case ${CONFIRM} in
     n|N|no|No|NO)
         _error "aborted by user!"
