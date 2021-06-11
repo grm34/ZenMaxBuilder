@@ -32,6 +32,38 @@ source lib/flasher.sh
 source lib/maker.sh
 source lib/prompter.sh
 
+# Transform long opts to short
+for OPT in "${@}"; do
+    shift
+    case ${OPT} in
+        "--help") set -- "${@}" "-h"; break;;
+        "--auto") set -- "${@}" "-a";;
+        "--config") set -- "${@}" "-c";;
+        "--zip") set -- "${@}" "-z";;
+        "--update") set -- "${@}" "-u";;
+        *) set -- "${@}" "${OPT}"
+    esac
+done
+
+# Handle opts
+if [[ $# -eq 0 ]] ; then _usage; exit 0; fi
+while getopts ':hacuz:' OPTION; do
+    case ${OPTION} in
+        h)  _usage; exit 0;;
+        a)  MODE=auto;;
+        c)  MODE=config;;
+        u)  MODE=update;;
+        z)  if [[ ! -f ${OPTARG} ]]; then
+                echo -e "${RED}Error:${NC} '${OPTARG}' not found"; exit 1
+            fi; MODE=zip;;
+        :)  echo -e "${RED}Error:${NC} missing arg for -${OPTARG}"; exit 1;;
+        \?) echo -e "${RED}Error:${NC} invalid option -${OPTARG}"; exit 1
+    esac
+done
+
+# Remove options from positional parameters
+shift $(( OPTIND - 1 ))
+
 # Build date
 DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
 
@@ -40,7 +72,6 @@ DIR=${PWD}
 
 # Start
 _banner
-_note "Starting new kernel build on ${DATE} (...)"
 
 # Ban all n00bz
 trap '_error keyboard interrupt!; _exit' 1 2 3 6
@@ -61,13 +92,21 @@ for FOLDER in "${FOLDERS[@]}"; do
 done
 
 # Get user configuration
-_ask_for_kernel_dir
-_ask_for_toolchain
-_ask_for_codename
-_ask_for_defconfig
-_ask_for_menuconfig
-_ask_for_cores
-_ask_for_telegram
+case ${MODE} in
+    auto)
+        _note "Starting new kernel build on ${DATE} (...)"
+        _ask_for_kernel_dir
+        _ask_for_toolchain
+        _ask_for_codename
+        _ask_for_defconfig
+        _ask_for_menuconfig
+        _ask_for_cores
+        _ask_for_telegram
+        ;;
+    *)
+        echo -e "${RED}Error:${NC} this mode is not yet configured!"
+        exit 1
+esac
 
 # Set logs
 TIME=$(TZ=${TIMEZONE} date +%H-%M-%S)

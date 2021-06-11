@@ -37,6 +37,24 @@ _banner() {
 }
 
 
+# Help (--help or -h)
+_usage() {
+    echo -e "${BOLD}Usage:${NC} ./neternels.sh [MODE]
+
+    ${BOLD}Options${NC}
+        -h, --help          show this help message
+
+    ${BOLD}Modes${NC}
+        -a, --auto          start new build
+        -c, --config        create new defconfig
+        -z, --zip [file]    create flashable zip
+        -u, --update        update script and toolchains
+
+${BOLD}More information at: \
+${CYAN}http://github.com/grm34/Neternels-Builder${NC}"
+}
+
+
 # Ask some information
 _prompt() {
     LENTH=${*}; COUNT=${#LENTH}
