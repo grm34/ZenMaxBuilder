@@ -42,12 +42,12 @@ _usage() {
     echo -e "
 ${BOLD}Usage:${NC} ./neternels.sh OPTION [ARGUMENT]
 
-    ${BOLD}Options${NC}
-        -h, --help              show this message and exit
-        -u, --update            update script and toolchains
-        -m, --msg    [message]  send message on Telegram
-        -f, --file   [file]     send file on Telegram
-        -z, --zip    [file]     create flashable zip
+  ${BOLD}Options${NC}
+    -h, --help                     show this message and exit
+    -u, --update                   update script and toolchains
+    -m, --msg     [message]        send message on Telegram
+    -f, --file    [file]           send file on Telegram
+    -z, --zip     [Image.gz-dtb]   create flashable zip
 
 ${BOLD}More information at: \
 ${CYAN}http://github.com/grm34/Neternels-Builder${NC}
