@@ -31,6 +31,26 @@ source lib/telegram.sh
 source lib/flasher.sh
 source lib/maker.sh
 source lib/prompter.sh
+source lib/updater.sh
+
+# Build date
+DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
+
+# Script dir
+DIR=${PWD}
+
+# Start
+_banner
+
+# Ban all n00bz
+trap '_error keyboard interrupt!; _exit' 1 2 3 6
+if [[ $(uname) != Linux ]]; then
+    _error "run this script on Linux!"
+    _exit
+elif [[ ! -f ${DIR}/user.sh ]] || [[ ! -f ${DIR}/lib/maker.sh ]]; then
+    _error "run this script from Neternels-Builder folder!"
+    _exit
+fi
 
 # Transform long opts to short
 for OPT in "${@}"; do
@@ -62,7 +82,7 @@ while getopts ':hm:f:acuz:' OPTION; do
             fi;;
         a)  MODE=auto;;
         c)  MODE=config;;
-        u)  MODE=update;;
+        u)  _full_upgrade; _exit;;
         z)  if [[ ! -f ${OPTARG} ]]; then
                 _error "<${OPTARG}> file not found"; exit 1
             fi; MODE=zip;;
@@ -73,25 +93,6 @@ done
 
 # Remove options from positional parameters
 shift $(( OPTIND - 1 ))
-
-# Build date
-DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
-
-# Script dir
-DIR=${PWD}
-
-# Start
-_banner
-
-# Ban all n00bz
-trap '_error keyboard interrupt!; _exit' 1 2 3 6
-if [[ $(uname) != Linux ]]; then
-    _error "run this script on Linux!"
-    _exit
-elif [[ ! -f ${DIR}/user.sh ]] || [[ ! -f ${DIR}/lib/maker.sh ]]; then
-    _error "run this script from Neternels-Builder folder!"
-    _exit
-fi
 
 # Create missing folders
 FOLDERS=(builds logs toolchains)
