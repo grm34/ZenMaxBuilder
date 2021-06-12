@@ -57,35 +57,30 @@ for OPT in "${@}"; do
     shift
     case ${OPT} in
         "--help") set -- "${@}" "-h"; break;;
+        "--update") set -- "${@}" "-u";;
         "--msg") set -- "${@}" "-m";;
         "--file") set -- "${@}" "-f";;
-        "--auto") set -- "${@}" "-a";;
-        "--config") set -- "${@}" "-c";;
         "--zip") set -- "${@}" "-z";;
-        "--update") set -- "${@}" "-u";;
         *) set -- "${@}" "${OPT}"
     esac
 done
 
 # Handle opts
-if [[ $# -eq 0 ]] ; then _usage; exit 0; fi
-while getopts ':hm:f:acuz:' OPTION; do
+while getopts ':hum:f:z:' OPTION; do
     case ${OPTION} in
         h)  _usage; exit 0;;
+        u)  _full_upgrade; _exit;;
         m)  _note "Sending message on Telegram...";
             _send_msg "${OPTARG}"; _exit;;
         f)  if [[ -f ${OPTARG} ]]; then
                 _note "Uploading ${OPTARG} on Telegram..."
                 _send_build "${OPTARG}"; _exit
             else
-                _error "<${OPTARG}> file not found"; exit 1
+                _error "[ ${OPTARG} ] file not found"; exit 1
             fi;;
-        a)  MODE=auto;;
-        c)  MODE=config;;
-        u)  _full_upgrade; _exit;;
         z)  if [[ ! -f ${OPTARG} ]]; then
-                _error "<${OPTARG}> file not found"; exit 1
-            fi; MODE=zip;;
+                _error "[ ${OPTARG} ] file not found"; exit 1
+            fi; _error "zip option not yet configured"; _exit;;
         :)  _error "missing argument for -${OPTARG}"; exit 1;;
         \?) _error "invalid option -${OPTARG}"; exit 1
     esac
@@ -103,21 +98,14 @@ for FOLDER in "${FOLDERS[@]}"; do
 done
 
 # Get user configuration
-case ${MODE} in
-    auto)
-        _note "Starting new kernel build on ${DATE} (...)"
-        _ask_for_kernel_dir
-        _ask_for_toolchain
-        _ask_for_codename
-        _ask_for_defconfig
-        _ask_for_menuconfig
-        _ask_for_cores
-        _ask_for_telegram
-        ;;
-    *)
-        echo -e "${RED}Error:${NC} this mode is not yet configured!"
-        exit 1
-esac
+_note "Starting new kernel build on ${DATE} (...)"
+_ask_for_kernel_dir
+_ask_for_toolchain
+_ask_for_codename
+_ask_for_defconfig
+_ask_for_menuconfig
+_ask_for_cores
+_ask_for_telegram
 
 # Set logs
 TIME=$(TZ=${TIMEZONE} date +%H-%M-%S)
@@ -159,13 +147,13 @@ case ${CONFIRM} in
         sleep 5
 esac
 
-# Send build status to Terminal
+# Get build time
 END_TIME=$(TZ=${TIMEZONE} date +%s)
 BUILD_TIME=$((END_TIME - START_TIME))
+
+# Build status
 _note "Successfully compiled ${TAG}-${CODENAME}-${LINUX_VERSION} \
 after $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds"
-
-# Send build status to Telegram
 if [[ ${BUILD_STATUS} == True ]]; then
     _send_msg "<b>${CODENAME}-${LINUX_VERSION}</b> | \
 <code>Kernel Successfully Compiled after $((BUILD_TIME / 60)) minutes and \

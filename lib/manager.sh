@@ -40,17 +40,13 @@ _banner() {
 # Help (--help or -h)
 _usage() {
     echo -e "
-${BOLD}Usage:${NC} ./neternels.sh OPTION/MODE [ARGUMENT]
+${BOLD}Usage:${NC} ./neternels.sh OPTION [ARGUMENT]
 
     ${BOLD}Options${NC}
         -h, --help              show this message and exit
+        -u, --update            update script and toolchains
         -m, --msg    [message]  send message on Telegram
         -f, --file   [file]     send file on Telegram
-
-    ${BOLD}Modes${NC}
-        -a, --auto              start new build
-        -c, --config            create or edit defconfig
-        -u, --update            update script and toolchains
         -z, --zip    [file]     create flashable zip
 
 ${BOLD}More information at: \

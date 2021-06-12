@@ -28,7 +28,7 @@ _ask_for_kernel_dir() {
         QUESTION="Enter kernel path (e.q. /home/user/mykernel) :"
         _prompt "${QUESTION}"; read -r -e KERNEL_DIR
         until [[ -d ${KERNEL_DIR}/arch/arm64/configs ]]; do
-            _error "${KERNEL_DIR} is not a valid kernel directory"
+            _error "[ ${KERNEL_DIR} ] is not a valid kernel directory"
             _prompt "${QUESTION}"; read -r -e KERNEL_DIR
         done
     fi
@@ -66,7 +66,7 @@ _ask_for_defconfig() {
     QUESTION="Enter defconfig name (e.q. neternels_defconfig) :"
     _prompt "${QUESTION}"; read -r -e DEFCONFIG
     until [[ -f ${DEFCONFIG} ]] && [[ ${DEFCONFIG} == *defconfig ]]; do
-        _error "${DEFCONFIG} is not a valid defconfig file"
+        _error "[ ${DEFCONFIG} ] is not a valid defconfig file"
         _prompt "${QUESTION}"; read -r -e DEFCONFIG
     done
     cd "${DIR}" || (_error "${DIR} not found!"; _exit)
