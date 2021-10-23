@@ -1,5 +1,4 @@
 #!/usr/bin/bash
-# shellcheck disable=SC2034
 
 #    Copyright (c) 2021 darkmaster @grm34 Neternels Team
 #
@@ -22,42 +21,43 @@
 #    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 #    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TimeZone (used to set build date)
-TIMEZONE=Europe/Paris
 
-# Device codename (e.q. X00TD)
-CODENAME=default
+_full_upgrade() {
 
-# Builder name (displayed in proc/version)
-BUILDER=default
+    # Neternels Builder
+    _note "Updating Neternels Builder..."
+    cd "${DIR}" || (_error "${DIR} not found!"; _exit)
+    git pull origin main
 
-# Builder host (displayed in proc/version)
-HOST=default
+    # AnyKernel
+    TEMP=${DIR}/AnyKernel
+    if [[ -d ${TEMP} ]]; then
+        _note "Updating AnyKernel..."
+        cd "${TEMP}" || (_error "${TEMP} not found!"; _exit)
+        git pull origin main
+    fi
 
-# Default compiler (Proton-Clang | Eva-GCC | Proton-GCC)
-DEFAULT_COMPILER=Proton-Clang
+    # Proton-Clang
+    TEMP=${DIR}/toolchains/proton
+    if [[ -d ${TEMP} ]]; then
+        _note "Updating Proton-Clang..."
+        cd "${TEMP}" || (_error "${TEMP} not found!"; _exit)
+        git pull origin master
+    fi
 
-# Kernel dir
-KERNEL_DIR=default
+    # GCC-arm64
+    TEMP=${DIR}/toolchains/gcc64
+    if [[ -d ${TEMP} ]]; then
+        _note "Updating GCC-arm64..."
+        cd "${TEMP}" || (_error "${TEMP} not found!"; _exit)
+        git pull origin gcc-master
+    fi
 
-# Kernel variant
-KERNEL_VARIANT=NetHunter
-
-# Link Time Optimization (LTO)
-LTO=False
-
-# Toolchains URL
-PROTON="https://github.com/kdrag0n/proton-clang.git"
-GCC_64="https://github.com/mvaisakh/gcc-arm64.git"
-GCC_32="https://github.com/mvaisakh/gcc-arm.git"
-
-# AnyKernel URL
-ANYKERNEL="https://github.com/grm34/AnyKernel3-X00TD.git"
-
-# Telegram API configuration
-TELEGRAM_ID=""
-TELEGRAM_BOT=""
-TELEGRAM_TOKEN=""
-
-# Tag
-TAG=NetErnels
+    # GCC-arm32
+    TEMP=${DIR}/toolchains/gcc32
+    if [[ -d ${TEMP} ]]; then
+        _note "Updating GCC-arm..."
+        cd "${TEMP}" || (_error "${TEMP} not found!"; _exit)
+        git pull origin gcc-master
+    fi
+}

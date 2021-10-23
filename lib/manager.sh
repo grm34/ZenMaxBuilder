@@ -37,6 +37,24 @@ _banner() {
 }
 
 
+# Help (--help or -h)
+_usage() {
+    echo -e "
+${BOLD}Usage:${NC} ./neternels.sh OPTION [ARGUMENT]
+
+  ${BOLD}Options${NC}
+    -h, --help                     show this message and exit
+    -u, --update                   update script and toolchains
+    -m, --msg     [message]        send message on Telegram
+    -f, --file    [file]           send file on Telegram
+    -z, --zip     [Image.gz-dtb]   create flashable zip
+
+${BOLD}More information at: \
+${CYAN}http://github.com/grm34/Neternels-Builder${NC}
+"
+}
+
+
 # Ask some information
 _prompt() {
     LENTH=${*}; COUNT=${#LENTH}
@@ -101,21 +119,26 @@ _check() {
 # Exit with 5s timeout
 _exit() {
 
-    # Send build status with logs to Telegram
-    if [[ ${BUILD_STATUS} == True ]] && [[ ${START_TIME} ]] && \
-            [[ ! $BUILD_TIME ]]; then
-        END_TIME=$(TZ=${TIMEZONE} date +%s)
-        BUILD_TIME=$((END_TIME - START_TIME))
+    # While building
+    if [[ ${START_TIME} ]] && [[ ! $BUILD_TIME ]]; then
 
-        _send_msg "<b>${CODENAME}-${LINUX_VERSION}</b> | \
-Build failed to compile after $((BUILD_TIME / 60)) minutes \
-and $((BUILD_TIME % 60)) seconds</code>"
+        # Clean AnyKernel
+        _clean_anykernel
 
-        _send_build "${LOG}" "${CODENAME}-${LINUX_VERSION} build logs"
+        # Send failed status with logs on Telegram
+        if [[ ${BUILD_STATUS} == True ]]; then
+            END_TIME=$(TZ=${TIMEZONE} date +%s)
+            BUILD_TIME=$((END_TIME - START_TIME))
+
+            _send_msg \
+"<b>${CODENAME}-${LINUX_VERSION}</b> | Build failed to compile after \
+$((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds</code>"
+
+            _send_build "${LOG}" "${CODENAME}-${LINUX_VERSION} build logs"
+        fi
     fi
 
-    # Clean AnyKernel folder and kill
-    _clean_anykernel
+    # kill
     for (( SECOND=5; SECOND>=1; SECOND-- )); do
         echo -ne "\r\033[K${BLUE}Exit building script in ${SECOND}s...${NC}"
         sleep 1

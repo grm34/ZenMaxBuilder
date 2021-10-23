@@ -14,29 +14,13 @@
 
 4. `./neternels.sh`
 
-## Updates
+## Options
 
-### ➡️ Neternels Builder
+    Usage: ./neternels.sh OPTION [ARGUMENT]
 
-    cd Neternels-Builder/
-    git pull origin main
-
-### ➡️ AnyKernel
-
-    cd Neternels-Builder/AnyKernel/
-    git pull origin main
-
-### ➡️ proton-clang
-
-    cd Neternels-Builder/toolchains/proton/
-    git pull origin master
-
-### ➡️ gcc-arm64
-
-    cd Neternels-Builder/toolchains/gcc64/
-    git pull origin gcc-master
-
-### ➡️ gcc-arm
-
-    cd Neternels-Builder/toolchains/gcc32/
-    git pull origin gcc-master
+    Options
+        -h, --help                     show this message and exit
+        -u, --update                   update script and toolchains
+        -m, --msg     [message]        send message on Telegram
+        -f, --file    [file]           send file on Telegram
+        -z, --zip     [Image.gz-dtb]   create flashable zip

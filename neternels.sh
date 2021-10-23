@@ -31,6 +31,7 @@ source lib/telegram.sh
 source lib/flasher.sh
 source lib/maker.sh
 source lib/prompter.sh
+source lib/updater.sh
 
 # Build date
 DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
@@ -40,7 +41,6 @@ DIR=${PWD}
 
 # Start
 _banner
-_note "Starting new kernel build on ${DATE} (...)"
 
 # Ban all n00bz
 trap '_error keyboard interrupt!; _exit' 1 2 3 6
@@ -52,6 +52,43 @@ elif [[ ! -f ${DIR}/user.sh ]] || [[ ! -f ${DIR}/lib/maker.sh ]]; then
     _exit
 fi
 
+# Transform long opts to short
+for OPT in "${@}"; do
+    shift
+    case ${OPT} in
+        "--help") set -- "${@}" "-h"; break;;
+        "--update") set -- "${@}" "-u";;
+        "--msg") set -- "${@}" "-m";;
+        "--file") set -- "${@}" "-f";;
+        "--zip") set -- "${@}" "-z";;
+        *) set -- "${@}" "${OPT}"
+    esac
+done
+
+# Handle opts
+while getopts ':hum:f:z:' OPTION; do
+    case ${OPTION} in
+        h)  _usage; exit 0;;
+        u)  _full_upgrade; _exit;;
+        m)  _note "Sending message on Telegram...";
+            _send_msg "${OPTARG}"; _exit;;
+        f)  if [[ -f ${OPTARG} ]]; then
+                _note "Uploading ${OPTARG} on Telegram..."
+                _send_build "${OPTARG}"; _exit
+            else
+                _error "[ ${OPTARG} ] file not found"; exit 1
+            fi;;
+        z)  if [[ ! -f ${OPTARG} ]]; then
+                _error "[ ${OPTARG} ] file not found"; exit 1
+            fi; _error "zip option not yet configured"; _exit;;
+        :)  _error "missing argument for -${OPTARG}"; exit 1;;
+        \?) _error "invalid option -${OPTARG}"; exit 1
+    esac
+done
+
+# Remove options from positional parameters
+shift $(( OPTIND - 1 ))
+
 # Create missing folders
 FOLDERS=(builds logs toolchains)
 for FOLDER in "${FOLDERS[@]}"; do
@@ -61,6 +98,7 @@ for FOLDER in "${FOLDERS[@]}"; do
 done
 
 # Get user configuration
+_note "Starting new kernel build on ${DATE} (...)"
 _ask_for_kernel_dir
 _ask_for_toolchain
 _ask_for_codename
@@ -109,13 +147,13 @@ case ${CONFIRM} in
         sleep 5
 esac
 
-# Send build status to Terminal
+# Get build time
 END_TIME=$(TZ=${TIMEZONE} date +%s)
 BUILD_TIME=$((END_TIME - START_TIME))
+
+# Build status
 _note "Successfully compiled ${TAG}-${CODENAME}-${LINUX_VERSION} \
 after $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds"
-
-# Send build status to Telegram
 if [[ ${BUILD_STATUS} == True ]]; then
     _send_msg "<b>${CODENAME}-${LINUX_VERSION}</b> | \
 <code>Kernel Successfully Compiled after $((BUILD_TIME / 60)) minutes and \
