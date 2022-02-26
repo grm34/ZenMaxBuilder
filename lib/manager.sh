@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-#    Copyright (c) 2021 darkmaster @grm34 Neternels Team
+#    Copyright (c) 2022 @grm34 Neternels Team
 #
 #    Permission is hereby granted, free of charge, to any person
 #    obtaining a copy of this software and associated documentation
