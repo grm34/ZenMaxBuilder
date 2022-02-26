@@ -39,9 +39,6 @@ DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
 # Script dir
 DIR=${PWD}
 
-# Start
-_banner
-
 # Ban all n00bz
 trap '_error keyboard interrupt!; _exit' 1 2 3 6
 if [[ $(uname) != Linux ]]; then
@@ -68,7 +65,7 @@ done
 # Handle opts
 while getopts ':hum:f:z:' OPTION; do
     case ${OPTION} in
-        h)  _usage; exit 0;;
+        h)  _banner; _usage; exit 0;;
         u)  _full_upgrade; _exit;;
         m)  _note "Sending message on Telegram...";
             _send_msg "${OPTARG}"; _exit;;
@@ -98,6 +95,7 @@ for FOLDER in "${FOLDERS[@]}"; do
 done
 
 # Get user configuration
+_banner
 _note "Starting new kernel build on ${DATE} (...)"
 _ask_for_kernel_dir
 _ask_for_toolchain
