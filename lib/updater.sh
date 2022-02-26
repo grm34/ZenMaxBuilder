@@ -34,7 +34,7 @@ _full_upgrade() {
     if [[ -d ${TEMP} ]]; then
         _note "Updating AnyKernel..."
         cd "${TEMP}" || (_error "${TEMP} not found!"; _exit)
-        git pull origin main
+        git pull origin master
     fi
 
     # Proton-Clang
