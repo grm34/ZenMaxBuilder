@@ -60,7 +60,7 @@ _install_dependencies() {
 
 _clone_toolchains() {
     case ${COMPILER} in
-        PROTON)
+        Proton-Clang)
             if [[ ! -d ${DIR}/toolchains/proton ]]; then
                 _note "Proton repository not found! Cloning..."
                 _check \
@@ -68,7 +68,7 @@ _clone_toolchains() {
             fi
             ;;
 
-        GCC)
+        Eva-GCC)
             if [[ ! -d ${DIR}/toolchains/gcc32 ]]; then
                 _note "GCC arm repository not found! Cloning..."
                 _check git clone "${GCC_32}" "${DIR}"/toolchains/gcc32
@@ -79,7 +79,7 @@ _clone_toolchains() {
             fi
             ;;
 
-        PROTONxGCC)
+        Proton-GCC)
             if [[ ! -d ${DIR}/toolchains/proton ]]; then
                 _note "Proton repository not found! Cloning..."
                 _check \
