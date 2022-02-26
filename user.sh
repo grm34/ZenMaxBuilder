@@ -52,7 +52,7 @@ GCC_64="https://github.com/mvaisakh/gcc-arm64.git"
 GCC_32="https://github.com/mvaisakh/gcc-arm.git"
 
 # AnyKernel URL
-ANYKERNEL="https://github.com/grm34/AnyKernel3-X00TD.git"
+ANYKERNEL="https://github.com/osm0sis/AnyKernel3.git"
 
 # Telegram API configuration
 TELEGRAM_ID=""
