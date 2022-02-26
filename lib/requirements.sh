@@ -24,9 +24,9 @@
 
 _install_dependencies() {
 
-    # Set the package manager of the current Linux distribution
+    # Set the package manager of the current Linux distribution
     declare -A PMS=(
-        [aarch64]="_ apt-get install -y"
+        [aarch64]="_ apt install -y"
         [redhat]="sudo yum install -y"
         [arch]="sudo pacman -S --noconfirm"
         [gentoo]="sudo emerge -1 -y"
@@ -42,12 +42,12 @@ _install_dependencies() {
             read -ra PM <<< "$PM"
             break
         else
-            PM=(sudo apt-get install -y)
+            PM=(sudo apt install -y)
         fi
     done
 
     # Install missing dependencies
-    DEPENDENCIES=(wget git zip llvm lld g++ gcc clang)
+    DEPENDENCIES=(wget git zip llvm lld gcc clang)
     for PACKAGE in "${DEPENDENCIES[@]}"; do
         if ! which "${PACKAGE//llvm/llvm-ar}" &>/dev/null; then
             echo -e \
