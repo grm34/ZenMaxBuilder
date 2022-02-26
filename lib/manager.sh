@@ -143,7 +143,7 @@ $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds</code>"
         echo -ne "\r\033[K${BLUE}Exit building script in ${SECOND}s...${NC}"
         sleep 1
     done
-    echo && rm *.log && kill -9 $$
+    echo && rm ./*.log && kill -9 $$
 }
 
 
