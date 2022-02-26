@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 # shellcheck disable=SC1091
-set > /tmp/old_vars.log
+set > old_vars.log
 
 #    Copyright (c) 2022 @grm34 Neternels Team
 #
@@ -39,9 +39,6 @@ DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
 # Script dir
 DIR=${PWD}
 
-# Start
-_banner
-
 # Ban all n00bz
 trap '_error keyboard interrupt!; _exit' 1 2 3 6
 if [[ $(uname) != Linux ]]; then
@@ -68,7 +65,7 @@ done
 # Handle opts
 while getopts ':hum:f:z:' OPTION; do
     case ${OPTION} in
-        h)  _usage; exit 0;;
+        h)  _banner; _usage; exit 0;;
         u)  _full_upgrade; _exit;;
         m)  _note "Sending message on Telegram...";
             _send_msg "${OPTARG}"; _exit;;
@@ -98,6 +95,7 @@ for FOLDER in "${FOLDERS[@]}"; do
 done
 
 # Get user configuration
+_banner
 _note "Starting new kernel build on ${DATE} (...)"
 _ask_for_kernel_dir
 _ask_for_toolchain
@@ -147,7 +145,7 @@ case ${CONFIRM} in
         sleep 5
 esac
 
-# Get build time
+# Get build time
 END_TIME=$(TZ=${TIMEZONE} date +%s)
 BUILD_TIME=$((END_TIME - START_TIME))
 
@@ -179,9 +177,9 @@ fi
 set | grep -v "RED=\|GREEN=\|YELLOW=\|BLUE=\|CYAN=\|BOLD=\|NC=\|\
 TELEGRAM_ID=\|TELEGRAM_TOKEN=\|TELEGRAM_BOT\|API=\|CONFIRM\|COUNT=\|\
 LENTH=\|NUMBER=\|BASH_ARGC=\|BASH_REMATCH=\|CHAR=\|COLUMNS=\|LINES=\|\
-PIPESTATUS=\|TIME=" > /tmp/new_vars.log
-printf "\n### USER INPUT LOGS ###\n" >> "${LOG}"
-diff /tmp/old_vars.log /tmp/new_vars.log | grep -E \
+PIPESTATUS=\|TIME=" > new_vars.log
+printf "\n### USER INPUT LOGS ###\n" >> "${LOG}"
+diff old_vars.log new_vars.log | grep -E \
     "^> [A-Z_]{3,18}=" >> "${LOG}"
 
 # Say goodbye and exit
