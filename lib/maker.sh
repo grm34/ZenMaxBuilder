@@ -74,8 +74,7 @@ _make_menuconfig() {
             _confirm "Do you wish to continue"
             case ${CONFIRM} in
                 n|N|no|No|NO)
-                    _error "aborted by user!"
-                    _exit
+                    _error "aborted by user!"; _exit
                     ;;
                 *)
                     return
@@ -83,7 +82,8 @@ _make_menuconfig() {
             ;;
         *)
             _note "Saving ${DEFCONFIG} in arch/arm64/configs..."
-            _check cp "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}" \
+            _check cp \
+                "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}" \
                 "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}"_save
             _check cp "${OUT_DIR}"/.config \
                 "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}"
@@ -103,77 +103,25 @@ _make_build() {
     # Link Time Optimization (LTO)
     if [[ ${LTO} == True ]]; then
         export LD=ld.lld
-        export LD_LIBRARY_PATH=${DIR}/toolchains/proton/lib
+        export LD_LIBRARY_PATH="${LTO_PATH}"
     fi
 
-    # Get compiler string
-    KBUILD_COMPILER_STRING=\
-$(toolchains/proton/bin/clang --version | head -n 1 | \
-perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
-
-    # Make build
+    # Set compiler parameters
     case ${COMPILER} in
-
         Proton-Clang)
-            export KBUILD_COMPILER_STRING
-            export PATH=${DIR}/toolchains/proton/bin:${PATH}
-
-            _check make -C "${KERNEL_DIR}" -j"${CORES}" \
-                O="${OUT_DIR}" \
-                ARCH=arm64 \
-                SUBARCH=arm64 \
-                CROSS_COMPILE=aarch64-linux-gnu- \
-                CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
-                CC=clang \
-                AR=llvm-ar \
-                NM=llvm-nm \
-                OBJCOPY=llvm-objcopy \
-                OBJDUMP=llvm-objdump \
-                STRIP=llvm-strip
+            export KBUILD_COMPILER_STRING="${CLANG_STRING}"
+            export PATH="${PROTON_CLANG_PATH}"
             ;;
-
-        Proton-GCC)
-            export KBUILD_COMPILER_STRING
-            export PATH=\
-${DIR}/toolchains/proton/bin:${DIR}/toolchains/gcc64/bin:\
-${DIR}/toolchains/gcc32/bin:/usr/bin:${PATH}
-
-            _check make -C "${KERNEL_DIR}" -j"${CORES}" \
-                O="${OUT_DIR}" \
-                ARCH=arm64 \
-                SUBARCH=arm64 \
-                CC=clang \
-                CROSS_COMPILE=aarch64-linux-gnu- \
-                CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
-                AR=llvm-ar \
-                AS=llvm-as \
-                NM=llvm-nm \
-                STRIP=llvm-strip \
-                OBJCOPY=llvm-objcopy \
-                OBJDUMP=llvm-objdump \
-                OBJSIZE=llvm-size \
-                READELF=llvm-readelf \
-                HOSTCC=clang \
-                HOSTCXX=clang++ \
-                HOSTAR=llvm-ar \
-                CLANG_TRIPLE=aarch64-linux-gnu-
-            ;;
-
         Eva-GCC)
-            KBUILD_COMPILER_STRING=\
-$(toolchains/gcc64/bin/aarch64-elf-gcc --version | head -n 1)
-            export KBUILD_COMPILER_STRING
-            export PATH=\
-${DIR}/toolchains/gcc32/bin:${DIR}/toolchains/gcc64/bin:/usr/bin/:${PATH}
-
-            _check make -C "${KERNEL_DIR}" -j"${CORES}" \
-                O="${OUT_DIR}" \
-                ARCH=arm64 \
-                SUBARCH=arm64 \
-                CROSS_COMPILE_ARM32=arm-eabi- \
-                CROSS_COMPILE=aarch64-elf- \
-                AR=aarch64-elf-ar \
-                OBJDUMP=aarch64-elf-objdump \
-                STRIP=aarch64-elf-strip
+            export KBUILD_COMPILER_STRING="${GCC_STRING}"
+            export PATH="${EVA_GCC_PATH}"
+            ;;
+        Proton-GCC)
+            export KBUILD_COMPILER_STRING="${CLANG_STRING}"
+            export PATH="${PROTON_GCC_PATH}"
     esac
+    
+    # Make kernel BUILD
+    _check make -C \
+"${KERNEL_DIR}" -j"${CORES}" O="${OUT_DIR}" "${PARAMETERS}"
 }
