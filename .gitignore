@@ -24,4 +24,5 @@ builds
 logs
 out
 toolchains
+*.log
 .vscode
