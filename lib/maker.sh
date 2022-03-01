@@ -33,7 +33,7 @@ _make_clean() {
         *)
             _note "Make clean (this could take a while)..."
             _check make -C "${KERNEL_DIR}" clean
-            _check "Make mrproper (this could take a while)...""
+            _note "Make mrproper (this could take a while)..."
             _check make -C "${KERNEL_DIR}" mrproper
             _check rm -rf "${OUT_DIR}"
             _clean_anykernel
@@ -111,19 +111,18 @@ _make_build() {
     case ${COMPILER} in
         Proton-Clang)
             export PATH=${PROTON_CLANG_PATH}:${PATH}
-            PARAMETERS=${PROTON_CLANG_PARAMETERS}
+            PARAMETERS=("${PROTON_CLANG_PARAMETERS[@]}")
             ;;
         Eva-GCC)
             export PATH=${EVA_GCC_PATH}:${PATH}
-            PARAMETERS=${EVA_GCC_PARAMETERS}
+            PARAMETERS=("${EVA_GCC_PARAMETERS[@]}")
             ;;
         Proton-GCC)
             export PATH=${PROTON_GCC_PATH}:${PATH}
-            PARAMETERS=${PROTON_GCC_PARAMETERS}
+            PARAMETERS=("${PROTON_GCC_PARAMETERS[@]}")
     esac
 
     # Make kernel BUILD
     _check make -C \
-"${KERNEL_DIR}" -j"${CORES}" O="${OUT_DIR}" ${PARAMETERS}
-
+        "${KERNEL_DIR}" -j"${CORES}" O="${OUT_DIR}" "${PARAMETERS[@]}"
 }
