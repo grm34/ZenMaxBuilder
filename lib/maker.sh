@@ -109,19 +109,20 @@ _make_build() {
     # Set compiler parameters
     case ${COMPILER} in
         Proton-Clang)
-            export KBUILD_COMPILER_STRING="${CLANG_STRING}"
-            export PATH="${PROTON_CLANG_PATH}"
+            export PATH=${PROTON_CLANG_PATH}:${PATH}
+            PARAMETERS=${PROTON_CLANG_PARAMETERS}
             ;;
         Eva-GCC)
-            export KBUILD_COMPILER_STRING="${GCC_STRING}"
-            export PATH="${EVA_GCC_PATH}"
+            export PATH=${EVA_GCC_PATH}:${PATH}
+            PARAMETERS=${EVA_GCC_PARAMETERS}
             ;;
         Proton-GCC)
-            export KBUILD_COMPILER_STRING="${CLANG_STRING}"
-            export PATH="${PROTON_GCC_PATH}"
+            export PATH=${PROTON_GCC_PATH}:${PATH}
+            PARAMETERS=${PROTON_GCC_PARAMETERS}
     esac
-    
+
     # Make kernel BUILD
     _check make -C \
-"${KERNEL_DIR}" -j"${CORES}" O="${OUT_DIR}" "${PARAMETERS}"
+"${KERNEL_DIR}" -j"${CORES}" O="${OUT_DIR}" ${PARAMETERS}
+
 }

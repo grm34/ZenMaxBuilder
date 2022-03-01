@@ -60,8 +60,7 @@ GCC_32="https://github.com/mvaisakh/gcc-arm.git"
 
 # Proton-Clang config
 PROTON_CLANG_PATH="toolchains/proton/bin:/usr/bin"
-PROTON_CLANG_PARAMETERS="\
- ARCH=arm64\
+PROTON_CLANG_PARAMETERS="ARCH=arm64\
  SUBARCH=arm64\
  CROSS_COMPILE=aarch64-linux-gnu-\
  CROSS_COMPILE_COMPAT=arm-linux-gnueabi-\
@@ -74,9 +73,8 @@ PROTON_CLANG_PARAMETERS="\
 "
 
 # Eva-GCC config
-EVA_GCC_PATH="toolchains/gcc32/bin:toolchains/gcc64/bin:/usr/bin"
-EVA_GCC_PARAMETERS="\
- ARCH=arm64\
+EVA_GCC_PATH="toolchains/gcc32/bin:toolchains/gcc64/bin:../../usr/bin"
+EVA_GCC_PARAMETERS="ARCH=arm64\
  SUBARCH=arm64\
  CROSS_COMPILE_ARM32=arm-eabi-\
  CROSS_COMPILE=aarch64-elf-\
@@ -86,10 +84,8 @@ EVA_GCC_PARAMETERS="\
 "
 
 # Proton-GCC config
-PROTON_GCC_PATH="toolchains/proton/bin:toolchains/gcc64/bin:\
-toolchains/gcc32/bin:/usr/bin"
-PROTON_GCC_PARAMETERS="\
- ARCH=arm64\
+PROTON_GCC_PATH="toolchains/proton/bin:toolchains/gcc64/bin:toolchains/gcc32/bin:/usr/bin"
+PROTON_GCC_PARAMETERS="ARCH=arm64\
  SUBARCH=arm64\
  CC=clang\
  CROSS_COMPILE=aarch64-linux-gnu-\
@@ -107,15 +103,6 @@ PROTON_GCC_PARAMETERS="\
  HOSTAR=llvm-ar\
  CLANG_TRIPLE=aarch64-linux-gnu-\
 "
-
-# Compiler string
-CLANG_STRING=\
-$(toolchains/proton/bin/clang --version | head -n 1 | \
-perl -pe 's/\(http.*?\)//gs' | \
-sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
-
-GCC_STRING=\
-$(toolchains/gcc64/bin/aarch64-elf-gcc --version | head -n 1)
 
 # Telegram API configuration
 TELEGRAM_ID=""
