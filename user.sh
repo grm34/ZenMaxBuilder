@@ -26,25 +26,38 @@
 TIMEZONE="Europe/Paris"
 
 # Device codename (e.q. X00TD)
-CODENAME="G780F"
+# prompted the in script when set to default
+CODENAME=default
 
 # Builder name (displayed in proc/version)
+# WHOAMI will be used when set to default
 BUILDER=default
 
 # Builder host (displayed in proc/version)
+# HOSTNAME will be used when set to default
 HOST=default
 
 # Default compiler (Proton-Clang | Eva-GCC | Proton-GCC)
-DEFAULT_COMPILER="Eva-GCC"
+DEFAULT_COMPILER="Proton-Clang"
 
-# Kernel dir
-KERNEL_DIR=""
+# Android kernel directory
+# autocompletion selection prompt when set to default
+KERNEL_DIR=default
+
+# Telegram API configuration
+# to get build status in TG group
+TELEGRAM_ID=""
+TELEGRAM_BOT=""
+TELEGRAM_TOKEN=""
 
 # Kernel variant
 KERNEL_VARIANT=Nethunter
 
 # Tag
 TAG=Nethunter
+
+
+## ADVANCED - DO NO EDIT
 
 # Link Time Optimization (LTO)
 LTO=False
@@ -103,8 +116,3 @@ PROTON_GCC_PARAMETERS="ARCH=arm64\
  HOSTAR=llvm-ar\
  CLANG_TRIPLE=aarch64-linux-gnu-\
 "
-
-# Telegram API configuration
-TELEGRAM_ID=""
-TELEGRAM_BOT=""
-TELEGRAM_TOKEN=""
