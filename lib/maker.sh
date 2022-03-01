@@ -31,8 +31,9 @@ _make_clean() {
             _clean_anykernel
             ;;
         *)
-            _note "Make clean build (this could take a while)..."
+            _note "Make clean (this could take a while)..."
             _check make -C "${KERNEL_DIR}" clean
+            _check "Make mrproper (this could take a while)...""
             _check make -C "${KERNEL_DIR}" mrproper
             _check rm -rf "${OUT_DIR}"
             _clean_anykernel
