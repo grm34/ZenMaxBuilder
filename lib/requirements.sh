@@ -102,6 +102,6 @@ _clone_toolchains() {
 _clone_anykernel() {
     if [[ ! -d ${DIR}/AnyKernel ]]; then
         _note "AnyKernel repository not found! Cloning..."
-        _check git clone "${ANYKERNEL}" "${DIR}"/AnyKernel
+        _check git clone -b "${BRANCH}" "${ANYKERNEL}" "${DIR}"/AnyKernel
     fi
 }
