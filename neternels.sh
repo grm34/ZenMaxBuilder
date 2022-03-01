@@ -47,6 +47,9 @@ if [[ $(uname) != Linux ]]; then
 elif [[ ! -f ${DIR}/user.sh ]] || [[ ! -f ${DIR}/lib/maker.sh ]]; then
     _error "run this script from Neternels-Builder folder!"
     _exit
+elif [[ ! -f $KERNEL_DIR/Makefile ]]; then
+    _error "you must specify a valid kernel path in user.sh first!"
+    _exit
 fi
 
 # Transform long opts to short

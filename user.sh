@@ -38,7 +38,7 @@ HOST=default
 DEFAULT_COMPILER="Eva-GCC"
 
 # Kernel dir
-KERNEL_DIR="../android_kernel_samsung_G780F"
+KERNEL_DIR=""
 
 # Kernel variant
 KERNEL_VARIANT=Nethunter
@@ -73,7 +73,7 @@ PROTON_CLANG_PARAMETERS="ARCH=arm64\
 "
 
 # Eva-GCC config
-EVA_GCC_PATH="toolchains/gcc32/bin:toolchains/gcc64/bin:../../usr/bin"
+EVA_GCC_PATH="toolchains/gcc32/bin:toolchains/gcc64/bin:/usr/bin"
 EVA_GCC_PARAMETERS="ARCH=arm64\
  SUBARCH=arm64\
  CROSS_COMPILE_ARM32=arm-eabi-\
