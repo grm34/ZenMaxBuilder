@@ -36,7 +36,7 @@ _install_dependencies() {
     )
 
     # Get current Linux distribution
-    OS=(aarch64 redhat arch gentoo suse fedora debian)
+    OS=(aarch64 redhat -arch gentoo suse fedora debian)
     for DIST in "${OS[@]}"; do
         if uname -a | grep -qi "${DIST}"; then
             IFS=" "
@@ -45,7 +45,7 @@ _install_dependencies() {
             break
         else
             _error "linux distribution not reconized!"
-            _exit
+            exit(1)
         fi
     done
 
