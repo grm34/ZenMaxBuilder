@@ -124,6 +124,11 @@ if [[ ${HOST} == default ]]; then BUILDER=$(uname -n); fi
 export KBUILD_BUILD_USER=${BUILDER}
 export KBUILD_BUILD_HOST=${HOST}
 
+# Set target variables
+export ARCH=${ARCH}
+export PLATFORM_VERSION=${PLATFORM_VERSION}
+export ANDROID_MAJOR_RELEASE=${ANDROID_MAJOR_RELEASE}
+
 # Set out folder
 OUT_DIR=${DIR}/out/${CODENAME}
 mkdir -p "${OUT_DIR}"
