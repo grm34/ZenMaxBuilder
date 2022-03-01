@@ -26,33 +26,34 @@ _install_dependencies() {
 
     # Set the package manager of the current Linux distribution
     declare -A PMS=(
-        [aarch64]="_ apt install -y"
+        [aarch64]="_ pkg install -y"
         [redhat]="sudo yum install -y"
         [arch]="sudo pacman -S --noconfirm"
         [gentoo]="sudo emerge -1 -y"
         [suse]="sudo zypper install -y"
         [fedora]="sudo dnf install -y"
+        [debian]="sudo apt instalk -y"
     )
-    OS=(aarch64 redhat arch gentoo suse fedora)
+
+    # Get current Linux pdistribution
+    OS=(aarch64 redhat arch gentoo suse fedora debian)
     for DIST in "${OS[@]}"; do
-        case ${DIST} in "aarch64") ARG="-m";; *) ARG="-v"; esac
-        if uname ${ARG} | grep -qi "${DIST}"; then
+        if uname -a | grep -qi "${DIST}"; then
             IFS=" "
             PM=${PMS[${DIST}]}
             read -ra PM <<< "$PM"
             break
         else
-            PM=(sudo apt install -y)
+            _error "linux distribution not reconized!"
+            _exit
         fi
     done
 
     # Install missing dependencies
-    DEPENDENCIES=(wget git zip llvm lld gcc clang)
     for PACKAGE in "${DEPENDENCIES[@]}"; do
         if ! which "${PACKAGE//llvm/llvm-ar}" &>/dev/null; then
-            echo -e \
-                "\n${RED}${PACKAGE} not found. ${GREEN}Installing...${NC}"
-            _check eval "${PM[0]//_/} ${PM[1]} ${PM[3]} ${PM[4]} ${PACKAGE}"
+            _note "Package ${PACKAGE} not found! Installing..."
+            _check eval "${PM[0]//_/} ${PM[1]} ${PM[2]} ${PM[3]} ${PACKAGE}"
         fi
     done
 }
