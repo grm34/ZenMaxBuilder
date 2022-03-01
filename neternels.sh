@@ -159,8 +159,11 @@ $((BUILD_TIME % 60)) seconds</code>"
 fi
 
 # Create and sign flashable zip
-_create_flashable_zip | tee -a "${LOG}"
-_sign_flashable_zip | tee -a "${LOG}"
+_confirm "Do you wish to zip ${TAG}-${CODENAME}-${LINUX_VERSION}?"
+case ${CONFIRM} in y|Y|yes|Yes|YES)
+    _create_flashable_zip | tee -a "${LOG}"
+    _sign_flashable_zip | tee -a "${LOG}"
+esac
 
 # Upload build on Telegram
 if [[ ${BUILD_STATUS} == True ]]; then
