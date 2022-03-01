@@ -159,9 +159,6 @@ _clean_anykernel() {
 ${LINUX_VERSION}-${DATE}-signed.zip ]]; then
         rm -f "${DIR}"/AnyKernel/*.zip
     fi
-    if [[ -f ${DIR}/AnyKernel/anykernel-real.sh ]]; then
-        rm -f "${DIR}"/AnyKernel/anykernel.sh
-    fi
 }
 
 
