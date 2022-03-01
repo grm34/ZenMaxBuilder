@@ -60,6 +60,9 @@ TAG=Nethunter
 
 ## ADVANCED - DO NO EDIT
 
+# Some dependencies
+DEPENDENCIES=(wget git zip llvm lld gnupg clang)
+
 # Link Time Optimization (LTO)
 LTO=False
 LTO_PATH="toolchains/proton/lib"
