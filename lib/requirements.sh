@@ -24,7 +24,7 @@
 
 _install_dependencies() {
 
-    # Set the package manager of the current Linux distribution
+    # Set the package manager for each Linux distribution
     declare -A PMS=(
         [aarch64]="_ pkg install -y"
         [redhat]="sudo yum install -y"
@@ -35,7 +35,7 @@ _install_dependencies() {
         [debian]="sudo apt install -y"
     )
 
-    # Get current Linux pdistribution
+    # Get current Linux distribution
     OS=(aarch64 redhat arch gentoo suse fedora debian)
     for DIST in "${OS[@]}"; do
         if uname -a | grep -qi "${DIST}"; then
