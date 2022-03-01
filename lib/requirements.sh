@@ -26,7 +26,7 @@ _install_dependencies() {
 
     # Set the package manager for each Linux distribution
     declare -A PMS=(
-        [aarch64]="_ pkg install -y"
+        [android]="_ pkg install -y"
         [redhat]="sudo yum install -y"
         [arch]="sudo pacman -S --noconfirm"
         [gentoo]="sudo emerge -1 -y"
@@ -36,18 +36,21 @@ _install_dependencies() {
     )
 
     # Get current Linux distribution
-    OS=(aarch64 redhat -arch gentoo suse fedora debian)
+    OS=(android redhat -arch gentoo suse fedora debian)
     for DIST in "${OS[@]}"; do
         if uname -a | grep -qi "${DIST}"; then
             IFS=" "
             PM=${PMS[${DIST}]}
             read -ra PM <<< "$PM"
             break
-        else
-            _error "linux distribution not reconized!"
-            exit(1)
         fi
     done
+
+    # Display error if not found
+    if [[ ! ${PM} ]]; then
+        _error "linux distribution not reconized!"
+        _exit
+    fi
 
     # Install missing dependencies
     for PACKAGE in "${DEPENDENCIES[@]}"; do
