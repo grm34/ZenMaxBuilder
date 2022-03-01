@@ -24,7 +24,6 @@
 
 _make_clean() {
     _confirm "Do you wish to make clean build: ${LINUX_VERSION}"
-
     case ${CONFIRM} in
         n|N|no|No|NO)
             _clean_anykernel
