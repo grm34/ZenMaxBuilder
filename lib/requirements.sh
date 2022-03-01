@@ -32,7 +32,7 @@ _install_dependencies() {
         [gentoo]="sudo emerge -1 -y"
         [suse]="sudo zypper install -y"
         [fedora]="sudo dnf install -y"
-        [debian]="sudo apt instalk -y"
+        [debian]="sudo apt install -y"
     )
 
     # Get current Linux pdistribution
