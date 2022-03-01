@@ -58,7 +58,8 @@ KERNEL_VARIANT=Nethunter
 TAG=Nethunter
 
 
-## ADVANCED - DO NO EDIT
+### ADVANCED - DO NO EDIT IF NOT SURE
+### ==========≠======================
 
 # Some dependencies
 DEPENDENCIES=(wget git zip llvm lld gnupg clang)
@@ -67,18 +68,27 @@ DEPENDENCIES=(wget git zip llvm lld gnupg clang)
 LTO=False
 LTO_PATH="toolchains/proton/lib"
 
-# AnyKernel URL
+# AnyKernel config
+# Repository will be cloned in "/AnyKernel"
 ANYKERNEL="https://github.com/grm34/AnyKernel3.git"
 BRANCH=Neternels-Builder
 
-# Toolchains URL
+
+## Toolchains URL
+
+# Proton-Clang will be cloned in "/toolchains/proton"
 PROTON="https://github.com/kdrag0n/proton-clang.git"
+
+# GCC ARM64 will be cloned in "/toolchains/gcc64"
 GCC_64="https://github.com/mvaisakh/gcc-arm64.git"
+
+# GCC ARM will be cloned in "/toolchains/gcc32"
 GCC_32="https://github.com/mvaisakh/gcc-arm.git"
+
 
 # Proton-Clang config
 PROTON_CLANG_PATH="toolchains/proton/bin:/usr/bin"
-PROTON_CLANG_PARAMETERS="ARCH=arm64\
+PROTON_CLANG_PARAMETERS="ARCH=arm64\'
  SUBARCH=arm64\
  CROSS_COMPILE=aarch64-linux-gnu-\
  CROSS_COMPILE_COMPAT=arm-linux-gnueabi-\
