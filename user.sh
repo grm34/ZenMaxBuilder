@@ -41,10 +41,10 @@ DEFAULT_COMPILER="Eva-GCC"
 KERNEL_DIR="../android_kernel_samsung_G780F"
 
 # Kernel variant
-KERNEL_VARIANT=KeyzorSoze
+KERNEL_VARIANT=Nethunter
 
 # Tag
-TAG=KeyzorSoze
+TAG=Nethunter
 
 # Link Time Optimization (LTO)
 LTO=False
