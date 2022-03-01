@@ -51,7 +51,7 @@ LTO=False
 LTO_PATH="toolchains/proton/lib"
 
 # AnyKernel URL
-ANYKERNEL="https://github.com/osm0sis/AnyKernel3.git"
+ANYKERNEL="https://github.com/grm34/AnyKernel3.git"
 
 # Toolchains URL
 PROTON="https://github.com/kdrag0n/proton-clang.git"

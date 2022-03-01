@@ -44,11 +44,6 @@ _create_flashable_zip() {
 ${TAG}-${CODENAME}-${LINUX_VERSION}/g" init.spectrum.rc
     fi
 
-    # Create anykernel.sh
-    if [[ -f anykernel-real.sh ]]; then
-        _check cp -af anykernel-real.sh anykernel.sh
-    fi
-
     # Set anykernel.sh
     _check sed -i "s/kernel.string=.*/kernel.string=${TAG}-${CODENAME}/g" \
         anykernel.sh
