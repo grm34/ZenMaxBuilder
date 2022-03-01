@@ -27,7 +27,6 @@ _make_clean() {
 
     case ${CONFIRM} in
         n|N|no|No|NO)
-            _note "Make dirty build..."
             _clean_anykernel
             ;;
         *)
