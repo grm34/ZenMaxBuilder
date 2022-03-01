@@ -22,59 +22,79 @@
 #    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 #    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
+## GENERAL OPTIONS
+## ===============
+
 # TimeZone (used to set build date)
+# ---------------------------------
 TIMEZONE="Europe/Paris"
 
 # Device codename (e.q. X00TD)
-# will be PROMPTED when set to default
+# ----------------------------
+# Info: will be prompted when set to default
 CODENAME=default
 
 # Builder name (displayed in proc/version)
-# WHOAMI will be used when set to default
+# ----------------------------------------
+# Info: WHOAMI will be used when set to default
 BUILDER=default
 
 # Builder host (displayed in proc/version)
-# HOSTNAME will be used when set to default
+# ----------------------------------------
+# Info: HOSTNAME will be used when set to default
 HOST=default
 
-# Default compiler (Proton-Clang | Eva-GCC | Proton-GCC)
+# Default toolchain compiler
+# --------------------------
+# Toolchains: Proton-Clang | Eva-GCC | Proton-GCC
 DEFAULT_COMPILER="Proton-Clang"
 
 # Android kernel directory
-# will be PROMPTED when set to default
-# use TAB key for autocompletion, as well as for defconfig selection
+# ------------------------
+# Info: will be prompted when set to default
+# Tip: use TAB key for autocompletion
 KERNEL_DIR=default
 
+# Target architecture
+# -------------------
+ARCH=arm64
+
+# Android global version
+# ----------------------
+# Info: could be required by some kernels
+PLATFORM_VERSION=12
+ANDROID_MAJOR_VERSION=s
+
+# Kernel variant
+# --------------
+KERNEL_VARIANT=Nethunter
+
+# Kernel name
+# -----------
+TAG=Nethunter
+
 # Telegram API configuration
-# WTF, who wants RT build status in TG group?
+# --------------------------
+# Note: WTF, who wants RT build status in TG?
 TELEGRAM_ID=""
 TELEGRAM_BOT=""
 TELEGRAM_TOKEN=""
 
-# Kernel variant
-KERNEL_VARIANT=Nethunter
 
-# Tag
-TAG=Nethunter
+## ADVANCED OPTIONS (do not edit when not sure)
+## ============================================
 
-
-### ADVANCED - DO NO EDIT IF NOT SURE
-### =========≠=======================
-
-# Some dependencies
+# Some required dependencies
 DEPENDENCIES=(wget git zip llvm lld clang)
 
 # Link Time Optimization (LTO)
 LTO=False
 LTO_PATH="toolchains/proton/lib"
 
-# AnyKernel config
-# Repository will be cloned in "AnyKernel/"
+# AnyKernel config will be cloned in "AnyKernel/"
 ANYKERNEL="https://github.com/grm34/AnyKernel3.git"
 BRANCH=Neternels-Builder
-
-
-## Toolchains URL
 
 # Proton-Clang will be cloned in "toolchains/proton/"
 PROTON="https://github.com/kdrag0n/proton-clang.git"
@@ -84,7 +104,6 @@ GCC_64="https://github.com/mvaisakh/gcc-arm64.git"
 
 # GCC ARM will be cloned in "toolchains/gcc32/"
 GCC_32="https://github.com/mvaisakh/gcc-arm.git"
-
 
 # Proton-Clang config
 PROTON_CLANG_PATH="toolchains/proton/bin:/usr/bin"
