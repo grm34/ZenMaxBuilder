@@ -36,7 +36,7 @@ _install_dependencies() {
     )
 
     # Get current Linux distribution
-    OS=(android redhat -arch gentoo suse fedora debian)
+    OS=(android redhat arch gentoo suse fedora debian)
     for DIST in "${OS[@]}"; do
         if uname -a | grep -qi "${DIST}"; then
             IFS=" "
@@ -47,18 +47,19 @@ _install_dependencies() {
     done
 
     # Display error if not found
-    if [[ ! ${PM} ]]; then
-        _error "linux distribution not reconized!"
-        _exit
-    fi
+    if [[ ! ${PM[3]} ]]; then
+        _error "OS not reconized! You must install dependencies first."
 
     # Install missing dependencies
-    for PACKAGE in "${DEPENDENCIES[@]}"; do
-        if ! which "${PACKAGE//llvm/llvm-ar}" &>/dev/null; then
-            _note "Package ${PACKAGE} not found! Installing..."
-            _check eval "${PM[0]//_/} ${PM[1]} ${PM[2]} ${PM[3]} ${PACKAGE}"
-        fi
-    done
+    else
+        for PACKAGE in "${DEPENDENCIES[@]}"; do
+            if ! which "${PACKAGE//llvm/llvm-ar}" &>/dev/null; then
+                _note "Package ${PACKAGE} not found! Installing..."
+                _check eval \
+                    "${PM[0]//_/} ${PM[1]} ${PM[2]} ${PM[3]} ${PACKAGE}"
+            fi
+        done
+    fi
 }
 
 
