@@ -131,7 +131,7 @@ mkdir -p "${OUT_DIR}"
 # Make version, clean, defconfig, menuconfig
 _note "Make kernel version..."
 LINUX_VERSION=$(make -C "${KERNEL_DIR}" kernelversion | grep -v make)
-_make_clean_build | tee -a "${LOG}"
+_make_clean | tee -a "${LOG}"
 _make_defconfig | tee -a "${LOG}"
 if [[ ${MENUCONFIG} == True ]]; then _make_menuconfig; fi
 

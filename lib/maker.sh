@@ -22,7 +22,7 @@
 #    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-_make_clean_build() {
+_make_clean() {
     _confirm "Do you wish to make clean build: ${LINUX_VERSION}"
 
     case ${CONFIRM} in

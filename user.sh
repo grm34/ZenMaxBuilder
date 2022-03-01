@@ -46,7 +46,7 @@ DEFAULT_COMPILER="Proton-Clang"
 KERNEL_DIR=default
 
 # Telegram API configuration
-# WTF, who want RT build status in TG group?
+# WTF, who wants RT build status in TG group?
 TELEGRAM_ID=""
 TELEGRAM_BOT=""
 TELEGRAM_TOKEN=""
@@ -62,7 +62,7 @@ TAG=Nethunter
 ### =========≠=======================
 
 # Some dependencies
-DEPENDENCIES=(wget git zip llvm lld gnupg clang)
+DEPENDENCIES=(wget git zip llvm lld clang)
 
 # Link Time Optimization (LTO)
 LTO=False
