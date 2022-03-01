@@ -26,7 +26,7 @@
 TIMEZONE="Europe/Paris"
 
 # Device codename (e.q. X00TD)
-# prompted the in script when set to default
+# will be PROMPTED when set to default
 CODENAME=default
 
 # Builder name (displayed in proc/version)
@@ -41,11 +41,12 @@ HOST=default
 DEFAULT_COMPILER="Proton-Clang"
 
 # Android kernel directory
-# autocompletion selection prompt when set to default
+# will be PROMPTED when set to default
+# use TAB key for autocompletion, as well as for defconfig selection
 KERNEL_DIR=default
 
 # Telegram API configuration
-# to get build status in TG group
+# WTF, who want RT build status in TG group?
 TELEGRAM_ID=""
 TELEGRAM_BOT=""
 TELEGRAM_TOKEN=""
