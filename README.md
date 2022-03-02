@@ -9,11 +9,11 @@
 1. `git clone https://github.com/grm34/Neternels-Builder.git`
 2. `cd Neternels-Builder`
 3. Edit [user.sh](https://github.com/grm34/Neternels-Builder/blob/main/user.sh) to set your settings *(optional)*
-4. `./neternels.sh`
+4. ` bash neternels.sh`
 
 ## Options
 
-    Usage: ./neternels.sh OPTION [ARGUMENT]
+    Usage: bash neternels.sh OPTION [ARGUMENT]
 
     Options
         -h, --help                     show this message and exit
