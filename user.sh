@@ -63,8 +63,8 @@ ARCH=arm64
 # Android global version
 # ----------------------
 # Info: could be required by some kernels
-PLATFORM_VERSION=12
-ANDROID_MAJOR_VERSION=s
+PLATFORM_VERSION=11
+ANDROID_MAJOR_VERSION=r
 
 # Kernel variant
 # --------------
@@ -106,7 +106,7 @@ GCC_64="https://github.com/mvaisakh/gcc-arm64.git"
 GCC_32="https://github.com/mvaisakh/gcc-arm.git"
 
 # Proton-Clang config
-PROTON_CLANG_PATH="toolchains/proton/bin:/usr/bin"
+PROTON_CLANG_PATH="toolchains/proton/bin"
 PROTON_CLANG_PARAMETERS=(
     ARCH=arm64
     SUBARCH=arm64
@@ -121,7 +121,7 @@ PROTON_CLANG_PARAMETERS=(
 )
 
 # Eva-GCC config
-EVA_GCC_PATH="toolchains/gcc32/bin:toolchains/gcc64/bin:/usr/bin"
+EVA_GCC_PATH="toolchains/gcc32/bin:toolchains/gcc64/bin"
 EVA_GCC_PARAMETERS=(
     ARCH=arm64
     SUBARCH=arm64
@@ -133,7 +133,7 @@ EVA_GCC_PARAMETERS=(
 )
 
 # Proton-GCC config
-PROTON_GCC_PATH="toolchains/proton/bin:toolchains/gcc64/bin:toolchains/gcc32/bin:/usr/bin"
+PROTON_GCC_PATH="toolchains/proton/bin:toolchains/gcc64/bin:toolchains/gcc32/bin"
 PROTON_GCC_PARAMETERS=(
     ARCH=arm64
     SUBARCH=arm64
