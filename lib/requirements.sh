@@ -48,7 +48,7 @@ _install_dependencies() {
 
     # Display error if not found
     if [[ ! ${PM[3]} ]]; then
-        _error "OS not reconized! You must install dependencies first."
+        _error "OS not reconized, you must install dependencies first !"
 
     # Install missing dependencies
     else

@@ -35,7 +35,7 @@ _create_flashable_zip() {
     _check cp "$OUT_DIR"/arch/arm64/boot/Image.gz-dtb "${ANYKERNEL_DIR}"
 
     # CD to AnyKernel folder
-    cd "${ANYKERNEL_DIR}" || (_error "AnyKernel not found!"; _exit)
+    cd "${ANYKERNEL_DIR}" || (_error "AnyKernel not found !"; _exit)
 
     # Create init.spectrum.rc
     if [[ -f ${KERNEL_DIR}/init.ElectroSpectrum.rc ]]; then
@@ -64,7 +64,7 @@ Development is Life ~ t.me\/neternels/g" anykernel.sh
 ./* -x .git README.md ./*placeholder
 
     # Back to script dir
-    cd "${DIR}" || (_error "${DIR} not found!"; _exit)
+    cd "${DIR}" || (_error "${DIR} not found !"; _exit)
 }
 
 

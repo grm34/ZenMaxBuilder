@@ -23,7 +23,7 @@
 
 
 _make_clean() {
-    _confirm "Do you wish to make clean build: ${LINUX_VERSION}"
+    _confirm "Do you wish to make clean build: ${LINUX_VERSION} ?"
     case ${CONFIRM} in
         n|N|no|No|NO)
             _clean_anykernel
@@ -67,10 +67,10 @@ _make_menuconfig() {
         menuconfig "${OUT_DIR}"/.config
 
     # Save new defconfig
-    _confirm "Do you wish to save and use: ${DEFCONFIG}"
+    _confirm "Do you wish to save and use: ${DEFCONFIG} ?"
     case ${CONFIRM} in
         n|N|no|No|NO)
-            _confirm "Do you wish to continue"
+            _confirm "Do you wish to continue with original defconfig ?"
             case ${CONFIRM} in
                 n|N|no|No|NO)
                     _note "Cancel ${TAG}-${CODENAME}-${LINUX_VERSION}..."
