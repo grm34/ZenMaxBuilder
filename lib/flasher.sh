@@ -60,8 +60,9 @@ Development is Life ~ t.me\/neternels/g" anykernel.sh
     _check sed -i "s/device.name1=.*/device.name1=${CODENAME}/g" anykernel.sh
 
     # Create flashable zip
-    _check zip -r9 "${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}".zip \
-./* -x .git README.md ./*placeholder
+    _check unbuffer zip -r9 \
+"${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}".zip ./* \
+-x .git README.md ./*placeholder 2>&1
 
     # Back to script dir
     cd "${DIR}" || (_error "${DIR} not found !"; _exit)
@@ -78,8 +79,8 @@ _sign_flashable_zip() {
     fi
 
     # Sign flashable zip
-    _check java -jar "${ANYKERNEL_DIR}"/zipsigner-3.0.jar \
+    _check unbuffer java -jar "${ANYKERNEL_DIR}"/zipsigner-3.0.jar \
 "${ANYKERNEL_DIR}"/"${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}".zip \
 "${DIR}"/builds/"${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}"\
--signed.zip
+-signed.zip 2>&1
 }

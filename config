@@ -86,7 +86,7 @@ TELEGRAM_TOKEN=""
 ## ============================================
 
 # Some required dependencies
-DEPENDENCIES=(wget git zip llvm lld clang)
+DEPENDENCIES=(wget git zip llvm lld clang expect)
 
 # AnyKernel config
 ANYKERNEL_DIR="AnyKernel"

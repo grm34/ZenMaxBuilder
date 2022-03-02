@@ -30,9 +30,9 @@ _make_clean() {
             ;;
         *)
             _note "Make clean (this could take a while)..."
-            _check make -C "${KERNEL_DIR}" clean
+            _check unbuffer make -C "${KERNEL_DIR}" clean 2>&1
             _note "Make mrproper (this could take a while)..."
-            _check make -C "${KERNEL_DIR}" mrproper
+            _check unbuffer make -C "${KERNEL_DIR}" mrproper 2>&1
             _check rm -rf "${OUT_DIR}"
             _clean_anykernel
     esac
@@ -49,7 +49,8 @@ _make_defconfig() {
     fi
 
     # Make defconfig
-    _check make -C "${KERNEL_DIR}" O="${OUT_DIR}" ARCH=arm64 "${DEFCONFIG}"
+    _check unbuffer make -C \
+        "${KERNEL_DIR}" O="${OUT_DIR}" ARCH=arm64 "${DEFCONFIG}" 2>&1
 }
 
 
@@ -63,8 +64,8 @@ _make_menuconfig() {
     fi
 
     # Make Menuconfig
-    _check make -C "${KERNEL_DIR}" O="${OUT_DIR}" ARCH=arm64 \
-        menuconfig "${OUT_DIR}"/.config
+    _check unbuffer make -C "${KERNEL_DIR}" O="${OUT_DIR}" ARCH=arm64 \
+        menuconfig "${OUT_DIR}"/.config 2>&1
 
     # Save new defconfig
     _confirm "Do you wish to save and use: ${DEFCONFIG} ?"
@@ -122,6 +123,6 @@ _make_build() {
     esac
 
     # Make kernel BUILD
-    _check make -C \
-        "${KERNEL_DIR}" -j"${CORES}" O="${OUT_DIR}" "${PARAMETERS[@]}"
+    _check unbuffer make -C \
+        "${KERNEL_DIR}" -j"${CORES}" O="${OUT_DIR}" "${PARAMETERS[@]}" 2>&1
 }
