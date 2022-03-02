@@ -112,6 +112,7 @@ _ask_for_telegram
 TIME=$(TZ=${TIMEZONE} date +%H-%M-%S)
 LOG=${DIR}/logs/${CODENAME}_${DATE}_${TIME}.log
 printf "Neternels Team @ Development is Life\n" > "${LOG}"
+printf "STARTING: ${TAG}-${CODENAME}-${LINUX_VERSION}\n" >> "${LOG}"
 
 # Install and clone requirements
 _install_dependencies | tee -a "${LOG}"
