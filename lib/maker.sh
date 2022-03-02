@@ -101,8 +101,8 @@ _make_build() {
 
     # Link Time Optimization (LTO)
     if [[ ${LTO} == True ]]; then
-        export LD=ld.lld
-        export LD_LIBRARY_PATH="${LTO_PATH}"
+        export LD=${LTO_LIBRARY}
+        export LD_LIBRARY_PATH=${LTO_LIBRARY_DIR}
     fi
 
     # Set compiler parameters

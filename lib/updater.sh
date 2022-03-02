@@ -26,43 +26,42 @@ _full_upgrade() {
 
     # Neternels Builder
     _note "Updating Neternels Builder..."
-    cd "${DIR}" || (_error "${DIR} not found!"; _exit)
     git checkout main
     git pull origin main
 
     # AnyKernel
-    TEMP=${DIR}/AnyKernel
-    if [[ -d ${TEMP} ]]; then
+    if [[ -d ${ANYKERNEL_DIR} ]]; then
         _note "Updating AnyKernel..."
-        cd "${TEMP}" || (_error "${TEMP} not found!"; _exit)
-        git checkout Neternels-Builder
-        git pull origin Neternels-Builder
+        cd "${ANYKERNEL_DIR}" || (_error "${ANYKERNEL_DIR} not found!"; _exit)
+        git checkout "${ANYKERNEL_BRANCH}"
+        git pull origin "${ANYKERNEL_BRANCH}"
+        cd "${DIR}" || (_error "${DIR} not found!"; _exit)
     fi
 
     # Proton-Clang
-    TEMP=${DIR}/toolchains/proton
-    if [[ -d ${TEMP} ]]; then
+    if [[ -d ${PROTON_DIR} ]]; then
         _note "Updating Proton-Clang..."
-        cd "${TEMP}" || (_error "${TEMP} not found!"; _exit)
-        git checkout master
-        git pull origin master
+        cd "${PROTON_DIR}" || (_error "${PROTON_DIR} not found!"; _exit)
+        git checkout "${PROTON_BRANCH}"
+        git pull origin "${PROTON_BRANCH}"
+        cd "${DIR}" || (_error "${DIR} not found!"; _exit)
     fi
 
     # GCC-arm64
-    TEMP=${DIR}/toolchains/gcc64
-    if [[ -d ${TEMP} ]]; then
+    if [[ -d ${GCC_ARM64_DIR} ]]; then
         _note "Updating GCC-arm64..."
-        cd "${TEMP}" || (_error "${TEMP} not found!"; _exit)
-        git checkout gcc-master
-        git pull origin gcc-master
+        cd "${GCC_ARM64_DIR}" || (_error "${GCC_ARM64_DIR} not found!"; _exit)
+        git checkout "${GCC_ARM64_BRANCH}"
+        git pull origin "${GCC_ARM64_BRANCH}"
+        cd "${DIR}" || (_error "${DIR} not found!"; _exit)
     fi
 
     # GCC-arm32
-    TEMP=${DIR}/toolchains/gcc32
-    if [[ -d ${TEMP} ]]; then
+    if [[ -d ${GCC_ARM_DIR} ]]; then
         _note "Updating GCC-arm..."
-        cd "${TEMP}" || (_error "${TEMP} not found!"; _exit)
-        git checkout gcc-master
-        git pull origin gcc-master
+        cd "${GCC_ARM_DIR}" || (_error "${GCC_ARM_DIR} not found!"; _exit)
+        git checkout "${GCC_ARM_BRANCH}"
+        git pull origin "${GCC_ARM_BRANCH}"
+        cd "${DIR}" || (_error "${DIR} not found!"; _exit)
     fi
 }

@@ -32,10 +32,10 @@ _create_flashable_zip() {
     fi
 
     # Move GZ-DTB to AnyKernel folder
-    _check cp "$OUT_DIR"/arch/arm64/boot/Image.gz-dtb "${DIR}"/AnyKernel/
+    _check cp "$OUT_DIR"/arch/arm64/boot/Image.gz-dtb "${ANYKERNEL_DIR}"
 
     # CD to AnyKernel folder
-    cd "${DIR}"/AnyKernel || (_error "AnyKernel not found!"; _exit)
+    cd "${ANYKERNEL_DIR}" || (_error "AnyKernel not found!"; _exit)
 
     # Create init.spectrum.rc
     if [[ -f ${KERNEL_DIR}/init.ElectroSpectrum.rc ]]; then
@@ -78,8 +78,8 @@ _sign_flashable_zip() {
     fi
 
     # Sign flashable zip
-    _check java -jar "${DIR}"/AnyKernel/zipsigner-3.0.jar \
-"${DIR}"/AnyKernel/"${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}".zip \
+    _check java -jar "${ANYKERNEL_DIR}"/zipsigner-3.0.jar \
+"${ANYKERNEL_DIR}"/"${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}".zip \
 "${DIR}"/builds/"${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}"\
 -signed.zip
 }

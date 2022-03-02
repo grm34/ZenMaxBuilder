@@ -139,8 +139,8 @@ $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds</code>"
     fi
 
     # Cleanup then kill the script
-    if [[ -f "old_vars.log" ]] || [[ -f "new_vars.log" ]]; then
-        rm *_vars.log
+    if [[ -f old_vars.log ]] || [[ -f new_vars.log ]]; then
+        rm ./*_vars.log
     fi
     for (( SECOND=5; SECOND>=1; SECOND-- )); do
         echo -ne \
@@ -157,11 +157,11 @@ _clean_anykernel() {
 
     UNWANTED=(Image.gz-dtb init.spectrum.rc)
     for UW in "${UNWANTED[@]}"; do
-        rm -f "${DIR}"/AnyKernel/"${UW}"
+        rm -f "${ANYKERNEL_DIR}/${UW}"
     done
-    if [[ ! -f ${DIR}/AnyKernel/${TAG}-${CODENAME}-\
+    if [[ ! -f ${ANYKERNEL_DIR}/${TAG}-${CODENAME}-\
 ${LINUX_VERSION}-${DATE}-signed.zip ]]; then
-        rm -f "${DIR}"/AnyKernel/*.zip
+        rm -f "${ANYKERNEL_DIR}/*.zip"
     fi
 }
 

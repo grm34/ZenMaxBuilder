@@ -8,7 +8,7 @@
 
 1. `git clone https://github.com/grm34/Neternels-Builder.git`
 2. `cd Neternels-Builder`
-3. Edit [config](https://github.com/grm34/Neternels-Builder/blob/main/config) to set your settings (*optional*)
+3. Edit [config](https://github.com/grm34/Neternels-Builder/blob/main/config) to set your settings (optional)
 4. ` bash Neternels-Builder`
 
 ## Options
