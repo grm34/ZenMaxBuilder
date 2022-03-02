@@ -138,7 +138,10 @@ $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds</code>"
         fi
     fi
 
-    # kill
+    # Cleanup then kill the script
+    if [[ -f "old_vars.log" ]] || [[ -f "new_vars.log" ]]; then
+        rm *_vars.log
+    fi
     for (( SECOND=5; SECOND>=1; SECOND-- )); do
         echo -ne \
             "\r\033[K${BLUE}Exit Neternels-Builder in ${SECOND}s...${NC}"
@@ -171,5 +174,5 @@ _wget() {
 
 # Say goodbye
 _goodbye_msg() {
-    echo -e "\n${GREEN}<| Neternels Team @ Development is Life |>${NC}"
+    echo -e "\n${RED}<| Neternels Team @ Development is Life |>${NC}"
 }
