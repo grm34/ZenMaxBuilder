@@ -144,6 +144,7 @@ if [[ ${MENUCONFIG} == True ]]; then _make_menuconfig; fi
 _confirm "Do you wish to start ${TAG}-${CODENAME}-${LINUX_VERSION}?"
 case ${CONFIRM} in
     n|N|no|No|NO)
+        _note "build aborted: ${TAG}-${CODENAME}-${LINUX_VERSION} !"
         _exit
         ;;
     *)
