@@ -27,6 +27,7 @@ _full_upgrade() {
     # Neternels Builder
     _note "Updating Neternels Builder..."
     cd "${DIR}" || (_error "${DIR} not found!"; _exit)
+    git checkout main
     git pull origin main
 
     # AnyKernel
@@ -34,7 +35,8 @@ _full_upgrade() {
     if [[ -d ${TEMP} ]]; then
         _note "Updating AnyKernel..."
         cd "${TEMP}" || (_error "${TEMP} not found!"; _exit)
-        git pull origin master
+        git checkout Neternels-Builder
+        git pull origin Neternels-Builder
     fi
 
     # Proton-Clang
@@ -42,6 +44,7 @@ _full_upgrade() {
     if [[ -d ${TEMP} ]]; then
         _note "Updating Proton-Clang..."
         cd "${TEMP}" || (_error "${TEMP} not found!"; _exit)
+        git checkout master
         git pull origin master
     fi
 
@@ -50,6 +53,7 @@ _full_upgrade() {
     if [[ -d ${TEMP} ]]; then
         _note "Updating GCC-arm64..."
         cd "${TEMP}" || (_error "${TEMP} not found!"; _exit)
+        git checkout gcc-master
         git pull origin gcc-master
     fi
 
@@ -58,6 +62,7 @@ _full_upgrade() {
     if [[ -d ${TEMP} ]]; then
         _note "Updating GCC-arm..."
         cd "${TEMP}" || (_error "${TEMP} not found!"; _exit)
+        git checkout gcc-master
         git pull origin gcc-master
     fi
 }
