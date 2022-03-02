@@ -64,8 +64,8 @@ _make_menuconfig() {
     fi
 
     # Make Menuconfig
-    _check unbuffer make -C "${KERNEL_DIR}" O="${OUT_DIR}" ARCH=arm64 \
-        menuconfig "${OUT_DIR}"/.config 2>&1
+    _check make -C "${KERNEL_DIR}" O="${OUT_DIR}" ARCH=arm64 \
+        menuconfig "${OUT_DIR}"/.config
 
     # Save new defconfig
     _confirm "Do you wish to save and use: ${DEFCONFIG} ?"
