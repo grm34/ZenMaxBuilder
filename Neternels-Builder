@@ -40,7 +40,7 @@ DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
 DIR=${PWD}
 
 # Ban all n00bz
-trap "" 1 3 4 6 8 9 15
+trap '' 1 3 4 6 8 9 15
 trap '_error keyboard interrupt!; _exit' 2 20
 if [[ $(uname) != Linux ]]; then
     _error "run this script on Linux!"
