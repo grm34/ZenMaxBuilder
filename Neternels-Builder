@@ -40,7 +40,8 @@ DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
 DIR=${PWD}
 
 # Ban all n00bz
-trap '_error keyboard interrupt!; _exit' 1 2 3 6
+trap "" 1 3 4 6 8 9 15
+trap '_error keyboard interrupt!; _exit' 2 20
 if [[ $(uname) != Linux ]]; then
     _error "run this script on Linux!"
     _exit
@@ -144,7 +145,7 @@ if [[ ${MENUCONFIG} == True ]]; then _make_menuconfig; fi
 _confirm "Do you wish to start ${TAG}-${CODENAME}-${LINUX_VERSION}?"
 case ${CONFIRM} in
     n|N|no|No|NO)
-        _note "Build aborted: ${TAG}-${CODENAME}-${LINUX_VERSION}..."
+        _note "Cancel ${TAG}-${CODENAME}-${LINUX_VERSION}..."
         _exit
         ;;
     *)

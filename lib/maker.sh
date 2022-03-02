@@ -73,7 +73,8 @@ _make_menuconfig() {
             _confirm "Do you wish to continue"
             case ${CONFIRM} in
                 n|N|no|No|NO)
-                    _error "aborted by user!"; _exit
+                    _note "Cancel ${TAG}-${CODENAME}-${LINUX_VERSION}..."
+                    _exit
                     ;;
                 *)
                     return
