@@ -140,7 +140,8 @@ $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds</code>"
 
     # kill
     for (( SECOND=5; SECOND>=1; SECOND-- )); do
-        echo -ne "\r\033[K${BLUE}Exit building script in ${SECOND}s...${NC}"
+        echo -ne \
+            "\r\033[K${BLUE}Exit Neternels-Builder in ${SECOND}s...${NC}"
         sleep 1
     done
     echo && kill -9 $$
@@ -149,7 +150,7 @@ $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds</code>"
 
 # Clean AnyKernel Folder
 _clean_anykernel() {
-    _note "Cleaning AnyKernel folder..."
+    _note "Cleaning AnyKernel repository..."
 
     UNWANTED=(Image.gz-dtb init.spectrum.rc)
     for UW in "${UNWANTED[@]}"; do
@@ -170,5 +171,5 @@ _wget() {
 
 # Say goodbye
 _goodbye_msg() {
-    echo -e "\n${GREEN}<<< Neternels Team @ Development is Life >>>${NC}"
+    echo -e "\n${GREEN}<| Neternels Team @ Development is Life |>${NC}"
 }
