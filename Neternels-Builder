@@ -24,7 +24,7 @@ set > old_vars.log
 #    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # Load modules
-source user.sh
+source config
 source lib/manager.sh
 source lib/requirements.sh
 source lib/telegram.sh
@@ -44,7 +44,7 @@ trap '_error keyboard interrupt!; _exit' 1 2 3 6
 if [[ $(uname) != Linux ]]; then
     _error "run this script on Linux!"
     _exit
-elif [[ ! -f ${DIR}/user.sh ]] || [[ ! -f ${DIR}/lib/maker.sh ]]; then
+elif [[ ! -f ${DIR}/config ]] || [[ ! -f ${DIR}/lib/maker.sh ]]; then
     _error "run this script from Neternels-Builder folder!"
     _exit
 elif [[ $KERNEL_DIR != default  ]] && [[ ! -f $KERNEL_DIR/Makefile ]]; then
@@ -145,7 +145,7 @@ if [[ ${MENUCONFIG} == True ]]; then _make_menuconfig; fi
 _confirm "Do you wish to start ${TAG}-${CODENAME}-${LINUX_VERSION}?"
 case ${CONFIRM} in
     n|N|no|No|NO)
-        _note "build aborted: ${TAG}-${CODENAME}-${LINUX_VERSION} !"
+        _note "Build aborted: ${TAG}-${CODENAME}-${LINUX_VERSION}..."
         _exit
         ;;
     *)

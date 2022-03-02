@@ -40,7 +40,7 @@ _banner() {
 # Help (--help or -h)
 _usage() {
     echo -e "
-${BOLD}Usage:${NC} bash neternels.sh OPTION [ARGUMENT]
+${BOLD}Usage:${NC} bash Neternels-Builder [OPTION] [ARGUMENT]
 
   ${BOLD}Options${NC}
     -h, --help                     show this message and exit
