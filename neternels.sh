@@ -185,10 +185,7 @@ ${DATE}-signed.zip" "MD5 Checksum: ${MD5}"
 fi
 
 # Get clean inputs logs
-set | grep -v "RED=\|GREEN=\|YELLOW=\|BLUE=\|CYAN=\|BOLD=\|NC=\|\
-TELEGRAM_ID=\|TELEGRAM_TOKEN=\|TELEGRAM_BOT\|API=\|CONFIRM\|COUNT=\|\
-LENTH=\|NUMBER=\|BASH_ARGC=\|BASH_REMATCH=\|CHAR=\|COLUMNS=\|LINES=\|\
-PIPESTATUS=\|TIME=" > new_vars.log
+set | grep -v "${EXCLUDE_VARS}" > new_vars.log
 printf "\n### USER INPUT LOGS ###\n" >> "${LOG}"
 diff old_vars.log new_vars.log | grep -E \
     "^> [A-Z_]{3,18}=" >> "${LOG}"
