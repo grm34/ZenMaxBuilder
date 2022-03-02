@@ -31,29 +31,29 @@
 TIMEZONE="Europe/Paris"
 
 # Device codename (e.q. X00TD)
-# ----------------------------
 # Info: will be prompted when set to default
+# ------------------------------------------
 CODENAME="default"
 
 # Builder name (displayed in proc/version)
-# ----------------------------------------
 # Info: WHOAMI will be used when set to default
+# ---------------------------------------------
 BUILDER="default"
 
 # Builder host (displayed in proc/version)
-# ----------------------------------------
 # Info: HOSTNAME will be used when set to default
+# -----------------------------------------------
 HOST="default"
 
 # Default toolchain compiler
-# --------------------------
 # Toolchains: Proton-Clang | Eva-GCC | Proton-GCC
+# -----------------------------------------------
 DEFAULT_COMPILER="Proton-Clang"
 
 # Android kernel directory
-# ------------------------
-# Info: will be prompted when set to default
 # Tip: use TAB key for autocompletion
+# Info: will be prompted when set to default
+# ------------------------------------------
 KERNEL_DIR="default"
 
 # Target architecture
@@ -61,8 +61,8 @@ KERNEL_DIR="default"
 ARCH="arm64"
 
 # Android global version
-# ----------------------
 # Info: could be required by some kernels
+# ---------------------------------------
 PLATFORM_VERSION="11"
 ANDROID_MAJOR_VERSION="r"
 
@@ -75,8 +75,8 @@ KERNEL_VARIANT="Nethunter"
 TAG="Nethunter"
 
 # Telegram API configuration
-# --------------------------
-# Note: WTF, who wants RT build status in TG?
+# Note: who the f* wants RT build status in TG?
+# ---------------------------------------------
 TELEGRAM_ID=""
 TELEGRAM_BOT=""
 TELEGRAM_TOKEN=""
@@ -86,34 +86,41 @@ TELEGRAM_TOKEN=""
 ## ============================================
 
 # Some required dependencies
+# --------------------------
 DEPENDENCIES=(wget git zip llvm lld clang expect)
 
 # AnyKernel config
+# ----------------
 ANYKERNEL_DIR="AnyKernel"
 ANYKERNEL_URL="https://github.com/grm34/AnyKernel3.git"
 ANYKERNEL_BRANCH="Neternels-Builder"
 
 # Proton-Clang config
+# -------------------
 PROTON_DIR="toolchains/proton_clang"
 PROTON_URL="https://github.com/kdrag0n/proton-clang.git"
 PROTON_BRANCH="master"
 
 # GCC ARM64 config
+# ----------------
 GCC_ARM64_DIR="toolchains/gcc_arm64"
 GCC_ARM64_URL="https://github.com/mvaisakh/gcc-arm64.git"
 GCC_ARM64_BRANCH="gcc-master"
 
 # GCC ARM config
+# --------------
 GCC_ARM_DIR="toolchains/gcc_arm"
 GCC_ARM_URL="https://github.com/mvaisakh/gcc-arm.git"
 GCC_ARM_BRANCH="gcc-master"
 
 # Link Time Optimization (LTO)
+# ----------------------------
 LTO=False
 LTO_LIBRARY=ld.lld
 LTO_LIBRARY_DIR=${PROTON_DIR}/lib
 
 # Proton-Clang parameters
+# -----------------------
 PROTON_CLANG_PALTH=${PROTON_DIR}/bin
 PROTON_CLANG_PARAMETERS=(
     ARCH=arm64
@@ -129,6 +136,7 @@ PROTON_CLANG_PARAMETERS=(
 )
 
 # Eva-GCC parameters
+# ------------------
 EVA_GCC_PATH=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin
 EVA_GCC_PARAMETERS=(
     ARCH=arm64
@@ -141,6 +149,7 @@ EVA_GCC_PARAMETERS=(
 )
 
 # Proton-GCC parameters
+# ---------------------
 PROTON_GCC_PATH=${PROTON_DIR}/bin:${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin
 PROTON_GCC_PARAMETERS=(
     ARCH=arm64
@@ -163,6 +172,7 @@ PROTON_GCC_PARAMETERS=(
 )
 
 # Excluded variables from logs
+# ----------------------------
 EXCLUDE_VARS="RED=\|GREEN=\|YELLOW=\|BLUE=\|CYAN=\|BOLD=\|NC=\|\
 TELEGRAM_ID=\|TELEGRAM_TOKEN=\|TELEGRAM_BOT\|API=\|CONFIRM\|COUNT=\|\
 LENTH=\|NUMBER=\|BASH_ARGC=\|BASH_REMATCH=\|CHAR=\|COLUMNS=\|LINES=\|\

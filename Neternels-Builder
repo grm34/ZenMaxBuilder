@@ -49,7 +49,7 @@ elif [[ ! -f ${DIR}/config ]] || [[ ! -f ${DIR}/lib/maker.sh ]]; then
     _error "run this script from Neternels-Builder folder !"
     _exit
 elif [[ $KERNEL_DIR != default  ]] && [[ ! -f $KERNEL_DIR/Makefile ]]; then
-    _error "you must specify a valid kernel path in user.sh !"
+    _error "you must specify a valid kernel path in config file !"
     _exit
 fi
 
