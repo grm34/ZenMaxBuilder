@@ -116,6 +116,14 @@ _check() {
 }
 
 
+#Set inputs logs
+_set_inputs_logs() {
+    set | grep -v "${EXCLUDE_VARS}" > buildervar
+    printf "\n### USER INPUT LOGS ###\n" >> "${LOG}"
+    diff bashvar buildervar | grep -E "^> [A-Z_]{3,18}=" >> "${LOG}"
+}
+
+
 # Exit with 5s timeout
 _exit() {
 
@@ -139,6 +147,7 @@ $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds</code>"
     fi
 
     # Cleanup and properly exit
+    _set_inputs_logs
     FILES=(bashvar buildervar linuxver)
     for FILE in "${FILES[@]}"; do
         if [[ -f ${FILE} ]]; then rm "${FILE}"; fi

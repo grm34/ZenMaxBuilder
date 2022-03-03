@@ -43,3 +43,26 @@ _send_build() {
         -F "caption=${2}" \
         | tee /dev/null
 }
+
+
+_send_status_on_telegram() {
+    if [[ ${BUILD_STATUS} == True ]]; then
+        _send_msg "<b>${CODENAME}-${LINUX_VERSION}</b> | \
+<code>Kernel Successfully Compiled after $((BUILD_TIME / 60)) minutes and \
+$((BUILD_TIME % 60)) seconds</code>"
+    fi
+}
+
+
+# Upload build on Telegram
+_upload_build_on_telegram() {
+    if [[ ${BUILD_STATUS} == True ]]; then
+        _note "Uploading build on Telegram..."
+
+        MD5=$(md5sum "${DIR}/builds/${TAG}-${CODENAME}-${LINUX_VERSION}-\
+${DATE}-signed.zip" | cut -d' ' -f1)
+
+        _send_build "${DIR}/builds/${TAG}-${CODENAME}-${LINUX_VERSION}-\
+${DATE}-signed.zip" "MD5 Checksum: ${MD5}"
+    fi
+}
