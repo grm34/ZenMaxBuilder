@@ -148,7 +148,7 @@ $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds</code>"
             "\r\033[K${BLUE}Exit Neternels-Builder in ${SECOND}s...${NC}"
         sleep 1
     done
-    echo && kill -9 $$
+    echo && kill -- $$
 }
 
 

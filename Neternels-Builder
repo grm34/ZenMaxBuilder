@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 # shellcheck disable=SC1091
-set -m -E -T > bashvar
+set -m > bashvar
 
 #    Copyright (c) 2022 @grm34 Neternels Team
 #
@@ -40,7 +40,7 @@ DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
 DIR=${PWD}
 
 # Trapping bash signals
-trap '_error keyboard interrupt !;_exit' SIGINT SIGQUIT SIGTSTP
+trap '_error keyboard interrupt !; _exit' SIGINT SIGQUIT SIGTSTP
 
 # Ban all n00bz
 if [[ $(uname) != Linux ]]; then
@@ -147,21 +147,21 @@ _ask_for_make_clean
 if [[ ${MAKE_CLEAN} == True ]]; then
     _make_clean | tee -a "${LOG}"& wait ${!}
 else
-    _clean_anykernel
+    _clean_anykernel& wait ${!}
 fi
 
 # Make defconfig
-_make_defconfig | tee -a "${LOG}"
+_make_defconfig | tee -a "${LOG}"& wait ${!}
 
 # Make menuconfig
 if [[ ${MENUCONFIG} == True ]]; then
     _make_menuconfig
     _ask_for_save_defconfig
     if [[ ${SAVE_DEFCONFIG} == True ]]; then
-        _save_defconfig
+        _save_defconfig& wait ${!}
     else
         if [[ ${ORIGINAL_DEFCONFIG} == False ]]; then
-            _note "Cancel ${TAG}-${CODENAME}-${LINUX_VERSION}..."
+            _note "Cancelled ${TAG}-${CODENAME}-${LINUX_VERSION}..."
             _exit
         fi
     fi
@@ -170,12 +170,12 @@ fi
 # Make new build
 _ask_for_new_build
 if [[ ${NEW_BUILD} == False ]]; then
-    _note "Cancel ${TAG}-${CODENAME}-${LINUX_VERSION}..."
+    _note "Cancelled ${TAG}-${CODENAME}-${LINUX_VERSION}..."
     _exit
 else
     START_TIME=$(TZ=${TIMEZONE} date +%s)
-    _make_build | tee -a "${LOG}"
-    sleep 5
+    _make_build | tee -a "${LOG}"& wait ${!}
+    sleep 5& wait ${!}
 fi
 
 # Get build time
@@ -194,8 +194,8 @@ fi
 # Create and sign flashable zip
 _ask_for_flashable_zip
 if [[ ${FLASH_ZIP} == True ]]; then
-    _create_flashable_zip | tee -a "${LOG}"
-    _sign_flashable_zip | tee -a "${LOG}"
+    _create_flashable_zip | tee -a "${LOG}"& wait ${!}
+    _sign_flashable_zip | tee -a "${LOG}"& wait ${!}
 fi
 
 # Upload build on Telegram
@@ -215,4 +215,5 @@ printf "\n### USER INPUT LOGS ###\n" >> "${LOG}"
 diff bashvar buildervar | grep -E "^> [A-Z_]{3,18}=" >> "${LOG}"
 
 # Say goodbye and exit
-_clean_anykernel && _goodbye_msg && _exit
+_clean_anykernel& wait ${!}
+_goodbye_msg && _exit
