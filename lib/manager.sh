@@ -133,7 +133,7 @@ _exit() {
         # Clean AnyKernel
         _clean_anykernel
 
-        # Send failed status with logs on Telegram
+        # Get failed time and send status on Telegram
         if [[ ${BUILD_STATUS} == True ]]; then
             END_TIME=$(TZ=${TIMEZONE} date +%s)
             BUILD_TIME=$((END_TIME - START_TIME))
@@ -146,17 +146,23 @@ $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds</code>"
         fi
     fi
 
-    # Cleanup and properly exit
+    # Set inputs logs
     _set_inputs_logs
+
+    # Cleanup
     FILES=(bashvar buildervar linuxver)
     for FILE in "${FILES[@]}"; do
         if [[ -f ${FILE} ]]; then rm "${FILE}"; fi
     done
+
+    # Display timeout exit msg
     for (( SECOND=5; SECOND>=1; SECOND-- )); do
         echo -ne \
             "\r\033[K${BLUE}Exit Neternels-Builder in ${SECOND}s...${NC}"
         sleep 1
     done
+
+    # Kill the script
     echo && kill -- $$
 }
 

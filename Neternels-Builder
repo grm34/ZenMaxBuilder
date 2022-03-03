@@ -197,8 +197,7 @@ if [[ ${FLASH_ZIP} == True ]]; then
     _sign_flashable_zip | tee -a "${LOG}"& wait ${!}
 fi
 
-# Upload build, set logs and clean
-_upload_build_on_telegram& ${1}
-_set_inputs_logs
+# Upload build and say goodbye
+_upload_build_on_telegram& wait ${1}
 _clean_anykernel& wait ${!}
 _goodbye_msg && _exit
