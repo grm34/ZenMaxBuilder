@@ -198,6 +198,6 @@ if [[ ${FLASH_ZIP} == True ]]; then
 fi
 
 # Upload build and say goodbye
-_upload_build_on_telegram& wait ${1}
+_upload_build_on_telegram& wait ${!}
 _clean_anykernel& wait ${!}
 _goodbye_msg && _exit
