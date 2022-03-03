@@ -138,10 +138,11 @@ $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds</code>"
         fi
     fi
 
-    # Cleanup then kill the script
-    if [[ -f old_vars.log ]] || [[ -f new_vars.log ]]; then
-        rm ./*_vars.log
-    fi
+    # Cleanup and properly exit
+    FILES=(bashvar buildervar linuxver)
+    for FILE in "${FILES[@]}"; do
+        if [[ -f ${FILE} ]]; then rm "${FILE}"; fi
+    done
     for (( SECOND=5; SECOND>=1; SECOND-- )); do
         echo -ne \
             "\r\033[K${BLUE}Exit Neternels-Builder in ${SECOND}s...${NC}"

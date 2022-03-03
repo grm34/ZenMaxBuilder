@@ -114,3 +114,59 @@ _ask_for_telegram() {
         esac
     fi
 }
+
+
+_ask_for_make_clean() {
+    _confirm "Do you wish to make clean build: ${LINUX_VERSION} ?"
+    case ${CONFIRM} in
+        n|N|no|No|NO)
+            MAKE_CLEAN=False
+            ;;
+        *)
+            MAKE_CLEAN=True
+    esac
+}
+
+
+_ask_for_save_defconfig() {
+    _confirm "Do you wish to save and use: ${DEFCONFIG} ?"
+    case ${CONFIRM} in
+        n|N|no|No|NO)
+            SAVE_DEFCONFIG=False
+            _confirm "Do you wish to continue with original defconfig ?"
+            case ${CONFIRM} in
+                n|N|no|No|NO)
+                    ORIGINAL_DEFCONFIG=False
+                    ;;
+                *)
+                    ORIGINAL_DEFCONFIG=True
+            esac
+            ;;
+        *)
+            SAVE_DEFCONFIG=True
+    esac
+}
+
+
+_ask_for_new_build() {
+    _confirm "Do you wish to start ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
+    case ${CONFIRM} in
+        n|N|no|No|NO)
+            NEW_BUILD=False
+            ;;
+        *)
+            NEW_BUILD=True
+    esac
+}
+
+
+_ask_for_flashable_zip() {
+    _confirm "Do you wish to zip ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
+    case ${CONFIRM} in
+        y|Y|yes|Yes|YES)
+            FLASH_ZIP=True
+            ;;
+        *)
+            FLASH_ZIP=False
+    esac
+}

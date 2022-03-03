@@ -23,19 +23,12 @@
 
 
 _make_clean() {
-    _confirm "Do you wish to make clean build: ${LINUX_VERSION} ?"
-    case ${CONFIRM} in
-        n|N|no|No|NO)
-            _clean_anykernel
-            ;;
-        *)
-            _note "Make clean (this could take a while)..."
-            _check unbuffer make -C "${KERNEL_DIR}" clean 2>&1
-            _note "Make mrproper (this could take a while)..."
-            _check unbuffer make -C "${KERNEL_DIR}" mrproper 2>&1
-            _check rm -rf "${OUT_DIR}"
-            _clean_anykernel
-    esac
+    _note "Make clean (this could take a while)..."
+    _check unbuffer make -C "${KERNEL_DIR}" clean 2>&1
+    _note "Make mrproper (this could take a while)..."
+    _check unbuffer make -C "${KERNEL_DIR}" mrproper 2>&1
+    _check rm -rf "${OUT_DIR}"
+    _clean_anykernel
 }
 
 
@@ -66,29 +59,14 @@ _make_menuconfig() {
     # Make Menuconfig
     _check make -C "${KERNEL_DIR}" O="${OUT_DIR}" ARCH=arm64 \
         menuconfig "${OUT_DIR}"/.config
+}
 
-    # Save new defconfig
-    _confirm "Do you wish to save and use: ${DEFCONFIG} ?"
-    case ${CONFIRM} in
-        n|N|no|No|NO)
-            _confirm "Do you wish to continue with original defconfig ?"
-            case ${CONFIRM} in
-                n|N|no|No|NO)
-                    _note "Cancel ${TAG}-${CODENAME}-${LINUX_VERSION}..."
-                    _exit
-                    ;;
-                *)
-                    return
-            esac
-            ;;
-        *)
-            _note "Saving ${DEFCONFIG} in arch/arm64/configs..."
-            _check cp \
-                "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}" \
-                "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}"_save
-            _check cp "${OUT_DIR}"/.config \
-                "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}"
-    esac
+_save_menuconfig() {
+    _note "Saving ${DEFCONFIG} in arch/arm64/configs..."
+    _check cp "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}" \
+        "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}"_save
+    _check cp "${OUT_DIR}"/.config \
+        "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}"
 }
 
 

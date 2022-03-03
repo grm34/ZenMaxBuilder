@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 # shellcheck disable=SC1091
-set > old_vars.log
+set -m -E -T > bashvar
 
 #    Copyright (c) 2022 @grm34 Neternels Team
 #
@@ -39,9 +39,10 @@ DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
 # Script dir
 DIR=${PWD}
 
+# Trapping bash signals
+trap '_error keyboard interrupt !;_exit' SIGINT SIGQUIT SIGTSTP
+
 # Ban all n00bz
-trap '' SIGHUP SIGQUIT SIGILL SIGABRT SIGFPE SIGTERM
-trap '_error keyboard interrupt !; _exit' SIGINT SIGTSTP
 if [[ $(uname) != Linux ]]; then
     _error "run this script on Linux !"
     _exit
@@ -98,9 +99,11 @@ for FOLDER in "${FOLDERS[@]}"; do
     fi
 done
 
-# Get user configuration
+# Display banner
 _banner
 _note "Starting new kernel build on ${DATE} (...)"
+
+# Get user configuration
 _ask_for_kernel_dir
 _ask_for_toolchain
 _ask_for_codename
@@ -109,15 +112,15 @@ _ask_for_menuconfig
 _ask_for_cores
 _ask_for_telegram
 
-# Set logs
+# Set build logs
 TIME=$(TZ=${TIMEZONE} date +%H-%M-%S)
 LOG=${DIR}/logs/${CODENAME}_${DATE}_${TIME}.log
 printf "Neternels Team @ Development is Life\n" > "${LOG}"
 
 # Install and clone requirements
-_install_dependencies | tee -a "${LOG}"
-_clone_toolchains | tee -a "${LOG}"
-_clone_anykernel | tee -a "${LOG}"
+_install_dependencies | tee -a "${LOG}"& wait ${!}
+_clone_toolchains | tee -a "${LOG}"& wait ${!}
+_clone_anykernel | tee -a "${LOG}"& wait ${!}
 
 # Set builder (displayed in proc/version)
 if [[ ${BUILDER} == default ]]; then BUILDER=$(whoami); fi
@@ -130,35 +133,56 @@ export ARCH=${ARCH}
 export PLATFORM_VERSION=${PLATFORM_VERSION}
 export ANDROID_MAJOR_RELEASE=${ANDROID_MAJOR_RELEASE}
 
-# Set out folder
+# Set working folder
 OUT_DIR=${DIR}/out/${CODENAME}
 mkdir -p "${OUT_DIR}"
 
-# Make version, clean, defconfig, menuconfig
+# Make kernel version
 _note "Make kernel version..."
-LINUX_VERSION=$(make -C "${KERNEL_DIR}" kernelversion | grep -v make)
-_make_clean | tee -a "${LOG}"
+make -C "${KERNEL_DIR}" kernelversion | grep -v make > linuxver& wait ${!}
+LINUX_VERSION=$(cat linuxver)
+
+# Make clean
+_ask_for_make_clean
+if [[ ${MAKE_CLEAN} == True ]]; then
+    _make_clean | tee -a "${LOG}"& wait ${!}
+else
+    _clean_anykernel
+fi
+
+# Make defconfig
 _make_defconfig | tee -a "${LOG}"
-if [[ ${MENUCONFIG} == True ]]; then _make_menuconfig; fi
+
+# Make menuconfig
+if [[ ${MENUCONFIG} == True ]]; then
+    _make_menuconfig
+    _ask_for_save_defconfig
+    if [[ ${SAVE_DEFCONFIG} == True ]]; then
+        _save_defconfig
+    else
+        if [[ ${ORIGINAL_DEFCONFIG} == False ]]; then
+            _note "Cancel ${TAG}-${CODENAME}-${LINUX_VERSION}..."
+            _exit
+        fi
+    fi
+fi
 
 # Make new build
-_confirm "Do you wish to start ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
-case ${CONFIRM} in
-    n|N|no|No|NO)
-        _note "Cancel ${TAG}-${CODENAME}-${LINUX_VERSION}..."
-        _exit
-        ;;
-    *)
-        START_TIME=$(TZ=${TIMEZONE} date +%s)
-        _make_build | tee -a "${LOG}"
-        sleep 5
-esac
+_ask_for_new_build
+if [[ ${NEW_BUILD} == False ]]; then
+    _note "Cancel ${TAG}-${CODENAME}-${LINUX_VERSION}..."
+    _exit
+else
+    START_TIME=$(TZ=${TIMEZONE} date +%s)
+    _make_build | tee -a "${LOG}"
+    sleep 5
+fi
 
 # Get build time
 END_TIME=$(TZ=${TIMEZONE} date +%s)
 BUILD_TIME=$((END_TIME - START_TIME))
 
-# Build status
+# Display build status
 _note "Successfully compiled ${TAG}-${CODENAME}-${LINUX_VERSION} \
 after $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds"
 if [[ ${BUILD_STATUS} == True ]]; then
@@ -168,11 +192,11 @@ $((BUILD_TIME % 60)) seconds</code>"
 fi
 
 # Create and sign flashable zip
-_confirm "Do you wish to zip ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
-case ${CONFIRM} in y|Y|yes|Yes|YES)
+_ask_for_flashable_zip
+if [[ ${FLASH_ZIP} == True ]]; then
     _create_flashable_zip | tee -a "${LOG}"
     _sign_flashable_zip | tee -a "${LOG}"
-esac
+fi
 
 # Upload build on Telegram
 if [[ ${BUILD_STATUS} == True ]]; then
@@ -186,10 +210,9 @@ ${DATE}-signed.zip" "MD5 Checksum: ${MD5}"
 fi
 
 # Get clean inputs logs
-set | grep -v "${EXCLUDE_VARS}" > new_vars.log
+set | grep -v "${EXCLUDE_VARS}" > buildervar
 printf "\n### USER INPUT LOGS ###\n" >> "${LOG}"
-diff old_vars.log new_vars.log | grep -E \
-    "^> [A-Z_]{3,18}=" >> "${LOG}"
+diff bashvar buildervar | grep -E "^> [A-Z_]{3,18}=" >> "${LOG}"
 
 # Say goodbye and exit
 _clean_anykernel && _goodbye_msg && _exit
