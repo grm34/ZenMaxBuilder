@@ -116,38 +116,26 @@ _check() {
 }
 
 
-#Set inputs logs
-_set_inputs_logs() {
-    set | grep -v "${EXCLUDE_VARS}" > buildervar
-    printf "\n### USER INPUT LOGS ###\n" >> "${LOG}"
-    diff bashvar buildervar | grep -E "^> [A-Z_]{3,18}=" >> "${LOG}"
-}
-
-
-# Exit with 5s timeout
+# Properly exit with 5s timeout
 _exit() {
 
-    # While building
-    if [[ ${START_TIME} ]] && [[ ! $BUILD_TIME ]]; then
+    # On build error send status and logs on Telegram
+    if [[ ${START_TIME} ]] && [[ ! $BUILD_TIME ]] && \
+            [[ ${BUILD_STATUS} == True ]]; then
+        END_TIME=$(TZ=${TIMEZONE} date +%s)
+        BUILD_TIME=$((END_TIME - START_TIME))
 
-        # Clean AnyKernel
-        _clean_anykernel
-
-        # Get failed time and send status on Telegram
-        if [[ ${BUILD_STATUS} == True ]]; then
-            END_TIME=$(TZ=${TIMEZONE} date +%s)
-            BUILD_TIME=$((END_TIME - START_TIME))
-
-            _send_msg \
+        _send_msg \
 "<b>${CODENAME}-${LINUX_VERSION}</b> | Build failed to compile after \
 $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds</code>"
 
-            _send_build "${LOG}" "${CODENAME}-${LINUX_VERSION} build logs"
-        fi
+        _send_build "${LOG}" "${CODENAME}-${LINUX_VERSION} build logs"
     fi
 
-    # Set inputs logs
-    _set_inputs_logs
+    # Get user inputs and add them to logfile
+    set | grep -v "${EXCLUDE_VARS}" > buildervar
+    printf "\n### USER INPUT LOGS ###\n" >> "${LOG}"
+    diff bashvar buildervar | grep -E "^> [A-Z_]{3,18}=" >> "${LOG}"
 
     # Remove inputs files
     FILES=(bashvar buildervar linuxver)
