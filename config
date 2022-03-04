@@ -77,9 +77,8 @@ TAG="Nethunter"
 # Telegram API configuration
 # Note: who the f* wants RT build status in TG?
 # ---------------------------------------------
-TELEGRAM_ID=""
-TELEGRAM_BOT=""
-TELEGRAM_TOKEN=""
+TELEGRAM_CHAT_ID="-1001698061206"
+TELEGRAM_BOT_TOKEN="5070984930:AAFW2xYvBvFuQ6n6HrYPdIAsXbnpHBnKQ1w"
 
 
 ## ADVANCED OPTIONS (do not edit when not sure)

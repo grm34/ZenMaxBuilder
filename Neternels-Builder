@@ -73,13 +73,13 @@ while getopts ':hum:f:z:' OPTION; do
         m)  _note "Sending message on Telegram...";
             _send_msg "${OPTARG}"; _exit;;
         f)  if [[ -f ${OPTARG} ]]; then
-                _note "Uploading ${OPTARG} on Telegram..."
-                _send_build "${OPTARG}"; _exit
-            else
-                _error "[ ${OPTARG} ] file not found !"; exit 1
-            fi;;
+                 _note "Uploading ${OPTARG} on Telegram..."
+                 _send_file "${OPTARG}"; _exit
+             else
+                 _error "file not found: ${OPTARG} !"; exit 1
+             fi;;
         z)  if [[ ! -f ${OPTARG} ]]; then
-                _error "[ ${OPTARG} ] file not found !"; exit 1
+                _error "file not found: ${OPTARG} !"; exit 1
             fi; _error "zip option not yet configured !"; _exit;;
         :)  _error "missing argument for -${OPTARG} !"; exit 1;;
         \?) _error "invalid option -${OPTARG} !"; exit 1

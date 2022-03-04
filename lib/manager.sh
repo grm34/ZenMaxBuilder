@@ -116,7 +116,7 @@ _check() {
 }
 
 
-# Properly exit with 5s timeout
+# Properly exit with 3s timeout
 _exit() {
 
     # On build error send status and logs on Telegram
@@ -127,7 +127,7 @@ _exit() {
         _send_msg \
 "<b>${CODENAME}-${LINUX_VERSION}</b> | Build failed to compile after \
 $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds</code>"
-        _send_build "${LOG}" "${CODENAME}-${LINUX_VERSION} build logs"
+        _send_file "${LOG}" "${CODENAME}-${LINUX_VERSION} build logs"
     fi
 
     # Get user inputs and add them to logfile
@@ -149,7 +149,7 @@ $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds</code>"
     fi
 
     # Display timeout exit msg
-    for (( SECOND=5; SECOND>=1; SECOND-- )); do
+    for (( SECOND=3; SECOND>=1; SECOND-- )); do
         echo -ne \
             "\r\033[K${BLUE}Exit Neternels-Builder in ${SECOND}s...${NC}"
         sleep 1

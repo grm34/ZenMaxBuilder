@@ -22,25 +22,26 @@
 #    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # Telegram API
-API="https://api.telegram.org/${TELEGRAM_BOT}:${TELEGRAM_TOKEN}"
+API="https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}"
 
 
 _send_msg() {
     curl --progress-bar -o /dev/null -fL \
-        -X POST "${API}"/sendMessage \
+        -X POST "${API}/sendMessage" \
         -d "parse_mode=html" \
-        -d "chat_id=${TELEGRAM_ID}" \
+        -d "chat_id=${TELEGRAM_CHAT_ID}" \
         -d "text=${1}" \
         | tee /dev/null
 }
 
 
-_send_build() {
+_send_file() {
     curl --progress-bar -o /dev/null -fL \
-        -X POST -F document=@"${1}" "${API}"/sendDocument \
-        -F "chat_id=${TELEGRAM_ID}" \
-        -F "disable_web_page_preview=true" \
+        -X POST "${API}/sendDocument" \
+        -F "document=@${1}" \
         -F "caption=${2}" \
+        -F "chat_id=${TELEGRAM_CHAT_ID}" \
+        -F "disable_web_page_preview=true" \
         | tee /dev/null
 }
 
@@ -62,7 +63,7 @@ _upload_build_on_telegram() {
         MD5=$(md5sum "${DIR}/builds/${TAG}-${CODENAME}-${LINUX_VERSION}-\
 ${DATE}-signed.zip" | cut -d' ' -f1)
 
-        _send_build "${DIR}/builds/${TAG}-${CODENAME}-${LINUX_VERSION}-\
+        _send_file "${DIR}/builds/${TAG}-${CODENAME}-${LINUX_VERSION}-\
 ${DATE}-signed.zip" "MD5 Checksum: ${MD5}"
     fi
 }
