@@ -123,16 +123,16 @@ trap '_error keyboard interrupt !; _exit' SIGINT SIGQUIT SIGTSTP
 
 # Get user configuration
 _ask_for_kernel_dir
-_ask_for_toolchain
 _ask_for_defconfig
 _ask_for_menuconfig
+_ask_for_toolchain
 _ask_for_cores
 _ask_for_telegram
 
 # Install and clone requirements
-_install_dependencies | tee -a "${LOG}" & wait ${!}
-_clone_toolchains | tee -a "${LOG}" & wait ${!}
-_clone_anykernel | tee -a "${LOG}" & wait ${!}
+_install_dependencies | tee -a "${LOG}"
+_clone_toolchains | tee -a "${LOG}"
+_clone_anykernel | tee -a "${LOG}"
 
 # Export target variables
 if [[ ${BUILDER} == default ]]; then BUILDER=$(whoami); fi
@@ -153,7 +153,7 @@ _ask_for_make_clean
 if [[ ${MAKE_CLEAN} == True ]]; then
     _make_clean | tee -a "${LOG}" & wait ${!}
 else
-    _clean_anykernel & wait ${!}
+    _clean_anykernel
 fi
 
 # Make defconfig
@@ -164,7 +164,7 @@ if [[ ${MENUCONFIG} == True ]]; then
     _make_menuconfig
     _ask_for_save_defconfig
     if [[ ${SAVE_DEFCONFIG} == True ]]; then
-        _save_defconfig & wait ${!}
+        _save_defconfig
     else
         if [[ ${ORIGINAL_DEFCONFIG} == False ]]; then
             _note "Cancelled ${TAG}-${CODENAME}-${LINUX_VERSION}..."
@@ -181,7 +181,7 @@ if [[ ${NEW_BUILD} == False ]]; then
 else
     START_TIME=$(TZ=${TIMEZONE} date +%s)
     _make_build | tee -a "${LOG}" & wait ${!}
-    sleep 5 & wait ${!}
+    sleep 5
 fi
 
 # Get build time
@@ -191,16 +191,16 @@ BUILD_TIME=$((END_TIME - START_TIME))
 # Display build status
 _note "Successfully compiled ${TAG}-${CODENAME}-${LINUX_VERSION} \
 after $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds"
-_send_status_on_telegram & wait ${!}
+_send_status_on_telegram
 
 # Create and sign flashable zip
 _ask_for_flashable_zip
 if [[ ${FLASH_ZIP} == True ]]; then
-    _create_flashable_zip | tee -a "${LOG}" & wait ${!}
-    _sign_flashable_zip | tee -a "${LOG}" & wait ${!}
+    _create_flashable_zip | tee -a "${LOG}"
+    _sign_flashable_zip | tee -a "${LOG}"
 fi
 
 # Upload build and say goodbye
-_upload_build_on_telegram & wait ${!}
-_clean_anykernel & wait ${!}
+_upload_build_on_telegram
+_clean_anykernel
 _goodbye_msg && _exit
