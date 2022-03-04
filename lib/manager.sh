@@ -131,7 +131,7 @@ $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds</code>"
     fi
 
     # Get user inputs and add them to logfile
-    if [[ -f bashvar ]]; then
+    if [[ -f bashvar ]] && [[ ${DATE} ]]; then
         set | grep -v "${EXCLUDE_VARS}" > buildervar
         printf "\n### USER INPUT LOGS ###\n" >> "${LOG}"
         diff bashvar buildervar | grep -E "^> [A-Z_]{3,18}=" >> "${LOG}"

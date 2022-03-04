@@ -23,7 +23,7 @@
 #    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # Enable job control
-DIRNAME=$(dirname "$0")
+DIRNAME=$(dirname "${0}")
 DIR="${PWD}/${DIRNAME}"
 set > "${DIR}/bashvar"
 set -m
