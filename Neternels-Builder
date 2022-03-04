@@ -121,9 +121,9 @@ _ask_for_cores
 _ask_for_telegram
 
 # Install and clone requirements
-_install_dependencies | tee -a "${LOG}"& wait ${!}
-_clone_toolchains | tee -a "${LOG}"& wait ${!}
-_clone_anykernel | tee -a "${LOG}"& wait ${!}
+_install_dependencies | tee -a "${LOG}" & wait ${!}
+_clone_toolchains | tee -a "${LOG}" & wait ${!}
+_clone_anykernel | tee -a "${LOG}" & wait ${!}
 
 # Set builder (displayed in proc/version)
 if [[ ${BUILDER} == default ]]; then BUILDER=$(whoami); fi
@@ -142,26 +142,26 @@ mkdir -p "${OUT_DIR}"
 
 # Make kernel version
 _note "Make kernel version..."
-make -C "${KERNEL_DIR}" kernelversion | grep -v make > linuxver& wait ${!}
+make -C "${KERNEL_DIR}" kernelversion | grep -v make > linuxver & wait ${!}
 LINUX_VERSION=$(cat linuxver)
 
 # Make clean
 _ask_for_make_clean
 if [[ ${MAKE_CLEAN} == True ]]; then
-    _make_clean | tee -a "${LOG}"& wait ${!}
+    _make_clean | tee -a "${LOG}" & wait ${!}
 else
-    _clean_anykernel& wait ${!}
+    _clean_anykernel & wait ${!}
 fi
 
 # Make defconfig
-_make_defconfig | tee -a "${LOG}"& wait ${!}
+_make_defconfig | tee -a "${LOG}" & wait ${!}
 
 # Make menuconfig
 if [[ ${MENUCONFIG} == True ]]; then
     _make_menuconfig
     _ask_for_save_defconfig
     if [[ ${SAVE_DEFCONFIG} == True ]]; then
-        _save_defconfig& wait ${!}
+        _save_defconfig & wait ${!}
     else
         if [[ ${ORIGINAL_DEFCONFIG} == False ]]; then
             _note "Cancelled ${TAG}-${CODENAME}-${LINUX_VERSION}..."
@@ -177,8 +177,8 @@ if [[ ${NEW_BUILD} == False ]]; then
     _exit
 else
     START_TIME=$(TZ=${TIMEZONE} date +%s)
-    _make_build | tee -a "${LOG}"& wait ${!}
-    sleep 5& wait ${!}
+    _make_build | tee -a "${LOG}" & wait ${!}
+    sleep 5 & wait ${!}
 fi
 
 # Get build time
@@ -193,11 +193,11 @@ _send_status_on_telegram
 # Create and sign flashable zip
 _ask_for_flashable_zip
 if [[ ${FLASH_ZIP} == True ]]; then
-    _create_flashable_zip | tee -a "${LOG}"& wait ${!}
-    _sign_flashable_zip | tee -a "${LOG}"& wait ${!}
+    _create_flashable_zip | tee -a "${LOG}" & wait ${!}
+    _sign_flashable_zip | tee -a "${LOG}" & wait ${!}
 fi
 
 # Upload build and say goodbye
-_upload_build_on_telegram& wait ${!}
-_clean_anykernel& wait ${!}
+_upload_build_on_telegram & wait ${!}
+_clean_anykernel & wait ${!}
 _goodbye_msg && _exit

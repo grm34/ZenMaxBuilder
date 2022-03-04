@@ -149,11 +149,16 @@ $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds</code>"
     # Set inputs logs
     _set_inputs_logs
 
-    # Cleanup
+    # Remove inputs files
     FILES=(bashvar buildervar linuxver)
     for FILE in "${FILES[@]}"; do
         if [[ -f ${FILE} ]]; then rm "${FILE}"; fi
     done
+
+    # Kill the current child
+    if [[ ${!} ]]; then
+        kill -9 ${!}
+    fi
 
     # Display timeout exit msg
     for (( SECOND=5; SECOND>=1; SECOND-- )); do
@@ -163,7 +168,7 @@ $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds</code>"
     done
 
     # Kill the script
-    echo && kill -- $$
+    echo && kill -- ${$}
 }
 
 
