@@ -37,13 +37,6 @@ _create_flashable_zip() {
     # CD to AnyKernel folder
     cd "${ANYKERNEL_DIR}" || (_error "AnyKernel not found !"; _exit)
 
-    # Create init.spectrum.rc
-    if [[ -f ${KERNEL_DIR}/init.ElectroSpectrum.rc ]]; then
-        _check cp -af "${KERNEL_DIR}"/init.ElectroSpectrum.rc init.spectrum.rc
-        _check sed -i "s/persist.spectrum.kernel.*/persist.spectrum.kernel \
-${TAG}-${CODENAME}-${LINUX_VERSION}/g" init.spectrum.rc
-    fi
-
     # Set anykernel.sh
     _check sed -i "s/kernel.string=.*/kernel.string=${TAG}-${CODENAME}/g" \
         anykernel.sh
@@ -64,6 +57,9 @@ Development is Life ~ t.me\/neternels/g" anykernel.sh
 "${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}".zip ./* \
 -x .git README.md ./*placeholder 2>&1
 
+    # Move zip to builds folder
+    mv "${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}".zip "${BUILD_DIR}"
+
     # Back to script dir
     cd "${DIR}" || (_error "${DIR} not found !"; _exit)
 }
@@ -80,7 +76,7 @@ _sign_flashable_zip() {
 
     # Sign flashable zip
     _check unbuffer java -jar "${ANYKERNEL_DIR}"/zipsigner-3.0.jar \
-"${ANYKERNEL_DIR}"/"${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}".zip \
-"${DIR}"/builds/"${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}"\
+"${BUILD_DIR}"/"${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}".zip \
+"${BUILD_DIR}"/"${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}"\
 -signed.zip 2>&1
 }

@@ -1,7 +1,5 @@
 #!/usr/bin/bash
 # shellcheck disable=SC1091
-set > bashvar
-set -m
 
 #    Copyright (c) 2022 @grm34 Neternels Team
 #
@@ -24,27 +22,27 @@ set -m
 #    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 #    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+# Enable job control
+DIRNAME=$(dirname "$0")
+DIR="${PWD}/${DIRNAME}"
+set > "${DIR}/bashvar"
+set -m
+
 # Load modules
-source config
-source lib/manager.sh
-source lib/requirements.sh
-source lib/telegram.sh
-source lib/flasher.sh
-source lib/maker.sh
-source lib/prompter.sh
-source lib/updater.sh
-
-# Build date
-DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
-
-# Script dir
-DIR=${PWD}
+source "${DIR}/config"
+source "${DIR}/lib/manager.sh"
+source "${DIR}/lib/requirements.sh"
+source "${DIR}/lib/telegram.sh"
+source "${DIR}/lib/flasher.sh"
+source "${DIR}/lib/maker.sh"
+source "${DIR}/lib/prompter.sh"
+source "${DIR}/lib/updater.sh"
 
 # Ban all n00bz
 if [[ $(uname) != Linux ]]; then
     _error "run this script on Linux !"
     _exit
-elif [[ ! -f ${DIR}/config ]] || [[ ! -f ${DIR}/lib/maker.sh ]]; then
+elif [[ ! -f ${PWD}/config ]] || [[ ! -f ${PWD}/lib/maker.sh ]]; then
     _error "run this script from Neternels-Builder folder !"
     _exit
 elif [[ $KERNEL_DIR != default  ]] && [[ ! -f $KERNEL_DIR/Makefile ]]; then
@@ -89,24 +87,35 @@ done
 # Remove options from positional parameters
 shift $(( OPTIND - 1 ))
 
-# Create missing folders
-FOLDERS=(builds logs toolchains)
-for FOLDER in "${FOLDERS[@]}"; do
-    if [[ ! -d ${DIR}/${FOLDER} ]]; then
-        mkdir "${DIR}"/"${FOLDER}"
-    fi
-done
-
 # Start the script
 _banner
+DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
+TIME=$(TZ=${TIMEZONE} date +%H-%M-%S)
 _note "Starting new kernel build on ${DATE} (...)"
 
 # Get device codename
 _ask_for_codename
 
-# Build logs
-TIME=$(TZ=${TIMEZONE} date +%H-%M-%S)
-LOG=${DIR}/logs/${CODENAME}_${DATE}_${TIME}.log
+# Create global folders
+FOLDERS=(builds logs toolchains out)
+for FOLDER in "${FOLDERS[@]}"; do
+    if [[ ! -d ${DIR}/${FOLDER} ]]; then
+        mkdir "${DIR}/${FOLDER}"
+    fi
+done
+
+# Create device folders
+FOLDERS=(builds logs out)
+for FOLDER in "${FOLDERS[@]}"; do
+    if [[ ! -d ${DIR}/${FOLDER}/${CODENAME} ]]; then
+        mkdir "${DIR}/${FOLDER}/${CODENAME}"
+    fi
+done
+OUT_DIR="${DIR}/out/${CODENAME}"
+BUILD_DIR="${DIR}/builds/${CODENAME}"
+
+# Create logfile
+LOG=${DIR}/logs/${CODENAME}/${CODENAME}_${DATE}_${TIME}.log
 printf "Neternels Team @ Development is Life\n" > "${LOG}"
 
 # Trapping bash signals
@@ -125,20 +134,14 @@ _install_dependencies | tee -a "${LOG}" & wait ${!}
 _clone_toolchains | tee -a "${LOG}" & wait ${!}
 _clone_anykernel | tee -a "${LOG}" & wait ${!}
 
-# Set builder (displayed in proc/version)
+# Export target variables
 if [[ ${BUILDER} == default ]]; then BUILDER=$(whoami); fi
 if [[ ${HOST} == default ]]; then BUILDER=$(uname -n); fi
 export KBUILD_BUILD_USER=${BUILDER}
 export KBUILD_BUILD_HOST=${HOST}
-
-# Set target variables
 export ARCH=${ARCH}
 export PLATFORM_VERSION=${PLATFORM_VERSION}
 export ANDROID_MAJOR_RELEASE=${ANDROID_MAJOR_RELEASE}
-
-# Set working folder
-OUT_DIR=${DIR}/out/${CODENAME}
-mkdir -p "${OUT_DIR}"
 
 # Make kernel version
 _note "Make kernel version..."
