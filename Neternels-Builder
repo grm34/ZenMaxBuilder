@@ -84,10 +84,10 @@ while getopts ':hum:f:z:' OPTION; do
     esac
 done
 
-# Remove options from positional parameters
+# Remove opts from positional parameters
 shift $(( OPTIND - 1 ))
 
-# Start the script
+# Start new build
 _banner
 DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
 TIME=$(TZ=${TIMEZONE} date +%H-%M-%S)
@@ -104,7 +104,7 @@ for FOLDER in "${FOLDERS[@]}"; do
     fi
 done
 
-# Create device folders
+# Create current device folders
 FOLDERS=(builds logs out)
 for FOLDER in "${FOLDERS[@]}"; do
     if [[ ! -d ${DIR}/${FOLDER}/${CODENAME} ]]; then
@@ -191,7 +191,7 @@ BUILD_TIME=$((END_TIME - START_TIME))
 # Display build status
 _note "Successfully compiled ${TAG}-${CODENAME}-${LINUX_VERSION} \
 after $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds"
-_send_status_on_telegram
+_send_status_on_telegram & wait ${!}
 
 # Create and sign flashable zip
 _ask_for_flashable_zip
