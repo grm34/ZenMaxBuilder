@@ -131,7 +131,7 @@ $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds</code>"
     fi
 
     # Get user inputs and add them to logfile
-    if [[ -f buildervar ]]; then
+    if [[ -f bashvar ]]; then
         set | grep -v "${EXCLUDE_VARS}" > buildervar
         printf "\n### USER INPUT LOGS ###\n" >> "${LOG}"
         diff bashvar buildervar | grep -E "^> [A-Z_]{3,18}=" >> "${LOG}"
@@ -167,10 +167,6 @@ _clean_anykernel() {
     for UW in "${UNWANTED[@]}"; do
         rm -f "${ANYKERNEL_DIR}/${UW}"
     done
-    if [[ ! -f ${ANYKERNEL_DIR}/${TAG}-${CODENAME}-\
-${LINUX_VERSION}-${DATE}-signed.zip ]]; then
-        rm -f "${ANYKERNEL_DIR}/*.zip"
-    fi
 }
 
 
