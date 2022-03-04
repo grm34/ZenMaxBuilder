@@ -145,7 +145,7 @@ $((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds</code>"
 
     # Kill the current child
     if [[ ${!} ]]; then
-        kill -9 ${!}
+        kill -9 ${!} &>/dev/null
     fi
 
     # Display timeout exit msg
