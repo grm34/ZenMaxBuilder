@@ -66,21 +66,13 @@ done
 # Handle opts
 while getopts ':hum:f:z:' OPTION; do
     case ${OPTION} in
-        h)  _banner; _usage; exit 0;;
+        h)  _banner; _usage; rm "./bashvar"; exit 0;;
         u)  _full_upgrade; _exit;;
-        m)  _note "Sending message on Telegram...";
-            _send_msg "${OPTARG}"; _exit;;
-        f)  if [[ -f ${OPTARG} ]]; then
-                 _note "Uploading ${OPTARG} on Telegram..."
-                 _send_file "${OPTARG}"; _exit
-             else
-                 _error "file not found: ${OPTARG} !"; exit 1
-             fi;;
-        z)  if [[ ! -f ${OPTARG} ]]; then
-                _error "file not found: ${OPTARG} !"; exit 1
-            fi; _error "zip option not yet configured !"; _exit;;
-        :)  _error "missing argument for -${OPTARG} !"; exit 1;;
-        \?) _error "invalid option -${OPTARG} !"; exit 1
+        m)  _send_msg_option;;
+        f)  _send_file_option;;
+        z)  _create_zip_option;;
+        :)  _error "missing argument for -${OPTARG} !"; _exit;;
+        \?) _error "invalid option -${OPTARG} !"; _exit
     esac
 done
 

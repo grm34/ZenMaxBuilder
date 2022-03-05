@@ -80,3 +80,27 @@ _sign_flashable_zip() {
 "${BUILD_DIR}"/"${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}"\
 -signed.zip 2>&1
 }
+
+
+_create_zip_option() {
+    if [[ -f ${OPTARG} ]]  && [[ ${OPTARG: -4} == ".dtb" ]]; then
+        _note "Creating ${OPTARG}.zip..."
+
+        # Move GZ-DTB to AnyKernel folder
+        _check cp "${OPTARG}" "${ANYKERNEL_DIR}"
+
+        # CD to AnyKernel folder
+        cd "${ANYKERNEL_DIR}" || (_error "AnyKernel not found !"; _exit)
+
+        # Create flashable zip
+        _check zip -r9 \
+"${OPTARG1}".zip ./* -x .git README.md ./*placeholder 2>&1
+
+        # Back to script dir
+        cd "${DIR}" || (_error "${DIR} not found !"; _exit)
+        _exit
+    else
+        _error "${OPTARG} is not a valid DTB file !"
+        _exit
+    fi
+}

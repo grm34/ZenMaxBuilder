@@ -21,7 +21,7 @@
 #    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 #    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# Telegram API
+# Telegram API URL
 API="https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}"
 
 
@@ -55,7 +55,6 @@ $((BUILD_TIME % 60)) seconds</code>"
 }
 
 
-# Upload build on Telegram
 _upload_build_on_telegram() {
     if [[ ${BUILD_STATUS} == True ]]; then
         _note "Uploading build on Telegram..."
@@ -65,5 +64,34 @@ ${DATE}-signed.zip" | cut -d' ' -f1)
 
         _send_file "${DIR}/builds/${TAG}-${CODENAME}-${LINUX_VERSION}-\
 ${DATE}-signed.zip" "MD5 Checksum: ${MD5}"
+    fi
+}
+
+
+_send_msg_option() {
+    if [[ ${TELEGRAM_CHAT_ID} ]] && [[ ${TELEGRAM_BOT_TOKEN} ]]; then
+        _note "Sending message on Telegram...";
+        _send_msg "${OPTARG}"
+        _exit
+    else
+        _error "you must configure Telegram API settings first !"
+        _exit
+    fi
+}
+
+
+_send_file_option() {
+    if [[ -f ${OPTARG} ]]; then
+        if [[ ${TELEGRAM_CHAT_ID} ]] && [[ ${TELEGRAM_BOT_TOKEN} ]]; then
+            _note "Uploading ${OPTARG} on Telegram..."
+            _send_file "${OPTARG}"
+            _exit
+        else
+            _error "you must configure Telegram API settings first !"
+            _exit
+        fi
+    else
+        _error "file not found: ${OPTARG} !"
+        _exit
     fi
 }
