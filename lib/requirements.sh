@@ -26,21 +26,21 @@ _install_dependencies() {
 
     # Set the package manager for each Linux distribution
     declare -A PMS=(
-        [android]="_ pkg install -y"
-        [redhat]="sudo yum install -y"
-        [arch]="sudo pacman -S --noconfirm"
-        [gentoo]="sudo emerge -1 -y"
-        [suse]="sudo zypper install -y"
-        [fedora]="sudo dnf install -y"
-        [debian]="sudo apt install -y"
+        [apt]="sudo apt install -y"
+        [pkg]="_ pkg install -y"
+        [pacman]="sudo pacman -S --noconfirm"
+        [yum]="sudo yum install -y"
+        [emerge]="sudo emerge -1 -y"
+        [zypper]="sudo zypper install -y"
+        [dnf]="sudo dnf install -y"
     )
 
-    # Get current Linux distribution
-    OS=(android redhat arch gentoo suse fedora debian)
-    for DIST in "${OS[@]}"; do
-        if uname -a | grep -qi "${DIST}"; then
+    # Get current package manager cmd
+    OS=(pacman yum emerge zypper dnf pkg apt)
+    for PKG in "${OS[@]}"; do
+        if which "${PKG}" &>/dev/null; then
             IFS=" "
-            PM=${PMS[${DIST}]}
+            PM=${PMS[${PKG}]}
             read -ra PM <<< "$PM"
             break
         fi
@@ -48,13 +48,13 @@ _install_dependencies() {
 
     # Display error if not found
     if [[ ! ${PM[3]} ]]; then
-        _error "OS not reconized, you must install dependencies first !"
+        _error "OS not found, you may need to install dependencies first !"
 
     # Install missing dependencies
     else
         for PACKAGE in "${DEPENDENCIES[@]}"; do
             if ! which "${PACKAGE//llvm/llvm-ar}" &>/dev/null; then
-                _note "Package ${PACKAGE} not found! Installing..."
+                _note "Package ${PACKAGE} not found ! Installing..."
                 _check eval \
                     "${PM[0]//_/} ${PM[1]} ${PM[2]} ${PM[3]} ${PACKAGE}"
             fi
@@ -67,21 +67,21 @@ _clone_toolchains() {
 
     _clone_proton() {
         if [[ ! -d ${PROTON_DIR} ]]; then
-            _note "Proton-Clang repository not found! Cloning..."
+            _note "Proton-Clang repository not found ! Cloning..."
             _check git clone --depth=1 -b \
                 "${PROTON_BRANCH}" "${PROTON_URL}" "${PROTON_DIR}"
         fi
     }
     _clone_gcc_arm() {
         if [[ ! -d ${GCC_ARM_DIR} ]]; then
-            _note "GCC ARM repository not found! Cloning..."
+            _note "GCC ARM repository not found ! Cloning..."
             _check git clone --depth=1 -b \
                 "${GCC_ARM_BRANCH}" "${GCC_ARM_URL}" "${GCC_ARM_DIR}"
         fi
     }
     _clone_gcc_arm64() {
         if [[ ! -d ${GCC_ARM64_DIR} ]]; then
-            _note "GCC ARM64 repository not found! Cloning..."
+            _note "GCC ARM64 repository not found ! Cloning..."
             _check git clone --depth=1 -b \
                 "${GCC_ARM64_BRANCH}" "${GCC_ARM64_URL}" "${GCC_ARM64_DIR}"
         fi
