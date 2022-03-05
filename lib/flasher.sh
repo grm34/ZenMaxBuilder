@@ -84,7 +84,7 @@ _sign_flashable_zip() {
 
 _create_zip_option() {
     if [[ -f ${OPTARG} ]]  && [[ ${OPTARG: -4} == ".dtb" ]]; then
-        _note "Creating ${OPTARG}.zip..."
+        _note "Creating ${OPTARG}-{DATE}-${TIME}.zip..."
 
         # Move GZ-DTB to AnyKernel folder
         _check cp "${OPTARG}" "${ANYKERNEL_DIR}"
@@ -94,7 +94,13 @@ _create_zip_option() {
 
         # Create flashable zip
         _check zip -r9 \
-"${OPTARG1}".zip ./* -x .git README.md ./*placeholder 2>&1
+"${OPTARG}-${DATE}-${TIME}".zip ./* -x .git README.md ./*placeholder 2>&1
+
+        # Move zip to builds folder
+        if [[ ! -d ../builds/default ]]; then
+            mkdir ../builds/default
+        fi
+        mv "${OPTARG}-${DATE}-${TIME}".zip ../builds/default
 
         # Back to script dir
         cd "${DIR}" || (_error "${DIR} not found !"; _exit)
