@@ -102,8 +102,7 @@ _ask_for_cores() {
 
 
 _ask_for_telegram() {
-    if [[ ${TELEGRAM_ID} ]] || [[ ${TELEGRAM_BOT} ]] || \
-            [[ ${TELEGRAM_TOKEN} ]]; then
+    if [[ ${TELEGRAM_CHAT_ID} ]] || [[ ${TELEGRAM_BOT_TOKEN} ]]; then
         _confirm "Do you wish to send build status to Telegram ?"
         case ${CONFIRM} in
             n|N|no|No|NO)

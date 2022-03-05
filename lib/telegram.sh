@@ -28,9 +28,9 @@ API="https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}"
 _send_msg() {
     curl --progress-bar -o /dev/null -fL \
         -X POST "${API}/sendMessage" \
-        -F "parse_mode=html" \
-        -F "chat_id=${TELEGRAM_CHAT_ID}" \
-        -F "text=${1}" \
+        -d "parse_mode=html" \
+        -d "chat_id=${TELEGRAM_CHAT_ID}" \
+        -d "text=${1}" \
         | tee /dev/null
 }
 
