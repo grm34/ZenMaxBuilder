@@ -105,8 +105,8 @@ for FOLDER in "${FOLDERS[@]}"; do
         mkdir "${DIR}/${FOLDER}/${CODENAME}"
     fi
 done
-OUT_DIR="${DIR}/out/${CODENAME}"
-BUILD_DIR="${DIR}/builds/${CODENAME}"
+export OUT_DIR="${DIR}/out/${CODENAME}"
+export BUILD_DIR="${DIR}/builds/${CODENAME}"
 
 # Create logfile
 LOG=${DIR}/logs/${CODENAME}/${CODENAME}_${DATE}_${TIME}.log
