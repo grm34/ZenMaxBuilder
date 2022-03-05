@@ -28,8 +28,12 @@ DIR="${PWD}/${DIRNAME}"
 set > "${DIR}/bashvar"
 set -m
 
-# Load modules
+# Load configuration
 source "${DIR}/config"
+DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
+TIME=$(TZ=${TIMEZONE} date +%H-%M-%S)
+
+# Load libraries
 source "${DIR}/lib/manager.sh"
 source "${DIR}/lib/requirements.sh"
 source "${DIR}/lib/telegram.sh"
@@ -81,8 +85,6 @@ shift $(( OPTIND - 1 ))
 
 # Start new build
 _banner
-DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
-TIME=$(TZ=${TIMEZONE} date +%H-%M-%S)
 _note "Starting new kernel build on ${DATE} (...)"
 
 # Get device codename
