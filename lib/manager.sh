@@ -121,13 +121,14 @@ _exit() {
 
     # On build error send status and logs on Telegram
     if [[ ${START_TIME} ]] && [[ ! $BUILD_TIME ]] && \
-            [[ ${BUILD_STATUS} == True ]]; then
+            [[ ${BUILD_STATUS} == True ]] && [[ ${BUILD_NAME} ]]; then
         END_TIME=$(TZ=${TIMEZONE} date +%s)
         BUILD_TIME=$((END_TIME - START_TIME))
-        _send_msg \
-"<b>${CODENAME}-${LINUX_VERSION}</b> | Build failed to compile after \
-$((BUILD_TIME / 60)) minutes and $((BUILD_TIME % 60)) seconds</code>"
-        _send_file "${LOG}" "${CODENAME}-${LINUX_VERSION} build logs"
+        M=$((BUILD_TIME / 60))
+        S=$((BUILD_TIME % 60))
+        MSG="Build failed to compile after ${M} and ${S} seconds"
+        _send_msg "${BUILD_NAME} | ${MSG}"
+        _send_file "${LOG}" "${BUILD_NAME} build logs"
     fi
 
     # Get user inputs and add them to logfile

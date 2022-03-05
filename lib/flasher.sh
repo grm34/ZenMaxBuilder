@@ -23,12 +23,11 @@
 
 
 _create_flashable_zip() {
-    _note "Creating ${TAG}-${CODENAME}-${LINUX_VERSION}-${DATE}.zip..."
+    _note "Creating ${BUILD_NAME}-${DATE}.zip..."
 
     # Send build status to Telegram
     if [[ ${BUILD_STATUS} == True ]]; then
-        _send_msg "<b>${CODENAME}-${LINUX_VERSION}</b> | \
-<code>Started flashable zip creation</code>"
+        _send_msg "${BUILD_NAME} | Started flashable zip creation"
     fi
 
     # Move GZ-DTB to AnyKernel folder
@@ -54,11 +53,10 @@ Development is Life ~ t.me\/neternels/g" anykernel.sh
 
     # Create flashable zip
     _check unbuffer zip -r9 \
-"${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}".zip ./* \
--x .git README.md ./*placeholder 2>&1
+"${BUILD_NAME}"-"${DATE}".zip ./* -x .git README.md ./*placeholder 2>&1
 
     # Move zip to builds folder
-    mv "${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}".zip "${BUILD_DIR}"
+    mv "${BUILD_NAME}"-"${DATE}".zip "${BUILD_DIR}"
 
     # Back to script dir
     cd "${DIR}" || (_error "${DIR} not found !"; _exit)
@@ -70,15 +68,13 @@ _sign_flashable_zip() {
 
     # Send build status to Telegram
     if [[ ${BUILD_STATUS} == True ]]; then
-        _send_msg "<b>${CODENAME}-${LINUX_VERSION}</b> | \
-<code>Signing Zip file with AOSP keys</code>"
+        _send_msg "${BUILD_NAME} | Signing Zip file with AOSP keys"
     fi
 
     # Sign flashable zip
     _check unbuffer java -jar "${ANYKERNEL_DIR}"/zipsigner-3.0.jar \
-"${BUILD_DIR}"/"${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}".zip \
-"${BUILD_DIR}"/"${TAG}"-"${CODENAME}"-"${LINUX_VERSION}"-"${DATE}"\
--signed.zip 2>&1
+"${BUILD_DIR}"/"${BUILD_NAME}"-"${DATE}".zip \
+"${BUILD_DIR}"/"${BUILD_NAME}"-"${DATE}"-signed.zip 2>&1
 }
 
 
