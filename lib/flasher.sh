@@ -97,15 +97,17 @@ _create_zip_option() {
 "${OPTARG}-${DATE}-${TIME}".zip ./* -x .git README.md ./*placeholder 2>&1
 
         # Move zip to builds folder
-        if [[ ! -d ../builds/default ]]; then
-            mkdir ../builds/default
+        if [[ ! -d ${DIR}/builds/default ]]; then
+            mkdir "${DIR}/builds/default"
         fi
-        mv "${OPTARG}-${DATE}-${TIME}".zip ../builds/default
+        mv "${OPTARG}-${DATE}-${TIME}".zip "${DIR}/builds/default"
 
         # Back to script dir
         cd "${DIR}" || (_error "${DIR} not found !"; _exit)
         _exit
+
     else
+        # Display error while not DTB
         _error "${OPTARG} is not a valid DTB file !"
         _exit
     fi
