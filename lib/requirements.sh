@@ -40,7 +40,7 @@ _install_dependencies() {
     for PKG in "${OS[@]}"; do
         if which "${PKG}" &>/dev/null; then
             IFS=" "
-            PM=${PMS[${PKG}]}
+            PM="${PMS[${PKG}]}"
             read -ra PM <<< "$PM"
             break
         fi
