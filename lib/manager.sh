@@ -140,7 +140,7 @@ _exit() {
     # Display timeout exit msg
     for (( SECOND=3; SECOND>=1; SECOND-- )); do
         echo -ne \
-             "\r\033[K${BLUE}Exit Neternels-Builder in ${SECOND}s...${NC}"
+            "\r\033[K${BLUE}Exit Neternels-Builder in ${SECOND}s...${NC}"
         sleep 1
     done
 
