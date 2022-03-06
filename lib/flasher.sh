@@ -27,7 +27,7 @@ _create_flashable_zip() {
 
     # Send build status to Telegram
     if [[ ${BUILD_STATUS} == True ]]; then
-        _send_msg "${BUILD_NAME}  |  Started flashable zip creation"
+        _send_msg "${BUILD_NAME//_/-}  |  Started flashable zip creation"
     fi
 
     # Move GZ-DTB to AnyKernel folder
@@ -67,7 +67,7 @@ _sign_flashable_zip() {
 
     # Send build status to Telegram
     if [[ ${BUILD_STATUS} == True ]]; then
-        _send_msg "${BUILD_NAME}  |  Signing Zip file with AOSP keys"
+        _send_msg "${BUILD_NAME//_/-}  |  Signing Zip file with AOSP keys"
     fi
 
     # Sign flashable zip

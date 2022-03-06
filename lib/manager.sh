@@ -127,8 +127,8 @@ _exit() {
         BUILD_TIME=$((END_TIME - START_TIME))
         M=$((BUILD_TIME / 60))
         S=$((BUILD_TIME % 60))
-        MSG="Build failed to compile after ${M} minutes and ${S} seconds"
-        _send_file "${LOG}" "v${LINUX_VERSION}  |  ${MSG}"
+        MSG="Build Failed to Compile After ${M} minutes and ${S} seconds"
+        _send_file "${LOG}" "v${LINUX_VERSION//_/-}  |  ${MSG}"
     fi
 
     # Remove inputs files

@@ -51,7 +51,7 @@ _upload_build_on_telegram() {
         _note "Uploading build on Telegram..."
         FILE="${BUILD_DIR}/${BUILD_NAME}-${DATE}-signed.zip"
         MD5=$(md5sum "${FILE}" | cut -d' ' -f1)
-        _send_file "${FILE}" "MD5 Checksum: ${MD5}"
+        _send_file "${FILE}" "MD5 Checksum: ${MD5//_/-}"
     fi
 }
 
@@ -59,7 +59,7 @@ _upload_build_on_telegram() {
 _send_msg_option() {
     if [[ ${TELEGRAM_CHAT_ID} ]] && [[ ${TELEGRAM_BOT_TOKEN} ]]; then
         _note "Sending message on Telegram...";
-        _send_msg "${OPTARG}"
+        _send_msg "${OPTARG//_/-}"
         _exit
     else
         _error "you must configure Telegram API settings first !"
