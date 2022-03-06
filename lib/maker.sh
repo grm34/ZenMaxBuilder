@@ -34,14 +34,6 @@ _make_clean() {
 
 _make_defconfig() {
     _note "Make ${DEFCONFIG} (${LINUX_VERSION})..."
-
-    # Send build status to Telegram
-    if [[ ${BUILD_STATUS} == True ]]; then
-        _send_msg "<b>${CODENAME}-${LINUX_VERSION}</b> | \
-<code>New build started by ${BUILDER} with ${COMPILER}</code>"
-    fi
-
-    # Make defconfig
     _check unbuffer make -C \
         "${KERNEL_DIR}" O="${OUT_DIR}" ARCH=arm64 "${DEFCONFIG}" 2>&1
 }
@@ -49,14 +41,6 @@ _make_defconfig() {
 
 _make_menuconfig() {
     _note "Make menuconfig..."
-
-    # Send build status to Telegram
-    if [[ ${BUILD_STATUS} == True ]]; then
-        _send_msg "<b>${CODENAME}-${LINUX_VERSION}</b> | \
-<code>Started menuconfig</code>"
-    fi
-
-    # Make Menuconfig
     _check make -C "${KERNEL_DIR}" O="${OUT_DIR}" ARCH=arm64 \
         menuconfig "${OUT_DIR}"/.config
 }
@@ -75,8 +59,8 @@ _make_build() {
 
     # Send build status to Telegram
     if [[ ${BUILD_STATUS} == True ]]; then
-        _send_msg "<b>${CODENAME}-${LINUX_VERSION}</b> | \
-<code>Started compiling kernel</code>"
+        MSG="<b>Android Kernel Build Triggered</b> ${STATUS_MSG}"
+        _send_msg "${MSG}"
     fi
 
     # Link Time Optimization (LTO)

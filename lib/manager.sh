@@ -126,9 +126,10 @@ _exit() {
         BUILD_TIME=$((END_TIME - START_TIME))
         M=$((BUILD_TIME / 60))
         S=$((BUILD_TIME % 60))
-        MSG="Build failed to compile after ${M} and ${S} seconds"
-        _send_msg "${BUILD_NAME} | ${MSG}"
-        _send_file "${LOG}" "${BUILD_NAME} build logs"
+        FAIL="Build failed to compile after ${M} minutes and ${S} seconds"
+        MSG="<b>${FAIL}</b> ${STATUS_MSG}"
+        _send_msg "${MSG}"
+        _send_file "${LOG}" "${FAIL}"
     fi
 
     # Get user inputs and add them to logfile

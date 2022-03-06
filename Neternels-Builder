@@ -121,7 +121,6 @@ _ask_for_defconfig
 _ask_for_menuconfig
 _ask_for_toolchain
 _ask_for_cores
-_ask_for_telegram
 
 # Install and clone requirements
 _install_dependencies | tee -a "${LOG}"
@@ -130,7 +129,7 @@ _clone_anykernel | tee -a "${LOG}"
 
 # Export target variables
 if [[ ${BUILDER} == default ]]; then BUILDER=$(whoami); fi
-if [[ ${HOST} == default ]]; then BUILDER=$(uname -n); fi
+if [[ ${HOST} == default ]]; then HOST=$(uname -n); fi
 export KBUILD_BUILD_USER=${BUILDER}
 export KBUILD_BUILD_HOST=${HOST}
 export ARCH=${ARCH}
@@ -142,6 +141,19 @@ _note "Make kernel version..."
 make -C "${KERNEL_DIR}" kernelversion | grep -v make > linuxver & wait ${!}
 LINUX_VERSION=$(cat linuxver)
 BUILD_NAME="${TAG}-${CODENAME}-${LINUX_VERSION}"
+
+# Telegram status msg
+STATUS_MSG="
+
+<b>Android Device :</b>  <code>${CODENAME/_/-}</code>
+<b>Kernel Version :</b>  <code>v${LINUX_VERSION/_/-}</code>
+<b>Kernel Variant :</b>  <code>${KERNEL_VARIANT/_/-}</code>
+<b>Host Builder :</b>  <code>${BUILDER/_/-}</code>
+<b>Host Core Count :</b>  <code>${CORES}</code>
+<b>Compiler Used :</b>  <code>${COMPILER/_/-}</code>
+<b>Operating System :</b>  <code>${HOST/_/-}</code>
+<b>Build Tag :</b>  <code>${TAG/_/-}</code>
+<b>Branch :</b>  <code>${PLATFORM_VERSION/_/-}</code>"
 
 # Make clean
 _ask_for_make_clean
@@ -174,6 +186,7 @@ if [[ ${NEW_BUILD} == False ]]; then
     _note "Build cancelled: ${BUILD_NAME}..."
     _exit
 else
+    _ask_for_telegram
     START_TIME=$(TZ=${TIMEZONE} date +%s)
     _make_build | tee -a "${LOG}" & wait ${!}
     sleep 5
@@ -187,9 +200,10 @@ BUILD_TIME=$((END_TIME - START_TIME))
 M=$((BUILD_TIME / 60))
 S=$((BUILD_TIME % 60))
 SUCCESS="Successfully compiled after ${M} minutes and ${S} seconds"
+MSG="<b>${SUCCESS}</b> ${STATUS_MSG}"
 _note "${SUCCESS}"
 if [[ ${BUILD_STATUS} == True ]]; then
-    _send_msg "${BUILD_NAME} | ${SUCCESS}"
+    _send_msg "${MSG}"
 fi
 
 # Create and sign flashable zip
