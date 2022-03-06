@@ -26,7 +26,7 @@
 DIRNAME=$(dirname "${0}")
 DIR="${PWD}/${DIRNAME}"
 set > "${DIR}/bashvar"
-set -m
+set -m -E -o pipefail
 
 # Load configuration
 source "${DIR}/config"
@@ -113,7 +113,9 @@ LOG=${DIR}/logs/${CODENAME}/${CODENAME}_${DATE}_${TIME}.log
 printf "Neternels Team @ Development is Life\n" > "${LOG}"
 
 # Trapping bash signals
-trap '_error keyboard interrupt !; _exit' SIGINT SIGQUIT SIGTSTP
+trap \
+    '_error "$(caller): ${BASH_COMMAND//wait/keyboard_interrupt}"; _exit' \
+    SIGINT SIGQUIT SIGTSTP ERR
 
 # Get user configuration
 _ask_for_kernel_dir
@@ -153,7 +155,7 @@ STATUS_MSG="
 <b>Compiler Used :</b>  <code>${COMPILER/_/-}</code>
 <b>Operating System :</b>  <code>${HOST/_/-}</code>
 <b>Build Tag :</b>  <code>${TAG/_/-}</code>
-<b>Branch :</b>  <code>${PLATFORM_VERSION/_/-}</code>"
+<b>Android :</b>  <code>${PLATFORM_VERSION/_/-}</code>"
 
 # Make clean
 _ask_for_make_clean
@@ -189,7 +191,6 @@ else
     _ask_for_telegram
     START_TIME=$(TZ=${TIMEZONE} date +%s)
     _make_build | tee -a "${LOG}" & wait ${!}
-    sleep 5
 fi
 
 # Get build time

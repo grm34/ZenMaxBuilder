@@ -24,32 +24,32 @@
 
 _make_clean() {
     _note "Make clean (this could take a while)..."
-    _check unbuffer make -C "${KERNEL_DIR}" clean 2>&1
+    unbuffer make -C "${KERNEL_DIR}" clean 2>&1
     _note "Make mrproper (this could take a while)..."
-    _check unbuffer make -C "${KERNEL_DIR}" mrproper 2>&1
-    _check rm -rf "${OUT_DIR}"
+    unbuffer make -C "${KERNEL_DIR}" mrproper 2>&1
+    rm -rf "${OUT_DIR}"
     _clean_anykernel
 }
 
 
 _make_defconfig() {
     _note "Make ${DEFCONFIG} (${LINUX_VERSION})..."
-    _check unbuffer make -C \
-        "${KERNEL_DIR}" O="${OUT_DIR}" ARCH=arm64 "${DEFCONFIG}" 2>&1
+    unbuffer make -C "${KERNEL_DIR}" O="${OUT_DIR}" \
+        ARCH=arm64 "${DEFCONFIG}" 2>&1
 }
 
 
 _make_menuconfig() {
     _note "Make menuconfig..."
-    _check make -C "${KERNEL_DIR}" O="${OUT_DIR}" ARCH=arm64 \
+    make -C "${KERNEL_DIR}" O="${OUT_DIR}" ARCH=arm64 \
         menuconfig "${OUT_DIR}"/.config
 }
 
 _save_defconfig() {
     _note "Saving ${DEFCONFIG} in arch/arm64/configs..."
-    _check cp "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}" \
+    cp "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}" \
         "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}"_save
-    _check cp "${OUT_DIR}"/.config \
+    cp "${OUT_DIR}"/.config \
         "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}"
 }
 
@@ -85,6 +85,6 @@ _make_build() {
     esac
 
     # Make kernel BUILD
-    _check unbuffer make -C \
+    unbuffer make -C \
         "${KERNEL_DIR}" -j"${CORES}" O="${OUT_DIR}" "${PARAMETERS[@]}" 2>&1
 }

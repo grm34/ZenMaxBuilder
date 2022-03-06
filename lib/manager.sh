@@ -105,31 +105,12 @@ _error() {
 }
 
 
-# Check command status and exit on error
-_check() {
-    "${@}"; local STATUS=$?
-    if [[ ${STATUS} -ne 0 ]]; then
-        _error "${@}"
-        _exit
-    fi
-    return "${STATUS}"
-}
-
-
 # Properly exit with 3s timeout
 _exit() {
 
-    # On build error send status and logs on Telegram
-    if [[ ${START_TIME} ]] && [[ ! $BUILD_TIME ]] && \
-            [[ ${BUILD_STATUS} == True ]] && [[ ${BUILD_NAME} ]]; then
-        END_TIME=$(TZ=${TIMEZONE} date +%s)
-        BUILD_TIME=$((END_TIME - START_TIME))
-        M=$((BUILD_TIME / 60))
-        S=$((BUILD_TIME % 60))
-        FAIL="Build failed to compile after ${M} minutes and ${S} seconds"
-        MSG="<b>${FAIL}</b> ${STATUS_MSG}"
-        _send_msg "${MSG}"
-        _send_file "${LOG}" "${FAIL}"
+    # Kill the current child
+    if [[ ${!} ]]; then
+        kill -9 ${!} &>/dev/null
     fi
 
     # Get user inputs and add them to logfile
@@ -139,21 +120,27 @@ _exit() {
         diff bashvar buildervar | grep -E "^> [A-Z_]{3,18}=" >> "${LOG}"
     fi
 
+    # On build error send status and logs on Telegram
+    if [[ ${START_TIME} ]] && [[ ! $BUILD_TIME ]] && \
+            [[ ${BUILD_STATUS} == True ]]; then
+        END_TIME=$(TZ=${TIMEZONE} date +%s)
+        BUILD_TIME=$((END_TIME - START_TIME))
+        M=$((BUILD_TIME / 60))
+        S=$((BUILD_TIME % 60))
+        MSG="Build failed to compile after ${M} minutes and ${S} seconds"
+        _send_file "${LOG}" "v${LINUX_VERSION}  |  ${MSG}"
+    fi
+
     # Remove inputs files
     FILES=(bashvar buildervar linuxver)
     for FILE in "${FILES[@]}"; do
         if [[ -f ${FILE} ]]; then rm "${FILE}"; fi
     done
 
-    # Kill the current child
-    if [[ ${!} ]]; then
-        kill -9 ${!} &>/dev/null
-    fi
-
     # Display timeout exit msg
     for (( SECOND=3; SECOND>=1; SECOND-- )); do
         echo -ne \
-            "\r\033[K${BLUE}Exit Neternels-Builder in ${SECOND}s...${NC}"
+             "\r\033[K${BLUE}Exit Neternels-Builder in ${SECOND}s...${NC}"
         sleep 1
     done
 

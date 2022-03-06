@@ -27,33 +27,32 @@ _create_flashable_zip() {
 
     # Send build status to Telegram
     if [[ ${BUILD_STATUS} == True ]]; then
-        _send_msg "${BUILD_NAME} | Started flashable zip creation"
+        _send_msg "${BUILD_NAME}  |  Started flashable zip creation"
     fi
 
     # Move GZ-DTB to AnyKernel folder
-    _check cp "$OUT_DIR"/arch/arm64/boot/Image.gz-dtb "${ANYKERNEL_DIR}"
+    cp "$OUT_DIR"/arch/arm64/boot/Image.gz-dtb "${ANYKERNEL_DIR}"
 
     # CD to AnyKernel folder
     cd "${ANYKERNEL_DIR}" || (_error "AnyKernel not found !"; _exit)
 
     # Set anykernel.sh
-    _check sed -i "s/kernel.string=.*/kernel.string=${TAG}-${CODENAME}/g" \
+    sed -i "s/kernel.string=.*/kernel.string=${TAG}-${CODENAME}/g" \
         anykernel.sh
-    _check sed -i "s/kernel.for=.*/kernel.for=${KERNEL_VARIANT}/g" \
+    sed -i "s/kernel.for=.*/kernel.for=${KERNEL_VARIANT}/g" \
         anykernel.sh
-    _check sed -i "s/kernel.compiler=.*/kernel.compiler=${COMPILER}/g" \
+    sed -i "s/kernel.compiler=.*/kernel.compiler=${COMPILER}/g" \
         anykernel.sh
-    _check sed -i "s/kernel.made=.*/kernel.made=${BUILDER}/g" anykernel.sh
-    _check sed -i "s/kernel.version=.*/kernel.version=${LINUX_VERSION}/g" \
+    sed -i "s/kernel.made=.*/kernel.made=${BUILDER}/g" anykernel.sh
+    sed -i "s/kernel.version=.*/kernel.version=${LINUX_VERSION}/g" \
         anykernel.sh
-    _check sed -i "s/message.word=.*/message.word=NetEnerls ~ \
-Development is Life ~ t.me\/neternels/g" anykernel.sh
-    _check sed -i "s/build.date=.*/build.date=$DATE/g" anykernel.sh
-    _check sed -i "s/device.name1=.*/device.name1=${CODENAME}/g" anykernel.sh
+    sed -i "s/message.word=.*/message.word=Netenerls Team/g" anykernel.sh
+    sed -i "s/build.date=.*/build.date=$DATE/g" anykernel.sh
+    sed -i "s/device.name1=.*/device.name1=${CODENAME}/g" anykernel.sh
 
     # Create flashable zip
-    _check unbuffer zip -r9 \
-"${BUILD_NAME}"-"${DATE}".zip ./* -x .git README.md ./*placeholder 2>&1
+    unbuffer zip -r9 "${BUILD_NAME}"-"${DATE}".zip ./* \
+        -x .git README.md ./*placeholder 2>&1
 
     # Move zip to builds folder
     mv "${BUILD_NAME}"-"${DATE}".zip "${BUILD_DIR}"
@@ -68,13 +67,13 @@ _sign_flashable_zip() {
 
     # Send build status to Telegram
     if [[ ${BUILD_STATUS} == True ]]; then
-        _send_msg "${BUILD_NAME} | Signing Zip file with AOSP keys"
+        _send_msg "${BUILD_NAME}  |  Signing Zip file with AOSP keys"
     fi
 
     # Sign flashable zip
-    _check unbuffer java -jar "${ANYKERNEL_DIR}"/zipsigner-3.0.jar \
-"${BUILD_DIR}"/"${BUILD_NAME}"-"${DATE}".zip \
-"${BUILD_DIR}"/"${BUILD_NAME}"-"${DATE}"-signed.zip 2>&1
+    unbuffer java -jar "${ANYKERNEL_DIR}"/zipsigner-3.0.jar \
+        "${BUILD_DIR}"/"${BUILD_NAME}"-"${DATE}".zip \
+        "${BUILD_DIR}"/"${BUILD_NAME}"-"${DATE}"-signed.zip 2>&1
 }
 
 
@@ -83,14 +82,14 @@ _create_zip_option() {
         _note "Creating ${OPTARG}-{DATE}-${TIME}.zip..."
 
         # Move GZ-DTB to AnyKernel folder
-        _check cp "${OPTARG}" "${ANYKERNEL_DIR}"
+        cp "${OPTARG}" "${ANYKERNEL_DIR}"
 
         # CD to AnyKernel folder
         cd "${ANYKERNEL_DIR}" || (_error "AnyKernel not found !"; _exit)
 
         # Create flashable zip
-        _check zip -r9 \
-"${OPTARG}-${DATE}-${TIME}".zip ./* -x .git README.md ./*placeholder 2>&1
+        zip -r9 "${OPTARG}-${DATE}-${TIME}".zip ./* \
+            -x .git README.md ./*placeholder 2>&1
 
         # Move zip to builds folder
         if [[ ! -d ${DIR}/builds/default ]]; then
