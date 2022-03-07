@@ -107,9 +107,10 @@ _error() {
 
 # Notify on ERR
 _notify_error() {
-    _error \
-        "${BASH_COMMAND//wait/keyboard_interrupt} (from: $(caller))"
-    _exit
+    SRC_LINE="${BASH_LINENO[$i+1]}"
+    SRC_FUNC="${FUNCNAME[$i+1]}"
+    SRC_FILE="${BASH_SOURCE[$i+1]##*/}"
+    _error "${BASH_COMAND} (${SRC_LINE}: ${SRC_FUNC} > ${SRC_FILE##*/})"
 }
 
 
