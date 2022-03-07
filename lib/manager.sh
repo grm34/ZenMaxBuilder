@@ -105,9 +105,10 @@ _error() {
 }
 
 
-# Notify msg on ERR
+# Notify on ERR
 _notify_error() {
-    _error "$(caller): ${BASH_COMMAND//wait/keyboard_interrupt}"
+    _error \
+        "${BASH_COMMAND//wait/keyboard_interrupt} (from: $(caller))"
     _exit
 }
 
