@@ -123,7 +123,7 @@ _exit() {
     fi
 
     # Get user inputs and add them to logfile
-    if [[ -f bashvar ]] && [[ ${FOLDERS} ]]; then
+    if [[ -f bashvar ]] && [[ -f linuxver ]]; then
         set | grep -v "${EXCLUDE_VARS}" > buildervar
         printf "\n### USER INPUT LOGS ###\n" >> "${LOG}"
         diff bashvar buildervar | grep -E "^> [A-Z_]{3,18}=" >> "${LOG}"
