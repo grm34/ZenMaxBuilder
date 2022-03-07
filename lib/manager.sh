@@ -105,6 +105,13 @@ _error() {
 }
 
 
+# Notify msg on ERR
+_notify_error() {
+    _error "$(caller): ${BASH_COMMAND//wait/keyboard_interrupt}"
+    _exit
+}
+
+
 # Properly exit with 3s timeout
 _exit() {
 

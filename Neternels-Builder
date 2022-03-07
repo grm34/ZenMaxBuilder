@@ -113,9 +113,7 @@ LOG=${DIR}/logs/${CODENAME}/${CODENAME}_${DATE}_${TIME}.log
 printf "Neternels Team @ Development is Life\n" > "${LOG}"
 
 # Trapping bash signals
-trap \
-    '_error "$(caller): ${BASH_COMMAND//wait/keyboard_interrupt}"; _exit' \
-    SIGINT SIGQUIT SIGTSTP ERR
+trap _notify_error SIGINT SIGQUIT SIGTSTP ERR
 
 # Get user configuration
 _ask_for_kernel_dir
