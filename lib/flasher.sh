@@ -99,11 +99,9 @@ _create_zip_option() {
 
         # Back to script dir
         cd "${DIR}" || (_error "${DIR} not found !"; _exit)
-        _exit
 
     else
         # Display error while not DTB
         _error "${OPTARG} is not a valid DTB file !"
-        _exit
     fi
 }

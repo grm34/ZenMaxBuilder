@@ -60,10 +60,8 @@ _send_msg_option() {
     if [[ ${TELEGRAM_CHAT_ID} ]] && [[ ${TELEGRAM_BOT_TOKEN} ]]; then
         _note "Sending message on Telegram...";
         _send_msg "${OPTARG//_/-}"
-        _exit
     else
         _error "you must configure Telegram API settings first !"
-        _exit
     fi
 }
 
@@ -73,13 +71,10 @@ _send_file_option() {
         if [[ ${TELEGRAM_CHAT_ID} ]] && [[ ${TELEGRAM_BOT_TOKEN} ]]; then
             _note "Uploading ${OPTARG} on Telegram..."
             _send_file "${OPTARG}"
-            _exit
         else
             _error "you must configure Telegram API settings first !"
-            _exit
         fi
     else
         _error "file not found: ${OPTARG} !"
-        _exit
     fi
 }

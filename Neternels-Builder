@@ -72,9 +72,9 @@ while getopts ':hum:f:z:' OPTION; do
     case ${OPTION} in
         h)  _banner; _usage; rm "./bashvar"; exit 0;;
         u)  _full_upgrade; _exit;;
-        m)  _send_msg_option;;
-        f)  _send_file_option;;
-        z)  _create_zip_option;;
+        m)  _send_msg_option; _exit;;
+        f)  _send_file_option; _exit;;
+        z)  _create_zip_option; _exit;;
         :)  _error "missing argument for -${OPTARG} !"; _exit;;
         \?) _error "invalid option -${OPTARG} !"; _exit
     esac
