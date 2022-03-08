@@ -84,6 +84,6 @@ _make_build() {
     esac
 
     # Make kernel BUILD
-    unbuffer make -C \
-        "${KERNEL_DIR}" -j"${CORES}" O="${OUT_DIR}" "${PARAMETERS[@]}" 2>&1
+    unbuffer make -C "${KERNEL_DIR}" \
+        -j"${CORES}" O="${OUT_DIR}" "${PARAMETERS[@]}" 2>&1
 }
