@@ -136,12 +136,13 @@ _exit() {
         BUILD_TIME=$((END_TIME - START_TIME))
         M=$((BUILD_TIME / 60))
         S=$((BUILD_TIME % 60))
+        sed 's/\x1b\[[^\x1b]*m//g' "${LOG}" > buildlog
         MSG="Build Failed to Compile After ${M} minutes and ${S} seconds"
-        _send_file "${LOG}" "v${LINUX_VERSION//_/-}  |  ${MSG}"
+        _send_file buildlog "v${LINUX_VERSION//_/-}  |  ${MSG}"
     fi
 
     # Remove inputs files
-    FILES=(bashvar buildervar linuxver)
+    FILES=(bashvar buildervar linuxver buildlog)
     for FILE in "${FILES[@]}"; do
         if [[ -f ${FILE} ]]; then rm "${FILE}"; fi
     done
@@ -165,12 +166,6 @@ _clean_anykernel() {
     for UW in "${UNWANTED[@]}"; do
         rm -f "${ANYKERNEL_DIR}/${UW}"
     done
-}
-
-
-# Download show progress bar only
-_wget() {
-    wget -O "${1}" --quiet --show-progress "${2}"
 }
 
 
