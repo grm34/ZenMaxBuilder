@@ -181,15 +181,13 @@ if [[ ${NEW_BUILD} == False ]]; then
     _note "Build cancelled: ${BUILD_NAME}..."
     _exit
 else
-    # Build status report and logs
+    # Build status ?
     _ask_for_telegram
+
+    # Build logs
     TIME=$(TZ=${TIMEZONE} date +%H-%M-%S)
     START_TIME=$(TZ=${TIMEZONE} date +%s)
     LOG=${DIR}/logs/${CODENAME}/${CODENAME}_${DATE}_${TIME}.log
-    printf \
-        "Starting %s v%s build with %s\n" \
-        "${CODENAME}" "${LINUX_VERSION}" "${COMPILER}" \
-        > "${LOG}"
 
     # Make kernel
     _make_build | tee -a "${LOG}" & wait ${!}
