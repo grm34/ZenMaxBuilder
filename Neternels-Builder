@@ -96,8 +96,8 @@ for FOLDER in "${FOLDERS[@]}"; do
     if [[ ! -d ${DIR}/${FOLDER}/${CODENAME} ]] && \
             [[ ${FOLDER} != toolchains ]]; then
         mkdir -p "${DIR}/${FOLDER}/${CODENAME}"
-#    elif [[ ! -d ${DIR}/${FOLDER} ]]; then
-#        mkdir "${DIR}/${FOLDER}"
+    elif [[ ! -d ${DIR}/${FOLDER} ]]; then
+        mkdir "${DIR}/${FOLDER}"
     fi
 done
 
