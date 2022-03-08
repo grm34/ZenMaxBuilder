@@ -78,7 +78,7 @@ TAG="Neternels"
 # Note: who the f* wants RT build status in TG?
 # ---------------------------------------------
 TELEGRAM_CHAT_ID=""
-TELEGRAM_BOT_TOKEN="default"
+TELEGRAM_BOT_TOKEN=""
 
 
 ## ADVANCED OPTIONS (do not edit when not sure)
