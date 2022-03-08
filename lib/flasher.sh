@@ -31,7 +31,7 @@ _create_flashable_zip() {
     fi
 
     # Move GZ-DTB to AnyKernel folder
-    cp "$OUT_DIR"/arch/arm64/boot/Image.gz-dtb "${ANYKERNEL_DIR}"
+    cp "$OUT_DIR/arch/${ARCH}/boot/Image.gz-dtb" "${ANYKERNEL_DIR}"
 
     # CD to AnyKernel folder
     cd "${ANYKERNEL_DIR}" || (_error "AnyKernel not found !"; _exit)

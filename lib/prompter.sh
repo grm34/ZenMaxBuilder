@@ -62,7 +62,7 @@ _ask_for_codename() {
 
 
 _ask_for_defconfig() {
-    cd "${KERNEL_DIR}"/arch/arm64/configs/ || \
+    cd "${KERNEL_DIR}/arch/${ARCH}/configs" || \
         (_error "${KERNEL_DIR} not found !"; _exit)
     QUESTION="Enter defconfig name (e.q. neternels_defconfig) :"
     _prompt "${QUESTION}"; read -r -e DEFCONFIG

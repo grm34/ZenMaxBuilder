@@ -41,16 +41,16 @@ _make_defconfig() {
 
 _make_menuconfig() {
     _note "Make menuconfig..."
-    make -C "${KERNEL_DIR}" O="${OUT_DIR}" ARCH=arm64 \
+    make -C "${KERNEL_DIR}" O="${OUT_DIR}" ARCH="${ARCH}" \
         menuconfig "${OUT_DIR}"/.config
 }
 
 _save_defconfig() {
-    _note "Saving ${DEFCONFIG} in arch/arm64/configs..."
-    cp "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}" \
-        "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}"_save
+    _note "Saving ${DEFCONFIG} in arch/${ARCH}/configs..."
+    cp "${KERNEL_DIR}/arch/${ARCH}/configs/${DEFCONFIG}" \
+        "${KERNEL_DIR}/arch/${ARCH}/configs/${DEFCONFIG}_save"
     cp "${OUT_DIR}"/.config \
-        "${KERNEL_DIR}"/arch/arm64/configs/"${DEFCONFIG}"
+        "${KERNEL_DIR}/arch/${ARCH}/configs/${DEFCONFIG}"
 }
 
 
