@@ -90,21 +90,18 @@ _note "Starting new kernel build on ${DATE} (...)"
 # Get device codename
 _ask_for_codename
 
-# Create global folders
+# Create device folders
 FOLDERS=(builds logs toolchains out)
 for FOLDER in "${FOLDERS[@]}"; do
-    if [[ ! -d ${DIR}/${FOLDER} ]]; then
-        mkdir "${DIR}/${FOLDER}"
+    if [[ ! -d ${DIR}/${FOLDER}/${CODENAME} ]] && \
+            [[ ${FOLDER} != toolchains ]]; then
+        mkdir -p "${DIR}/${FOLDER}/${CODENAME}"
+#    elif [[ ! -d ${DIR}/${FOLDER} ]]; then
+#        mkdir "${DIR}/${FOLDER}"
     fi
 done
 
-# Create current device folders
-FOLDERS=(builds logs out)
-for FOLDER in "${FOLDERS[@]}"; do
-    if [[ ! -d ${DIR}/${FOLDER}/${CODENAME} ]]; then
-        mkdir "${DIR}/${FOLDER}/${CODENAME}"
-    fi
-done
+# Export working folders
 export OUT_DIR=${DIR}/out/${CODENAME}
 export BUILD_DIR=${DIR}/builds/${CODENAME}
 
