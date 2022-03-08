@@ -30,7 +30,6 @@ set -m -E -o pipefail
 
 # Load configuration
 source "${DIR}/config"
-DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
 
 # Load libraries
 source "${DIR}/lib/manager.sh"
@@ -85,6 +84,7 @@ shift $(( OPTIND - 1 ))
 
 # Start new build
 _banner
+DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
 _note "Starting new kernel build on ${DATE} (...)"
 
 # Get device codename
