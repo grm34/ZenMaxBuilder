@@ -124,7 +124,7 @@ _exit() {
     fi
 
     # Get user inputs and add them to logfile
-    if [[ -f bashvar ]] && [[ -f ${LOG} ]]; then
+    if [[ -f ${DIR}/bashvar ]] && [[ -f ${LOG} ]]; then
         set | grep -v "${EXCLUDE_VARS}" > buildervar
         printf "\n### USER INPUT LOGS ###\n" >> "${LOG}"
         diff bashvar buildervar | grep -E "^> [A-Z_]{3,18}=" >> "${LOG}"
@@ -139,13 +139,15 @@ _exit() {
         S=$((BUILD_TIME % 60))
         sed 's/\x1b\[[^\x1b]*m//g' "${LOG}" > buildlog
         MSG="Build Failed to Compile After ${M} minutes and ${S} seconds"
-        _send_file buildlog "v${LINUX_VERSION//_/-}  |  ${MSG}"
+        _send_file "${DIR}/buildlog" "v${LINUX_VERSION//_/-}  |  ${MSG}"
     fi
 
     # Remove inputs files
     FILES=(bashvar buildervar linuxver buildlog)
     for FILE in "${FILES[@]}"; do
-        if [[ -f ${FILE} ]]; then rm "${FILE}"; fi
+        if [[ -f ${DIR}/${FILE} ]]; then
+            rm "${DIR}/${FILE}"
+        fi
     done
 
     # Display timeout exit msg
