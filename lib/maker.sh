@@ -28,14 +28,13 @@ _make_clean() {
     _note "Make mrproper (this could take a while)..."
     unbuffer make -C "${KERNEL_DIR}" mrproper 2>&1
     rm -rf "${OUT_DIR}"
-    _clean_anykernel
 }
 
 
 _make_defconfig() {
     _note "Make ${DEFCONFIG} (${LINUX_VERSION})..."
     unbuffer make -C "${KERNEL_DIR}" O="${OUT_DIR}" \
-        ARCH=arm64 "${DEFCONFIG}" 2>&1
+        ARCH="${ARCH}" "${DEFCONFIG}" 2>&1
 }
 
 

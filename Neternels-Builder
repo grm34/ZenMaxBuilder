@@ -24,14 +24,13 @@
 
 # Enable job control
 DIRNAME=$(dirname "${0}")
-DIR="${PWD}/${DIRNAME}"
+DIR=${PWD}/${DIRNAME}
 set > "${DIR}/bashvar"
 set -m -E -o pipefail
 
 # Load configuration
 source "${DIR}/config"
 DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
-TIME=$(TZ=${TIMEZONE} date +%H-%M-%S)
 
 # Load libraries
 source "${DIR}/lib/manager.sh"
@@ -105,12 +104,8 @@ for FOLDER in "${FOLDERS[@]}"; do
         mkdir "${DIR}/${FOLDER}/${CODENAME}"
     fi
 done
-export OUT_DIR="${DIR}/out/${CODENAME}"
-export BUILD_DIR="${DIR}/builds/${CODENAME}"
-
-# Create logfile
-LOG=${DIR}/logs/${CODENAME}/${CODENAME}_${DATE}_${TIME}.log
-printf "Neternels Team @ Development is Life\n" > "${LOG}"
+export OUT_DIR=${DIR}/out/${CODENAME}
+export BUILD_DIR=${DIR}/builds/${CODENAME}
 
 # Trapping bash signals
 trap '_error "keyboard interrupt !"; _exit' INT QUIT TSTP
@@ -124,9 +119,9 @@ _ask_for_toolchain
 _ask_for_cores
 
 # Install and clone requirements
-_install_dependencies | tee -a "${LOG}"
-_clone_toolchains | tee -a "${LOG}"
-_clone_anykernel | tee -a "${LOG}"
+_install_dependencies
+_clone_toolchains
+_clone_anykernel
 
 # Export target variables
 if [[ ${BUILDER} == default ]]; then BUILDER=$(whoami); fi
@@ -141,7 +136,7 @@ export ANDROID_MAJOR_RELEASE=${ANDROID_MAJOR_RELEASE}
 _note "Make kernel version..."
 make -C "${KERNEL_DIR}" kernelversion | grep -v make > linuxver & wait ${!}
 LINUX_VERSION=$(cat linuxver)
-BUILD_NAME="${TAG}-${CODENAME}-${LINUX_VERSION}"
+BUILD_NAME=${TAG}-${CODENAME}-${LINUX_VERSION}
 
 # Telegram status msg
 STATUS_MSG="
@@ -159,13 +154,14 @@ STATUS_MSG="
 # Make clean
 _ask_for_make_clean
 if [[ ${MAKE_CLEAN} == True ]]; then
-    _make_clean | tee -a "${LOG}" & wait ${!}
-else
-    _clean_anykernel
+    _make_clean & wait ${!}
 fi
 
+# Clean AnyKernel
+_clean_anykernel
+
 # Make defconfig
-_make_defconfig | tee -a "${LOG}" & wait ${!}
+_make_defconfig & wait ${!}
 
 # Make menuconfig
 if [[ ${MENUCONFIG} == True ]]; then
@@ -187,8 +183,13 @@ if [[ ${NEW_BUILD} == False ]]; then
     _note "Build cancelled: ${BUILD_NAME}..."
     _exit
 else
+    # Build status report and logs
     _ask_for_telegram
     START_TIME=$(TZ=${TIMEZONE} date +%s)
+    LOG=${DIR}/logs/${CODENAME}/${CODENAME}_${DATE}_${START_TIME}.log
+    printf "Starting ${CODENAME} build with ${COMPILER}\n" > "${LOG}"
+
+    # Make kernel
     _make_build | tee -a "${LOG}" & wait ${!}
 fi
 
@@ -196,12 +197,14 @@ fi
 END_TIME=$(TZ=${TIMEZONE} date +%s)
 BUILD_TIME=$((END_TIME - START_TIME))
 
-# Display build status
+# Display build status on TERM
 M=$((BUILD_TIME / 60))
 S=$((BUILD_TIME % 60))
 SUCCESS="Successfully compiled after ${M} minutes and ${S} seconds"
 MSG="<b>${SUCCESS}</b> ${STATUS_MSG}"
 _note "${SUCCESS}"
+
+# Send build status on Telegram
 if [[ ${BUILD_STATUS} == True ]]; then
     _send_msg "${MSG}"
 fi
@@ -211,9 +214,10 @@ _ask_for_flashable_zip
 if [[ ${FLASH_ZIP} == True ]]; then
     _create_flashable_zip | tee -a "${LOG}"
     _sign_flashable_zip | tee -a "${LOG}"
-fi
+fim
 
 # Upload build and say goodbye
 _upload_build_on_telegram
 _clean_anykernel
-_goodbye_msg && _exit
+_goodbye_msg
+_exit
