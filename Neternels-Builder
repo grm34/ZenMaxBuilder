@@ -48,7 +48,8 @@ if [[ $(uname) != Linux ]]; then
 elif [[ ! -f ${PWD}/config ]] || [[ ! -f ${PWD}/lib/maker.sh ]]; then
     _error "run this script from Neternels-Builder folder !"
     _exit
-elif [[ $KERNEL_DIR != default  ]] && [[ ! -f $KERNEL_DIR/Makefile ]]; then
+elif [[ $KERNEL_DIR != default  ]] && \
+        [[ ! -f $KERNEL_DIR/Makefile ]]; then
     _error "you must specify a valid kernel path in config file !"
     _exit
 fi
@@ -134,7 +135,8 @@ export ANDROID_MAJOR_RELEASE=${ANDROID_MAJOR_RELEASE}
 
 # Make kernel version
 _note "Make kernel version..."
-make -C "${KERNEL_DIR}" kernelversion | grep -v make > linuxver & wait ${!}
+make -C "${KERNEL_DIR}" kernelversion | \
+    grep -v make > linuxver & wait ${!}
 LINUX_VERSION=$(cat linuxver)
 BUILD_NAME=${TAG}-${CODENAME}-${LINUX_VERSION}
 
@@ -185,10 +187,12 @@ if [[ ${NEW_BUILD} == False ]]; then
 else
     # Build status report and logs
     _ask_for_telegram
+    TIME=$(TZ=${TIMEZONE} date +%H-%M-%S)
     START_TIME=$(TZ=${TIMEZONE} date +%s)
-    LOG=${DIR}/logs/${CODENAME}/${CODENAME}_${DATE}_${START_TIME}.log
+    LOG=${DIR}/logs/${CODENAME}/${CODENAME}_${DATE}_${TIME}.log
     printf \
-        "Starting ${CODENAME} v{LINUX_VERSION} build with ${COMPILER}\n" \
+        "Starting %s v%s build with %s\n" \
+        "${CODENAME}" "${LINUX_VERSION}" "${COMPILER}" \
         > "${LOG}"
 
     # Make kernel
@@ -216,7 +220,7 @@ _ask_for_flashable_zip
 if [[ ${FLASH_ZIP} == True ]]; then
     _create_flashable_zip | tee -a "${LOG}"
     _sign_flashable_zip | tee -a "${LOG}"
-fim
+fi
 
 # Upload build and say goodbye
 _upload_build_on_telegram
