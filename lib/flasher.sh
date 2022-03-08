@@ -30,6 +30,16 @@ _create_flashable_zip() {
         _send_msg "${BUILD_NAME//_/-}  |  Started flashable zip creation"
     fi
 
+    # Create init.spectrum.rc
+    if [[ -f ${KERNEL_DIR}/${SPECTRUM} ]]; then
+        cp -af "${KERNEL_DIR}/${SPECTRUM}" init.spectrum.rc
+        B=${BUILD_NAME}
+        sed -i \
+            "s/persist.spectrum.kernel.*/persist.spectrum.kernel ${B}/g" \
+            init.spectrum.rc
+    fi
+
+
     # Move GZ-DTB to AnyKernel folder
     cp "$OUT_DIR/arch/${ARCH}/boot/Image.gz-dtb" "${ANYKERNEL_DIR}"
 
