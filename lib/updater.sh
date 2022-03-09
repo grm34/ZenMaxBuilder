@@ -26,8 +26,8 @@ _full_upgrade() {
 
     # Neternels Builder
     _note "Updating Neternels Builder..."
-    git checkout main
-    git pull origin main
+    git checkout "${NB_BRANCH}"
+    git pull origin "${NB_BRANCH}"
 
     # AnyKernel
     if [[ -d ${ANYKERNEL_DIR} ]]; then

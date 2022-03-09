@@ -88,6 +88,10 @@ TELEGRAM_BOT_TOKEN=""
 # --------------------------
 DEPENDENCIES=(wget git zip llvm lld clang expect)
 
+# Neternels Builder branch
+# ------------------------
+NB_BRANCH="main"
+
 # AnyKernel config
 # ----------------
 ANYKERNEL_DIR="AnyKernel"
