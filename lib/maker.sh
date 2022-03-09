@@ -22,6 +22,31 @@
 #    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+_export_path() {
+
+    # Link Time Optimization (LTO)
+    if [[ ${LTO} == True ]]; then
+        export LD=${LTO_LIBRARY}
+        export LD_LIBRARY_PATH=${LTO_LIBRARY_DIR}
+    fi
+
+    # Set compiler parameters
+    case ${COMPILER} in
+        Proton-Clang)
+            export PATH=${PROTON_CLANG_PATH}:${PATH}
+            PARAMETERS=("${PROTON_CLANG_PARAMETERS[@]}")
+            ;;
+        Eva-GCC)
+            export PATH=${EVA_GCC_PATH}:${PATH}
+            PARAMETERS=("${EVA_GCC_PARAMETERS[@]}")
+            ;;
+        Proton-GCC)
+            export PATH=${PROTON_GCC_PATH}:${PATH}
+            PARAMETERS=("${PROTON_GCC_PARAMETERS[@]}")
+    esac
+}
+
+
 _make_clean() {
     _note "Make clean (this could take a while)..."
     unbuffer make -C "${KERNEL_DIR}" clean 2>&1
@@ -61,27 +86,6 @@ _make_build() {
         MSG="<b>Android Kernel Build Triggered</b> ${STATUS_MSG}"
         _send_msg "${MSG}"
     fi
-
-    # Link Time Optimization (LTO)
-    if [[ ${LTO} == True ]]; then
-        export LD=${LTO_LIBRARY}
-        export LD_LIBRARY_PATH=${LTO_LIBRARY_DIR}
-    fi
-
-    # Set compiler parameters
-    case ${COMPILER} in
-        Proton-Clang)
-            export PATH=${PROTON_CLANG_PATH}:${PATH}
-            PARAMETERS=("${PROTON_CLANG_PARAMETERS[@]}")
-            ;;
-        Eva-GCC)
-            export PATH=${EVA_GCC_PATH}:${PATH}
-            PARAMETERS=("${EVA_GCC_PARAMETERS[@]}")
-            ;;
-        Proton-GCC)
-            export PATH=${PROTON_GCC_PATH}:${PATH}
-            PARAMETERS=("${PROTON_GCC_PARAMETERS[@]}")
-    esac
 
     # Make kernel BUILD
     unbuffer make -C "${KERNEL_DIR}" \

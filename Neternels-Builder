@@ -127,6 +127,7 @@ export KBUILD_BUILD_USER=${BUILDER}
 export KBUILD_BUILD_HOST=${HOST}
 export PLATFORM_VERSION=${PLATFORM_VERSION}
 export ANDROID_MAJOR_RELEASE=${ANDROID_MAJOR_RELEASE}
+_export_path
 
 # Make kernel version
 _note "Make kernel version..."
