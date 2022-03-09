@@ -128,7 +128,7 @@ SPECTRUM="init.spectrum.rc"
 
 # Proton-Clang parameters
 # -----------------------
-PROTON_CLANG_PALTH=${PROTON_DIR}/bin
+PROTON_CLANG_PATH=${PROTON_DIR}/bin
 PROTON_CLANG_PARAMETERS=(
     ARCH=arm64
     SUBARCH=arm64
