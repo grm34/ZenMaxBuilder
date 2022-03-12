@@ -119,7 +119,7 @@ _notify_error() {
 _exit() {
 
     # Kill the current child
-    if [[ ${!} ]]; then
+    if [[ ${!} ]] && [[ ! ${FLASH_ZIP} ]]; then
         kill -9 ${!} &>/dev/null
     fi
 
