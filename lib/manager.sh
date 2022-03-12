@@ -165,7 +165,7 @@ _exit() {
 # Clean AnyKernel Folder
 _clean_anykernel() {
     _note "Cleaning AnyKernel repository..."
-    UNWANTED=(Image.gz-dtb init.spectrum.rc)
+    UNWANTED=(./*.zip Image.gz-dtb init.spectrum.rc)
     for UW in "${UNWANTED[@]}"; do
         rm -f "${ANYKERNEL_DIR}/${UW}"
     done

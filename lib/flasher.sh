@@ -61,11 +61,11 @@ _create_flashable_zip() {
     sed -i "s/device.name1=.*/device.name1=${CODENAME}/g" anykernel.sh
 
     # Create flashable zip
-    unbuffer zip -r9 "${BUILD_NAME}"-"${DATE}".zip ./* \
+    unbuffer zip -r9 "${BUILD_NAME}-${DATE}.zip" ./* \
         -x .git README.md ./*placeholder 2>&1
 
     # Move zip to builds folder
-    mv "${BUILD_NAME}"-"${DATE}".zip "${BUILD_DIR}"
+    mv "${BUILD_NAME}-${DATE}.zip" "${BUILD_DIR}"
 
     # Back to script dir
     cd "${DIR}" || (_error "${DIR} not found !"; _exit)
@@ -81,9 +81,9 @@ _sign_flashable_zip() {
     fi
 
     # Sign flashable zip
-    unbuffer java -jar "${ANYKERNEL_DIR}"/zipsigner-3.0.jar \
-        "${BUILD_DIR}"/"${BUILD_NAME}"-"${DATE}".zip \
-        "${BUILD_DIR}"/"${BUILD_NAME}"-"${DATE}"-signed.zip 2>&1
+    unbuffer java -jar "${ANYKERNEL_DIR}/zipsigner-3.0.jar" \
+        "${BUILD_DIR}/${BUILD_NAME}-${DATE}.zip" \
+        "${BUILD_DIR}/${BUILD_NAME}-${DATE}-signed.zip" 2>&1
 }
 
 
@@ -98,14 +98,20 @@ _create_zip_option() {
         cd "${ANYKERNEL_DIR}" || (_error "AnyKernel not found !"; _exit)
 
         # Create flashable zip
-        zip -r9 "${OPTARG}-${DATE}-${TIME}".zip ./* \
-            -x .git README.md ./*placeholder 2>&1
+        zip -r9 "${OPTARG}-${DATE}-${TIME}.zip" ./* \
+            -x .git README.md ./*placeholder
+
+        # Sign flashable zip
+        _note "Signing Zip file with AOSP keys..."
+        java -jar "${ANYKERNEL_DIR}/zipsigner-3.0.jar" \
+            "${OPTARG}-${DATE}-${TIME}.zip" \
+            "${OPTARG}-${DATE}-${TIME}-signed.zip"
 
         # Move zip to builds folder
         if [[ ! -d ${DIR}/builds/default ]]; then
             mkdir "${DIR}/builds/default"
         fi
-        mv "${OPTARG}-${DATE}-${TIME}".zip "${DIR}/builds/default"
+        mv "${OPTARG}-${DATE}-${TIME}-signed.zip" "${DIR}/builds/default"
 
         # Back to script dir
         cd "${DIR}" || (_error "${DIR} not found !"; _exit)
