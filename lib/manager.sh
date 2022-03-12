@@ -110,8 +110,7 @@ _notify_error() {
     SRC_LINE="${BASH_LINENO[$i+1]}"
     SRC_FUNC="${FUNCNAME[$i+1]}"
     SRC_FILE="${BASH_SOURCE[$i+1]##*/}"
-    _error \
-        "${BASH_COMMAND} (${SRC_LINE}: ${SRC_FUNC} > ${SRC_FILE##*/})"
+    _error "${BASH_COMMAND} (${SRC_LINE}: ${SRC_FUNC} > ${SRC_FILE##*/})"
 }
 
 
@@ -165,7 +164,7 @@ _exit() {
 # Clean AnyKernel Folder
 _clean_anykernel() {
     _note "Cleaning AnyKernel repository..."
-    UNWANTED=(./*.zip Image.gz-dtb init.spectrum.rc)
+    UNWANTED=(*.zip Image.gz* init.spectrum.rc)
     for UW in "${UNWANTED[@]}"; do
         rm -f "${ANYKERNEL_DIR}/${UW}"
     done
