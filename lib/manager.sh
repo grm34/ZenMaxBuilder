@@ -118,8 +118,8 @@ _notify_error() {
 _exit() {
 
     # Kill the current child
-    if [[ ${!} ]] && [[ ! ${FLASH_ZIP} ]]; then
-        kill -9 ${!} &>/dev/null
+    if [[ ${!} ]]; then
+        kill -9 ${!} &>/dev/null || sleep 0.1
     fi
 
     # Get user inputs and add them to logfile
