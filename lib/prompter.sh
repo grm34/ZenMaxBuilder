@@ -36,6 +36,7 @@ _ask_for_kernel_dir() {
 
 
 _ask_for_toolchain() {
+    N="[Y/n]"
     _confirm "Do you wish to use default compiler: ${DEFAULT_COMPILER} ?"
     case ${CONFIRM} in
         n|N|no|No|NO)
@@ -75,18 +76,20 @@ _ask_for_defconfig() {
 
 
 _ask_for_menuconfig() {
+    N="[y/N]"
     _confirm "Do you wish to edit kernel with menuconfig ?"
     case ${CONFIRM} in
-        n|N|no|No|NO)
-            MENUCONFIG=False
+        y|Y|yes|Yes|YES)
+            MENUCONFIG=True
             ;;
         *)
-            MENUCONFIG=True
+            MENUCONFIG=False
     esac
 }
 
 
 _ask_for_cores() {
+    N="[Y/n]"
     _confirm "Do you wish to use all availables CPU Cores ?"
     case ${CONFIRM} in
         n|N|no|No|NO)
@@ -103,31 +106,34 @@ _ask_for_cores() {
 
 _ask_for_telegram() {
     if [[ ${TELEGRAM_CHAT_ID} ]] && [[ ${TELEGRAM_BOT_TOKEN} ]]; then
+        N="[n/Y]"
         _confirm "Do you wish to send build status to Telegram ?"
         case ${CONFIRM} in
-            n|N|no|No|NO)
-                BUILD_STATUS=False
+            y|Y|yes|Yes|YES)
+                BUILD_STATUS=True
                 ;;
             *)
-                BUILD_STATUS=True
+                BUILD_STATUS=False
         esac
     fi
 }
 
 
 _ask_for_make_clean() {
+    N="[y/N]"
     _confirm "Do you wish to make clean build: ${LINUX_VERSION} ?"
     case ${CONFIRM} in
-        n|N|no|No|NO)
-            MAKE_CLEAN=False
+        y|Y|yes|Yes|YES)
+            MAKE_CLEAN=True
             ;;
         *)
-            MAKE_CLEAN=True
+            MAKE_CLEAN=False
     esac
 }
 
 
 _ask_for_save_defconfig() {
+    N="[Y/n]"
     _confirm "Do you wish to save and use: ${DEFCONFIG} ?"
     case ${CONFIRM} in
         n|N|no|No|NO)
@@ -148,6 +154,7 @@ _ask_for_save_defconfig() {
 
 
 _ask_for_new_build() {
+    N="[Y/n]"
     _confirm "Do you wish to start ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
     case ${CONFIRM} in
         n|N|no|No|NO)
@@ -160,6 +167,7 @@ _ask_for_new_build() {
 
 
 _ask_for_flashable_zip() {
+    N="[Y/n]"
     _confirm "Do you wish to zip ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
     case ${CONFIRM} in
         y|Y|yes|Yes|YES)

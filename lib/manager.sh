@@ -70,7 +70,7 @@ _confirm() {
     CONFIRM=True; COUNT=$(( ${#1} + 6 ))
     until [[ ${CONFIRM} =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]] || \
             [[ ${CONFIRM} == "" ]]; do
-        echo -ne "${YELLOW}\n==> ${GREEN}${1} ${RED}[Y/n]${YELLOW}\n==> "
+        echo -ne "${YELLOW}\n==> ${GREEN}${1} ${RED}${N}${YELLOW}\n==> "
         for (( CHAR=1; CHAR<=COUNT; CHAR++ )); do echo -ne "-"; done
         echo -ne "\n==> ${NC}"
         read -r CONFIRM
