@@ -170,10 +170,10 @@ _ask_for_flashable_zip() {
     N="[Y/n]"
     _confirm "Do you wish to zip ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
     case ${CONFIRM} in
-        y|Y|yes|Yes|YES)
-            FLASH_ZIP=True
+        n|N|no|No|NO)
+            FLASH_ZIP=False
             ;;
         *)
-            FLASH_ZIP=False
+            FLASH_ZIP=True
     esac
 }
