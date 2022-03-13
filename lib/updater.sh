@@ -42,7 +42,8 @@ _full_upgrade() {
     # Proton-Clang
     if [[ -d ${PROTON_DIR} ]]; then
         _note "Updating Proton Clang..."
-        cd "${PROTON_DIR}" || (_error "${PROTON_DIR} dir not found !"; _exit)
+        cd "${PROTON_DIR}" || \
+            (_error "${PROTON_DIR} dir not found !"; _exit)
         git checkout "${PROTON_BRANCH}"
         git pull origin "${PROTON_BRANCH}"
         cd "${DIR}" || (_error "${DIR} dir not found !"; _exit)
