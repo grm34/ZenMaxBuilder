@@ -46,20 +46,19 @@ _install_dependencies() {
         fi
     done
 
-    # Display error if not found
-    if [[ ! ${PM[3]} ]]; then
-        _error "OS not found, some dependencies may be required !"
-
     # Install missing dependencies
-    else
+    if [[ ${PM[3]} ]]; then
         for PACKAGE in "${DEPENDENCIES[@]}"; do
             if ! which "${PACKAGE//llvm/llvm-ar}" &>/dev/null; then
                 _ask_for_install_pkg
                 if [[ ${INSTALL_PKG} == True ]]; then
-                    eval "${PM[0]//_/} ${PM[1]} ${PM[2]} ${PM[3]} ${PACKAGE}"
+                    eval "${PM[0]//_/}" "${PM[1]}" \
+                        "${PM[2]}" "${PM[3]}" "${PACKAGE}"
                 fi
             fi
         done
+    else
+        _error "OS not found, some dependencies may be required !"
     fi
 }
 

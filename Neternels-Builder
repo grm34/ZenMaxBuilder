@@ -92,7 +92,7 @@ shift $(( OPTIND - 1 ))
 # Start new build
 # ---------------
 _banner
-_note "Starting new kernel build ${DATE} ${TIME:0:5}"
+_note "Starting new Android Kernel build ${DATE}"
 
 # Get device codename
 _ask_for_codename
