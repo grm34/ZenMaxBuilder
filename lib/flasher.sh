@@ -64,7 +64,7 @@ _create_flashable_zip() {
     unbuffer zip -r9 "${BUILD_NAME}-${DATE}.zip" ./* \
         -x .git README.md ./*placeholder 2>&1
 
-    # Move zip to builds folder
+    # Move zip to builds folder and clean
     mv "${BUILD_NAME}-${DATE}.zip" "${BUILD_DIR}"
 
     # Back to script dir
@@ -81,15 +81,16 @@ _sign_flashable_zip() {
     fi
 
     # Sign flashable zip
-    unbuffer java -jar "${ANYKERNEL_DIR}/zipsigner-3.0.jar" \
+    unbuffer java -jar "${DIR}/lib/zipsigner-3.0.jar" \
         "${BUILD_DIR}/${BUILD_NAME}-${DATE}.zip" \
         "${BUILD_DIR}/${BUILD_NAME}-${DATE}-signed.zip" 2>&1
 }
 
 
 _create_zip_option() {
-    if [[ -f ${OPTARG} ]] && [[ ${OPTARG} == "Image*" ]]; then
-        _note "Creating ${OPTARG}-{DATE}-${TIME}.zip..."
+    if [[ -f ${OPTARG} ]]; then
+        _clean_anykernel
+        _note "Creating ${OPTARG}-{DATE}_${TIME}.zip..."
 
         # Move GZ-DTB to AnyKernel folder
         cp "${OPTARG}" "${ANYKERNEL_DIR}"
@@ -98,22 +99,23 @@ _create_zip_option() {
         cd "${ANYKERNEL_DIR}" || (_error "AnyKernel not found !"; _exit)
 
         # Create flashable zip
-        zip -r9 "${OPTARG}-${DATE}-${TIME}.zip" ./* \
+        zip -r9 "${OPTARG##*/}-${DATE}-${TIME}.zip" ./* \
             -x .git README.md ./*placeholder
 
         # Sign flashable zip
         _note "Signing Zip file with AOSP keys..."
-        java -jar "${ANYKERNEL_DIR}/zipsigner-3.0.jar" \
-            "${OPTARG}-${DATE}-${TIME}.zip" \
-            "${OPTARG}-${DATE}-${TIME}-signed.zip"
+        java -jar "${DIR}/lib/zipsigner-3.0.jar" \
+            "${OPTARG##*/}-${DATE}_${TIME}.zip" \
+            "${OPTARG##*/}-${DATE}_${TIME}-signed.zip"
 
         # Move zip to builds folder
         if [[ ! -d ${DIR}/builds/default ]]; then
             mkdir "${DIR}/builds/default"
         fi
-        mv "${OPTARG}-${DATE}-${TIME}-signed.zip" "${DIR}/builds/default"
+        mv "${OPTARG##*/}-${DATE}_${TIME}-signed.zip" "${DIR}/builds/default"
 
         # Back to script dir
+        _clean_anykernel
         cd "${DIR}" || (_error "${DIR} not found !"; _exit)
 
     else

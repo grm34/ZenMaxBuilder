@@ -22,9 +22,13 @@
 #    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 #    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# Enable job control
+# Neternels Builder
+DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
+TIME=$(TZ=${TIMEZONE} date +%H-%M-%S)
 DIRNAME=$(dirname "${0}")
 DIR=${PWD}/${DIRNAME}
+
+# Job control
 set > "${DIR}/bashvar"
 set -m -E -o pipefail
 
@@ -84,7 +88,6 @@ shift $(( OPTIND - 1 ))
 
 # Start new build
 _banner
-DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
 _note "Starting new kernel build on ${DATE} (...)"
 
 # Get device codename
@@ -181,7 +184,7 @@ if [[ ${NEW_BUILD} == False ]]; then
     _note "Build cancelled: ${BUILD_NAME}..."
     _exit
 else
-    # Build status ?
+    # Build status?
     _ask_for_telegram
 
     # Build logs
