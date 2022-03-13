@@ -22,20 +22,22 @@
 #    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 #    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# Neternels Builder
+# Date & Time
 DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
-TIME=$(TZ=${TIMEZONE} date +%H-%M-%S)
+TIME=$(TZ=${TIMEZONE} date +%Hh%Mm%Ss)
+
+# Get absolute path
 DIRNAME=$(dirname "${0}")
 DIR=${PWD}/${DIRNAME}
 
-# Job control
+# Bash job control
 set > "${DIR}/bashvar"
 set -m -E -o pipefail
 
-# Load configuration
+# Load user settings
 source "${DIR}/config"
 
-# Load libraries
+# Load app libraries
 source "${DIR}/lib/manager.sh"
 source "${DIR}/lib/requirements.sh"
 source "${DIR}/lib/telegram.sh"
@@ -44,7 +46,7 @@ source "${DIR}/lib/maker.sh"
 source "${DIR}/lib/prompter.sh"
 source "${DIR}/lib/updater.sh"
 
-# Ban all n00bz
+# Ban all ('n00bz')
 if [[ $(uname) != Linux ]]; then
     _error "run this script on Linux !"
     _exit
@@ -70,7 +72,7 @@ for OPT in "${@}"; do
     esac
 done
 
-# Handle opts
+# Handle app opts
 while getopts ':hum:f:z:' OPTION; do
     case ${OPTION} in
         h)  _banner; _usage; rm "./bashvar"; exit 0;;
@@ -86,9 +88,11 @@ done
 # Remove opts from positional parameters
 shift $(( OPTIND - 1 ))
 
+
 # Start new build
+# ---------------
 _banner
-_note "Starting new kernel build on ${DATE} (...)"
+_note "Starting new kernel build ${DATE} ${TIME:0:5}"
 
 # Get device codename
 _ask_for_codename

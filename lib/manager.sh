@@ -107,19 +107,21 @@ _error() {
 
 # Notify on ERR
 _notify_error() {
+    CMD="${BASH_COMMAND/read*/keyboard interrupt !}"
+    CMD="${CMD/wait*/keyboard interrupt !}"
     SRC_LINE="${BASH_LINENO[$i+1]}"
     SRC_FUNC="${FUNCNAME[$i+1]}"
     SRC_FILE="${BASH_SOURCE[$i+1]##*/}"
-    _error "${BASH_COMMAND} (${SRC_LINE}: ${SRC_FUNC} > ${SRC_FILE##*/})"
+    _error "${CMD} Line ${SRC_LINE}: ${SRC_FUNC} From: ${SRC_FILE##*/}"
 }
 
 
 # Properly exit with 3s timeout
 _exit() {
 
-    # Kill the current child
-    if [[ ${!} ]]; then
-        kill -9 ${!} &>/dev/null || sleep 0.1
+    # Kill current make child
+    if pidof make; then
+        pkill make || sleep 0.1
     fi
 
     # Get user inputs and add them to logfile
