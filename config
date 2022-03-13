@@ -100,19 +100,19 @@ ANYKERNEL_BRANCH="Neternels-Builder"
 
 # Proton-Clang config
 # -------------------
-PROTON_DIR="toolchains/proton_clang"
+PROTON_DIR="${PWD}/toolchains/proton_clang"
 PROTON_URL="https://github.com/kdrag0n/proton-clang.git"
 PROTON_BRANCH="master"
 
 # GCC ARM64 config
 # ----------------
-GCC_ARM64_DIR="toolchains/gcc_arm64"
+GCC_ARM64_DIR="${PWD}/toolchains/gcc_arm64"
 GCC_ARM64_URL="https://github.com/mvaisakh/gcc-arm64.git"
 GCC_ARM64_BRANCH="gcc-master"
 
 # GCC ARM config
 # --------------
-GCC_ARM_DIR="toolchains/gcc_arm"
+GCC_ARM_DIR="${PWD}/toolchains/gcc_arm"
 GCC_ARM_URL="https://github.com/mvaisakh/gcc-arm.git"
 GCC_ARM_BRANCH="gcc-master"
 
