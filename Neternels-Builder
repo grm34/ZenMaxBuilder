@@ -212,6 +212,7 @@ fi
 # Create and sign flashable zip
 _ask_for_flashable_zip
 if [[ ${FLASH_ZIP} == True ]]; then
+    _ask_for_kernel_image
     _create_flashable_zip | tee -a "${LOG}"
     _sign_flashable_zip | tee -a "${LOG}"
 fi

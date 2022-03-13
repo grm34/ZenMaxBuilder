@@ -65,7 +65,7 @@ _ask_for_codename() {
 _ask_for_defconfig() {
     cd "${KERNEL_DIR}/arch/${ARCH}/configs" || \
         (_error "${KERNEL_DIR} not found !"; _exit)
-    QUESTION="Enter defconfig name (e.q. neternels_defconfig) :"
+    QUESTION="Enter defconfig file to use (e.q. neternels_defconfig) :"
     _prompt "${QUESTION}"; read -r -e DEFCONFIG
     until [[ -f ${DEFCONFIG} ]] && [[ ${DEFCONFIG} == *defconfig ]]; do
         _error "[ ${DEFCONFIG} ] is not a valid defconfig file !"
@@ -176,4 +176,18 @@ _ask_for_flashable_zip() {
         *)
             FLASH_ZIP=True
     esac
+}
+
+
+_ask_for_kernel_image() {
+    cd "${DIR}/out/${CODENAME}/arch/${ARCH}/boot" || (_error \
+        "${DIR}/out/${CODENAME}/arch/${ARCH}/boot not found !"; _exit)
+    QUESTION="Enter kernel image to use (e.q. Image.gz-dtb) :"
+    _prompt "${QUESTION}"; read -r -e KERNEL_IMG
+    until [[ -f ${KERNEL_IMG} ]] && [[ ${KERNEL_IMG} == Image* ]]; do
+        _error "[ ${KERNEL_IMG} ] is not a valid kernel image !"
+        _prompt "${QUESTION}"; read -r -e KERNEL_IMG
+    done
+    KERNEL_IMG="${DIR}/out/${CODENAME}/arch/${ARCH}/boot/${KERNEL_IMG}"
+    cd "${DIR}" || (_error "${DIR} not found !"; _exit)
 }

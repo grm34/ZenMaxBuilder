@@ -40,8 +40,8 @@ _create_flashable_zip() {
     fi
 
 
-    # Move GZ-DTB to AnyKernel folder
-    cp "$OUT_DIR/arch/${ARCH}/boot/Image.gz*" "${ANYKERNEL_DIR}"
+    # Move Kernel Image to AnyKernel folder
+    cp "${KERNEL_IMG}" "${ANYKERNEL_DIR}"
 
     # CD to AnyKernel folder
     cd "${ANYKERNEL_DIR}" || (_error "AnyKernel not found !"; _exit)
@@ -88,8 +88,7 @@ _sign_flashable_zip() {
 
 
 _create_zip_option() {
-    if [[ -f ${OPTARG} ]] && { [[ ${OPTARG: -4} == ".dtb" ]] \
-            || [[ ${OPTARG: -3} == ".gz" ]]; }; then
+    if [[ -f ${OPTARG} ]] && [[ ${OPTARG} == "Image*" ]]; then
         _note "Creating ${OPTARG}-{DATE}-${TIME}.zip..."
 
         # Move GZ-DTB to AnyKernel folder
@@ -119,6 +118,6 @@ _create_zip_option() {
 
     else
         # Display error while not valid
-        _error "${OPTARG} is not a valid Kernel file !"
+        _error "[ ${OPTARG} ] is not a valid kernel image !"
     fi
 }
