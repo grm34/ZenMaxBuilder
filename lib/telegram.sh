@@ -47,7 +47,7 @@ _send_file() {
 
 
 _upload_build_on_telegram() {
-    if [[ ${BUILD_STATUS} == True ]]; then
+    if [[ ${BUILD_STATUS} == True ]] && [[ ${FLASH_ZIP} == True ]]; then
         _note "Uploading build on Telegram..."
         FILE="${BUILD_DIR}/${BUILD_NAME}-${DATE}-signed.zip"
         MD5=$(md5sum "${FILE}" | cut -d' ' -f1)
@@ -75,6 +75,6 @@ _send_file_option() {
             _error "you must configure Telegram API settings first !"
         fi
     else
-        _error "file not found: ${OPTARG} !"
+        _error "${OPTARG} file not found !"
     fi
 }

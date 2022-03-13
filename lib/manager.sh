@@ -146,7 +146,7 @@ _exit() {
     FILES=(bashvar buildervar linuxver buildlog)
     for FILE in "${FILES[@]}"; do
         if [[ -f ${DIR}/${FILE} ]]; then
-            rm "${DIR}/${FILE}"
+            rm "${DIR}/${FILE}" || sleep 0.1
         fi
     done
 
@@ -167,7 +167,7 @@ _clean_anykernel() {
     _note "Cleaning AnyKernel repository..."
     UNWANTED=(*.zip Image* *-dtb init.spectrum.rc)
     for UW in "${UNWANTED[@]}"; do
-        rm -f "${ANYKERNEL_DIR}/${UW}"
+        rm -f "${ANYKERNEL_DIR}/${UW}" || sleep 0.1
     done
 }
 

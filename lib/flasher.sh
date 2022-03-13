@@ -43,7 +43,7 @@ _create_flashable_zip() {
     cp "${KERNEL_IMG}" "${ANYKERNEL_DIR}"
 
     # CD to AnyKernel folder
-    cd "${ANYKERNEL_DIR}" || (_error "AnyKernel not found !"; _exit)
+    cd "${ANYKERNEL_DIR}" || (_error "AnyKernel dir not found !"; _exit)
 
     # Set anykernel.sh
     sed -i "s/kernel.string=.*/kernel.string=${TAG}-${CODENAME}/g" \
@@ -67,7 +67,7 @@ _create_flashable_zip() {
     mv "${BUILD_NAME}-${DATE}.zip" "${BUILD_DIR}"
 
     # Back to script dir
-    cd "${DIR}" || (_error "${DIR} not found !"; _exit)
+    cd "${DIR}" || (_error "${DIR} dir not found !"; _exit)
 }
 
 
@@ -95,7 +95,7 @@ _create_zip_option() {
         cp "${OPTARG}" "${ANYKERNEL_DIR}"
 
         # CD to AnyKernel folder
-        cd "${ANYKERNEL_DIR}" || (_error "AnyKernel not found !"; _exit)
+        cd "${ANYKERNEL_DIR}" || (_error "AnyKernel dir not found !"; _exit)
 
         # Create flashable zip
         zip -r9 "${OPTARG##*/}-${DATE}-${TIME}.zip" ./* \
@@ -115,10 +115,10 @@ _create_zip_option() {
 
         # Back to script dir
         _clean_anykernel
-        cd "${DIR}" || (_error "${DIR} not found !"; _exit)
+        cd "${DIR}" || (_error "${DIR} dir not found !"; _exit)
 
     else
         # Display error while not valid
-        _error "[ ${OPTARG} ] is not a valid kernel image !"
+        _error "${OPTARG} not a valid kernel image !"
     fi
 }

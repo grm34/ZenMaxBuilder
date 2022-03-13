@@ -49,11 +49,11 @@ if [[ $(uname) != Linux ]]; then
     _error "run this script on Linux !"
     _exit
 elif [[ ! -f ${PWD}/config ]] || [[ ! -f ${PWD}/lib/maker.sh ]]; then
-    _error "run this script from Neternels-Builder folder !"
+    _error "run this script from Neternels-Builder directory !"
     _exit
 elif [[ $KERNEL_DIR != default  ]] && \
         [[ ! -f $KERNEL_DIR/Makefile ]]; then
-    _error "you must specify a valid kernel path in config file !"
+    _error "invalid kernel directory set in config file !"
     _exit
 fi
 

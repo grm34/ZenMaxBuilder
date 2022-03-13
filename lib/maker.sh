@@ -52,7 +52,7 @@ _make_clean() {
     unbuffer make -C "${KERNEL_DIR}" clean 2>&1
     _note "Make mrproper (this could take a while)..."
     unbuffer make -C "${KERNEL_DIR}" mrproper 2>&1
-    rm -rf "${OUT_DIR}"
+    rm -rf "${OUT_DIR}" || sleep 0.1
 }
 
 
