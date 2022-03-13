@@ -54,9 +54,10 @@ _install_dependencies() {
     else
         for PACKAGE in "${DEPENDENCIES[@]}"; do
             if ! which "${PACKAGE//llvm/llvm-ar}" &>/dev/null; then
-                _note "Package ${PACKAGE} not found ! Installing..."
-                _check eval \
-                    "${PM[0]//_/} ${PM[1]} ${PM[2]} ${PM[3]} ${PACKAGE}"
+                _ask_for_install_pkg
+                if [[ ${INSTALL_PKG} == True ]]; then
+                    eval "${PM[0]//_/} ${PM[1]} ${PM[2]} ${PM[3]} ${PACKAGE}"
+                fi
             fi
         done
     fi
@@ -68,21 +69,21 @@ _clone_toolchains() {
     _clone_proton() {
         if [[ ! -d ${PROTON_DIR} ]]; then
             _note "Proton-Clang repository not found ! Cloning..."
-            _check git clone --depth=1 -b \
+            git clone --depth=1 -b \
                 "${PROTON_BRANCH}" "${PROTON_URL}" "${PROTON_DIR}"
         fi
     }
     _clone_gcc_arm() {
         if [[ ! -d ${GCC_ARM_DIR} ]]; then
             _note "GCC ARM repository not found ! Cloning..."
-            _check git clone --depth=1 -b \
+            git clone --depth=1 -b \
                 "${GCC_ARM_BRANCH}" "${GCC_ARM_URL}" "${GCC_ARM_DIR}"
         fi
     }
     _clone_gcc_arm64() {
         if [[ ! -d ${GCC_ARM64_DIR} ]]; then
             _note "GCC ARM64 repository not found ! Cloning..."
-            _check git clone --depth=1 -b "${GCC_ARM64_BRANCH}" \
+            git clone --depth=1 -b "${GCC_ARM64_BRANCH}" \
                 "${GCC_ARM64_URL}" "${GCC_ARM64_DIR}"
         fi
     }
@@ -108,7 +109,7 @@ _clone_toolchains() {
 _clone_anykernel() {
     if [[ ! -d ${ANYKERNEL_DIR} ]]; then
         _note "AnyKernel repository not found! Cloning..."
-        _check git clone -b "${ANYKERNEL_BRANCH}" \
+        git clone -b "${ANYKERNEL_BRANCH}" \
             "${ANYKERNEL_URL}" "${ANYKERNEL_DIR}"
     fi
 }

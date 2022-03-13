@@ -191,3 +191,16 @@ _ask_for_kernel_image() {
     KERNEL_IMG="${DIR}/out/${CODENAME}/arch/${ARCH}/boot/${KERNEL_IMG}"
     cd "${DIR}" || (_error "${DIR} dir not found !"; _exit)
 }
+
+
+_ask_for_install_pkg() {
+    N="[Y/n]"
+    _confirm "Package ${PACKAGE} not found, do you wish to install ?"
+    case ${CONFIRM} in
+        n|N|no|No|NO)
+            INSTALL_PKG=False
+            ;;
+        *)
+            INSTALL_PKG=True
+    esac
+}
