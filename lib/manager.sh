@@ -126,7 +126,8 @@ _exit() {
     if [[ -f ${DIR}/bashvar ]] && [[ -f ${LOG} ]]; then
         set | grep -v "${EXCLUDE_VARS}" > buildervar
         printf "\n### USER INPUT LOGS ###\n" >> "${LOG}"
-        diff bashvar buildervar | grep -E "^> [A-Z_]{3,18}=" >> "${LOG}"
+        diff bashvar buildervar | \
+            grep -E "^> [A-Z_]{3,18}=" >> "${LOG}" || sleep 0.1
     fi
 
     # On build error send status and logs on Telegram
