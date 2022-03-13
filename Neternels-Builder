@@ -143,19 +143,6 @@ make -C "${KERNEL_DIR}" kernelversion | \
 LINUX_VERSION=$(cat linuxver)
 BUILD_NAME=${TAG}-${CODENAME}-${LINUX_VERSION}
 
-# Telegram status msg
-STATUS_MSG="
-
-<b>Android Device :</b>  <code>${CODENAME/_/-}</code>
-<b>Kernel Version :</b>  <code>v${LINUX_VERSION/_/-}</code>
-<b>Kernel Variant :</b>  <code>${KERNEL_VARIANT/_/-}</code>
-<b>Host Builder :</b>  <code>${BUILDER/_/-}</code>
-<b>Host Core Count :</b>  <code>${CORES}</code>
-<b>Compiler Used :</b>  <code>${COMPILER/_/-}</code>
-<b>Operating System :</b>  <code>${HOST/_/-}</code>
-<b>Build Tag :</b>  <code>${TAG/_/-}</code>
-<b>Android :</b>  <code>${PLATFORM_VERSION/_/-}</code>"
-
 # Make clean
 _ask_for_make_clean
 if [[ ${MAKE_CLEAN} == True ]]; then
@@ -188,8 +175,9 @@ if [[ ${NEW_BUILD} == False ]]; then
     _note "Build cancelled: ${BUILD_NAME}..."
     _exit
 else
-    # Build status?
+    # TG build status
     _ask_for_telegram
+    _telegram_status_msg
 
     # Build logs
     TIME=$(TZ=${TIMEZONE} date +%H-%M-%S)

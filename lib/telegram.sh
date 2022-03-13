@@ -78,3 +78,18 @@ _send_file_option() {
         _error "${OPTARG} file not found !"
     fi
 }
+
+
+_telegram_status_msg() {
+    STATUS_MSG="
+
+<b>Android Device :</b>  <code>${CODENAME/_/-}</code>
+<b>Kernel Version :</b>  <code>v${LINUX_VERSION/_/-}</code>
+<b>Kernel Variant :</b>  <code>${KERNEL_VARIANT/_/-}</code>
+<b>Host Builder :</b>  <code>${BUILDER/_/-}</code>
+<b>Host Core Count :</b>  <code>${CORES}</code>
+<b>Compiler Used :</b>  <code>${COMPILER/_/-}</code>
+<b>Operating System :</b>  <code>${HOST/_/-}</code>
+<b>Build Tag :</b>  <code>${TAG/_/-}</code>
+<b>Android :</b>  <code>${PLATFORM_VERSION/_/-}</code>"
+}
