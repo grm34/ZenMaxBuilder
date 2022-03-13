@@ -167,13 +167,13 @@ _ask_for_new_build() {
 
 
 _ask_for_flashable_zip() {
-    N="[Y/n]"
+    N="[y/n]"
     _confirm "Do you wish to zip ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
     case ${CONFIRM} in
         n|N|no|No|NO)
             FLASH_ZIP=False
             ;;
-        *)
+        y|Y|yes|Yes|YES)
             FLASH_ZIP=True
     esac
 }
