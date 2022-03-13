@@ -81,7 +81,7 @@ _sign_flashable_zip() {
     fi
 
     # Sign flashable zip
-    unbuffer java -jar "${DIR}/lib/zipsigner-3.0.jar" \
+    unbuffer java -jar "${DIR}/lib/tools/zipsigner-3.0.jar" \
         "${BUILD_DIR}/${BUILD_NAME}-${DATE}.zip" \
         "${BUILD_DIR}/${BUILD_NAME}-${DATE}-signed.zip" 2>&1
 }
@@ -104,7 +104,7 @@ _create_zip_option() {
 
         # Sign flashable zip
         _note "Signing Zip file with AOSP keys..."
-        java -jar "${DIR}/lib/zipsigner-3.0.jar" \
+        java -jar "${DIR}/lib/tools/zipsigner-3.0.jar" \
             "${OPTARG##*/}-${DATE}_${TIME}.zip" \
             "${OPTARG##*/}-${DATE}_${TIME}-signed.zip"
 
