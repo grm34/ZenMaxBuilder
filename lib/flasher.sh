@@ -39,7 +39,6 @@ _create_flashable_zip() {
             init.spectrum.rc
     fi
 
-
     # Move Kernel Image to AnyKernel folder
     cp "${KERNEL_IMG}" "${ANYKERNEL_DIR}"
 

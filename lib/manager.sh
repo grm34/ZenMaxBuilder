@@ -67,7 +67,7 @@ _prompt() {
 
 # Ask confirmation (Yes/No)
 _confirm() {
-    CONFIRM=True; COUNT=$(( ${#1} + 6 ))
+    CONFIRM=False; COUNT=$(( ${#1} + 6 ))
     until [[ ${CONFIRM} =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]] || \
             [[ ${CONFIRM} == "" ]]; do
         echo -ne "${YELLOW}\n==> ${GREEN}${1} ${RED}${N}${YELLOW}\n==> "
@@ -118,7 +118,7 @@ _notify_error() {
 _exit() {
 
     # Clear signal trapping
-    trap -- INT QUIT TSTP ERR
+    trap -- ERR
 
     # Kill the current child
     if [[ ${!} ]]; then

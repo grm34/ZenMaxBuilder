@@ -65,7 +65,7 @@ _ask_for_codename() {
 _ask_for_defconfig() {
     cd "${KERNEL_DIR}/arch/${ARCH}/configs" || \
         (_error "${KERNEL_DIR} not found !"; _exit)
-    QUESTION="Enter defconfig file to use (e.q. neternels_defconfig) :"
+    QUESTION="Enter defconfig file (e.q. neternels_defconfig) :"
     _prompt "${QUESTION}"; read -r -e DEFCONFIG
     until [[ -f ${DEFCONFIG} ]] && [[ ${DEFCONFIG} == *defconfig ]]; do
         _error "[ ${DEFCONFIG} ] is not a valid defconfig file !"
@@ -167,14 +167,14 @@ _ask_for_new_build() {
 
 
 _ask_for_flashable_zip() {
-    N="[y/n]"
+    N="[y/N]"
     _confirm "Do you wish to zip ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
     case ${CONFIRM} in
-        n|N|no|No|NO)
-            FLASH_ZIP=False
-            ;;
         y|Y|yes|Yes|YES)
             FLASH_ZIP=True
+            ;;
+        *)
+            FLASH_ZIP=False
     esac
 }
 
