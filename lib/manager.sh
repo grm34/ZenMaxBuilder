@@ -117,9 +117,6 @@ _notify_error() {
 # Properly exit with 3s timeout
 _exit() {
 
-    # Clear signal trapping
-    trap -- ERR
-
     # Kill the current child
     if [[ ${!} ]]; then
         kill -9 ${!} &>/dev/null || sleep 0.1
