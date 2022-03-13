@@ -81,7 +81,7 @@ _send_file_option() {
 
 
 _telegram_status_msg() {
-    STATUS_MSG="
+    export STATUS_MSG="
 
 <b>Android Device :</b>  <code>${CODENAME/_/-}</code>
 <b>Kernel Version :</b>  <code>v${LINUX_VERSION/_/-}</code>
