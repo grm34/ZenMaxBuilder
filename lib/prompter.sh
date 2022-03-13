@@ -199,8 +199,40 @@ _ask_for_install_pkg() {
     case ${CONFIRM} in
         n|N|no|No|NO)
             INSTALL_PKG=False
+            _error "${PACKAGE} not found ! Compilation may fail."
             ;;
         *)
             INSTALL_PKG=True
     esac
 }
+
+
+_ask_for_clone_toolchain() {
+    N="[Y/n]"
+    _confirm "Toolchain ${TC} not found, do you wish to clone ?"
+    case ${CONFIRM} in
+        n|N|no|No|NO)
+            CLONE_TC=False
+            _error "${TC} dir not found ! Invalid toolchain path."
+            _exit
+            ;;
+        *)
+            CLONE_TC=True
+    esac
+}
+
+
+_ask_for_clone_anykernel() {
+    N="[Y/n]"
+    _confirm "Anykernel not found, do you wish to clone ?"
+    case ${CONFIRM} in
+        n|N|no|No|NO)
+            CLONE_AK=False
+            _error "Anykernel dir not found ! Invalid AK3 path."
+            _exit
+            ;;
+        *)
+            CLONE_AK=True
+    esac
+}
+
