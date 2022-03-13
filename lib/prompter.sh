@@ -37,7 +37,7 @@ _ask_for_kernel_dir() {
 
 _ask_for_toolchain() {
     N="[Y/n]"
-    _confirm "Do you wish to use default compiler: ${DEFAULT_COMPILER} ?"
+    _confirm "Do you wish to use compiler: ${DEFAULT_COMPILER} ?"
     case ${CONFIRM} in
         n|N|no|No|NO)
             _note "Select Toolchain compiler :"
@@ -138,7 +138,7 @@ _ask_for_save_defconfig() {
     case ${CONFIRM} in
         n|N|no|No|NO)
             SAVE_DEFCONFIG=False
-            _confirm "Do you wish to continue with original defconfig ?"
+            _confirm "Do you wish to use original defconfig ?"
             case ${CONFIRM} in
                 n|N|no|No|NO)
                     ORIGINAL_DEFCONFIG=False

@@ -48,7 +48,7 @@ _install_dependencies() {
 
     # Display error if not found
     if [[ ! ${PM[3]} ]]; then
-        _error "OS not found, you may need to install dependencies first !"
+        _error "OS not found, some dependencies may be required !"
 
     # Install missing dependencies
     else
@@ -82,8 +82,8 @@ _clone_toolchains() {
     _clone_gcc_arm64() {
         if [[ ! -d ${GCC_ARM64_DIR} ]]; then
             _note "GCC ARM64 repository not found ! Cloning..."
-            _check git clone --depth=1 -b \
-                "${GCC_ARM64_BRANCH}" "${GCC_ARM64_URL}" "${GCC_ARM64_DIR}"
+            _check git clone --depth=1 -b "${GCC_ARM64_BRANCH}" \
+                "${GCC_ARM64_URL}" "${GCC_ARM64_DIR}"
         fi
     }
 
@@ -108,7 +108,7 @@ _clone_toolchains() {
 _clone_anykernel() {
     if [[ ! -d ${ANYKERNEL_DIR} ]]; then
         _note "AnyKernel repository not found! Cloning..."
-        _check git clone -b \
-            "${ANYKERNEL_BRANCH}" "${ANYKERNEL_URL}" "${ANYKERNEL_DIR}"
+        _check git clone -b "${ANYKERNEL_BRANCH}" \
+            "${ANYKERNEL_URL}" "${ANYKERNEL_DIR}"
     fi
 }
