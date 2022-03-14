@@ -26,15 +26,15 @@
 
     Neternels-Builder/
     |
-    |---- builds/           # Flashable zips
+    |---- builds/               # Flashable kernel zips
     |     |---- DEVICE1/
     |     |---- DEVICE2/
     |
-    |---- logs/             # Builds logs
+    |---- logs/                 # Compilation build logs
     |     |---- DEVICE1/
     |     |---- DEVICE2/
     |
-    |---- out/              # Kernel working dir
+    |---- out/                  # Kernel working directories
     |     |---- DEVICE1/
     |     |---- DEVICE2/
 
