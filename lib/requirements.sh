@@ -64,7 +64,6 @@ _install_dependencies() {
 
 
 _clone_toolchains() {
-
     _clone_proton() {
         if [[ ! -d ${PROTON_DIR} ]]; then
             export TC=${PROTON_DIR##*/}
@@ -75,7 +74,6 @@ _clone_toolchains() {
             fi
         fi
     }
-
     _clone_gcc_arm() {
         if [[ ! -d ${GCC_ARM_DIR} ]]; then
             export TC=${GCC_ARM_DIR##*/}
@@ -86,7 +84,6 @@ _clone_toolchains() {
             fi
         fi
     }
-
     _clone_gcc_arm64() {
         if [[ ! -d ${GCC_ARM64_DIR} ]]; then
             export TC=${GCC_ARM64_DIR##*/}
@@ -97,7 +94,6 @@ _clone_toolchains() {
             fi
         fi
     }
-
     case ${COMPILER} in
         Proton-Clang)
             _clone_proton
