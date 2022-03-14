@@ -49,10 +49,10 @@ _install_dependencies() {
     # Install missing dependencies
     if [[ ${PM[3]} ]]; then
         for PACKAGE in "${DEPENDENCIES[@]}"; do
-            if ! which "${PACKAGE//llvm/llvm-ar}" &>/dev/null; then
+            if ! which "${PACKAGE/llvm/llvm-ar}" &>/dev/null; then
                 _ask_for_install_pkg
                 if [[ ${INSTALL_PKG} == True ]]; then
-                    eval "${PM[0]//_/}" "${PM[1]}" \
+                    eval "${PM[0]/_/}" "${PM[1]}" \
                         "${PM[2]}" "${PM[3]}" "${PACKAGE}"
                 fi
             fi

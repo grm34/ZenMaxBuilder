@@ -94,7 +94,7 @@ _ask_for_cores() {
     case ${CONFIRM} in
         n|N|no|No|NO)
             until [[ ${CORES} =~ ^[1-9]{1}[0-9]{0,1}$ ]]; do
-                _prompt "Enter amount of cores to use :"
+                _prompt "Enter the amount of cores to use :"
                 read -r CORES
             done
             ;;
