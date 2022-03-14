@@ -87,7 +87,6 @@ _sign_flashable_zip() {
 
 
 _create_zip_option() {
-
     if [[ -f ${OPTARG} ]]; then
         _clean_anykernel
         _note "Creating ${OPTARG}-{DATE}_${TIME}.zip..."
