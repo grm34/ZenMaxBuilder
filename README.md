@@ -12,9 +12,9 @@ Neternels-Builder is an Android Kernel Builder written in bash which can be runn
 
 ## Requirements
 
-Required dependencies will be prompted to install but you can manualy install them.
+Dependencies will be prompted to install but you can manualy install them.
 
-    bash git zip llvm lld clang expect openjdk
+    bash git zip llvm lld clang expect openjdk (java)
 
 ## Usage
 
