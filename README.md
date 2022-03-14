@@ -4,6 +4,10 @@
 ![codescore](https://api.codiga.io/project/23638/status/svg)
 ![codefactor](https://www.codefactor.io/repository/github/grm34/neternels-builder/badge)
 
+![Proton-Clang](https://img.shields.io/badge/Proton--Clang-⛓-blue)
+![Eva-GCC](https://img.shields.io/badge/Eva--GCC-⛓-blue)
+![Proton-GCC](https://img.shields.io/badge/Proton--GCC-⛓-blue)
+
 ## Usage
 
 1. `git clone https://github.com/grm34/Neternels-Builder.git`
