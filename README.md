@@ -8,11 +8,11 @@
 ![codescore](https://api.codiga.io/project/23638/status/svg)
 ![codefactor](https://www.codefactor.io/repository/github/grm34/neternels-builder/badge)
 
-Neternels-Builder is an Android Kernel Builder written in bash which can be runned on any Linux system (feel free to PR for Windows support). By default it uses Proton-Clang, Eva-GCC or Proton-GCC but you can use any toolchain with the parameters you like by editing [config](https://github.com/grm34/Neternels-Builder/blob/main/config) file. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
+Neternels-Builder is an Android Kernel Builder written in bash which can be runned on any Linux System (feel free to Pull Request for Windows support). By default it uses Proton-Clang, Eva-GCC or Proton-GCC but you can use any toolchains you like by editing [config](https://github.com/grm34/Neternels-Builder/blob/main/config) file. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
 
 ## Requirements
 
-Dependencies will be prompted to install but you can manualy install them.
+Dependencies will be prompted to install or you can manually install them.
 
     bash git zip llvm lld clang expect openjdk (java)
 
