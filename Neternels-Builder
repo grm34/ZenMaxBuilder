@@ -50,7 +50,7 @@ source "${DIR}/lib/updater.sh"
 if [[ $(uname) != Linux ]]; then
     _error "run this script on Linux !"
     _exit
-elif [[ ! -f ${PWD}/config ]] || [[ ! -f ${PWD}/lib/maker.sh ]]; then
+elif [[ ! -f ${PWD}/config ]] || [[ ! -d ${PWD}/lib ]]; then
     _error "run this script from Neternels-Builder directory !"
     _exit
 elif [[ $KERNEL_DIR != default  ]] && \
