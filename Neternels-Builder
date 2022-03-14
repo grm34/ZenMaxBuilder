@@ -32,7 +32,7 @@ DIR=${PWD}/${DIRNAME}
 
 # Bash job control
 set > "${DIR}/bashvar"
-set -m -E -o pipefail
+set -m -E -o pipefail #-b -v
 
 # Load user settings
 source "${DIR}/config"
