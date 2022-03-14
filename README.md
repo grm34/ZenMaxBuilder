@@ -1,4 +1,4 @@
-# Neternels Builder
+# Android Kernel Builder
 
 ![Proton-Clang](https://img.shields.io/badge/Proton--Clang-⛓-yellow)
 ![Eva-GCC](https://img.shields.io/badge/Eva--GCC-⛓-blue)
