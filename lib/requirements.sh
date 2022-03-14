@@ -75,6 +75,7 @@ _clone_toolchains() {
             fi
         fi
     }
+
     _clone_gcc_arm() {
         if [[ ! -d ${GCC_ARM_DIR} ]]; then
             export TC=${GCC_ARM_DIR##*/}
@@ -85,6 +86,7 @@ _clone_toolchains() {
             fi
         fi
     }
+
     _clone_gcc_arm64() {
         if [[ ! -d ${GCC_ARM64_DIR} ]]; then
             export TC=${GCC_ARM64_DIR##*/}
@@ -100,12 +102,10 @@ _clone_toolchains() {
         Proton-Clang)
             _clone_proton
             ;;
-
         Eva-GCC)
             _clone_gcc_arm
             _clone_gcc_arm64
             ;;
-
         Proton-GCC)
             _clone_proton
             _clone_gcc_arm
