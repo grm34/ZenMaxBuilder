@@ -95,7 +95,8 @@ _create_zip_option() {
         cp "${OPTARG}" "${ANYKERNEL_DIR}"
 
         # CD to AnyKernel folder
-        cd "${ANYKERNEL_DIR}" || (_error "AnyKernel dir not found !"; _exit)
+        cd "${ANYKERNEL_DIR}" || \
+            (_error "AnyKernel dir not found !"; _exit)
 
         # Create flashable zip
         zip -r9 "${OPTARG##*/}-${DATE}-${TIME}.zip" ./* \
@@ -111,7 +112,8 @@ _create_zip_option() {
         if [[ ! -d ${DIR}/builds/default ]]; then
             mkdir "${DIR}/builds/default"
         fi
-        mv "${OPTARG##*/}-${DATE}_${TIME}-signed.zip" "${DIR}/builds/default"
+        mv "${OPTARG##*/}-${DATE}_${TIME}-signed.zip" \
+            "${DIR}/builds/default"
 
         # Back to script dir
         _clean_anykernel
