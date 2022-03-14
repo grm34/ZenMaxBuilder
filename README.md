@@ -22,6 +22,22 @@
         -f, --file    [file]           send file on Telegram
         -z, --zip     [Image.gz-dtb]   create flashable zip
 
+## Working structure
+
+    Neternels-Builder/
+    |
+    |---- builds/           # Flashable zips
+    |     |---- DEVICE1/
+    |     |---- DEVICE2/
+    |
+    |---- logs/             # Builds logs
+    |     |---- DEVICE1/
+    |     |---- DEVICE2/
+    |
+    |---- out/              # Kernel working dir
+    |     |---- DEVICE1/
+    |     |---- DEVICE2/
+
 ## Staying Up-To-Date
 
 
