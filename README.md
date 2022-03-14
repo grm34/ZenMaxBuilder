@@ -1,6 +1,6 @@
 # Neternels Builder
 
-![Proton-Clang](https://img.shields.io/badge/Proton--Clang-⛓-ff69b4)
+![Proton-Clang](https://img.shields.io/badge/Proton--Clang-⛓-orange)
 ![Eva-GCC](https://img.shields.io/badge/Eva--GCC-⛓-blue)
 ![Proton-GCC](https://img.shields.io/badge/Proton--GCC-⛓-red)
 
