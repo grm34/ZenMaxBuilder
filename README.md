@@ -52,7 +52,6 @@ Dependencies will be prompted to install or you can manually install them.
 
 ## Staying Up-To-Date
 
-
 1. Fork Neternels-Builder repo on GitHub
 2. `git clone https://github.com/<yourname>/Neternels-Builder`
 3. `git remote add upstream https://github.com/grm34/Neternels-Builder`
@@ -62,3 +61,10 @@ Dependencies will be prompted to install or you can manually install them.
 7. `git checkout main` then repeat steps 4-6 for any other devices you support
 
 Then you should be able to `git pull upstream main` from your main branch and either merge or cherry-pick the new Neternels-Builder commits into your device branches as needed.
+
+##  Credits
+
+* Neternels Team: https://neternels.org/
+* Proton-Clang: @kdrag0n
+* Eva-GCC: @mvaisakh
+* AnyKernel3: @osm0sis
