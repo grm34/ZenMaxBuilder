@@ -64,7 +64,7 @@ Then you should be able to `git pull upstream main` from your main branch and ei
 
 ##  Credits
 
-* Neternels Team: https://neternels.org/
-* Proton-Clang: @kdrag0n
-* Eva-GCC: @mvaisakh
-* AnyKernel3: @osm0sis
+* Neternels Team: [https://neternels.org](https://neternels.org)
+* Proton-Clang: [@kdrag0n](https://github.com/kdrag0n)
+* Eva-GCC: [@mvaisakh](https://github.com/mvaisakh)
+* AnyKernel3: [@osm0sis](https://github.com/osm0sis)
