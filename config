@@ -28,14 +28,12 @@
 ########################
 
 # TIMEZONE (e.q. "America/NewYork")
-#
 # To set the time in your time zone
 # =================================
 TIMEZONE="Europe/Paris"
 
 
 # DEVICE CODENAME (e.q. "X00TD")
-#
 # The question will be asked by the script
 # when this option is set to:  "default"
 # ========================================
@@ -43,7 +41,6 @@ CODENAME="default"
 
 
 # BUILDER NAME (displayed in proc/version)
-#
 # The output of `whoami` will be used
 # when this option is set to:  "default"
 # ========================================
@@ -51,7 +48,6 @@ BUILDER="default"
 
 
 # BUILDER HOST (displayed in proc/version)
-#
 # The output of `hostname` will be used
 # when this option is set to:  "default"
 # ========================================
@@ -59,14 +55,12 @@ HOST="default"
 
 
 # DEFAULT TOOLCHAIN COMPILER
-#
 # "Proton-Clang" | "Eva-GCC" | "Proton-GCC"
 # =========================================
 DEFAULT_COMPILER="Proton-Clang"
 
 
 # ANDROID KERNEL DIRECTORY
-#
 # The question will be asked by the script
 # when this option is set to:  "default"
 # ========================================
@@ -74,14 +68,12 @@ KERNEL_DIR="default"
 
 
 # TARGET ARCHITECTURE
-#
 # "arm" | "arm64" | "x86"
 # =======================
 ARCH="arm64"
 
 
 # ANDROID GLOBAL VERSION
-#
 # This setting is optional but it
 # could be required by some kernels
 # =================================
@@ -90,21 +82,18 @@ ANDROID_MAJOR_VERSION="s"
 
 
 # KERNEL VARIANT
-#
 # "Stable" | "CAF" | "..."
 # ========================
 KERNEL_VARIANT="Nethunter"
 
 
 # KERNEL NAME
-#
 # Enter a name for your kernel
 # ============================
 TAG="Neternels"
 
 
 # TELEGRAM API CONFIGURATION
-#
 # Who the F* wants to get real time kernel
 # build status in Telegram group or channel?
 # ==========================================
