@@ -92,9 +92,9 @@ shift $(( OPTIND - 1 ))
 trap '_notify_error; _exit' INT QUIT TSTP ERR
 
 
-###################
-# Start new build #
-###################
+#######################
+### Start new build ###
+#######################
 _banner
 _note "Starting new Android Kernel build ${DATE}"
 
