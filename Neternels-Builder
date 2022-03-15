@@ -88,6 +88,9 @@ done
 # Remove opts from positional parameters
 shift $(( OPTIND - 1 ))
 
+# Trapping bash signals
+trap '_notify_error; _exit' INT QUIT TSTP ERR
+
 
 # Start new build
 # ---------------
@@ -111,9 +114,6 @@ done
 # Export working folders
 export OUT_DIR=${DIR}/out/${CODENAME}
 export BUILD_DIR=${DIR}/builds/${CODENAME}
-
-# Trapping bash signals
-trap '_notify_error; _exit' INT QUIT TSTP ERR
 
 # Get user configuration
 _ask_for_kernel_dir
