@@ -86,32 +86,32 @@ TELEGRAM_BOT_TOKEN=""
 
 # Some required dependencies
 # --------------------------
-DEPENDENCIES=(wget git zip llvm lld clang expect)
+DEPENDENCIES=(git zip llvm lld clang expect)
 
-# Neternels Builder branch
-# ------------------------
+# Neternels Builder repository
+# ----------------------------
 NB_BRANCH="main"
 
-# AnyKernel config
-# ----------------
+# AnyKernel repository
+# --------------------
 ANYKERNEL_DIR="AnyKernel"
 ANYKERNEL_URL="https://github.com/grm34/AnyKernel3.git"
 ANYKERNEL_BRANCH="Neternels-Builder"
 
-# Proton-Clang config
-# -------------------
+# Proton-Clang repository
+# -----------------------
 PROTON_DIR="${PWD}/toolchains/proton_clang"
 PROTON_URL="https://github.com/kdrag0n/proton-clang.git"
 PROTON_BRANCH="master"
 
-# GCC ARM64 config
-# ----------------
+# GCC-ARM64 repository
+# --------------------
 GCC_ARM64_DIR="${PWD}/toolchains/gcc_arm64"
 GCC_ARM64_URL="https://github.com/mvaisakh/gcc-arm64.git"
 GCC_ARM64_BRANCH="gcc-master"
 
-# GCC ARM config
-# --------------
+# GCC-ARM repository
+# ------------------
 GCC_ARM_DIR="${PWD}/toolchains/gcc_arm"
 GCC_ARM_URL="https://github.com/mvaisakh/gcc-arm.git"
 GCC_ARM_BRANCH="gcc-master"
@@ -126,10 +126,10 @@ LTO_LIBRARY_DIR=${PROTON_DIR}/lib
 # -----------------------
 SPECTRUM="init.spectrum.rc"
 
-# Proton-Clang parameters
-# -----------------------
+# Proton-Clang Settings
+# ---------------------
 PROTON_CLANG_PATH=${PROTON_DIR}/bin
-PROTON_CLANG_PARAMETERS=(
+PROTON_CLANG_OPTIONS=(
     ARCH=arm64
     SUBARCH=arm64
     CROSS_COMPILE=aarch64-linux-gnu-
@@ -142,10 +142,10 @@ PROTON_CLANG_PARAMETERS=(
     STRIP=llvm-strip
 )
 
-# Eva-GCC parameters
-# ------------------
+# Eva-GCC Settings
+# ----------------
 EVA_GCC_PATH=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin
-EVA_GCC_PARAMETERS=(
+EVA_GCC_OPTIONS=(
     ARCH=arm64
     SUBARCH=arm64
     CROSS_COMPILE_ARM32=arm-eabi-
@@ -155,10 +155,10 @@ EVA_GCC_PARAMETERS=(
     STRIP=aarch64-elf-strip
 )
 
-# Proton-GCC parameters
-# ---------------------
+# Proton-GCC Settings
+# -------------------
 PROTON_GCC_PATH=${PROTON_DIR}/bin:${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin
-PROTON_GCC_PARAMETERS=(
+PROTON_GCC_OPTIONS=(
     ARCH=arm64
     SUBARCH=arm64
     CC=clang
