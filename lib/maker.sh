@@ -30,19 +30,19 @@ _export_path() {
         export LD_LIBRARY_PATH=${LTO_LIBRARY_DIR}
     fi
 
-    # Set compiler parameters
+    # Set compiler options
     case ${COMPILER} in
         Proton-Clang)
             export PATH=${PROTON_CLANG_PATH}:${PATH}
-            PARAMETERS=("${PROTON_CLANG_PARAMETERS[@]}")
+            TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
             ;;
         Eva-GCC)
             export PATH=${EVA_GCC_PATH}:${PATH}
-            PARAMETERS=("${EVA_GCC_PARAMETERS[@]}")
+            TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
             ;;
         Proton-GCC)
             export PATH=${PROTON_GCC_PATH}:${PATH}
-            PARAMETERS=("${PROTON_GCC_PARAMETERS[@]}")
+            TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
     esac
 }
 
@@ -87,7 +87,7 @@ _make_build() {
         _send_msg "${MSG}"
     fi
 
-    # Make kernel BUILD
+    # Make new kernel build
     unbuffer make -C "${KERNEL_DIR}" \
-        -j"${CORES}" O="${OUT_DIR}" "${PARAMETERS[@]}" 2>&1
+        -j"${CORES}" O="${OUT_DIR}" "${TC_OPTIONS[@]}" 2>&1
 }
