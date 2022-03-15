@@ -22,7 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-_export_path() {
+_export_path_and_options() {
 
     # Link Time Optimization (LTO)
     if [[ ${LTO} == True ]]; then
