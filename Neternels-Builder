@@ -95,7 +95,7 @@ trap '_notify_error; _exit' INT QUIT TSTP ERR
 #######################
 ### Start new build ###
 #######################
-_banner
+_neternels_builder_banner
 _note "Starting new Android Kernel build ${DATE}"
 
 # Get device codename
@@ -180,7 +180,7 @@ if [[ ${NEW_BUILD} == False ]]; then
 else
     # TG build status
     _ask_for_telegram
-    _telegram_status_msg
+    _set_telegram_status_msg
 
     # Build logs
     TIME=$(TZ=${TIMEZONE} date +%H-%M-%S)
@@ -198,14 +198,7 @@ BUILD_TIME=$((END_TIME - START_TIME))
 # Display build status on TERM
 M=$((BUILD_TIME / 60))
 S=$((BUILD_TIME % 60))
-SUCCESS="Successfully compiled after ${M} minutes and ${S} seconds"
-MSG="<b>${SUCCESS}</b> ${STATUS_MSG}"
-_note "${SUCCESS}"
-
-# Send build status on Telegram
-if [[ ${BUILD_STATUS} == True ]]; then
-    _send_msg "${MSG}"
-fi
+_note "Successfully compiled after ${M} minutes and ${S} seconds"
 
 # Create and sign flashable zip
 _ask_for_flashable_zip

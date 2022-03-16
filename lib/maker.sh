@@ -81,11 +81,8 @@ _save_defconfig() {
 _make_build() {
     _note "Starting new build for ${CODENAME} (${LINUX_VERSION})..."
 
-    # Send build status to Telegram
-    if [[ ${BUILD_STATUS} == True ]]; then
-        MSG="<b>Android Kernel Build Triggered</b> ${STATUS_MSG}"
-        _send_msg "${MSG}"
-    fi
+    # Send build status on Telegram
+    _send_make_build_status
 
     # Make new kernel build
     unbuffer make -C "${KERNEL_DIR}" \
