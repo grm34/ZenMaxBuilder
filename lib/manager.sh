@@ -27,7 +27,7 @@ BLUE="\e[1;34m"; CYAN="\e[1;36m"; BOLD="\e[1;37m"; NC="\e[0m"
 
 
 # Display script banner
-_banner() {
+_neternels_builder_banner() {
     echo -e "${BOLD}
    ┌─────────────────────────────────────────────┐
    │ ┏┓╻┏━╸╺┳╸┏━╸┏━┓┏┓╻┏━╸╻  ┏━┓   ╺┳╸┏━╸┏━┓┏┓┏┓ │
@@ -132,17 +132,8 @@ _exit() {
             grep -E "^> [A-Z_]{3,26}=" >> "${LOG}" || sleep 0.1
     fi
 
-    # On build error send status and logs on Telegram
-    if [[ ${START_TIME} ]] && [[ ! $BUILD_TIME ]] && \
-            [[ ${BUILD_STATUS} == True ]]; then
-        END_TIME=$(TZ=${TIMEZONE} date +%s)
-        BUILD_TIME=$((END_TIME - START_TIME))
-        M=$((BUILD_TIME / 60))
-        S=$((BUILD_TIME % 60))
-        sed 's/\x1b\[[^\x1b]*m//g' "${LOG}" > buildlog
-        MSG="Build Failed to Compile After ${M} minutes and ${S} seconds"
-        _send_file "${DIR}/buildlog" "v${LINUX_VERSION//_/-}  |  ${MSG}"
-    fi
+    # On error send logs on Telegram
+    _send_build_failed_logs
 
     # Remove inputs files
     FILES=(bashvar buildervar linuxver buildlog)
