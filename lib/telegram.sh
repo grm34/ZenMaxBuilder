@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+# shellcheck disable=SC2153
 
 # Copyright (c) 2021-2022 @grm34 Neternels Team
 #
@@ -21,7 +22,11 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# Telegram API URL
+
+####################
+### Telegram API ###
+####################
+
 API="https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}"
 
 
@@ -46,14 +51,9 @@ _send_file() {
 }
 
 
-_upload_build_on_telegram() {
-    if [[ ${BUILD_STATUS} == True ]] && [[ ${FLASH_ZIP} == True ]]; then
-        _note "Uploading build on Telegram..."
-        FILE="${BUILD_DIR}/${BUILD_NAME}-${DATE}-signed.zip"
-        MD5=$(md5sum "${FILE}" | cut -d' ' -f1)
-        _send_file "${FILE}" "MD5 Checksum: ${MD5//_/-}"
-    fi
-}
+########################
+### External Options ###
+########################
 
 
 _send_msg_option() {
@@ -80,7 +80,59 @@ _send_file_option() {
 }
 
 
-_telegram_status_msg() {
+#########################
+### Make build status ###
+#########################
+
+
+_send_make_build_status() {
+    if [[ ${BUILD_STATUS} == True ]]; then
+        MSG="<b>Android Kernel Build Triggered</b> ${STATUS_MSG}"
+        _send_msg "${MSG}"
+    fi
+}
+
+
+_send_zip_creation_status() {
+    if [[ ${BUILD_NAME} ]] && [[ ${BUILD_STATUS} == True ]]; then
+        _send_msg "${BUILD_NAME//_/-} | Started flashable zip creation"
+    fi
+}
+
+
+_send_zip_signing_status() {
+    if [[ ${BUILD_NAME} ]] && [[ ${BUILD_STATUS} == True ]]; then
+        _send_msg "${BUILD_NAME//_/-} | Signing Zip file with AOSP keys"
+    fi
+}
+
+
+_upload_build_on_telegram() {
+    if [[ ${BUILD_STATUS} == True ]] && [[ ${FLASH_ZIP} == True ]]; then
+        _note "Uploading build on Telegram..."
+        FILE=${BUILD_DIR}/${BUILD_NAME}-${DATE}-signed.zip
+        MD5=$(md5sum "${FILE}" | cut -d' ' -f1)
+        CAPTION="Build took: ${M} minutes and ${S} seconds"
+        _send_file "${FILE}" "${CAPTION} | MD5 Checksum: ${MD5//_/-}"
+    fi
+}
+
+
+_send_build_failed_logs() {
+    if [[ ${START_TIME} ]] && [[ ! $BUILD_TIME ]] && \
+            [[ ${BUILD_STATUS} == True ]]; then
+        END_TIME=$(TZ=${TIMEZONE} date +%s)
+        BUILD_TIME=$((END_TIME - START_TIME))
+        M=$((BUILD_TIME / 60))
+        S=$((BUILD_TIME % 60))
+        sed 's/\x1b\[[^\x1b]*m//g' "${LOG}" > buildlog
+        MSG="Build Failed to Compile After ${M} minutes and ${S} seconds"
+        _send_file "${DIR}/buildlog" "v${LINUX_VERSION//_/-} | ${MSG}"
+    fi
+}
+
+
+_set_telegram_status_msg() {
     export STATUS_MSG="
 
 <b>Android Device :</b>  <code>${CODENAME//_/-}</code>
