@@ -27,7 +27,7 @@ _ask_for_kernel_dir() {
     if [[ ${KERNEL_DIR} == default ]]; then
         QUESTION="Enter kernel path (e.q. /home/user/mykernel) :"
         _prompt "${QUESTION}"; read -r -e KERNEL_DIR
-        until [[ -d ${KERNEL_DIR}/arch/arm64/configs ]]; do
+        until [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]; do
             _error "${KERNEL_DIR} not a valid kernel directory !"
             _prompt "${QUESTION}"; read -r -e KERNEL_DIR
         done
