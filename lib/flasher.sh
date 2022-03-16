@@ -25,9 +25,6 @@
 _create_flashable_zip() {
     _note "Creating ${BUILD_NAME}-${DATE}.zip..."
 
-    # Send build status to Telegram
-    _send_zip_creation_status
-
     # Create init.spectrum.rc
     if [[ -f ${KERNEL_DIR}/${SPECTRUM} ]]; then
         cp -af "${KERNEL_DIR}/${SPECTRUM}" init.spectrum.rc
