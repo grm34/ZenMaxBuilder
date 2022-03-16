@@ -94,14 +94,14 @@ _send_make_build_status() {
 
 _send_zip_creation_status() {
     if [[ ${BUILD_STATUS} == True ]]; then
-        _send_msg "${BUILD_NAME//_/-} | Started flashable zip creation"
+        _send_msg "${BUILD_NAME} | Started flashable zip creation"
     fi
 }
 
 
 _send_signing_zip_status() {
     if [[ ${BUILD_STATUS} == True ]]; then
-        _send_msg "${BUILD_NAME//_/-} | Signing Zip file with AOSP keys"
+        _send_msg "${BUILD_NAME} | Signing Zip file with AOSP keys"
     fi
 }
 
