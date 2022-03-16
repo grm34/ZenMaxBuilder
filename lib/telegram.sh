@@ -92,8 +92,15 @@ _send_make_build_status() {
 }
 
 
-_send_signing_zip_status() {
-    if [[ ${BUILD_STATUS} == True ]]; then
+_send_zip_creation_status() {
+    if [[ ${BUILD_NAME} ]] && [[ ${BUILD_STATUS} == True ]]; then
+        _send_msg "${BUILD_NAME//_/-} | Started flashable zip creation"
+    fi
+}
+
+
+_send_zip_signing_status() {
+    if [[ ${BUILD_NAME} ]] && [[ ${BUILD_STATUS} == True ]]; then
         _send_msg "${BUILD_NAME//_/-} | Signing Zip file with AOSP keys"
     fi
 }

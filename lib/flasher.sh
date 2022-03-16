@@ -25,6 +25,9 @@
 _create_flashable_zip() {
     _note "Creating ${BUILD_NAME}-${DATE}.zip..."
 
+    # Send zip creation status to Telegram
+    _send_zip_creation_status
+
     # Create init.spectrum.rc
     if [[ -f ${KERNEL_DIR}/${SPECTRUM} ]]; then
         cp -af "${KERNEL_DIR}/${SPECTRUM}" init.spectrum.rc
@@ -70,7 +73,7 @@ _sign_flashable_zip() {
     _note "Signing Zip file with AOSP keys..."
 
     # Send build status to Telegram
-    _send_signing_zip_status
+    _send_zip_signing_status
 
     # Sign flashable zip
     unbuffer java -jar "${DIR}/lib/tools/zipsigner-3.0.jar" \
