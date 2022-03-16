@@ -144,7 +144,7 @@ _note "Make kernel version..."
 make -C "${KERNEL_DIR}" kernelversion | \
     grep -v make > linuxver & wait ${!}
 LINUX_VERSION=$(cat linuxver)
-export BUILD_NAME=${TAG}-${CODENAME}-${LINUX_VERSION}
+BUILD_NAME=${TAG}-${CODENAME}-${LINUX_VERSION}
 
 # Make clean
 _ask_for_make_clean
