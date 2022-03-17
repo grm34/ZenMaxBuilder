@@ -183,7 +183,7 @@ else
     _set_telegram_status_msg
 
     # Build logs
-    TIME=$(TZ=${TIMEZONE} date +%H-%M-%S)
+    TIME=$(TZ=${TIMEZONE} date +%Hh%Mm%Ss)
     START_TIME=$(TZ=${TIMEZONE} date +%s)
     LOG=${DIR}/logs/${CODENAME}/${CODENAME}_${DATE}_${TIME}.log
 
