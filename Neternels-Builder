@@ -182,7 +182,7 @@ if [[ ${NEW_BUILD} == False ]]; then
 else
     # TG build status
     _ask_for_telegram
-    _set_telegram_status_msg
+    _set_html_status_msg
 
     # Build logs
     TIME=$(TZ=${TIMEZONE} date +%Hh%Mm%Ss)
@@ -200,7 +200,9 @@ BUILD_TIME=$((END_TIME - START_TIME))
 # Display build status on TERM
 M=$((BUILD_TIME / 60))
 S=$((BUILD_TIME % 60))
-_note "Successfully compiled after ${M} minutes and ${S} seconds"
+MSG="Successfully compiled after ${M} minutes and ${S} seconds"
+_note "${MSG}"
+_send_success_build_status
 
 # Create and sign flashable zip
 _ask_for_flashable_zip
@@ -211,7 +213,7 @@ if [[ ${FLASH_ZIP} == True ]]; then
 fi
 
 # Upload build and say goodbye
-_upload_build_on_telegram
+_upload_signed_build
 _clean_anykernel
 _goodbye_msg
 _exit

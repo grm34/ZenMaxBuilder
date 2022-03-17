@@ -133,7 +133,7 @@ _exit() {
     fi
 
     # On error send logs on Telegram
-    _send_build_failed_logs
+    _send_failed_build_logs
 
     # Remove inputs files
     FILES=(bashvar buildervar linuxver "${LOG##*/}")
