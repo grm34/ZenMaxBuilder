@@ -150,6 +150,8 @@ BUILD_NAME=${TAG}-${CODENAME}-${LINUX_VERSION}
 _ask_for_make_clean
 if [[ ${MAKE_CLEAN} == True ]]; then
     _make_clean & wait ${!}
+    _make_mrproper & wait ${!}
+    rm -rf "${OUT_DIR}" || sleep 0.1
 fi
 
 # Clean AnyKernel directory
