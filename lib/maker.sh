@@ -50,9 +50,12 @@ _export_path_and_options() {
 _make_clean() {
     _note "Make clean (this could take a while)..."
     unbuffer make -C "${KERNEL_DIR}" clean 2>&1
+}
+
+
+_make_mrproper() {
     _note "Make mrproper (this could take a while)..."
     unbuffer make -C "${KERNEL_DIR}" mrproper 2>&1
-    rm -rf "${OUT_DIR}" || sleep 0.1
 }
 
 
