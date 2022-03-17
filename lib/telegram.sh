@@ -93,6 +93,13 @@ _send_make_build_status() {
 }
 
 
+_send_success_build_status() {
+    if [[ ${BUILD_NAME} ]] && [[ ${BUILD_STATUS} == True ]]; then
+        _send_msg "${BUILD_NAME//_/-} | ${MSG}"
+    fi
+}
+
+
 _send_zip_creation_status() {
     if [[ ${BUILD_NAME} ]] && [[ ${BUILD_STATUS} == True ]]; then
         _send_msg "${BUILD_NAME//_/-} | Started flashable zip creation"
@@ -107,18 +114,7 @@ _send_zip_signing_status() {
 }
 
 
-_upload_build_on_telegram() {
-    if [[ ${BUILD_STATUS} == True ]] && [[ ${FLASH_ZIP} == True ]]; then
-        _note "Uploading build on Telegram..."
-        FILE=${BUILD_DIR}/${BUILD_NAME}-${DATE}-signed.zip
-        MD5=$(md5sum "${FILE}" | cut -d' ' -f1)
-        CAPTION="Build took: ${M} minutes and ${S} seconds"
-        _send_file "${FILE}" "${CAPTION} | MD5 Checksum: ${MD5//_/-}"
-    fi
-}
-
-
-_send_build_failed_logs() {
+_send_failed_build_logs() {
     if [[ ${START_TIME} ]] && [[ ! $BUILD_TIME ]] && \
             [[ ${BUILD_STATUS} == True ]]; then
         END_TIME=$(TZ=${TIMEZONE} date +%s)
@@ -133,7 +129,18 @@ _send_build_failed_logs() {
 }
 
 
-_set_telegram_status_msg() {
+_upload_signed_build() {
+    if [[ ${BUILD_STATUS} == True ]] && [[ ${FLASH_ZIP} == True ]]; then
+        _note "Uploading build on Telegram..."
+        FILE=${BUILD_DIR}/${BUILD_NAME}-${DATE}-signed.zip
+        MD5=$(md5sum "${FILE}" | cut -d' ' -f1)
+        CAPTION="Build took: ${M} minutes and ${S} seconds"
+        _send_file "${FILE}" "${CAPTION} | MD5 Checksum: ${MD5//_/-}"
+    fi
+}
+
+
+_set_html_status_msg() {
     export STATUS_MSG="
 
 <b>Android Device :</b>  <code>${CODENAME//_/-}</code>
