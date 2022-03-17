@@ -61,7 +61,7 @@ _create_flashable_zip() {
     unbuffer zip -r9 "${BUILD_NAME}-${DATE}.zip" ./* \
         -x .git README.md ./*placeholder 2>&1
 
-    # Move zip to builds folder and clean
+    # Move zip to builds folder
     mv "${BUILD_NAME}-${DATE}.zip" "${BUILD_DIR}"
 
     # Back to script dir
@@ -72,7 +72,7 @@ _create_flashable_zip() {
 _sign_flashable_zip() {
     _note "Signing Zip file with AOSP keys..."
 
-    # Send build status to Telegram
+    # Send signing status on Telegram
     _send_zip_signing_status
 
     # Sign flashable zip
@@ -87,7 +87,7 @@ _create_zip_option() {
         _clean_anykernel
         _note "Creating ${OPTARG}-{DATE}_${TIME}.zip..."
 
-        # Move GZ-DTB to AnyKernel folder
+        # Move Image to AnyKernel folder
         cp "${OPTARG}" "${ANYKERNEL_DIR}"
 
         # CD to AnyKernel folder
@@ -116,7 +116,7 @@ _create_zip_option() {
         cd "${DIR}" || (_error "${DIR} dir not found !"; _exit)
 
     else
-        # Display error while not valid
-        _error "${OPTARG} not a valid kernel image !"
+        # Display error while invalid
+        _error "${OPTARG} invalid kernel image !"
     fi
 }
