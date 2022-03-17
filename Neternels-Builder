@@ -148,14 +148,12 @@ BUILD_NAME=${TAG}-${CODENAME}-${LINUX_VERSION}
 
 # Make clean
 _ask_for_make_clean
+_clean_anykernel
 if [[ ${MAKE_CLEAN} == True ]]; then
     _make_clean & wait ${!}
     _make_mrproper & wait ${!}
     rm -rf "${OUT_DIR}" || sleep 0.1
 fi
-
-# Clean AnyKernel directory
-_clean_anykernel
 
 # Make defconfig
 _make_defconfig & wait ${!}
@@ -196,15 +194,15 @@ fi
 # Get build time
 END_TIME=$(TZ=${TIMEZONE} date +%s)
 BUILD_TIME=$((END_TIME - START_TIME))
-
-# Display build status on TERM
 M=$((BUILD_TIME / 60))
 S=$((BUILD_TIME % 60))
+
+# Display build status
 MSG="Successfully compiled after ${M} minutes and ${S} seconds"
 _note "${MSG}"
 _send_success_build_status
 
-# Create and sign flashable zip
+# Create flashable zip
 _ask_for_flashable_zip
 if [[ ${FLASH_ZIP} == True ]]; then
     _ask_for_kernel_image
@@ -212,7 +210,7 @@ if [[ ${FLASH_ZIP} == True ]]; then
     _sign_flashable_zip | tee -a "${LOG}"
 fi
 
-# Upload build and say goodbye
+# Upload build and exit
 _upload_signed_build
 _clean_anykernel
 _goodbye_msg
