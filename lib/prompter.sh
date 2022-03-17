@@ -28,7 +28,7 @@ _ask_for_kernel_dir() {
         QUESTION="Enter kernel path (e.q. /home/user/mykernel) :"
         _prompt "${QUESTION}"; read -r -e KERNEL_DIR
         until [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]; do
-            _error "${KERNEL_DIR} not a valid kernel directory !"
+            _error "${KERNEL_DIR} invalid kernel directory !"
             _prompt "${QUESTION}"; read -r -e KERNEL_DIR
         done
     fi
@@ -42,9 +42,10 @@ _ask_for_toolchain() {
         n|N|no|No|NO)
             _note "Select Toolchain compiler :"
             TOOLCHAINS=(Proton-Clang Eva-GCC Proton-GCC)
-            until [[ ${COMPILER} =~ ^[1-3]$ ]]; do
-                _select Proton-Clang Eva-GCC Proton-GCC
-                read -r COMPILER
+            _select "${TOOLCHAINS[@]}"; read -r COMPILER
+            until (( 1<=COMPILER && COMPILER<=3 )); do
+                _error "${COMPILER} invalid ! Enter number 1-3"
+                _select "${TOOLCHAINS[@]}"; read -r COMPILER
             done
             COMPILER=${TOOLCHAINS[${COMPILER}-1]}
             ;;
@@ -68,7 +69,7 @@ _ask_for_defconfig() {
     QUESTION="Enter defconfig file (e.q. neternels_defconfig) :"
     _prompt "${QUESTION}"; read -r -e DEFCONFIG
     until [[ -f ${DEFCONFIG} ]] && [[ ${DEFCONFIG} == *defconfig ]]; do
-        _error "${DEFCONFIG} not a valid defconfig file !"
+            _error "${DEFCONFIG} invalid defconfig file !"
         _prompt "${QUESTION}"; read -r -e DEFCONFIG
     done
     cd "${DIR}" || (_error "${DIR} dir not found !"; _exit)
@@ -90,16 +91,19 @@ _ask_for_menuconfig() {
 
 _ask_for_cores() {
     N="[Y/n]"
+    CPU=$(nproc --all)
     _confirm "Do you wish to use all availables CPU Cores ?"
     case ${CONFIRM} in
         n|N|no|No|NO)
-            until [[ ${CORES} =~ ^[1-9]{1}[0-9]{0,1}$ ]]; do
-                _prompt "Enter the amount of cores to use :"
-                read -r CORES
+            QUESTION="Enter the amount of cores to use :"
+            _prompt "${QUESTION}"; read -r CORES
+            until (( 1<=CORES && CORES<=CPU )); do
+                _error "${CORES} invalid ! Total cores: ${CPU}"
+                _prompt "${QUESTION}"; read -r CORES
             done
             ;;
         *)
-            CORES=$(nproc --all)
+            CORES=${CPU}
     esac
 }
 
@@ -185,7 +189,7 @@ _ask_for_kernel_image() {
     QUESTION="Enter kernel image to use (e.q. Image.gz-dtb) :"
     _prompt "${QUESTION}"; read -r -e KERNEL_IMG
     until [[ -f ${KERNEL_IMG} ]] && [[ ${KERNEL_IMG} == Image* ]]; do
-        _error "${KERNEL_IMG} not a valid kernel image !"
+        _error "${KERNEL_IMG} invalid kernel image !"
         _prompt "${QUESTION}"; read -r -e KERNEL_IMG
     done
     KERNEL_IMG="${DIR}/out/${CODENAME}/arch/${ARCH}/boot/${KERNEL_IMG}"
@@ -235,4 +239,3 @@ _ask_for_clone_anykernel() {
             CLONE_AK=True
     esac
 }
-
