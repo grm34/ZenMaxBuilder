@@ -136,7 +136,7 @@ _ask_for_telegram() {
     # Validation checks are not needed here.
 
     if [[ ${TELEGRAM_CHAT_ID} ]] && [[ ${TELEGRAM_BOT_TOKEN} ]]; then
-        N="[n/Y]"
+        N="[y/N]"
         _confirm "Do you wish to send build status on Telegram ?"
         case ${CONFIRM} in
             y|Y|yes|Yes|YES)
