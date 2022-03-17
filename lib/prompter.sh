@@ -41,7 +41,7 @@ _ask_for_kernel_dir() {
 
 _ask_for_toolchain() {
     # Question to get the toolchain to use.
-    # Validation checks for a number between 1 and 3
+    # Validation checks for a number between "1" and "3"
     # which correspond to the number of available toolchains.
 
     N="[Y/n]"
@@ -65,11 +65,18 @@ _ask_for_toolchain() {
 
 _ask_for_codename() {
     # Question to get the device codename.
-    # Validation checks are not needed here.
+    # Validation checks REGEX to prevent invalid string.
+    # Match "letters" and "numbers" and "-" and "_" only.
+    # Should be at least "3" characters long and maximum "20".
+    # Device codename can't start with "_" or "-" characters.
 
     if [[ ${CODENAME} == default ]]; then
-        _prompt "Enter android device codename (e.q. X00TD) :"
-        read -r CODENAME
+        QUESTION="Enter android device codename (e.q. X00TD) :"
+        _prompt "${QUESTION}"; read -r CODENAME
+        until [[ ${CODENAME} =~ ^[a-zA-Z0-9][a-zA-Z0-9_-]{2,20}$ ]]; do
+            _error "${CODENAME} invalid device codename !"
+            _prompt "${QUESTION}"; read -r CODENAME
+        done
     fi
 }
 
