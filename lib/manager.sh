@@ -136,7 +136,7 @@ _exit() {
     _send_build_failed_logs
 
     # Remove inputs files
-    FILES=(bashvar buildervar linuxver buildlog)
+    FILES=(bashvar buildervar linuxver ${LOG##*/})
     for FILE in "${FILES[@]}"; do
         if [[ -f ${DIR}/${FILE} ]]; then
             rm "${DIR}/${FILE}" || sleep 0.1

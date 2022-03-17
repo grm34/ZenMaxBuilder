@@ -125,9 +125,10 @@ _send_build_failed_logs() {
         BUILD_TIME=$((END_TIME - START_TIME))
         M=$((BUILD_TIME / 60))
         S=$((BUILD_TIME % 60))
-        sed 's/\x1b\[[^\x1b]*m//g' "${LOG}" > buildlog
+        sed -r "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" \
+            "${LOG}" > "${LOG##*/}"
         MSG="Build Failed to Compile After ${M} minutes and ${S} seconds"
-        _send_file "${DIR}/buildlog" "v${LINUX_VERSION//_/-} | ${MSG}"
+        _send_file "${DIR}/${LOG##*/}" "v${LINUX_VERSION//_/-} | ${MSG}"
     fi
 }
 
