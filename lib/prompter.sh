@@ -24,6 +24,10 @@
 
 
 _ask_for_kernel_dir() {
+    # Question to get the kernel location.
+    # Validation checks the presence of the "configs"
+    # folder corresponding to the current architecture.
+
     if [[ ${KERNEL_DIR} == default ]]; then
         QUESTION="Enter kernel path (e.q. /home/user/mykernel) :"
         _prompt "${QUESTION}"; read -r -e KERNEL_DIR
@@ -36,6 +40,10 @@ _ask_for_kernel_dir() {
 
 
 _ask_for_toolchain() {
+    # Question to get the toolchain to use.
+    # Validation checks for a number between 1 and 3
+    # which correspond to the number of available toolchains.
+
     N="[Y/n]"
     _confirm "Do you wish to use compiler: ${DEFAULT_COMPILER} ?"
     case ${CONFIRM} in
@@ -56,6 +64,9 @@ _ask_for_toolchain() {
 
 
 _ask_for_codename() {
+    # Question to get the device codename.
+    # Validation checks are not needed here.
+
     if [[ ${CODENAME} == default ]]; then
         _prompt "Enter android device codename (e.q. X00TD) :"
         read -r CODENAME
@@ -64,6 +75,10 @@ _ask_for_codename() {
 
 
 _ask_for_defconfig() {
+    # Question to get the defconfig file to use.
+    # Validation checks the presence of this file in
+    # "configs" folder and verify it ends with "_defconfig".
+
     cd "${KERNEL_DIR}/arch/${ARCH}/configs" || \
         (_error "${KERNEL_DIR} dir not found !"; _exit)
     QUESTION="Enter defconfig file (e.q. neternels_defconfig) :"
@@ -77,6 +92,9 @@ _ask_for_defconfig() {
 
 
 _ask_for_menuconfig() {
+    # Request a "make menuconfig" command.
+    # Validation checks are not needed here.
+
     N="[y/N]"
     _confirm "Do you wish to edit kernel with menuconfig ?"
     case ${CONFIRM} in
@@ -90,12 +108,17 @@ _ask_for_menuconfig() {
 
 
 _ask_for_cores() {
+    # Question to get the number of CPU cores to use.
+    # Validation checks for a valid number corresponding
+    # to the amount of available CPU cores (no limits here).
+    # Otherwise all available CPU cores will be used.
+
     N="[Y/n]"
     CPU=$(nproc --all)
-    _confirm "Do you wish to use all availables CPU Cores ?"
+    _confirm "Do you wish to use all available CPU Cores ?"
     case ${CONFIRM} in
         n|N|no|No|NO)
-            QUESTION="Enter the amount of cores to use :"
+            QUESTION="Enter the amount of CPU Cores to use :"
             _prompt "${QUESTION}"; read -r CORES
             until (( 1<=CORES && CORES<=CPU )); do
                 _error "${CORES} invalid ! Total cores: ${CPU}"
@@ -109,9 +132,12 @@ _ask_for_cores() {
 
 
 _ask_for_telegram() {
+    # Request the upload of build status on Telegram.
+    # Validation checks are not needed here.
+
     if [[ ${TELEGRAM_CHAT_ID} ]] && [[ ${TELEGRAM_BOT_TOKEN} ]]; then
         N="[n/Y]"
-        _confirm "Do you wish to send build status to Telegram ?"
+        _confirm "Do you wish to send build status on Telegram ?"
         case ${CONFIRM} in
             y|Y|yes|Yes|YES)
                 BUILD_STATUS=True
@@ -124,6 +150,9 @@ _ask_for_telegram() {
 
 
 _ask_for_make_clean() {
+    # Request "make clean" and "make mrproper" commands.
+    # Validation checks are not needed here.
+
     N="[y/N]"
     _confirm "Do you wish to make clean build: ${LINUX_VERSION} ?"
     case ${CONFIRM} in
@@ -137,6 +166,10 @@ _ask_for_make_clean() {
 
 
 _ask_for_save_defconfig() {
+    # Request to save and use the modified defconfig.
+    # Otherwise request to continue with original one.
+    # Validation checks are not needed here.
+
     N="[Y/n]"
     _confirm "Do you wish to save and use: ${DEFCONFIG} ?"
     case ${CONFIRM} in
@@ -158,6 +191,9 @@ _ask_for_save_defconfig() {
 
 
 _ask_for_new_build() {
+    # Request "make" command for kernel build.
+    # Validation checks are not needed here.
+
     N="[Y/n]"
     _confirm "Do you wish to start ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
     case ${CONFIRM} in
@@ -171,6 +207,9 @@ _ask_for_new_build() {
 
 
 _ask_for_flashable_zip() {
+    # Request the creation of flashable zip.
+    # Validation checks are not needed here.
+
     N="[y/N]"
     _confirm "Do you wish to zip ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
     case ${CONFIRM} in
@@ -184,6 +223,10 @@ _ask_for_flashable_zip() {
 
 
 _ask_for_kernel_image() {
+    # Question to get the kernel image to zip.
+    # Validation checks the presence of this file in
+    # "boot" folder and verify it starts with "Image".
+
     cd "${DIR}/out/${CODENAME}/arch/${ARCH}/boot" || (_error \
         "${DIR}/out/${CODENAME}/arch/${ARCH}/boot dir not found !"; _exit)
     QUESTION="Enter kernel image to use (e.q. Image.gz-dtb) :"
@@ -198,6 +241,10 @@ _ask_for_kernel_image() {
 
 
 _ask_for_install_pkg() {
+    # Request the installation of missing packages.
+    # Warn the user that when false the script may crash.
+    # Validation checks are not needed here.
+
     N="[Y/n]"
     _confirm "Package ${PACKAGE} not found, do you wish to install ?"
     case ${CONFIRM} in
@@ -212,6 +259,10 @@ _ask_for_install_pkg() {
 
 
 _ask_for_clone_toolchain() {
+    # Request to clone missing tookchains.
+    # Warn the user and exit the script when false.
+    # Validation checks are not needed here.
+
     N="[Y/n]"
     _confirm "Toolchain ${TC} not found, do you wish to clone ?"
     case ${CONFIRM} in
@@ -227,6 +278,10 @@ _ask_for_clone_toolchain() {
 
 
 _ask_for_clone_anykernel() {
+    # Request to clone missing AnyKernel repo.
+    # Warn the user and exit the script when false.
+    # Validation checks are not needed here.
+
     N="[Y/n]"
     _confirm "Anykernel not found, do you wish to clone ?"
     case ${CONFIRM} in

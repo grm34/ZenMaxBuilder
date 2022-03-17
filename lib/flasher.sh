@@ -25,7 +25,7 @@
 _create_flashable_zip() {
     _note "Creating ${BUILD_NAME}-${DATE}.zip..."
 
-    # Send zip creation status to Telegram
+    # Send zip status on Telegram
     _send_zip_creation_status
 
     # Create init.spectrum.rc
