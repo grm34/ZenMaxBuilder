@@ -131,6 +131,7 @@ _clone_anykernel
 # Export target variables
 if [[ ${BUILDER} == default ]]; then BUILDER=$(whoami); fi
 if [[ ${HOST} == default ]]; then HOST=$(uname -n); fi
+if [[ ${LLVM} == True ]]; then export LLVM=1; fi
 export KBUILD_BUILD_USER=${BUILDER}
 export KBUILD_BUILD_HOST=${HOST}
 export PLATFORM_VERSION=${PLATFORM_VERSION}
