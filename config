@@ -146,6 +146,11 @@ GCC_ARM_URL="https://github.com/mvaisakh/gcc-arm.git"
 GCC_ARM_BRANCH="gcc-master"
 
 
+# LLVM Library
+# ============
+LLVM=True
+
+
 # Link Time Optimization (LTO)
 # ============================
 LTO=False
