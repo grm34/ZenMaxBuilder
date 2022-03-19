@@ -108,8 +108,11 @@ TELEGRAM_BOT_TOKEN=""
 
 # DO NOT EDIT WHEN NOT SURE !
 
-# Some required dependencies
-# ==========================
+# Some required dependencies...
+# Be carefull adding some deps, they are checked
+# with "which" bash in-built. Changes like variables
+# replacement may be required in "lib/requirements.sh".
+# =====================================================
 DEPENDENCIES=(git zip llvm lld clang expect)
 
 
