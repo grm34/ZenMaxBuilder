@@ -185,7 +185,7 @@ else
 
     # Build logs
     START_TIME=$(TZ=${TIMEZONE} date +%s)
-    LOG=${DIR}/logs/${CODENAME}/${CODENAME}_${DATE}_${TIME}.log
+    LOG=${DIR}/logs/${CODENAME}/${BUILD_NAME}_${DATE}_${TIME}.log
 
     # Make kernel
     _make_build | tee -a "${LOG}" & wait ${!}
