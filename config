@@ -108,7 +108,7 @@ TELEGRAM_BOT_TOKEN=""
 
 # DO NOT EDIT WHEN NOT SURE !
 
-# Some required dependencies...
+# Some required dependencies.
 # Be carefull adding some deps, they are checked
 # with "which" bash in-built. Changes like variables
 # replacement may be required in "lib/requirements.sh".
@@ -116,8 +116,10 @@ TELEGRAM_BOT_TOKEN=""
 DEPENDENCIES=(git zip llvm lld clang expect)
 
 
-# Neternels Builder repository
-# ============================
+# Neternels Builder repo.
+# Change this if you are using
+# your own Neternels-Builder fork.
+# ================================
 NB_BRANCH="main"
 
 
