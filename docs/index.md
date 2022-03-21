@@ -1,7 +1,7 @@
 ---
 {% seo %}
 ---
-# Android Kernel Builder
+# Neternels Builder | Android Kernel Builder
 
 ![Proton-Clang](https://img.shields.io/badge/Proton--Clang-⛓-yellow)
 ![Eva-GCC](https://img.shields.io/badge/Eva--GCC-⛓-blue)
@@ -10,8 +10,6 @@
 ![codequality](https://api.codiga.io/project/23638/score/svg)
 ![codescore](https://api.codiga.io/project/23638/status/svg)
 ![codefactor](https://www.codefactor.io/repository/github/grm34/neternels-builder/badge)
-
-Neternels-Builder is an Android Kernel Builder written in bash, which can be runned on any Linux System (feel free to Pull Request for Windows support). By default it uses Proton-Clang, Eva-GCC or Proton-GCC but you can use any toolchains you like by editing [config.sh](https://github.com/grm34/Neternels-Builder/blob/main/config.sh) file. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
 
 ## Requirements
 
