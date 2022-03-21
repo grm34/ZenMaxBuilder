@@ -68,3 +68,9 @@ Then you should be able to `git pull upstream main` from your main branch and ei
 * Proton-Clang: [@kdrag0n](https://github.com/kdrag0n)
 * Eva-GCC: [@mvaisakh](https://github.com/mvaisakh)
 * AnyKernel3: [@osm0sis](https://github.com/osm0sis)
+
+## Links
+
+* Codiga Code Review: [link](https://app.codiga.io/public/project/23638/Neternels-Builder/dashboard)
+* Codefactor Code Review: [link](https://www.codefactor.io/repository/github/grm34/neternels-builder)
+* Website: [https://kernel-builder.com](https://kernel-builder.com)
