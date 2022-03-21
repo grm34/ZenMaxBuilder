@@ -1,5 +1,4 @@
 #!/usr/bin/bash
-# shellcheck disable=SC2034
 
 # Copyright (c) 2021-2022 @grm34 Neternels Team
 #
@@ -44,7 +43,7 @@ _ask_for_toolchain() {
     # Validation checks for a number between "1" and "3"
     # which correspond to the number of available toolchains.
 
-    N="[Y/n]"
+    export N="[Y/n]"
     _confirm "Do you wish to use compiler: ${DEFAULT_COMPILER} ?"
     case ${CONFIRM} in
         n|N|no|No|NO)
@@ -58,7 +57,7 @@ _ask_for_toolchain() {
             COMPILER=${TOOLCHAINS[${COMPILER}-1]}
             ;;
         *)
-            COMPILER=${DEFAULT_COMPILER}
+            export COMPILER=${DEFAULT_COMPILER}
     esac
 }
 
@@ -102,14 +101,14 @@ _ask_for_menuconfig() {
     # Request a "make menuconfig" command.
     # Validation checks are not needed here.
 
-    N="[y/N]"
+    export N="[y/N]"
     _confirm "Do you wish to edit kernel with menuconfig ?"
     case ${CONFIRM} in
         y|Y|yes|Yes|YES)
             MENUCONFIG=True
             ;;
         *)
-            MENUCONFIG=False
+            export MENUCONFIG=False
     esac
 }
 
@@ -120,7 +119,7 @@ _ask_for_cores() {
     # to the amount of available CPU cores (no limits here).
     # Otherwise all available CPU cores will be used.
 
-    N="[Y/n]"
+    export N="[Y/n]"
     CPU=$(nproc --all)
     _confirm "Do you wish to use all available CPU Cores ?"
     case ${CONFIRM} in
@@ -143,14 +142,14 @@ _ask_for_telegram() {
     # Validation checks are not needed here.
 
     if [[ ${TELEGRAM_CHAT_ID} ]] && [[ ${TELEGRAM_BOT_TOKEN} ]]; then
-        N="[y/N]"
+        export N="[y/N]"
         _confirm "Do you wish to send build status on Telegram ?"
         case ${CONFIRM} in
             y|Y|yes|Yes|YES)
                 BUILD_STATUS=True
                 ;;
             *)
-                BUILD_STATUS=False
+                export BUILD_STATUS=False
         esac
     fi
 }
@@ -160,14 +159,14 @@ _ask_for_make_clean() {
     # Request "make clean" and "make mrproper" commands.
     # Validation checks are not needed here.
 
-    N="[y/N]"
+    export N="[y/N]"
     _confirm "Do you wish to make clean build: ${LINUX_VERSION} ?"
     case ${CONFIRM} in
         y|Y|yes|Yes|YES)
             MAKE_CLEAN=True
             ;;
         *)
-            MAKE_CLEAN=False
+            export MAKE_CLEAN=False
     esac
 }
 
@@ -177,7 +176,7 @@ _ask_for_save_defconfig() {
     # Otherwise request to continue with original one.
     # Validation checks are not needed here.
 
-    N="[Y/n]"
+    export N="[Y/n]"
     _confirm "Do you wish to save and use: ${DEFCONFIG} ?"
     case ${CONFIRM} in
         n|N|no|No|NO)
@@ -188,11 +187,11 @@ _ask_for_save_defconfig() {
                     ORIGINAL_DEFCONFIG=False
                     ;;
                 *)
-                    ORIGINAL_DEFCONFIG=True
+                    export ORIGINAL_DEFCONFIG=True
             esac
             ;;
         *)
-            SAVE_DEFCONFIG=True
+            export SAVE_DEFCONFIG=True
     esac
 }
 
@@ -201,14 +200,14 @@ _ask_for_new_build() {
     # Request "make" command for kernel build.
     # Validation checks are not needed here.
 
-    N="[Y/n]"
+    export N="[Y/n]"
     _confirm "Do you wish to start ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
     case ${CONFIRM} in
         n|N|no|No|NO)
             NEW_BUILD=False
             ;;
         *)
-            NEW_BUILD=True
+            export NEW_BUILD=True
     esac
 }
 
@@ -217,14 +216,14 @@ _ask_for_flashable_zip() {
     # Request the creation of flashable zip.
     # Validation checks are not needed here.
 
-    N="[y/N]"
+    export N="[y/N]"
     _confirm "Do you wish to zip ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
     case ${CONFIRM} in
         y|Y|yes|Yes|YES)
             FLASH_ZIP=True
             ;;
         *)
-            FLASH_ZIP=False
+            export FLASH_ZIP=False
     esac
 }
 
@@ -252,7 +251,7 @@ _ask_for_install_pkg() {
     # Warn the user that when false the script may crash.
     # Validation checks are not needed here.
 
-    N="[Y/n]"
+    export N="[Y/n]"
     _confirm "Package ${PACKAGE} not found, do you wish to install ?"
     case ${CONFIRM} in
         n|N|no|No|NO)
@@ -260,7 +259,7 @@ _ask_for_install_pkg() {
             _error "${PACKAGE} not found ! Compilation may fail."
             ;;
         *)
-            INSTALL_PKG=True
+            export INSTALL_PKG=True
     esac
 }
 
@@ -270,7 +269,7 @@ _ask_for_clone_toolchain() {
     # Warn the user and exit the script when false.
     # Validation checks are not needed here.
 
-    N="[Y/n]"
+    export N="[Y/n]"
     _confirm "Toolchain ${TC} not found, do you wish to clone ?"
     case ${CONFIRM} in
         n|N|no|No|NO)
@@ -279,7 +278,7 @@ _ask_for_clone_toolchain() {
             _exit
             ;;
         *)
-            CLONE_TC=True
+            export CLONE_TC=True
     esac
 }
 
@@ -289,7 +288,7 @@ _ask_for_clone_anykernel() {
     # Warn the user and exit the script when false.
     # Validation checks are not needed here.
 
-    N="[Y/n]"
+    export N="[Y/n]"
     _confirm "Anykernel not found, do you wish to clone ?"
     case ${CONFIRM} in
         n|N|no|No|NO)
@@ -298,6 +297,6 @@ _ask_for_clone_anykernel() {
             _exit
             ;;
         *)
-            CLONE_AK=True
+            export CLONE_AK=True
     esac
 }

@@ -8,7 +8,7 @@
 ![codescore](https://api.codiga.io/project/23638/status/svg)
 ![codefactor](https://www.codefactor.io/repository/github/grm34/neternels-builder/badge)
 
-Neternels-Builder is an Android Kernel Builder written in bash, which can be runned on any Linux System (feel free to Pull Request for Windows support). By default it uses Proton-Clang, Eva-GCC or Proton-GCC but you can use any toolchains you like by editing [config](https://github.com/grm34/Neternels-Builder/blob/main/config) file. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
+Neternels-Builder is an Android Kernel Builder written in bash, which can be runned on any Linux System (feel free to Pull Request for Windows support). By default it uses Proton-Clang, Eva-GCC or Proton-GCC but you can use any toolchains you like by editing [config.sh](https://github.com/grm34/Neternels-Builder/blob/main/config.sh) file. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
 
 ## Requirements
 
@@ -20,7 +20,7 @@ Dependencies will be prompted to install or you can manually install them.
 
 1. `git clone https://github.com/grm34/Neternels-Builder.git`
 2. `cd Neternels-Builder`
-3. Edit [config](https://github.com/grm34/Neternels-Builder/blob/main/config) to set your settings (optional)
+3. Edit [config.sh](https://github.com/grm34/Neternels-Builder/blob/main/config.sh) to set your settings (optional)
 4. ` bash Neternels-Builder`
 
 ## Options
@@ -56,7 +56,7 @@ Dependencies will be prompted to install or you can manually install them.
 2. `git clone https://github.com/<yourname>/Neternels-Builder`
 3. `git remote add upstream https://github.com/grm34/Neternels-Builder`
 4. `git checkout -b <devicename>`
-5. Set up your <devicename> [config](https://github.com/grm34/Neternels-Builder/blob/main/config) then commit those changes
+5. Set up your <devicename> [config.sh](https://github.com/grm34/Neternels-Builder/blob/main/config.sh) then commit those changes
 6. `git push --set-upstream origin <devicename>`
 7. `git checkout main` then repeat steps 4-6 for any other devices you support
 
