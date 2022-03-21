@@ -1,3 +1,6 @@
+---
+{% seo %}
+---
 # Android Kernel Builder
 
 ![Proton-Clang](https://img.shields.io/badge/Proton--Clang-⛓-yellow)
