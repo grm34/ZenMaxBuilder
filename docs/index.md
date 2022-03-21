@@ -57,7 +57,7 @@ Dependencies will be prompted to install or you can manually install them.
 2. `git clone https://github.com/<yourname>/Neternels-Builder`
 3. `git remote add upstream https://github.com/grm34/Neternels-Builder`
 4. `git checkout -b <devicename>`
-5. Set up your <devicename> [config.sh](https://github.com/grm34/Neternels-Builder/blob/main/config.sh) then commit those changes
+5. Set up your [config.sh](https://github.com/grm34/Neternels-Builder/blob/main/config.sh) then commit those changes
 6. `git push --set-upstream origin <devicename>`
 7. `git checkout main` then repeat steps 4-6 for any other devices you support
 
