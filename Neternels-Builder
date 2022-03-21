@@ -75,7 +75,8 @@ done
 # Handle app opts
 while getopts ':hum:f:z:' OPTION; do
     case ${OPTION} in
-        h)  _banner; _usage; rm "./bashvar"; exit 0;;
+        h)  _neternels_builder_banner
+            _usage; rm "./bashvar"; exit 0;;
         u)  _full_upgrade; _exit;;
         m)  _send_msg_option; _exit;;
         f)  _send_file_option; _exit;;
