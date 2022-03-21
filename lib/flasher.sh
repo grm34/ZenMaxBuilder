@@ -23,7 +23,7 @@
 
 
 _create_flashable_zip() {
-    _note "Creating ${BUILD_NAME}-${DATE}.zip..."
+    _note "Creating ${KERNEL_NAME}-${DATE}.zip..."
 
     # Send zip status on Telegram
     _send_zip_creation_status
@@ -31,7 +31,7 @@ _create_flashable_zip() {
     # Create init.spectrum.rc
     if [[ -f ${KERNEL_DIR}/${SPECTRUM} ]]; then
         cp -af "${KERNEL_DIR}/${SPECTRUM}" init.spectrum.rc
-        B=${BUILD_NAME}
+        B=${KERNEL_NAME}
         sed -i \
             "s/persist.spectrum.kernel.*/persist.spectrum.kernel ${B}/g" \
             init.spectrum.rc
@@ -58,11 +58,11 @@ _create_flashable_zip() {
     sed -i "s/device.name1=.*/device.name1=${CODENAME}/g" anykernel.sh
 
     # Create flashable zip
-    unbuffer zip -r9 "${BUILD_NAME}-${DATE}.zip" ./* \
+    unbuffer zip -r9 "${KERNEL_NAME}-${DATE}.zip" ./* \
         -x .git README.md ./*placeholder 2>&1
 
     # Move zip to builds folder
-    mv "${BUILD_NAME}-${DATE}.zip" "${BUILD_DIR}"
+    mv "${KERNEL_NAME}-${DATE}.zip" "${BUILD_DIR}"
 
     # Back to script dir
     cd "${DIR}" || (_error "${DIR} dir not found !"; _exit)
@@ -77,8 +77,8 @@ _sign_flashable_zip() {
 
     # Sign flashable zip
     unbuffer java -jar "${DIR}/lib/tools/zipsigner-3.0.jar" \
-        "${BUILD_DIR}/${BUILD_NAME}-${DATE}.zip" \
-        "${BUILD_DIR}/${BUILD_NAME}-${DATE}-signed.zip" 2>&1
+        "${BUILD_DIR}/${KERNEL_NAME}-${DATE}.zip" \
+        "${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip" 2>&1
 }
 
 
