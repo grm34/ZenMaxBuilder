@@ -21,7 +21,7 @@ Dependencies will be prompted to install or you can manually install them.
 1. `git clone https://github.com/grm34/Neternels-Builder.git`
 2. `cd Neternels-Builder`
 3. Edit [config.sh](https://github.com/grm34/Neternels-Builder/blob/main/config.sh) to set your settings (optional)
-4. ` bash Neternels-Builder`
+4. `bash Neternels-Builder`
 
 ## Options
 
