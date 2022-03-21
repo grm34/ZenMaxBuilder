@@ -150,7 +150,7 @@ _note "Make kernel version..."
 make -C "${KERNEL_DIR}" kernelversion | \
     grep -v make > linuxver & wait ${!}
 LINUX_VERSION=$(cat linuxver)
-BUILD_NAME=${TAG}-${CODENAME}-${LINUX_VERSION}
+KERNEL_NAME=${TAG}-${CODENAME}-${LINUX_VERSION}
 
 # Make clean
 _ask_for_make_clean
@@ -172,7 +172,7 @@ if [[ ${MENUCONFIG} == True ]]; then
         _save_defconfig
     else
         if [[ ${ORIGINAL_DEFCONFIG} == False ]]; then
-            _note "Build cancelled: ${BUILD_NAME}..."
+            _note "Build cancelled: ${KERNEL_NAME}..."
             _exit
         fi
     fi
@@ -181,7 +181,7 @@ fi
 # Make new build
 _ask_for_new_build
 if [[ ${NEW_BUILD} == False ]]; then
-    _note "Build cancelled: ${BUILD_NAME}..."
+    _note "Build cancelled: ${KERNEL_NAME}..."
     _exit
 else
     # TG build status
@@ -190,7 +190,7 @@ else
 
     # Build logs
     START_TIME=$(TZ=${TIMEZONE} date +%s)
-    LOG=${DIR}/logs/${CODENAME}/${BUILD_NAME}_${DATE}_${TIME}.log
+    LOG=${DIR}/logs/${CODENAME}/${KERNEL_NAME}_${DATE}_${TIME}.log
 
     # Make kernel
     _make_build | tee -a "${LOG}" & wait ${!}

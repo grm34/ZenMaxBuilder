@@ -93,22 +93,22 @@ _send_make_build_status() {
 
 
 _send_success_build_status() {
-    if [[ ${BUILD_NAME} ]] && [[ ${BUILD_STATUS} == True ]]; then
-        _send_msg "${BUILD_NAME//_/-} | ${MSG}"
+    if [[ ${BUILD_STATUS} == True ]]; then
+        _send_msg "${KERNEL_NAME//_/-} | ${MSG}"
     fi
 }
 
 
 _send_zip_creation_status() {
-    if [[ ${BUILD_NAME} ]] && [[ ${BUILD_STATUS} == True ]]; then
-        _send_msg "${BUILD_NAME//_/-} | Started flashable zip creation"
+    if [[ ${BUILD_STATUS} == True ]]; then
+        _send_msg "${KERNEL_NAME//_/-} | Started flashable zip creation"
     fi
 }
 
 
 _send_zip_signing_status() {
-    if [[ ${BUILD_NAME} ]] && [[ ${BUILD_STATUS} == True ]]; then
-        _send_msg "${BUILD_NAME//_/-} | Signing Zip file with AOSP keys"
+    if [[ ${BUILD_STATUS} == True ]]; then
+        _send_msg "${KERNEL_NAME//_/-} | Signing Zip file with AOSP keys"
     fi
 }
 
@@ -131,7 +131,7 @@ _send_failed_build_logs() {
 _upload_signed_build() {
     if [[ ${BUILD_STATUS} == True ]] && [[ ${FLASH_ZIP} == True ]]; then
         _note "Uploading build on Telegram..."
-        FILE=${BUILD_DIR}/${BUILD_NAME}-${DATE}-signed.zip
+        FILE=${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip
         MD5=$(md5sum "${FILE}" | cut -d' ' -f1)
         CAPTION="Build took: ${M} minutes and ${S} seconds"
         _send_file "${FILE}" "${CAPTION} | MD5 Checksum: ${MD5//_/-}"
