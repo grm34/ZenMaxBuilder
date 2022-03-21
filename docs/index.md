@@ -74,4 +74,4 @@ Then you should be able to `git pull upstream main` from your main branch and ei
 
 * Codiga Code Review: [link](https://app.codiga.io/public/project/23638/Neternels-Builder/dashboard)
 * Codefactor Code Review: [link](https://www.codefactor.io/repository/github/grm34/neternels-builder)
-* Code Source: [github](https://kernel-builder.com)
+* Code Source: [github](https://github.com/grm34/Neternels-Builder)
