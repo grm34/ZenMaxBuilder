@@ -1,5 +1,4 @@
 #!/usr/bin/bash
-# shellcheck disable=SC1091
 
 # Copyright (c) 2021-2022 @grm34 Neternels Team
 #
@@ -34,16 +33,21 @@ DIR=${PWD}/${DIRNAME}
 set > "${DIR}/bashvar"
 set -m -E -o pipefail #-b -v
 
-# Load user settings
+# shellcheck source=config.sh
 source "${DIR}/config.sh"
-
-# Load app libraries
+# shellcheck source=lib/manager.sh
 source "${DIR}/lib/manager.sh"
+# shellcheck source=lib/requirements.sh
 source "${DIR}/lib/requirements.sh"
+# shellcheck source=lib/telegram.sh
 source "${DIR}/lib/telegram.sh"
+# shellcheck source=lib/flasher.sh
 source "${DIR}/lib/flasher.sh"
+# shellcheck source=lib/maker.sh
 source "${DIR}/lib/maker.sh"
+# shellcheck source=lib/prompter.sh
 source "${DIR}/lib/prompter.sh"
+# shellcheck source=lib/updater.sh
 source "${DIR}/lib/updater.sh"
 
 # Ban all ('n00bz')

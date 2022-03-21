@@ -1,5 +1,4 @@
 #!/usr/bin/bash
-# shellcheck disable=SC2153
 
 # Copyright (c) 2021-2022 @grm34 Neternels Team
 #
