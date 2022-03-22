@@ -126,8 +126,8 @@ _check() {
         if [[ ${RUN_AGAIN} == True ]]; then
             "${@}" & wait ${!}
         else
-            break
             _exit
+            break
         fi
     done
 }
