@@ -93,8 +93,9 @@ done
 # Remove opts from positional parameters
 shift $(( OPTIND - 1 ))
 
-# Trapping bash signals
+# Trap interrupt signals
 trap '_error "keyboard interrupt !"; _exit' INT QUIT TSTP CONT
+
 
 #######################
 ### Start new build ###
@@ -157,7 +158,7 @@ _clean_anykernel
 if [[ ${MAKE_CLEAN} == True ]]; then
     _make_clean
     _make_mrproper
-    _check rm -rf "${OUT_DIR}" || sleep 0.1
+    _check rm -rf "${OUT_DIR}"
 fi
 
 # Make defconfig

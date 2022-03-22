@@ -52,7 +52,7 @@ _install_dependencies() {
             if ! which "${PACKAGE/llvm/llvm-ar}" &>/dev/null; then
                 _ask_for_install_pkg
                 if [[ ${INSTALL_PKG} == True ]]; then
-                    _check eval "${PM[0]/_/}" "${PM[1]}" \
+                    eval "${PM[0]/_/}" "${PM[1]}" \
                         "${PM[2]}" "${PM[3]}" "${PACKAGE}"
                 fi
             fi
@@ -69,7 +69,7 @@ _clone_toolchains() {
             export TC=${PROTON_DIR##*/}
             _ask_for_clone_toolchain
             if [[ ${CLONE_TC} == True ]]; then
-                _check git clone --depth=1 -b \
+                git clone --depth=1 -b \
                     "${PROTON_BRANCH}" \
                     "${PROTON_URL}" \
                     "${PROTON_DIR}"
@@ -81,7 +81,7 @@ _clone_toolchains() {
             export TC=${GCC_ARM_DIR##*/}
             _ask_for_clone_toolchain
             if [[ ${CLONE_TC} == True ]]; then
-                _check git clone --depth=1 -b \
+                git clone --depth=1 -b \
                     "${GCC_ARM_BRANCH}" \
                     "${GCC_ARM_URL}" \
                     "${GCC_ARM_DIR}"
@@ -93,7 +93,7 @@ _clone_toolchains() {
             export TC=${GCC_ARM64_DIR##*/}
             _ask_for_clone_toolchain
             if [[ ${CLONE_TC} == True ]]; then
-                _check git clone --depth=1 -b \
+                git clone --depth=1 -b \
                     "${GCC_ARM64_BRANCH}" \
                     "${GCC_ARM64_URL}" \
                     "${GCC_ARM64_DIR}"
@@ -120,7 +120,7 @@ _clone_anykernel() {
     if [[ ! -d ${ANYKERNEL_DIR} ]]; then
         _ask_for_clone_anykernel
         if [[ ${CLONE_AK} == True ]]; then
-            _check git clone -b \
+            git clone -b \
                 "${ANYKERNEL_BRANCH}" \
                 "${ANYKERNEL_URL}" \
                 "${ANYKERNEL_DIR}"

@@ -215,7 +215,7 @@ _ask_for_run_again() {
         y|Y|yes|Yes|YES)
             RUN_AGAIN=True
             ;;
-        n)
+        *)
             export RUN_AGAIN=False
     esac
 }
