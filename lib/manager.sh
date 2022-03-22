@@ -22,7 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # Shell color codes
-RED="\e[1;31m"; GREEN="\e[1;32m"; YELLOW="\e[1;33m"
+RED="\e[1;31m"; GREEN="\e[1;32m"; YELL="\e[1;33m"
 BLUE="\e[1;34m"; CYAN="\e[1;36m"; BOLD="\e[1;37m"; NC="\e[0m"
 
 
@@ -58,9 +58,11 @@ ${CYAN}http://github.com/grm34/Neternels-Builder${NC}
 # Ask some information
 _prompt() {
     LENTH=${*}; COUNT=${#LENTH}
-    echo -ne "\n${YELLOW}==> ${GREEN}${1} ${RED}${2}"
-    echo -ne "${YELLOW}\n==> "
-    for (( CHAR=1; CHAR<=COUNT; CHAR++ )); do echo -ne "-"; done
+    echo -ne "\n${YELL}==> ${GREEN}${1} ${RED}${2}"
+    echo -ne "${YELL}\n==> "
+    for (( CHAR=1; CHAR<=COUNT; CHAR++ )); do
+        echo -ne "-"
+    done
     echo -ne "\n==> ${NC}"
 }
 
@@ -68,10 +70,13 @@ _prompt() {
 # Ask confirmation (Yes/No)
 _confirm() {
     CONFIRM=False; COUNT=$(( ${#1} + 6 ))
-    until [[ ${CONFIRM} =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]] || \
-            [[ ${CONFIRM} == "" ]]; do
-        echo -ne "${YELLOW}\n==> ${GREEN}${1} ${RED}${N}${YELLOW}\n==> "
-        for (( CHAR=1; CHAR<=COUNT; CHAR++ )); do echo -ne "-"; done
+    until [[ ${CONFIRM} =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]] \
+            || [[ ${CONFIRM} == "" ]]; do
+        echo -ne \
+            "${YELL}\n==> ${GREEN}${1} ${RED}${N}${YELL}\n==> "
+        for (( CHAR=1; CHAR<=COUNT; CHAR++ )); do
+            echo -ne "-"
+        done
         echo -ne "\n==> ${NC}"
         read -r CONFIRM
     done
@@ -81,45 +86,50 @@ _confirm() {
 # Select an option
 _select() {
     COUNT=0
-    echo -ne "${YELLOW}\n==> "
+    echo -ne "${YELL}\n==> "
     for ENTRY in "${@}"; do
         echo -ne "${GREEN}${ENTRY} ${RED}[$(( ++COUNT ))] ${NC}"
     done
     LENTH=${*}; NUMBER=$(( ${#*} * 4 ))
     COUNT=$(( ${#LENTH} + NUMBER + 1 ))
-    echo -ne "${YELLOW}\n==> "
-    for (( CHAR=1; CHAR<=COUNT; CHAR++ )); do echo -ne "-"; done
+    echo -ne "${YELL}\n==> "
+    for (( CHAR=1; CHAR<=COUNT; CHAR++ )); do
+        echo -ne "-"
+    done
     echo -ne "\n==> ${NC}"
 }
 
 
 # Display some notes
 _note() {
-    echo -e "${YELLOW}\n[$(date +%T)] ${CYAN}${1}${NC}"; sleep 1
+    echo -e "${YELL}\n[$(date +%T)] ${CYAN}${1}${NC}"
+    sleep 1
 }
 
 
 # Display error
 _error() {
-    echo -e "\n${RED}Error: ${YELLOW}${*}${NC}"
+    echo -e "\n${RED}Error: ${YELL}${*}${NC}"
 }
 
 
-# Notify on ERR
-_notify_error() {
-    CMD="${BASH_COMMAND/read*/keyboard interrupt !}"
-    CMD="${CMD/wait*/keyboard interrupt !}"
-    SRC_LINE="${BASH_LINENO[$i+1]}"
-    SRC_FUNC="${FUNCNAME[$i+1]}"
-    SRC_FILE="${BASH_SOURCE[$i+1]##*/}"
-    _error "${CMD} Line ${SRC_LINE}: ${SRC_FUNC} From: ${SRC_FILE##*/}"
+# Check and notify ERR
+_check() {
+    "${@}"; local STATUS=$?
+    if [[ ${STATUS} -ne 0 ]]; then
+        LINE="${BASH_LINENO[$i+1]}"
+        FUNC="${FUNCNAME[$i+1]}"
+        FILE="${BASH_SOURCE[$i+1]##*/}"
+        _error "${*} | Line ${LINE}: ${FUNC} From: ${FILE##*/}"
+    fi
+    return "${STATUS}"
 }
 
 
-# Properly exit with 3s timeout
+# Properly EXIT
 _exit() {
 
-    # Kill current make child
+    # Kill make child on interrupt
     if pidof make; then
         pkill make || sleep 0.1
     fi
@@ -128,8 +138,8 @@ _exit() {
     if [[ -f ${DIR}/bashvar ]] && [[ -f ${LOG} ]]; then
         set | grep -v "${EXCLUDE_VARS}" > buildervar
         printf "\n### USER INPUT LOGS ###\n" >> "${LOG}"
-        diff bashvar buildervar | \
-            grep -E "^> [A-Z_]{3,26}=" >> "${LOG}" || sleep 0.1
+        diff bashvar buildervar | grep -E \
+            "^> [A-Z_]{3,26}=" >> "${LOG}" || sleep 0.1
     fi
 
     # On error send logs on Telegram
@@ -143,15 +153,15 @@ _exit() {
         fi
     done
 
-    # Display timeout exit msg
+    # Exit with 3s timeout
     for (( SECOND=3; SECOND>=1; SECOND-- )); do
         echo -ne \
-            "\r\033[K${BLUE}Exit Neternels-Builder in ${SECOND}s...${NC}"
+        "\r\033[K${BLUE}Exiting script in ${SECOND}s...${NC}"
         sleep 1
     done
-
-    # Kill the script
-    echo && kill -- ${$}
+    echo -e \
+       "\n${RED}<| Neternels Team @ Development is Life |>${NC}"
+    exit 1
 }
 
 
@@ -162,10 +172,4 @@ _clean_anykernel() {
     for UW in "${UNWANTED[@]}"; do
         rm -f "${ANYKERNEL_DIR}/${UW}" || sleep 0.1
     done
-}
-
-
-# Say goodbye
-_goodbye_msg() {
-    echo -e "\n${RED}<| Neternels Team @ Development is Life |>${NC}"
 }
