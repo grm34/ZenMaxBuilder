@@ -68,7 +68,7 @@ _make_defconfig() {
 
 _make_menuconfig() {
     _note "Make menuconfig..."
-    _check make -C "${KERNEL_DIR}" O="${OUT_DIR}" \
+    make -C "${KERNEL_DIR}" O="${OUT_DIR}" \
         ARCH="${ARCH}" menuconfig "${OUT_DIR}"/.config
 }
 
