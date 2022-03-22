@@ -96,20 +96,6 @@ shift $(( OPTIND - 1 ))
 # Trapping bash signals
 trap '_error "keyboard interrupt !"; _exit' INT QUIT TSTP CONT
 
-# Child command process
-_run_child() {
-    eval "${*}" & wait ${!}
-    until [[ ${STATUS} -ne 0 ]]; do
-        _ask_for_run_again
-        if [[ ${RUN_AGAIN} == True ]]; then
-            eval "${*}" & wait ${!}
-        else
-            _exit
-        fi
-    done
-}
-
-
 #######################
 ### Start new build ###
 #######################
@@ -169,13 +155,13 @@ KERNEL_NAME=${TAG}-${CODENAME}-${LINUX_VERSION}
 _ask_for_make_clean
 _clean_anykernel
 if [[ ${MAKE_CLEAN} == True ]]; then
-    _run_child _make_clean
-    _run_child _make_mrproper
+    _make_clean
+    _make_mrproper
     _check rm -rf "${OUT_DIR}" || sleep 0.1
 fi
 
 # Make defconfig
-_run_child _make_defconfig
+_make_defconfig
 
 # Make menuconfig
 if [[ ${MENUCONFIG} == True ]]; then
@@ -206,7 +192,7 @@ else
     LOG=${DIR}/logs/${CODENAME}/${KERNEL_NAME}_${DATE}_${TIME}.log
 
     # Make kernel
-    _run_child _make_build | tee -a "${LOG}"
+    _make_build | tee -a "${LOG}"
 fi
 
 # Get build time

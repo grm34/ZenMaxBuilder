@@ -107,22 +107,28 @@ _note() {
 }
 
 
-# Display error
+# Display ERR
 _error() {
     echo -e "\n${RED}Error: ${YELL}${*}${NC}"
 }
 
 
-# Check and notify ERR
+# Handle ERR
 _check() {
-    "${@}"; local STATUS=$?
-    if [[ ${STATUS} -ne 0 ]]; then
+    "${@}" & wait ${!}
+    local STATUS=$?
+    until [[ ${STATUS} -eq 0 ]]; do
         LINE="${BASH_LINENO[$i+1]}"
         FUNC="${FUNCNAME[$i+1]}"
         FILE="${BASH_SOURCE[$i+1]##*/}"
         _error "${*} | Line ${LINE}: ${FUNC} From: ${FILE##*/}"
-    fi
-    return "${STATUS}"
+        _ask_for_run_again
+        if [[ ${RUN_AGAIN} == True ]]; then
+            "${@}" & wait ${!}
+        else
+            _exit
+        fi
+    done
 }
 
 
