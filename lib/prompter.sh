@@ -212,6 +212,22 @@ _ask_for_new_build() {
 }
 
 
+_ask_for_run_again() {
+    # Request to run again failed command.
+    # Validation checks are not needed here.
+
+    export N="[y/N]"
+    _confirm "Do you wish to try again ?"
+    case ${CONFIRM} in
+        y|Y|yes|Yes|YES)
+            RUN_AGAIN=True
+            ;;
+        n)
+            export RUN_AGAIN=False
+    esac
+}
+
+
 _ask_for_flashable_zip() {
     # Request the creation of flashable zip.
     # Validation checks are not needed here.
