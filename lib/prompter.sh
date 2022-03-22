@@ -69,7 +69,7 @@ _ask_for_codename() {
     if [[ ${CODENAME} == default ]]; then
         QUESTION="Enter android device codename (e.q. X00TD) :"
         _prompt "${QUESTION}"; read -r CODENAME
-        regex=^[a-zA-Z0-9][a-zA-Z0-9_-]{2,20}$
+        regex="^[a-zA-Z0-9][a-zA-Z0-9_-]{2,20}$"
         until [[ ${CODENAME} =~ ${regex} ]]; do
             _error "${CODENAME} invalid device codename !"
             _prompt "${QUESTION}"; read -r CODENAME
@@ -195,7 +195,7 @@ _ask_for_new_build() {
     # Validation checks are not needed here.
     export N="[Y/n]"
     x="Do you wish to start ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
-    _confirm "${x}
+    _confirm "${x}"
     case ${CONFIRM} in
         n|N|no|No|NO)
             NEW_BUILD=False
@@ -226,7 +226,7 @@ _ask_for_flashable_zip() {
     # Validation checks are not needed here.
     export N="[y/N]"
     x="Do you wish to zip ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
-    _confirm ${x}
+    _confirm "${x}"
     case ${CONFIRM} in
         y|Y|yes|Yes|YES)
             FLASH_ZIP=True
