@@ -49,34 +49,36 @@ _export_path_and_options() {
 
 _make_clean() {
     _note "Make clean (this could take a while)..."
-    unbuffer make -C "${KERNEL_DIR}" clean 2>&1
+    _check unbuffer make -C "${KERNEL_DIR}" clean 2>&1
 }
 
 
 _make_mrproper() {
     _note "Make mrproper (this could take a while)..."
-    unbuffer make -C "${KERNEL_DIR}" mrproper 2>&1
+    _check unbuffer make -C "${KERNEL_DIR}" mrproper 2>&1
 }
 
 
 _make_defconfig() {
     _note "Make ${DEFCONFIG} (${LINUX_VERSION})..."
-    unbuffer make -C "${KERNEL_DIR}" O="${OUT_DIR}" \
-        ARCH="${ARCH}" "${DEFCONFIG}" 2>&1
+    _check unbuffer make -C "${KERNEL_DIR}" \
+        O="${OUT_DIR}" ARCH="${ARCH}" "${DEFCONFIG}" 2>&1
 }
 
 
 _make_menuconfig() {
     _note "Make menuconfig..."
-    make -C "${KERNEL_DIR}" O="${OUT_DIR}" ARCH="${ARCH}" \
-        menuconfig "${OUT_DIR}"/.config
+    _check make -C "${KERNEL_DIR}" O="${OUT_DIR}" \
+        ARCH="${ARCH}" menuconfig "${OUT_DIR}"/.config
 }
 
 _save_defconfig() {
     _note "Saving ${DEFCONFIG} in arch/${ARCH}/configs..."
-    cp "${KERNEL_DIR}/arch/${ARCH}/configs/${DEFCONFIG}" \
+    _check cp \
+        "${KERNEL_DIR}/arch/${ARCH}/configs/${DEFCONFIG}" \
         "${KERNEL_DIR}/arch/${ARCH}/configs/${DEFCONFIG}_save"
-    cp "${OUT_DIR}"/.config \
+    _check cp \
+        "${OUT_DIR}"/.config \
         "${KERNEL_DIR}/arch/${ARCH}/configs/${DEFCONFIG}"
 }
 
@@ -88,6 +90,6 @@ _make_build() {
     _send_make_build_status
 
     # Make new kernel build
-    unbuffer make -C "${KERNEL_DIR}" \
-        -j"${CORES}" O="${OUT_DIR}" "${TC_OPTIONS[@]}" 2>&1
+    _check unbuffer make -C "${KERNEL_DIR}" -j"${CORES}" \
+        O="${OUT_DIR}" "${TC_OPTIONS[@]}" 2>&1
 }

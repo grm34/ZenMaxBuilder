@@ -30,39 +30,54 @@ _create_flashable_zip() {
 
     # Create init.spectrum.rc
     if [[ -f ${KERNEL_DIR}/${SPECTRUM} ]]; then
-        cp -af "${KERNEL_DIR}/${SPECTRUM}" init.spectrum.rc
+        _check cp -af \
+            "${KERNEL_DIR}/${SPECTRUM}" \
+            init.spectrum.rc
         B=${KERNEL_NAME}
-        sed -i \
-            "s/persist.spectrum.kernel.*/persist.spectrum.kernel ${B}/g" \
+        _check sed -i \
+            "s/*.spectrum.kernel.*/*.spectrum.kernel ${B}/g" \
             init.spectrum.rc
     fi
 
     # Move Kernel Image to AnyKernel folder
-    cp "${KERNEL_IMG}" "${ANYKERNEL_DIR}"
+    _check cp "${KERNEL_IMG}" "${ANYKERNEL_DIR}"
 
     # CD to AnyKernel folder
-    cd "${ANYKERNEL_DIR}" || (_error "AnyKernel dir not found !"; _exit)
+    cd "${ANYKERNEL_DIR}" || \
+        (_error "AnyKernel dir not found !"; _exit)
 
     # Set anykernel.sh
-    sed -i "s/kernel.string=.*/kernel.string=${TAG}-${CODENAME}/g" \
+    _check sed -i \
+        "s/kernel.string=.*/kernel.string=${TAG}-${CODENAME}/g" \
         anykernel.sh
-    sed -i "s/kernel.for=.*/kernel.for=${KERNEL_VARIANT}/g" \
+    _check sed -i \
+        "s/kernel.for=.*/kernel.for=${KERNEL_VARIANT}/g" \
         anykernel.sh
-    sed -i "s/kernel.compiler=.*/kernel.compiler=${COMPILER}/g" \
+    _check sed -i \
+        "s/kernel.compiler=.*/kernel.compiler=${COMPILER}/g" \
         anykernel.sh
-    sed -i "s/kernel.made=.*/kernel.made=${BUILDER}/g" anykernel.sh
-    sed -i "s/kernel.version=.*/kernel.version=${LINUX_VERSION}/g" \
+    _check sed -i \
+        "s/kernel.made=.*/kernel.made=${BUILDER}/g" \
         anykernel.sh
-    sed -i "s/message.word=.*/message.word=Netenerls Team/g" anykernel.sh
-    sed -i "s/build.date=.*/build.date=$DATE/g" anykernel.sh
-    sed -i "s/device.name1=.*/device.name1=${CODENAME}/g" anykernel.sh
+    _check sed -i \
+        "s/kernel.version=.*/kernel.version=${LINUX_VERSION}/g" \
+        anykernel.sh
+    _check sed -i \
+        "s/message.word=.*/message.word=Netenerls Team/g" \
+        anykernel.sh
+    _check sed -i \
+        "s/build.date=.*/build.date=$DATE/g" \
+        anykernel.sh
+    _check sed -i \
+        "s/device.name1=.*/device.name1=${CODENAME}/g" \
+        anykernel.sh
 
     # Create flashable zip
-    unbuffer zip -r9 "${KERNEL_NAME}-${DATE}.zip" ./* \
-        -x .git README.md ./*placeholder 2>&1
+    _check unbuffer zip -r9 "${KERNEL_NAME}-${DATE}.zip" \
+        ./* -x .git README.md ./*placeholder 2>&1
 
     # Move zip to builds folder
-    mv "${KERNEL_NAME}-${DATE}.zip" "${BUILD_DIR}"
+    _check mv "${KERNEL_NAME}-${DATE}.zip" "${BUILD_DIR}"
 
     # Back to script dir
     cd "${DIR}" || (_error "${DIR} dir not found !"; _exit)
@@ -76,7 +91,8 @@ _sign_flashable_zip() {
     _send_zip_signing_status
 
     # Sign flashable zip
-    unbuffer java -jar "${DIR}/lib/tools/zipsigner-3.0.jar" \
+    _check unbuffer java -jar \
+        "${DIR}/lib/tools/zipsigner-3.0.jar" \
         "${BUILD_DIR}/${KERNEL_NAME}-${DATE}.zip" \
         "${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip" 2>&1
 }
@@ -88,27 +104,29 @@ _create_zip_option() {
         _note "Creating ${OPTARG}-{DATE}_${TIME}.zip..."
 
         # Move Image to AnyKernel folder
-        cp "${OPTARG}" "${ANYKERNEL_DIR}"
+        _check cp "${OPTARG}" "${ANYKERNEL_DIR}"
 
         # CD to AnyKernel folder
         cd "${ANYKERNEL_DIR}" || \
             (_error "AnyKernel dir not found !"; _exit)
 
         # Create flashable zip
-        zip -r9 "${OPTARG##*/}-${DATE}-${TIME}.zip" ./* \
-            -x .git README.md ./*placeholder
+        _check zip -r9 "${OPTARG##*/}-${DATE}-${TIME}.zip" \
+            ./* -x .git README.md ./*placeholder
 
         # Sign flashable zip
         _note "Signing Zip file with AOSP keys..."
-        java -jar "${DIR}/lib/tools/zipsigner-3.0.jar" \
+        _check java -jar \
+            "${DIR}/lib/tools/zipsigner-3.0.jar" \
             "${OPTARG##*/}-${DATE}_${TIME}.zip" \
             "${OPTARG##*/}-${DATE}_${TIME}-signed.zip"
 
         # Move zip to builds folder
         if [[ ! -d ${DIR}/builds/default ]]; then
-            mkdir "${DIR}/builds/default"
+            _check mkdir "${DIR}/builds/default"
         fi
-        mv "${OPTARG##*/}-${DATE}_${TIME}-signed.zip" \
+        _check mv \
+            "${OPTARG##*/}-${DATE}_${TIME}-signed.zip" \
             "${DIR}/builds/default"
 
         # Back to script dir

@@ -80,7 +80,7 @@ done
 while getopts ':hum:f:z:' OPTION; do
     case ${OPTION} in
         h)  _neternels_builder_banner
-            _usage; rm "./bashvar"; exit 0;;
+            _usage; _check rm "./bashvar"; exit 0;;
         u)  _full_upgrade; _exit;;
         m)  _send_msg_option; _exit;;
         f)  _send_file_option; _exit;;
@@ -94,8 +94,7 @@ done
 shift $(( OPTIND - 1 ))
 
 # Trapping bash signals
-trap '_notify_error; _exit' INT QUIT TSTP ERR
-
+trap '_error "keyboard interrupt !"; _exit' INT QUIT TSTP CONT
 
 #######################
 ### Start new build ###
@@ -111,9 +110,9 @@ FOLDERS=(builds logs toolchains out)
 for FOLDER in "${FOLDERS[@]}"; do
     if [[ ! -d ${DIR}/${FOLDER}/${CODENAME} ]] && \
             [[ ${FOLDER} != toolchains ]]; then
-        mkdir -p "${DIR}/${FOLDER}/${CODENAME}"
+        _check mkdir -p "${DIR}/${FOLDER}/${CODENAME}"
     elif [[ ! -d ${DIR}/${FOLDER} ]]; then
-        mkdir "${DIR}/${FOLDER}"
+        _check mkdir "${DIR}/${FOLDER}"
     fi
 done
 
@@ -147,8 +146,8 @@ _export_path_and_options
 
 # Make kernel version
 _note "Make kernel version..."
-make -C "${KERNEL_DIR}" kernelversion | \
-    grep -v make > linuxver & wait ${!}
+make -C "${KERNEL_DIR}" kernelversion \
+    | grep -v make > linuxver & wait ${!}
 LINUX_VERSION=$(cat linuxver)
 KERNEL_NAME=${TAG}-${CODENAME}-${LINUX_VERSION}
 
@@ -156,13 +155,13 @@ KERNEL_NAME=${TAG}-${CODENAME}-${LINUX_VERSION}
 _ask_for_make_clean
 _clean_anykernel
 if [[ ${MAKE_CLEAN} == True ]]; then
-    _make_clean & wait ${!}
-    _make_mrproper & wait ${!}
-    rm -rf "${OUT_DIR}" || sleep 0.1
+    _make_clean
+    _make_mrproper
+    _check rm -rf "${OUT_DIR}" || sleep 0.1
 fi
 
 # Make defconfig
-_make_defconfig & wait ${!}
+_make_defconfig
 
 # Make menuconfig
 if [[ ${MENUCONFIG} == True ]]; then
@@ -193,7 +192,7 @@ else
     LOG=${DIR}/logs/${CODENAME}/${KERNEL_NAME}_${DATE}_${TIME}.log
 
     # Make kernel
-    _make_build | tee -a "${LOG}" & wait ${!}
+    _make_build | tee -a "${LOG}"
 fi
 
 # Get build time
@@ -218,5 +217,4 @@ fi
 # Upload build and exit
 _upload_signed_build
 _clean_anykernel
-_goodbye_msg
 _exit

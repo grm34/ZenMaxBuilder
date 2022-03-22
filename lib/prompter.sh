@@ -26,7 +26,6 @@ _ask_for_kernel_dir() {
     # Question to get the kernel location.
     # Validation checks the presence of the "configs"
     # folder corresponding to the current architecture.
-
     if [[ ${KERNEL_DIR} == default ]]; then
         QUESTION="Enter kernel path (e.q. /home/user/mykernel) :"
         _prompt "${QUESTION}"; read -r -e KERNEL_DIR
@@ -42,7 +41,6 @@ _ask_for_toolchain() {
     # Question to get the toolchain to use.
     # Validation checks for a number between "1" and "3"
     # which correspond to the number of available toolchains.
-
     export N="[Y/n]"
     _confirm "Do you wish to use compiler: ${DEFAULT_COMPILER} ?"
     case ${CONFIRM} in
@@ -68,11 +66,11 @@ _ask_for_codename() {
     # Match "letters" and "numbers" and "-" and "_" only.
     # Should be at least "3" characters long and maximum "20".
     # Device codename can't start with "_" or "-" characters.
-
     if [[ ${CODENAME} == default ]]; then
         QUESTION="Enter android device codename (e.q. X00TD) :"
         _prompt "${QUESTION}"; read -r CODENAME
-        until [[ ${CODENAME} =~ ^[a-zA-Z0-9][a-zA-Z0-9_-]{2,20}$ ]]; do
+        regex="^[a-zA-Z0-9][a-zA-Z0-9_-]{2,20}$"
+        until [[ ${CODENAME} =~ ${regex} ]]; do
             _error "${CODENAME} invalid device codename !"
             _prompt "${QUESTION}"; read -r CODENAME
         done
@@ -84,13 +82,13 @@ _ask_for_defconfig() {
     # Question to get the defconfig file to use.
     # Validation checks the presence of this file in
     # "configs" folder and verify it ends with "_defconfig".
-
-    cd "${KERNEL_DIR}/arch/${ARCH}/configs" || \
-        (_error "${KERNEL_DIR} dir not found !"; _exit)
+    x="${KERNEL_DIR}/arch/${ARCH}/configs"
+    cd "${x}" || (_error "${x} dir not found !"; _exit)
     QUESTION="Enter defconfig file (e.q. neternels_defconfig) :"
     _prompt "${QUESTION}"; read -r -e DEFCONFIG
-    until [[ -f ${DEFCONFIG} ]] && [[ ${DEFCONFIG} == *defconfig ]]; do
-            _error "${DEFCONFIG} invalid defconfig file !"
+    until \
+    [[ -f ${DEFCONFIG} ]] && [[ ${DEFCONFIG} == *defconfig ]]; do
+        _error "${DEFCONFIG} invalid defconfig file !"
         _prompt "${QUESTION}"; read -r -e DEFCONFIG
     done
     cd "${DIR}" || (_error "${DIR} dir not found !"; _exit)
@@ -100,7 +98,6 @@ _ask_for_defconfig() {
 _ask_for_menuconfig() {
     # Request a "make menuconfig" command.
     # Validation checks are not needed here.
-
     export N="[y/N]"
     _confirm "Do you wish to edit kernel with menuconfig ?"
     case ${CONFIRM} in
@@ -118,7 +115,6 @@ _ask_for_cores() {
     # Validation checks for a valid number corresponding
     # to the amount of available CPU cores (no limits here).
     # Otherwise all available CPU cores will be used.
-
     export N="[Y/n]"
     CPU=$(nproc --all)
     _confirm "Do you wish to use all available CPU Cores ?"
@@ -140,8 +136,8 @@ _ask_for_cores() {
 _ask_for_telegram() {
     # Request the upload of build status on Telegram.
     # Validation checks are not needed here.
-
-    if [[ ${TELEGRAM_CHAT_ID} ]] && [[ ${TELEGRAM_BOT_TOKEN} ]]; then
+    if [[ ${TELEGRAM_CHAT_ID} ]] && \
+            [[ ${TELEGRAM_BOT_TOKEN} ]]; then
         export N="[y/N]"
         _confirm "Do you wish to send build status on Telegram ?"
         case ${CONFIRM} in
@@ -158,7 +154,6 @@ _ask_for_telegram() {
 _ask_for_make_clean() {
     # Request "make clean" and "make mrproper" commands.
     # Validation checks are not needed here.
-
     export N="[y/N]"
     _confirm "Do you wish to make clean build: ${LINUX_VERSION} ?"
     case ${CONFIRM} in
@@ -175,7 +170,6 @@ _ask_for_save_defconfig() {
     # Request to save and use the modified defconfig.
     # Otherwise request to continue with original one.
     # Validation checks are not needed here.
-
     export N="[Y/n]"
     _confirm "Do you wish to save and use: ${DEFCONFIG} ?"
     case ${CONFIRM} in
@@ -199,9 +193,9 @@ _ask_for_save_defconfig() {
 _ask_for_new_build() {
     # Request "make" command for kernel build.
     # Validation checks are not needed here.
-
     export N="[Y/n]"
-    _confirm "Do you wish to start ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
+    x="Do you wish to start ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
+    _confirm "${x}"
     case ${CONFIRM} in
         n|N|no|No|NO)
             NEW_BUILD=False
@@ -212,12 +206,27 @@ _ask_for_new_build() {
 }
 
 
+_ask_for_run_again() {
+    # Request to run again failed command.
+    # Validation checks are not needed here.
+    export N="[y/N]"
+    _confirm "Do you wish to try again ?"
+    case ${CONFIRM} in
+        y|Y|yes|Yes|YES)
+            RUN_AGAIN=True
+            ;;
+        n)
+            export RUN_AGAIN=False
+    esac
+}
+
+
 _ask_for_flashable_zip() {
     # Request the creation of flashable zip.
     # Validation checks are not needed here.
-
     export N="[y/N]"
-    _confirm "Do you wish to zip ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
+    x="Do you wish to zip ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
+    _confirm "${x}"
     case ${CONFIRM} in
         y|Y|yes|Yes|YES)
             FLASH_ZIP=True
@@ -232,12 +241,12 @@ _ask_for_kernel_image() {
     # Question to get the kernel image to zip.
     # Validation checks the presence of this file in
     # "boot" folder and verify it starts with "Image".
-
-    cd "${DIR}/out/${CODENAME}/arch/${ARCH}/boot" || (_error \
-        "${DIR}/out/${CODENAME}/arch/${ARCH}/boot dir not found !"; _exit)
+    x="${DIR}/out/${CODENAME}/arch/${ARCH}/boot"
+    cd "${x}" || (_error "${x} dir not found !"; _exit)
     QUESTION="Enter kernel image to use (e.q. Image.gz-dtb) :"
     _prompt "${QUESTION}"; read -r -e KERNEL_IMG
-    until [[ -f ${KERNEL_IMG} ]] && [[ ${KERNEL_IMG} == Image* ]]; do
+    until \
+    [[ -f ${KERNEL_IMG} ]] && [[ ${KERNEL_IMG} == Image* ]]; do
         _error "${KERNEL_IMG} invalid kernel image !"
         _prompt "${QUESTION}"; read -r -e KERNEL_IMG
     done
@@ -250,7 +259,6 @@ _ask_for_install_pkg() {
     # Request the installation of missing packages.
     # Warn the user that when false the script may crash.
     # Validation checks are not needed here.
-
     export N="[Y/n]"
     _confirm "Package ${PACKAGE} not found, do you wish to install ?"
     case ${CONFIRM} in
@@ -268,7 +276,6 @@ _ask_for_clone_toolchain() {
     # Request to clone missing tookchains.
     # Warn the user and exit the script when false.
     # Validation checks are not needed here.
-
     export N="[Y/n]"
     _confirm "Toolchain ${TC} not found, do you wish to clone ?"
     case ${CONFIRM} in
@@ -287,7 +294,6 @@ _ask_for_clone_anykernel() {
     # Request to clone missing AnyKernel repo.
     # Warn the user and exit the script when false.
     # Validation checks are not needed here.
-
     export N="[Y/n]"
     _confirm "Anykernel not found, do you wish to clone ?"
     case ${CONFIRM} in
