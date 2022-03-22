@@ -126,6 +126,7 @@ _check() {
         if [[ ${RUN_AGAIN} == True ]]; then
             "${@}" & wait ${!}
         else
+            break
             _exit
         fi
     done
@@ -167,7 +168,7 @@ _exit() {
     done
     echo -e \
        "\n${RED}<| Neternels Team @ Development is Life |>${NC}"
-    exit 1
+    kill -- ${$}
 }
 
 
