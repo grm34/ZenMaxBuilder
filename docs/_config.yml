@@ -8,9 +8,8 @@ author:
   url: https://githhub.com/grm34
 
 google_analytics: G-XRXTP3G5KE
-permalink: pretty
 
-gems:
+plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
 
