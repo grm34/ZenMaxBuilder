@@ -23,7 +23,8 @@
 
 # Shell color codes
 RED="\e[1;31m"; GREEN="\e[1;32m"; YELL="\e[1;33m"
-BLUE="\e[1;34m"; CYAN="\e[1;36m"; BOLD="\e[1;37m"; NC="\e[0m"
+BLUE="\e[1;34m"; CYAN="\e[1;36m"; BOLD="\e[1;37m"
+NC="\e[0m"
 
 
 # Display script banner
@@ -50,7 +51,7 @@ ${BOLD}Usage:${NC} bash Neternels-Builder [OPTION] [ARGUMENT]
     -z, --zip     [Image.gz-dtb]   create flashable zip
 
 ${BOLD}More information at: \
-${CYAN}http://github.com/grm34/Neternels-Builder${NC}
+${CYAN}https://kernel-builder.com${NC}
 "
 }
 
@@ -115,6 +116,9 @@ _error() {
 
 # Handle ERR
 _check() {
+
+    # Run command as child, check
+    # its output and notify on ERR
     "${@}" & wait ${!}
     local STATUS=$?
     until [[ ${STATUS} -eq 0 ]]; do
@@ -123,6 +127,8 @@ _check() {
         FILE="${BASH_SOURCE[$i+1]##*/}"
         _error "${*} | Line ${LINE}: ${FUNC} From: ${FILE##*/}"
         _ask_for_run_again
+
+        # Run again last failed command
         if [[ ${RUN_AGAIN} == True ]]; then
             "${@}" & wait ${!}
         else
@@ -136,7 +142,7 @@ _check() {
 # Properly EXIT
 _exit() {
 
-    # Kill make child on interrupt
+    # Kill make PID on interrupt
     if pidof make; then
         pkill make || sleep 0.1
     fi
@@ -149,7 +155,7 @@ _exit() {
             "^> [A-Z_]{3,26}=" >> "${LOG}" || sleep 0.1
     fi
 
-    # On error send logs on Telegram
+    # Send ERR logs on Telegram
     _send_failed_build_logs
 
     # Remove inputs files
@@ -172,7 +178,7 @@ _exit() {
 }
 
 
-# Clean AnyKernel Folder
+# Clean AnyKernel folder
 _clean_anykernel() {
     _note "Cleaning AnyKernel repository..."
     UNWANTED=(*.zip Image* *-dtb init.spectrum.rc)
