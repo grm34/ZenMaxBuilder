@@ -46,6 +46,7 @@ ${BOLD}Usage:${NC} bash Neternels-Builder [OPTION] [ARGUMENT]
   ${BOLD}Options${NC}
     -h, --help                     show this message and exit
     -u, --update                   update script and toolchains
+    -l, --list                     show list of your kernels
     -m, --msg     [message]        send message on Telegram
     -f, --file    [file]           send file on Telegram
     -z, --zip     [Image.gz-dtb]   create flashable zip
@@ -172,8 +173,6 @@ _exit() {
         "\r\033[K${BLUE}Exiting script in ${SECOND}s...${NC}"
         sleep 1
     done
-    echo -e \
-       "\n${RED}<| Neternels Team @ Development is Life |>${NC}"
     kill -- ${$}
 }
 
@@ -185,4 +184,15 @@ _clean_anykernel() {
     for UW in "${UNWANTED[@]}"; do
         rm -f "${ANYKERNEL_DIR}/${UW}" || sleep 0.1
     done
+}
+
+
+# Show list of kernels
+_list_all_kernels() {
+    if [[ -d ${DIR}/out ]] && [[ ! -z $(ls ${DIR}/out) ]]; then
+        _note "List of Android Kernels :"
+        ls "${DIR}/out" | cat -n
+    else
+        _error "no kernel found !"
+    fi
 }

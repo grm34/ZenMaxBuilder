@@ -72,12 +72,13 @@ for OPT in "${@}"; do
         "--msg") set -- "${@}" "-m";;
         "--file") set -- "${@}" "-f";;
         "--zip") set -- "${@}" "-z";;
+        "--list") set -- "${@}" "-l";;
         *) set -- "${@}" "${OPT}"
     esac
 done
 
 # Handle app opts
-while getopts ':hum:f:z:' OPTION; do
+while getopts ':hulm:f:z:' OPTION; do
     case ${OPTION} in
         h)  _neternels_builder_banner
             _usage; _check rm "./bashvar"; exit 0;;
@@ -85,6 +86,7 @@ while getopts ':hum:f:z:' OPTION; do
         m)  _send_msg_option; _exit;;
         f)  _send_file_option; _exit;;
         z)  _create_zip_option; _exit;;
+        l)  _list_all_kernels; _exit;;
         :)  _error "missing argument for -${OPTARG} !"; _exit;;
         \?) _error "invalid option -${OPTARG} !"; _exit
     esac

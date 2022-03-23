@@ -30,6 +30,7 @@ Dependencies will be prompted to install or you can manually install them.
     Options
         -h, --help                     show this message and exit
         -u, --update                   update script and toolchains
+        -l, --list                     show list of your kernels
         -m, --msg     [message]        send message on Telegram
         -f, --file    [file]           send file on Telegram
         -z, --zip     [Image.gz-dtb]   create flashable zip
