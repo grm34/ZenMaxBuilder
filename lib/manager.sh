@@ -126,9 +126,9 @@ _check() {
         FUNC="${FUNCNAME[$i+1]}"
         FILE="${BASH_SOURCE[$i+1]##*/}"
         _error "${*} | Line ${LINE}: ${FUNC} From: ${FILE##*/}"
-        _ask_for_run_again
 
         # Run again last failed command
+        _ask_for_run_again
         if [[ ${RUN_AGAIN} == True ]]; then
             "${@}" & wait ${!}
         else
@@ -142,7 +142,7 @@ _check() {
 # Properly EXIT
 _exit() {
 
-    # Kill make PID on interrupt
+    # Kill make PID child on interrupt
     if pidof make; then
         pkill make || sleep 0.1
     fi
