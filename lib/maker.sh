@@ -22,6 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+# Set user options (from config.sh)
 _export_path_and_options() {
 
     # Link Time Optimization (LTO)
@@ -30,7 +31,7 @@ _export_path_and_options() {
         export LD_LIBRARY_PATH=${LTO_LIBRARY_DIR}
     fi
 
-    # Set compiler options
+    # Toolchain compiler options
     case ${COMPILER} in
         Proton-Clang)
             export PATH=${PROTON_CLANG_PATH}:${PATH}
@@ -72,7 +73,10 @@ _make_menuconfig() {
         ARCH="${ARCH}" menuconfig "${OUT_DIR}"/.config
 }
 
+
 _save_defconfig() {
+    # When a defconfig file is modified with menuconfig,
+    # the original will be saved as "example_defconfig_save"
     _note "Saving ${DEFCONFIG} in arch/${ARCH}/configs..."
     _check cp \
         "${KERNEL_DIR}/arch/${ARCH}/configs/${DEFCONFIG}" \
