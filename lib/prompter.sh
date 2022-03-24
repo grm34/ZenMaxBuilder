@@ -49,8 +49,8 @@ _ask_for_toolchain() {
             TOOLCHAINS=(Proton-Clang Eva-GCC Proton-GCC)
             _select "${TOOLCHAINS[@]}"; read -r COMPILER
             until (( 1<=COMPILER && COMPILER<=3 )); do
-                _error \
-                    "(number 1-3) bad compiler ${RED}${COMPILER}"
+                _error "invalid toolchain ${RED}${COMPILER}"\
+                       "${YELL}(enter number 1-3)"
                 _select "${TOOLCHAINS[@]}"; read -r COMPILER
             done
             COMPILER=${TOOLCHAINS[${COMPILER}-1]}
@@ -87,8 +87,8 @@ _ask_for_defconfig() {
     cd "${x}" || (_error "dir not found ${RED}${x}"; _exit)
     QUESTION="Enter defconfig file (e.q. neternels_defconfig) :"
     _prompt "${QUESTION}"; read -r -e DEFCONFIG
-    until \
-    [[ -f ${DEFCONFIG} ]] && [[ ${DEFCONFIG} == *defconfig ]]; do
+    until [[ -f ${DEFCONFIG} ]] && \
+            [[ ${DEFCONFIG} == *defconfig ]]; do
         _error "invalid defconfig file ${RED}${DEFCONFIG}"
         _prompt "${QUESTION}"; read -r -e DEFCONFIG
     done
@@ -124,8 +124,8 @@ _ask_for_cores() {
             QUESTION="Enter the amount of CPU Cores to use :"
             _prompt "${QUESTION}"; read -r CORES
             until (( 1<=CORES && CORES<=CPU )); do
-                _error \
-                "(total: ${CPU}) bad amount of cores ${RED}${CORES}"
+                _error "invalid amount of cores"\
+                       "${RED}${CORES} ${YELL}(total: ${CPU})"
                 _prompt "${QUESTION}"; read -r CORES
             done
             ;;
@@ -247,8 +247,8 @@ _ask_for_kernel_image() {
     cd "${x}" || (_error "dir not found ${RED}${x}"; _exit)
     QUESTION="Enter kernel image to use (e.q. Image.gz-dtb) :"
     _prompt "${QUESTION}"; read -r -e KERNEL_IMG
-    until \
-    [[ -f ${KERNEL_IMG} ]] && [[ ${KERNEL_IMG} == Image* ]]; do
+    until [[ -f ${KERNEL_IMG} ]] && \
+            [[ ${KERNEL_IMG} == Image* ]]; do
         _error "invalid kernel image ${RED}${KERNEL_IMG}"
         _prompt "${QUESTION}"; read -r -e KERNEL_IMG
     done
@@ -266,7 +266,8 @@ _ask_for_install_pkg() {
     case ${CONFIRM} in
         n|N|no|No|NO)
             INSTALL_PKG=False
-            _error "build may fail, package missing ${RED}${PACKAGE}"
+            _error "missing dependency ${RED}${PACKAGE}"\
+                   "${YELL}compilation may fail"
             ;;
         *)
             export INSTALL_PKG=True
@@ -283,7 +284,8 @@ _ask_for_clone_toolchain() {
     case ${CONFIRM} in
         n|N|no|No|NO)
             CLONE_TC=False
-            _error "(config.sh) invalid toolchain path ${RED}${TC}"
+            _error "invalid toolchain path"\
+                   "${RED}${TC} ${YELL}(see config.sh)"
             _exit
             ;;
         *)
@@ -301,7 +303,8 @@ _ask_for_clone_anykernel() {
     case ${CONFIRM} in
         n|N|no|No|NO)
             CLONE_AK=False
-            _error "(config.sh) invalid path ${RED}AnyKernel"
+            _error "invalid path for ${RED}AnyKernel"\
+                   "${YELL}(see config.sh)"
             _exit
             ;;
         *)

@@ -81,7 +81,7 @@ done
 
 # Handle app opts
 if [[ ${#} -eq 0 ]]; then
-    _error "you must specify an option (see --help)"
+    _error "you must specify an option (use --help)"
     _exit
 fi
 while getopts ':hsult:m:f:z:' OPTION; do
