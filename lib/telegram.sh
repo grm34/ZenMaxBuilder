@@ -60,7 +60,7 @@ _send_msg_option() {
         _note "Sending message on Telegram...";
         _send_msg "${OPTARG//_/-}"
     else
-        _error "you must configure Telegram API settings first !"
+        _error "you must configure Telegram API settings first"
     fi
 }
 
@@ -71,10 +71,10 @@ _send_file_option() {
             _note "Uploading ${OPTARG} on Telegram..."
             _send_file "${OPTARG}"
         else
-            _error "you must configure Telegram API settings first !"
+            _error "you must configure Telegram API settings first"
         fi
     else
-        _error "${OPTARG} file not found !"
+        _error "file not found ${OPTARG}"
     fi
 }
 

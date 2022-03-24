@@ -58,7 +58,7 @@ _install_dependencies() {
             fi
         done
     else
-        _error "OS not found, some dependencies may be required !"
+        _error "OS not found, some dependencies may be required"
     fi
 }
 

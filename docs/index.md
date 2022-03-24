@@ -22,7 +22,7 @@ Dependencies will be prompted to install or you can manually install them.
 1. `git clone https://github.com/grm34/Neternels-Builder.git`
 2. `cd Neternels-Builder`
 3. Edit [config.sh](https://github.com/grm34/Neternels-Builder/blob/main/config.sh) to set your settings (optional)
-4. `bash Neternels-Builder`
+4. `bash Neternels-Builder --start`
 
 ## Options
 
@@ -30,6 +30,7 @@ Dependencies will be prompted to install or you can manually install them.
 
     Options
         -h, --help                     show this message and exit
+        -s, --start                    start new kernel compilation
         -u, --update                   update script and toolchains
         -l, --list                     show list of your kernels
         -t, --tag     [v4.19]          show the latest Linux tag
