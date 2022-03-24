@@ -173,7 +173,7 @@ _exit() {
         "\r\033[K${BLUE}Exiting script in ${SECOND}s...${NC}"
         sleep 1
     done
-    kill -- ${$}
+    echo && kill -- ${$}
 }
 
 
@@ -189,9 +189,9 @@ _clean_anykernel() {
 
 # Show list of kernels
 _list_all_kernels() {
-    if [[ -d ${DIR}/out ]] && [[ ! -z $(ls ${DIR}/out) ]]; then
+    if [[ -d ${DIR}/out ]] && [[ -n $(ls "${DIR}/out") ]]; then
         _note "List of Android Kernels :"
-        ls "${DIR}/out" | cat -n
+        find out/ -mindepth 1 -maxdepth 1 -type d | cat -n
     else
         _error "no kernel found !"
     fi
