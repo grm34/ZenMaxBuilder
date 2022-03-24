@@ -159,6 +159,12 @@ GCC_ARM_URL="https://github.com/mvaisakh/gcc-arm.git"
 GCC_ARM_BRANCH="gcc-master"
 
 
+# Linux Stable repo
+# To get latest stable tag.
+# =========================
+LINUX_STABLE="https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git"
+
+
 # LLVM Library
 # Set this setting to
 # "True" to export "LLVM=1".

@@ -32,6 +32,7 @@ Dependencies will be prompted to install or you can manually install them.
         -h, --help                     show this message and exit
         -u, --update                   update script and toolchains
         -l, --list                     show list of your kernels
+        -t, --tag     [v4.19]          show the latest Linux tag
         -m, --msg     [message]        send message on Telegram
         -f, --file    [file]           send file on Telegram
         -z, --zip     [Image.gz-dtb]   create flashable zip
