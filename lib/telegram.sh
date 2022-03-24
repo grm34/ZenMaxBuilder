@@ -74,7 +74,7 @@ _send_file_option() {
             _error "you must configure Telegram API settings first"
         fi
     else
-        _error "file not found ${OPTARG}"
+        _error "file not found ${RED}${OPTARG}"
     fi
 }
 

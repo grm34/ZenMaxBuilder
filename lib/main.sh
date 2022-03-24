@@ -59,7 +59,7 @@ elif [[ ! -f ${PWD}/config.sh ]] || [[ ! -d ${PWD}/lib ]]; then
     _exit
 elif [[ $KERNEL_DIR != default  ]] && \
         [[ ! -f $KERNEL_DIR/Makefile ]]; then
-    _error "invalid kernel directory (config.sh)"
+    _error "invalid kernel directory (see config.sh)"
     _exit
 fi
 
@@ -81,7 +81,7 @@ done
 
 # Handle app opts
 if [[ ${#} -eq 0 ]]; then
-    _error "you must specify an option (--help)"
+    _error "you must specify an option (see --help)"
     _exit
 fi
 while getopts ':hsult:m:f:z:' OPTION; do
@@ -95,12 +95,14 @@ while getopts ':hsult:m:f:z:' OPTION; do
         l)  _list_all_kernels; _exit;;
         t)  _get_linux_tag; _exit;;
         s)  _neternels_builder_banner;;
-        :)  _error "missing argument for -${OPTARG}"; _exit;;
-        \?) _error "invalid option -${OPTARG}"; _exit
+        :)  _error "missing argument for ${RED}-${OPTARG}"
+            _exit;;
+        \?) _error "invalid option ${RED}-${OPTARG}"
+            _exit
     esac
 done
 if [[ ${OPTIND} -eq 1 ]]; then
-    _error "invalid option ${1}"
+    _error "invalid option ${RED}${1}"
     _exit
 fi
 
