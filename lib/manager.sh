@@ -189,9 +189,10 @@ _clean_anykernel() {
 
 # Show list of kernels
 _list_all_kernels() {
-    if [[ -d ${DIR}/out ]] && [[ -n $(ls "${DIR}/out") ]]; then
+    if [[ -d ${DIR}/out ]] && [[ -n $(ls -d out/*/) ]]; then
         _note "List of Android Kernels :"
-        find out/ -mindepth 1 -maxdepth 1 -type d | cat -n
+        find out/ -mindepth 1 -maxdepth 1 -type d \
+            | cut -f2 -d'/' | cat -n
     else
         _error "no kernel found !"
     fi
