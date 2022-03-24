@@ -76,8 +76,8 @@ _confirm() {
     CONFIRM=False; COUNT=$(( ${#1} + 6 ))
     until [[ ${CONFIRM} =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]] \
             || [[ ${CONFIRM} == "" ]]; do
-        echo -ne \
-            "${YELL}\n==> ${GREEN}${1} ${RED}${N}${YELL}\n==> "
+        echo -ne "${YELL}\n==> ${GREEN}${1}"\
+                 "${RED}${N}${YELL}\n==> "
         for (( CHAR=1; CHAR<=COUNT; CHAR++ )); do
             echo -ne "-"
         done
@@ -128,7 +128,8 @@ _check() {
         LINE="${BASH_LINENO[$i+1]}"
         FUNC="${FUNCNAME[$i+1]}"
         FILE="${BASH_SOURCE[$i+1]##*/}"
-        _error "${*} | Line ${LINE}: ${FUNC} | From: ${FILE##*/}"
+        _error "${*} ${RED}Line ${LINE}: ${YELL}${FUNC}"\
+               "${RED}From: ${YELL}${FILE##*/}"
 
         # Run again last failed command
         _ask_for_run_again
@@ -171,8 +172,8 @@ _exit() {
 
     # Exit with 3s timeout
     for (( SECOND=3; SECOND>=1; SECOND-- )); do
-        echo -ne \
-        "\r\033[K${BLUE}Exiting script in ${SECOND}s...${NC}"
+        echo -ne "\r\033[K${BLUE}Exiting Neternels-Builder"\
+                 "in ${SECOND}s...${NC}"
         sleep 1
     done
     echo && kill -- ${$}
@@ -196,7 +197,7 @@ _list_all_kernels() {
         find out/ -mindepth 1 -maxdepth 1 -type d \
             | cut -f2 -d'/' | cat -n
     else
-        _error "no kernel found in Neternels-Builder/out"
+        _error "no kernel found in out folder"
     fi
 }
 
