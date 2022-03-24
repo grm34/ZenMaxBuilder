@@ -47,6 +47,7 @@ ${BOLD}Usage:${NC} bash Neternels-Builder [OPTION] [ARGUMENT]
     -h, --help                     show this message and exit
     -u, --update                   update script and toolchains
     -l, --list                     show list of your kernels
+    -t, --tag     [v4.19]          show the latest Linux tag
     -m, --msg     [message]        send message on Telegram
     -f, --file    [file]           send file on Telegram
     -z, --zip     [Image.gz-dtb]   create flashable zip
@@ -195,5 +196,19 @@ _list_all_kernels() {
             | cut -f2 -d'/' | cat -n
     else
         _error "no kernel found !"
+    fi
+}
+
+
+# Get latest linux stable tag
+_get_linux_tag() {
+    _note "Scanning Linux Stable (this could take a while)..."
+    LTAG=$(git ls-remote --refs --sort='v:refname' --tags \
+        "${LINUX_STABLE}" | grep "${OPTARG}" | tail --lines=1 \
+        | cut --delimiter='/' --fields=3)
+    if [[ ${LTAG} == ${OPTARG}* ]]; then
+        _note "Latest Linux Stable : ${RED}${LTAG}"
+    else
+        _error "${OPTARG} invalid Linux Stable tag !"
     fi
 }
