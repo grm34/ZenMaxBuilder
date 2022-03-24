@@ -45,6 +45,7 @@ ${BOLD}Usage:${NC} bash Neternels-Builder [OPTION] [ARGUMENT]
 
   ${BOLD}Options${NC}
     -h, --help                     show this message and exit
+    -s, --start                    start new kernel compilation
     -u, --update                   update script and toolchains
     -l, --list                     show list of your kernels
     -t, --tag     [v4.19]          show the latest Linux tag

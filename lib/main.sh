@@ -68,6 +68,7 @@ for OPT in "${@}"; do
     shift
     case ${OPT} in
         "--help") set -- "${@}" "-h"; break;;
+        "--start") set -- "${@}" "-s";;
         "--update") set -- "${@}" "-u";;
         "--msg") set -- "${@}" "-m";;
         "--file") set -- "${@}" "-f";;
@@ -79,20 +80,29 @@ for OPT in "${@}"; do
 done
 
 # Handle app opts
-while getopts ':hult:m:f:z:' OPTION; do
+if [[ ${#} -eq 0 ]]; then
+    _error "you must specify an option"
+    _exit
+fi
+while getopts ':hsult:m:f:z:' OPTION; do
     case ${OPTION} in
-        h)  _neternels_builder_banner
-            _usage; _check rm "./bashvar"; exit 0;;
+        h)  _neternels_builder_banner; _usage
+            _check rm "./bashvar"; exit 0;;
         u)  _full_upgrade; _exit;;
         m)  _send_msg_option; _exit;;
         f)  _send_file_option; _exit;;
         z)  _create_zip_option; _exit;;
         l)  _list_all_kernels; _exit;;
         t)  _get_linux_tag; _exit;;
+        s)  _neternels_builder_banner;;
         :)  _error "missing argument for -${OPTARG}"; _exit;;
         \?) _error "invalid option -${OPTARG}"; _exit
     esac
 done
+if [[ ${OPTIND} -eq 1 ]]; then
+    _error "invalid option ${1}"
+    _exit
+fi
 
 # Remove opts from positional parameters
 shift $(( OPTIND - 1 ))
@@ -104,7 +114,6 @@ trap '_error "keyboard interrupt !"; _exit' INT QUIT TSTP CONT
 #######################
 ### Start new build ###
 #######################
-_neternels_builder_banner
 _note "Starting new Android Kernel build ${DATE}"
 
 # Get device codename
