@@ -52,14 +52,14 @@ source "${DIR}/lib/updater.sh"
 
 # Ban all ('n00bz')
 if [[ $(uname) != Linux ]]; then
-    _error "run this script on Linux !"
+    _error "you must run this script on Linux"
     _exit
 elif [[ ! -f ${PWD}/config.sh ]] || [[ ! -d ${PWD}/lib ]]; then
-    _error "run this script from Neternels-Builder directory !"
+    _error "run this script from Neternels-Builder directory"
     _exit
 elif [[ $KERNEL_DIR != default  ]] && \
         [[ ! -f $KERNEL_DIR/Makefile ]]; then
-    _error "invalid kernel directory set in config.sh !"
+    _error "invalid kernel directory (config.sh)"
     _exit
 fi
 
@@ -81,7 +81,7 @@ done
 
 # Handle app opts
 if [[ ${#} -eq 0 ]]; then
-    _error "you must specify an option"
+    _error "you must specify an option (--help)"
     _exit
 fi
 while getopts ':hsult:m:f:z:' OPTION; do
@@ -108,7 +108,7 @@ fi
 shift $(( OPTIND - 1 ))
 
 # Trap interrupt signals
-trap '_error "keyboard interrupt !"; _exit' INT QUIT TSTP CONT
+trap '_error "keyboard interrupt"; _exit' INT QUIT TSTP CONT
 
 
 #######################

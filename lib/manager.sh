@@ -128,7 +128,7 @@ _check() {
         LINE="${BASH_LINENO[$i+1]}"
         FUNC="${FUNCNAME[$i+1]}"
         FILE="${BASH_SOURCE[$i+1]##*/}"
-        _error "${*} | Line ${LINE}: ${FUNC} From: ${FILE##*/}"
+        _error "${*} | Line ${LINE}: ${FUNC} | From: ${FILE##*/}"
 
         # Run again last failed command
         _ask_for_run_again
@@ -196,7 +196,7 @@ _list_all_kernels() {
         find out/ -mindepth 1 -maxdepth 1 -type d \
             | cut -f2 -d'/' | cat -n
     else
-        _error "no kernel found !"
+        _error "no kernel found in Neternels-Builder/out"
     fi
 }
 
@@ -210,6 +210,6 @@ _get_linux_tag() {
     if [[ ${LTAG} == ${OPTARG}* ]]; then
         _note "Latest Linux Stable : ${RED}${LTAG}"
     else
-        _error "${OPTARG} invalid Linux Stable tag !"
+        _error "invalid Linux Stable tag ${OPTARG}"
     fi
 }

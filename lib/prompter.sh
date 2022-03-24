@@ -30,7 +30,7 @@ _ask_for_kernel_dir() {
         QUESTION="Enter kernel path (e.q. /home/user/mykernel) :"
         _prompt "${QUESTION}"; read -r -e KERNEL_DIR
         until [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]; do
-            _error "${KERNEL_DIR} invalid kernel directory !"
+            _error "invalid kernel directory ${KERNEL_DIR}"
             _prompt "${QUESTION}"; read -r -e KERNEL_DIR
         done
     fi
@@ -49,7 +49,7 @@ _ask_for_toolchain() {
             TOOLCHAINS=(Proton-Clang Eva-GCC Proton-GCC)
             _select "${TOOLCHAINS[@]}"; read -r COMPILER
             until (( 1<=COMPILER && COMPILER<=3 )); do
-                _error "${COMPILER} invalid ! Enter number 1-3"
+                _error "invalid compiler ${COMPILER} (number 1-3)"
                 _select "${TOOLCHAINS[@]}"; read -r COMPILER
             done
             COMPILER=${TOOLCHAINS[${COMPILER}-1]}
@@ -71,7 +71,7 @@ _ask_for_codename() {
         _prompt "${QUESTION}"; read -r CODENAME
         regex="^[a-zA-Z0-9][a-zA-Z0-9_-]{2,20}$"
         until [[ ${CODENAME} =~ ${regex} ]]; do
-            _error "${CODENAME} invalid device codename !"
+            _error "invalid device codename ${CODENAME}"
             _prompt "${QUESTION}"; read -r CODENAME
         done
     fi
@@ -83,15 +83,15 @@ _ask_for_defconfig() {
     # Validation checks the presence of this file in
     # "configs" folder and verify it ends with "_defconfig".
     x="${KERNEL_DIR}/arch/${ARCH}/configs"
-    cd "${x}" || (_error "${x} dir not found !"; _exit)
+    cd "${x}" || (_error "dir not found ${x}"; _exit)
     QUESTION="Enter defconfig file (e.q. neternels_defconfig) :"
     _prompt "${QUESTION}"; read -r -e DEFCONFIG
     until \
     [[ -f ${DEFCONFIG} ]] && [[ ${DEFCONFIG} == *defconfig ]]; do
-        _error "${DEFCONFIG} invalid defconfig file !"
+        _error "invalid defconfig file ${DEFCONFIG}"
         _prompt "${QUESTION}"; read -r -e DEFCONFIG
     done
-    cd "${DIR}" || (_error "${DIR} dir not found !"; _exit)
+    cd "${DIR}" || (_error "dir not found ${DIR}"; _exit)
 }
 
 
@@ -123,7 +123,7 @@ _ask_for_cores() {
             QUESTION="Enter the amount of CPU Cores to use :"
             _prompt "${QUESTION}"; read -r CORES
             until (( 1<=CORES && CORES<=CPU )); do
-                _error "${CORES} invalid ! Total cores: ${CPU}"
+                _error "invalid cores ${CORES} (total: ${CPU})"
                 _prompt "${QUESTION}"; read -r CORES
             done
             ;;
@@ -242,16 +242,16 @@ _ask_for_kernel_image() {
     # Validation checks the presence of this file in
     # "boot" folder and verify it starts with "Image".
     x="${DIR}/out/${CODENAME}/arch/${ARCH}/boot"
-    cd "${x}" || (_error "${x} dir not found !"; _exit)
+    cd "${x}" || (_error "dir not found ${x}"; _exit)
     QUESTION="Enter kernel image to use (e.q. Image.gz-dtb) :"
     _prompt "${QUESTION}"; read -r -e KERNEL_IMG
     until \
     [[ -f ${KERNEL_IMG} ]] && [[ ${KERNEL_IMG} == Image* ]]; do
-        _error "${KERNEL_IMG} invalid kernel image !"
+        _error "invalid kernel image ${KERNEL_IMG}"
         _prompt "${QUESTION}"; read -r -e KERNEL_IMG
     done
     KERNEL_IMG="${DIR}/out/${CODENAME}/arch/${ARCH}/boot/${KERNEL_IMG}"
-    cd "${DIR}" || (_error "${DIR} dir not found !"; _exit)
+    cd "${DIR}" || (_error "dir not found ${DIR}"; _exit)
 }
 
 
@@ -264,7 +264,7 @@ _ask_for_install_pkg() {
     case ${CONFIRM} in
         n|N|no|No|NO)
             INSTALL_PKG=False
-            _error "${PACKAGE} not found ! Compilation may fail."
+            _error "${PACKAGE} not found, compilation may fail"
             ;;
         *)
             export INSTALL_PKG=True
@@ -281,7 +281,7 @@ _ask_for_clone_toolchain() {
     case ${CONFIRM} in
         n|N|no|No|NO)
             CLONE_TC=False
-            _error "${TC} dir not found ! Invalid toolchain path."
+            _error "invalid toolchain path ${TC} (config.sh)"
             _exit
             ;;
         *)
@@ -299,7 +299,7 @@ _ask_for_clone_anykernel() {
     case ${CONFIRM} in
         n|N|no|No|NO)
             CLONE_AK=False
-            _error "Anykernel dir not found ! Invalid AK3 path."
+            _error "invalid AnyKernel path (config.sh)"
             _exit
             ;;
         *)
