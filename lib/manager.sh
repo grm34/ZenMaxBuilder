@@ -210,6 +210,6 @@ _get_linux_tag() {
     if [[ ${LTAG} == ${OPTARG}* ]]; then
         _note "Latest Linux Stable : ${RED}${LTAG}"
     else
-        _error "invalid Linux Stable tag ${OPTARG}"
+        _error "invalid Linux Stable tag ${RED}${OPTARG}"
     fi
 }

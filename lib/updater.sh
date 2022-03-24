@@ -33,39 +33,39 @@ _full_upgrade() {
     if [[ -d ${ANYKERNEL_DIR} ]]; then
         _note "Updating AnyKernel..."
         cd "${ANYKERNEL_DIR}" || \
-            (_error "dir not found ${ANYKERNEL_DIR}"; _exit)
+            (_error "dir not found ${RED}${ANYKERNEL_DIR}"; _exit)
         git checkout "${ANYKERNEL_BRANCH}"
         git pull origin "${ANYKERNEL_BRANCH}"
-        cd "${DIR}" || (_error "dir not found ${DIR}"; _exit)
+        cd "${DIR}" || (_error "dir not found ${RED}${DIR}"; _exit)
     fi
 
     # Proton-Clang
     if [[ -d ${PROTON_DIR} ]]; then
         _note "Updating Proton Clang..."
         cd "${PROTON_DIR}" || \
-            (_error "dir not found ${PROTON_DIR}"; _exit)
+            (_error "dir not found ${RED}${PROTON_DIR}"; _exit)
         git checkout "${PROTON_BRANCH}"
         git pull origin "${PROTON_BRANCH}"
-        cd "${DIR}" || (_error "dir not found ${DIR}"; _exit)
+        cd "${DIR}" || (_error "dir not found ${RED}${DIR}"; _exit)
     fi
 
     # GCC-arm64
     if [[ -d ${GCC_ARM64_DIR} ]]; then
         _note "Updating GCC ARM64..."
         cd "${GCC_ARM64_DIR}" || \
-            (_error "dir not found ${GCC_ARM64_DIR}"; _exit)
+            (_error "dir not found ${RED}${GCC_ARM64_DIR}"; _exit)
         git checkout "${GCC_ARM64_BRANCH}"
         git pull origin "${GCC_ARM64_BRANCH}"
-        cd "${DIR}" || (_error "dir not found ${DIR}"; _exit)
+        cd "${DIR}" || (_error "dir not found ${RED}${DIR}"; _exit)
     fi
 
     # GCC-arm32
     if [[ -d ${GCC_ARM_DIR} ]]; then
         _note "Updating GCC ARM..."
         cd "${GCC_ARM_DIR}" || \
-            (_error "dir not found ${GCC_ARM_DIR}"; _exit)
+            (_error "dir not found ${RED}${GCC_ARM_DIR}"; _exit)
         git checkout "${GCC_ARM_BRANCH}"
         git pull origin "${GCC_ARM_BRANCH}"
-        cd "${DIR}" || (_error "dir not found ${DIR}"; _exit)
+        cd "${DIR}" || (_error "dir not found ${RED}${DIR}"; _exit)
     fi
 }
