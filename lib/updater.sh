@@ -26,8 +26,11 @@ _full_upgrade() {
 
     # Neternels Builder
     _note "Updating Neternels Builder..."
+    _check cp config.sh config_save.sh
     git checkout "${NB_BRANCH}"
-    git pull origin "${NB_BRANCH}"
+    git reset --hard
+    git clean -d --force
+    git pull --rebase origin "${NB_BRANCH}"
 
     # AnyKernel
     if [[ -d ${ANYKERNEL_DIR} ]]; then
