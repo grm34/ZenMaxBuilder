@@ -312,3 +312,18 @@ _ask_for_clone_anykernel() {
     esac
 }
 
+
+_ask_for_save_config() {
+    # Request to save the modified config.sh before update.
+    # Validation checks are not needed here.
+    export N="[Y/n]"
+    _confirm "Do you wish to save your config.sh ?"
+    case ${CONFIRM} in
+        n|N|no|No|NO)
+            SAVE_CONFIG=False
+            ;;
+        *)
+            export SAVE_CONFIG=True
+    esac
+}
+
