@@ -34,6 +34,9 @@ _full_upgrade() {
     fi
     git checkout "${NB_BRANCH}"
     git pull origin "${NB_BRANCH}"
+    if [[ ! -f config.sh ]]; then
+        _check cp config_save.sh config.sh
+    fi
 
     # AnyKernel
     if [[ -d ${ANYKERNEL_DIR} ]]; then
