@@ -2,15 +2,11 @@ title: Android Kernel Builder
 tagline: Neternels Builder | Android Kernel Builder
 description: Neternels-Builder is an Android Kernel Builder written in bash, which can be runned on any Linux System (feel free to Pull Request for Windows support). By default it uses Proton-Clang, Eva-GCC or Proton-GCC but you can use any toolchains you like by editing config.sh file. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
 url: https://kernel-builder.com
-
 author:
   name: grm34 Neternels Team
   url: https://githhub.com/grm34
-
 google_analytics: G-XRXTP3G5KE
-
 plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
-
 theme: jekyll-theme-hacker
