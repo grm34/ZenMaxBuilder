@@ -138,3 +138,4 @@ _create_zip_option() {
         _error "invalid kernel image ${RED}${OPTARG}"
     fi
 }
+
