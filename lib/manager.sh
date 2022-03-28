@@ -24,7 +24,7 @@
 # Shell color codes
 if test -t 1; then
     ncolors=$(tput colors)
-    if test -n "$ncolors" && test $ncolors -ge 8; then
+    if test -n "$ncolors" && test "$ncolors" -ge 8; then
         BOLD="$(tput bold)"
         NC="$(tput sgr0)"
         RED="$(tput bold setaf 1)"
