@@ -138,8 +138,8 @@ _check() {
         LINE="${BASH_LINENO[$i+1]}"
         FUNC="${FUNCNAME[$i+1]}"
         FILE="${BASH_SOURCE[$i+1]##*/}"
-        _error "${*} ${RED}Line ${LINE}: ${YELL}${FUNC}"\
-               "${RED}From: ${YELL}${FILE##*/}"
+        _error "${*} ${RED}Line ${LINE}:${NC}${YELLOW}"\
+               "${FUNC} ${RED}From: ${NC}${YELLOW}${FILE##*/}"
 
         # Run again last failed command
         _ask_for_run_again
