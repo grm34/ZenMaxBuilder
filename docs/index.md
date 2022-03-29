@@ -1,6 +1,7 @@
 ---
-{% seo %}
+{ % seo % }
 ---
+
 # Neternels Builder
 
 ![Proton-Clang](https://img.shields.io/badge/Proton--Clang-⛓-yellow)
@@ -21,7 +22,9 @@ Dependencies will be prompted to install or you can manually install them.
 
 1. `git clone https://github.com/grm34/Neternels-Builder.git`
 2. `cd Neternels-Builder`
-3. Edit [config.sh](https://github.com/grm34/Neternels-Builder/blob/main/config.sh) to set your settings (optional)
+3. Edit
+   [config.sh](https://github.com/grm34/Neternels-Builder/blob/main/config.sh)
+   to set your settings (optional)
 4. `bash Neternels-Builder --start`
 
 ## Options
@@ -54,16 +57,21 @@ Dependencies will be prompted to install or you can manually install them.
     |     |---- DEVICE1/
     |     |---- DEVICE2/
 
-##  Credits
+## Screenshot
 
-* Neternels Team: [https://neternels.org](https://neternels.org)
-* Proton-Clang: [@kdrag0n](https://github.com/kdrag0n)
-* Eva-GCC: [@mvaisakh](https://github.com/mvaisakh)
-* AnyKernel3: [@osm0sis](https://github.com/osm0sis)
+![screenshot](https://raw.githubusercontent.com/grm34/Neternels-Builder/main/docs/assets/images/screenshot.png)
+
+## Credits
+
+- Neternels Team: [https://neternels.org](https://neternels.org)
+- Proton-Clang: [@kdrag0n](https://github.com/kdrag0n)
+- Eva-GCC: [@mvaisakh](https://github.com/mvaisakh)
+- AnyKernel3: [@osm0sis](https://github.com/osm0sis)
 
 ## Links
 
-* Source Code: [github](https://github.com/grm34/Neternels-Builder)
-* Codiga Code Review: [link](https://app.codiga.io/public/project/23638/Neternels-Builder/dashboard)
-* Codefactor Code Review: [link](https://www.codefactor.io/repository/github/grm34/neternels-builder)
-
+- Source Code: [github](https://github.com/grm34/Neternels-Builder)
+- Codiga Code Review:
+  [link](https://app.codiga.io/public/project/23638/Neternels-Builder/dashboard)
+- Codefactor Code Review:
+  [link](https://www.codefactor.io/repository/github/grm34/neternels-builder)
