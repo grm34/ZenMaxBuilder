@@ -77,40 +77,35 @@ _prompt() {
     for (( CHAR=1; CHAR<=COUNT; CHAR++ )); do
         echo -ne "─"
     done
+    if [[ ! ${PROMPT_TYPE} ]]; then
+        echo -ne "\n==> ${NC}"
+    else
+        echo -ne "\n${NC}"
+    fi
+}
+
+
+# Confirmation prompt
+_confirm_msg() {
+    CONFIRM=False; COUNT=$(( ${#1} + 6 ))
+    echo -ne "${YELL}\n==> ${GREEN}${1}"\
+             "${RED}${N}${YELL}\n==> "
+    for (( CHAR=1; CHAR<=COUNT; CHAR++ )); do
+        echo -ne "─"
+    done
     echo -ne "\n==> ${NC}"
+    read -r CONFIRM
 }
 
 
 # Ask confirmation (Yes/No)
 _confirm() {
-    CONFIRM=False; COUNT=$(( ${#1} + 6 ))
+    _confirm_msg "${@}"
     until [[ ${CONFIRM} =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]] \
             || [[ ${CONFIRM} == "" ]]; do
-        echo -ne "${YELL}\n==> ${GREEN}${1}"\
-                 "${RED}${N}${YELL}\n==> "
-        for (( CHAR=1; CHAR<=COUNT; CHAR++ )); do
-            echo -ne "─"
-        done
-        echo -ne "\n==> ${NC}"
-        read -r CONFIRM
+        _error "enter yes or no"
+        _confirm_msg "${@}"
     done
-}
-
-
-# Select an option
-_select() {
-    COUNT=0
-    echo -ne "${YELL}\n==> "
-    for ENTRY in "${@}"; do
-        echo -ne "${GREEN}${ENTRY} ${RED}[$(( ++COUNT ))] ${NC}"
-    done
-    LENTH=${*}; NUMBER=$(( ${#*} * 4 ))
-    COUNT=$(( ${#LENTH} + NUMBER + 1 ))
-    echo -ne "${YELL}\n==> "
-    for (( CHAR=1; CHAR<=COUNT; CHAR++ )); do
-        echo -ne "─"
-    done
-    echo -ne "\n==> ${NC}"
 }
 
 
