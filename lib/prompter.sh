@@ -39,21 +39,18 @@ _ask_for_kernel_dir() {
 
 _ask_for_toolchain() {
     # Question to get the toolchain to use.
-    # Validation checks for a number between "1" and "3"
-    # which correspond to the number of available toolchains.
+    # Validation checks are not needed here.
     export N="[Y/n]"
     _confirm "Do you wish to use compiler: ${DEFAULT_COMPILER} ?"
     case ${CONFIRM} in
         n|N|no|No|NO)
-            _note "Select Toolchain compiler :"
-            TOOLCHAINS=(Proton-Clang Eva-GCC Proton-GCC)
-            _select "${TOOLCHAINS[@]}"; read -r COMPILER
-            until (( 1<=COMPILER && COMPILER<=3 )); do
-                _error "invalid toolchain ${RED}${COMPILER}"\
-                       "${YELL}(enter number 1-3)"
-                _select "${TOOLCHAINS[@]}"; read -r COMPILER
+            PROMPT_TYPE="echo"
+            _prompt "Select Toolchain Compiler to use :"
+            select COMPILER in Proton-Clang Eva-GCC Proton-GCC; do
+                test -n "${COMPILER}" && break
+                _error "invalid selection (use number)"
             done
-            COMPILER=${TOOLCHAINS[${COMPILER}-1]}
+            unset ${PROMPT_TYPE}
             ;;
         *)
             export COMPILER=${DEFAULT_COMPILER}
@@ -80,19 +77,18 @@ _ask_for_codename() {
 
 
 _ask_for_defconfig() {
-    # Question to get the defconfig file to use.
-    # Validation checks the presence of this file in
-    # "configs" folder and verify it ends with "_defconfig".
+    # Prompt to select the defconfig file to use.
+    # Validation checks are not needed here.
+    PROMPT_TYPE="echo"
     x="${KERNEL_DIR}/arch/${ARCH}/configs"
     cd "${x}" || (_error "dir not found ${RED}${x}"; _exit)
-    QUESTION="Enter defconfig file (e.q. neternels_defconfig) :"
-    _prompt "${QUESTION}"; read -r -e DEFCONFIG
-    until [[ -f ${DEFCONFIG} ]] && \
-            [[ ${DEFCONFIG} == *defconfig ]]; do
-        _error "invalid defconfig file ${RED}${DEFCONFIG}"
-        _prompt "${QUESTION}"; read -r -e DEFCONFIG
+    _prompt "Select the defconfig file to use :"
+    select DEFCONFIG in *_defconfig; do
+        test -n "${DEFCONFIG}" && break
+        _error "invalid selection (use number)"
     done
     cd "${DIR}" || (_error "dir not found ${RED}${DIR}"; _exit)
+    unset "${PROMPT_TYPE}"
 }
 
 
@@ -100,7 +96,7 @@ _ask_for_menuconfig() {
     # Request a "make menuconfig" command.
     # Validation checks are not needed here.
     export N="[y/N]"
-    _confirm "Do you wish to edit kernel with menuconfig ?"
+    _confirm "Do you wish to edit Kernel with menuconfig ?"
     case ${CONFIRM} in
         y|Y|yes|Yes|YES)
             MENUCONFIG=True
