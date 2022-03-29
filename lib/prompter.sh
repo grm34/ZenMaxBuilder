@@ -27,7 +27,7 @@ _ask_for_kernel_dir() {
     # Validation checks the presence of the "configs"
     # folder corresponding to the current architecture.
     if [[ ${KERNEL_DIR} == default ]]; then
-        QUESTION="Enter kernel path (e.q. /home/user/mykernel) :"
+        QUESTION="Enter kernel path (use TAB for autocompletion) :"
         _prompt "${QUESTION}"; read -r -e KERNEL_DIR
         until [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]; do
             _error "invalid kernel directory ${RED}${KERNEL_DIR}"
