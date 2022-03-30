@@ -102,7 +102,7 @@ _confirm_msg() {
 _confirm() {
     _confirm_msg "${@}"
     until [[ ${CONFIRM} =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]] \
-            || [[ ${CONFIRM} == "" ]]; do
+            || test -z "${CONFIRM}"; do
         _error "enter yes or no"
         _confirm_msg "${@}"
     done

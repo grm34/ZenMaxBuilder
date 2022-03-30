@@ -56,7 +56,8 @@ _send_file() {
 
 
 _send_msg_option() {
-    if [[ ${TELEGRAM_CHAT_ID} ]] && [[ ${TELEGRAM_BOT_TOKEN} ]]; then
+    if [[ ${TELEGRAM_CHAT_ID} ]] && \
+            [[ ${TELEGRAM_BOT_TOKEN} ]]; then
         _note "Sending message on Telegram...";
         _send_msg "${OPTARG//_/-}"
     else
@@ -67,7 +68,8 @@ _send_msg_option() {
 
 _send_file_option() {
     if [[ -f ${OPTARG} ]]; then
-        if [[ ${TELEGRAM_CHAT_ID} ]] && [[ ${TELEGRAM_BOT_TOKEN} ]]; then
+        if [[ ${TELEGRAM_CHAT_ID} ]] && \
+                [[ ${TELEGRAM_BOT_TOKEN} ]]; then
             _note "Uploading ${OPTARG} on Telegram..."
             _send_file "${OPTARG}"
         else
@@ -101,14 +103,14 @@ _send_success_build_status() {
 
 _send_zip_creation_status() {
     if [[ ${BUILD_STATUS} == True ]]; then
-        _send_msg "${KERNEL_NAME//_/-} | Started flashable zip creation"
+        _send_msg "${KERNEL_NAME//_/-} | Started Kernel Zip creation"
     fi
 }
 
 
 _send_zip_signing_status() {
     if [[ ${BUILD_STATUS} == True ]]; then
-        _send_msg "${KERNEL_NAME//_/-} | Signing Zip file with AOSP keys"
+        _send_msg "${KERNEL_NAME//_/-} | Signing Zip with AOSP keys"
     fi
 }
 
@@ -123,14 +125,16 @@ _send_failed_build_logs() {
         sed -r \
             "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" \
             "${LOG}" > "${LOG##*/}"
-        MSG="Build Failed to Compile After ${M} minutes and ${S} seconds"
-        _send_file "${DIR}/${LOG##*/}" "v${LINUX_VERSION//_/-} | ${MSG}"
+        MSG="Build Failed to Compile After ${M} min and ${S} seconds"
+        _send_file \
+            "${DIR}/${LOG##*/}" "v${LINUX_VERSION//_/-} | ${MSG}"
     fi
 }
 
 
 _upload_signed_build() {
-    if [[ ${BUILD_STATUS} == True ]] && [[ ${FLASH_ZIP} == True ]]; then
+    if [[ ${BUILD_STATUS} == True ]] && \
+            [[ ${FLASH_ZIP} == True ]]; then
         _note "Uploading build on Telegram..."
         FILE=${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip
         MD5=$(md5sum "${FILE}" | cut -d' ' -f1)
