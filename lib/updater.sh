@@ -25,57 +25,68 @@
 _full_upgrade() {
 
     # Neternels Builder
-    _note "Updating Neternels Builder..."
-    if git diff config.sh | grep -q config.sh &>/dev/null; then
+    _note "${MSG_UP_NB}..."
+    if git diff config.sh | grep -q config.sh &>/dev/null
+    then
         _ask_for_save_config
-        if [[ ${SAVE_CONFIG} == True ]]; then
+        if [[ ${SAVE_CONFIG} == True ]]
+        then
             _check mv config.sh config_save.sh
         fi
     fi
     git checkout "${NB_BRANCH}"
     git pull origin "${NB_BRANCH}"
-    if [[ ! -f config.sh ]]; then
+    if [[ ! -f config.sh ]]
+    then
         _check cp config_save.sh config.sh
     fi
 
     # AnyKernel
-    if [[ -d ${ANYKERNEL_DIR} ]]; then
-        _note "Updating AnyKernel..."
+    if [[ -d ${ANYKERNEL_DIR} ]]
+    then
+        _note "${MSG_UP_AK3}..."
         cd "${ANYKERNEL_DIR}" || \
-            (_error "dir not found ${RED}${ANYKERNEL_DIR}"; _exit)
+            (_error "${MSG_ERR_DIR} ${RED}${ANYKERNEL_DIR}"; _exit)
         git checkout "${ANYKERNEL_BRANCH}"
         git pull origin "${ANYKERNEL_BRANCH}"
-        cd "${DIR}" || (_error "dir not found ${RED}${DIR}"; _exit)
+        cd "${DIR}" || \
+            (_error "${MSG_ERR_DIR} ${RED}${DIR}"; _exit)
     fi
 
     # Proton-Clang
-    if [[ -d ${PROTON_DIR} ]]; then
-        _note "Updating Proton Clang..."
+    if [[ -d ${PROTON_DIR} ]]
+    then
+        _note "${MSG_UP_CLANG}..."
         cd "${PROTON_DIR}" || \
-            (_error "dir not found ${RED}${PROTON_DIR}"; _exit)
+            (_error "${MSG_ERR_DIR} ${RED}${PROTON_DIR}"; _exit)
         git checkout "${PROTON_BRANCH}"
         git pull origin "${PROTON_BRANCH}"
-        cd "${DIR}" || (_error "dir not found ${RED}${DIR}"; _exit)
+        cd "${DIR}" || \
+            (_error "${MSG_ERR_DIR} ${RED}${DIR}"; _exit)
     fi
 
     # GCC-arm64
-    if [[ -d ${GCC_ARM64_DIR} ]]; then
-        _note "Updating GCC ARM64..."
+    if [[ -d ${GCC_ARM64_DIR} ]]
+    then
+        _note "${MSG_UP_GCC64}..."
         cd "${GCC_ARM64_DIR}" || \
-            (_error "dir not found ${RED}${GCC_ARM64_DIR}"; _exit)
+            (_error "${MSG_ERR_DIR} ${RED}${GCC_ARM64_DIR}"; _exit)
         git checkout "${GCC_ARM64_BRANCH}"
         git pull origin "${GCC_ARM64_BRANCH}"
-        cd "${DIR}" || (_error "dir not found ${RED}${DIR}"; _exit)
+        cd "${DIR}" || \
+            (_error "${MSG_ERR_DIR} ${RED}${DIR}"; _exit)
     fi
 
     # GCC-arm32
-    if [[ -d ${GCC_ARM_DIR} ]]; then
-        _note "Updating GCC ARM..."
+    if [[ -d ${GCC_ARM_DIR} ]]
+    then
+        _note "${MSG_UP_GCC32}..."
         cd "${GCC_ARM_DIR}" || \
-            (_error "dir not found ${RED}${GCC_ARM_DIR}"; _exit)
+            (_error "${MSG_ERR_DIR} ${RED}${GCC_ARM_DIR}"; _exit)
         git checkout "${GCC_ARM_BRANCH}"
         git pull origin "${GCC_ARM_BRANCH}"
-        cd "${DIR}" || (_error "dir not found ${RED}${DIR}"; _exit)
+        cd "${DIR}" || \
+            (_error "${MSG_ERR_DIR} ${RED}${DIR}"; _exit)
     fi
 }
 

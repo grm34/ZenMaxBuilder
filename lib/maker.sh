@@ -26,7 +26,8 @@
 _export_path_and_options() {
 
     # Link Time Optimization (LTO)
-    if [[ ${LTO} == True ]]; then
+    if [[ ${LTO} == True ]]
+    then
         export LD=${LTO_LIBRARY}
         export LD_LIBRARY_PATH=${LTO_LIBRARY_DIR}
     fi
@@ -49,26 +50,26 @@ _export_path_and_options() {
 
 
 _make_clean() {
-    _note "Make clean (this could take a while)..."
+    _note "${MSG_NOTE_MAKE_CLEAN}..."
     _check unbuffer make -C "${KERNEL_DIR}" clean 2>&1
 }
 
 
 _make_mrproper() {
-    _note "Make mrproper (this could take a while)..."
+    _note "${MSG_NOTE_MRPROPER}..."
     _check unbuffer make -C "${KERNEL_DIR}" mrproper 2>&1
 }
 
 
 _make_defconfig() {
-    _note "Make ${DEFCONFIG} (${LINUX_VERSION})..."
+    _note "${MSG_NOTE_DEF} ${DEFCONFIG} (${LINUX_VERSION})..."
     _check unbuffer make -C "${KERNEL_DIR}" \
         O="${OUT_DIR}" ARCH="${ARCH}" "${DEFCONFIG}" 2>&1
 }
 
 
 _make_menuconfig() {
-    _note "Make menuconfig..."
+    _note "${MSG_NOTE_MENUCONFIG} (${LINUX_VERSION})..."
     make -C "${KERNEL_DIR}" O="${OUT_DIR}" \
         ARCH="${ARCH}" menuconfig "${OUT_DIR}"/.config
 }
@@ -77,7 +78,7 @@ _make_menuconfig() {
 _save_defconfig() {
     # When a defconfig file is modified with menuconfig,
     # the original will be saved as "example_defconfig_save"
-    _note "Saving ${DEFCONFIG} in arch/${ARCH}/configs..."
+    _note "${MSG_NOTE_SAVE} ${DEFCONFIG} (arch/${ARCH}/configs)..."
     _check cp \
         "${KERNEL_DIR}/arch/${ARCH}/configs/${DEFCONFIG}" \
         "${KERNEL_DIR}/arch/${ARCH}/configs/${DEFCONFIG}_save"
@@ -88,7 +89,7 @@ _save_defconfig() {
 
 
 _make_build() {
-    _note "Starting new build for ${CODENAME} (${LINUX_VERSION})..."
+    _note "${MSG_NOTE_MAKE} ${CODENAME} (${LINUX_VERSION})..."
 
     # Send build status on Telegram
     _send_make_build_status
@@ -97,3 +98,4 @@ _make_build() {
     _check unbuffer make -C "${KERNEL_DIR}" -j"${CORES}" \
         O="${OUT_DIR}" "${TC_OPTIONS[@]}" 2>&1
 }
+

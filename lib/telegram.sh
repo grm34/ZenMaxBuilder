@@ -57,26 +57,29 @@ _send_file() {
 
 _send_msg_option() {
     if [[ ${TELEGRAM_CHAT_ID} ]] && \
-            [[ ${TELEGRAM_BOT_TOKEN} ]]; then
-        _note "Sending message on Telegram...";
+            [[ ${TELEGRAM_BOT_TOKEN} ]]
+    then
+        _note "${MSG_NOTE_SEND}..."
         _send_msg "${OPTARG//_/-}"
     else
-        _error "you must configure Telegram API settings first"
+        _error "${MSG_ERR_API}"
     fi
 }
 
 
 _send_file_option() {
-    if [[ -f ${OPTARG} ]]; then
+    if [[ -f ${OPTARG} ]]
+    then
         if [[ ${TELEGRAM_CHAT_ID} ]] && \
-                [[ ${TELEGRAM_BOT_TOKEN} ]]; then
-            _note "Uploading ${OPTARG} on Telegram..."
+                [[ ${TELEGRAM_BOT_TOKEN} ]]
+        then
+            _note "${MSG_NOTE_UPLOAD} : ${OPTARG##*/}..."
             _send_file "${OPTARG}"
         else
-            _error "you must configure Telegram API settings first"
+            _error "${MSG_ERR_API}"
         fi
     else
-        _error "file not found ${RED}${OPTARG}"
+        _error "${MSG_ERR_FILE} ${RED}${OPTARG}"
     fi
 }
 
@@ -87,37 +90,41 @@ _send_file_option() {
 
 
 _send_make_build_status() {
-    if [[ ${BUILD_STATUS} == True ]]; then
-        MSG="<b>Android Kernel Build Triggered</b> ${STATUS_MSG}"
-        _send_msg "${MSG}"
+    if [[ ${BUILD_STATUS} == True ]]
+    then
+        _send_msg "<b>${MSG_TG_NEW}</b> ${STATUS_MSG}"
     fi
 }
 
 
 _send_success_build_status() {
-    if [[ ${BUILD_STATUS} == True ]]; then
+    if [[ ${BUILD_STATUS} == True ]]
+    then
         _send_msg "${KERNEL_NAME//_/-} | ${MSG}"
     fi
 }
 
 
 _send_zip_creation_status() {
-    if [[ ${BUILD_STATUS} == True ]]; then
-        _send_msg "${KERNEL_NAME//_/-} | Started Kernel Zip creation"
+    if [[ ${BUILD_STATUS} == True ]]
+    then
+        _send_msg "${KERNEL_NAME//_/-} | ${MSG_NOTE_ZIP}"
     fi
 }
 
 
 _send_zip_signing_status() {
-    if [[ ${BUILD_STATUS} == True ]]; then
-        _send_msg "${KERNEL_NAME//_/-} | Signing Zip with AOSP keys"
+    if [[ ${BUILD_STATUS} == True ]]
+    then
+        _send_msg "${KERNEL_NAME//_/-} | ${MSG_NOTE_SIGN}"
     fi
 }
 
 
 _send_failed_build_logs() {
     if [[ ${START_TIME} ]] && [[ ! $BUILD_TIME ]] && \
-            [[ ${BUILD_STATUS} == True ]]; then
+            [[ ${BUILD_STATUS} == True ]]
+    then
         END_TIME=$(TZ=${TIMEZONE} date +%s)
         BUILD_TIME=$((END_TIME - START_TIME))
         M=$((BUILD_TIME / 60))
@@ -125,7 +132,7 @@ _send_failed_build_logs() {
         sed -r \
             "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" \
             "${LOG}" > "${LOG##*/}"
-        MSG="Build Failed to Compile After ${M} min and ${S} seconds"
+        MSG="${MSG_TG_FAILED} ${M}m${S}s"
         _send_file \
             "${DIR}/${LOG##*/}" "v${LINUX_VERSION//_/-} | ${MSG}"
     fi
@@ -134,12 +141,14 @@ _send_failed_build_logs() {
 
 _upload_signed_build() {
     if [[ ${BUILD_STATUS} == True ]] && \
-            [[ ${FLASH_ZIP} == True ]]; then
-        _note "Uploading build on Telegram..."
+            [[ ${FLASH_ZIP} == True ]]
+    then
         FILE=${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip
+        _note "${MSG_NOTE_UPLOAD} : ${FILE##*/}..."
         MD5=$(md5sum "${FILE}" | cut -d' ' -f1)
-        CAPTION="Build took: ${M} minutes and ${S} seconds"
-        _send_file "${FILE}" "${CAPTION} | MD5 Checksum: ${MD5//_/-}"
+        CAPTION="${MSG_TG_CAPTION}: ${M}m${S}s"
+        _send_file \
+            "${FILE}" "${CAPTION} | MD5 Checksum: ${MD5//_/-}"
     fi
 }
 
@@ -147,14 +156,14 @@ _upload_signed_build() {
 _set_html_status_msg() {
     export STATUS_MSG="
 
-<b>Android Device :</b>  <code>${CODENAME//_/-}</code>
-<b>Kernel Version :</b>  <code>v${LINUX_VERSION//_/-}</code>
-<b>Kernel Variant :</b>  <code>${KERNEL_VARIANT//_/-}</code>
-<b>Host Builder :</b>  <code>${BUILDER//_/-}</code>
-<b>Host Core Count :</b>  <code>${CORES//_/-}</code>
-<b>Compiler Used :</b>  <code>${COMPILER//_/-}</code>
-<b>Operating System :</b>  <code>${HOST//_/-}</code>
-<b>Build Tag :</b>  <code>${TAG//_/-}</code>
-<b>Android :</b>  <code>${PLATFORM_VERSION//_/-}</code>"
+<b>${MSG_HTML_A} :</b>  <code>${CODENAME//_/-}</code>
+<b>${MSG_HTML_B} :</b>  <code>v${LINUX_VERSION//_/-}</code>
+<b>${MSG_HTML_C} :</b>  <code>${KERNEL_VARIANT//_/-}</code>
+<b>${MSG_HTML_D} :</b>  <code>${BUILDER//_/-}</code>
+<b>${MSG_HTML_E} :</b>  <code>${CORES//_/-}</code>
+<b>${MSG_HTML_F} :</b>  <code>${COMPILER//_/-}</code>
+<b>${MSG_HTML_G} :</b>  <code>${HOST//_/-}</code>
+<b>${MSG_HTML_H} :</b>  <code>${TAG//_/-}</code>
+<b>${MSG_HTML_I} :</b>  <code>${PLATFORM_VERSION//_/-}</code>"
 }
 

@@ -22,9 +22,11 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # Shell color codes
-if test -t 1; then
+if test -t 1
+then
     ncolors=$(tput colors)
-    if test -n "$ncolors" && test "$ncolors" -ge 8; then
+    if test -n "$ncolors" && test "$ncolors" -ge 8
+    then
         BOLD="$(tput bold)"
         NC="$(tput sgr0)"
         RED="$(tput bold setaf 1)"
@@ -51,19 +53,21 @@ _neternels_builder_banner() {
 # Help (--help or -h)
 _usage() {
     echo -e "
-${BOLD}Usage:${NC} bash Neternels-Builder [OPTION] [ARGUMENT]
+${BOLD}Usage:${NC} \
+${GREEN}bash Neternels-Builder \
+${NC}[${YELLOW}OPTION${NC}] [${YELLOW}ARGUMENT${NC}]
 
   ${BOLD}Options${NC}
-    -h, --help                     show this message and exit
-    -s, --start                    start new kernel compilation
-    -u, --update                   update script and toolchains
-    -l, --list                     show list of your kernels
-    -t, --tag     [v4.19]          show the latest Linux tag
-    -m, --msg     [message]        send message on Telegram
-    -f, --file    [file]           send file on Telegram
-    -z, --zip     [Image.gz-dtb]   create flashable zip
+    -h, --help                      ${MSG_HELP_H}
+    -s, --start                     ${MSG_HELP_S}
+    -u, --update                    ${MSG_HELP_U}
+    -l, --list                      ${MSG_HELP_L}
+    -t, --tag            [v4.19]    ${MSG_HELP_T}
+    -m, --msg          [message]    ${MSG_HELP_M}
+    -f, --file            [file]    ${MSG_HELP_F}
+    -z, --zip     [Image.gz-dtb]    ${MSG_HELP_Z}
 
-${BOLD}More information at: \
+${BOLD}${MSG_HELP_INFO}: \
 ${CYAN}https://kernel-builder.com${NC}
 "
 }
@@ -74,10 +78,12 @@ _prompt() {
     LENTH=${*}; COUNT=${#LENTH}
     echo -ne "\n${YELL}==> ${GREEN}${1} ${RED}${2}"
     echo -ne "${YELL}\n==> "
-    for (( CHAR=1; CHAR<=COUNT; CHAR++ )); do
+    for (( CHAR=1; CHAR<=COUNT; CHAR++ ))
+    do
         echo -ne "─"
     done
-    if [[ ! ${PROMPT_TYPE} ]]; then
+    if [[ ! ${PROMPT_TYPE} ]]
+    then
         echo -ne "\n==> ${NC}"
     else
         echo -ne "\n${NC}"
@@ -90,7 +96,8 @@ _confirm_msg() {
     CONFIRM=False; COUNT=$(( ${#1} + 6 ))
     echo -ne "${YELL}\n==> ${GREEN}${1}"\
              "${RED}${N}${YELL}\n==> "
-    for (( CHAR=1; CHAR<=COUNT; CHAR++ )); do
+    for (( CHAR=1; CHAR<=COUNT; CHAR++ ))
+    do
         echo -ne "─"
     done
     echo -ne "\n==> ${NC}"
@@ -102,8 +109,9 @@ _confirm_msg() {
 _confirm() {
     _confirm_msg "${@}"
     until [[ ${CONFIRM} =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]] \
-            || test -z "${CONFIRM}"; do
-        _error "enter yes or no"
+            || test -z "${CONFIRM}"
+    do
+        _error "${MSG_ERR_CONFIRM}"
         _confirm_msg "${@}"
     done
 }
@@ -118,7 +126,7 @@ _note() {
 
 # Display ERR
 _error() {
-    echo -e "\n${RED}Error: ${NC}${YELLOW}${*}${NC}"
+    echo -e "\n${RED}${MSG_ERROR}: ${NC}${YELLOW}${*}${NC}"
 }
 
 
@@ -129,16 +137,24 @@ _check() {
     # its output and notify on ERR
     "${@}" & wait ${!}
     local STATUS=$?
-    until [[ ${STATUS} -eq 0 ]]; do
+    until [[ ${STATUS} -eq 0 ]]
+    do
         LINE="${BASH_LINENO[$i+1]}"
         FUNC="${FUNCNAME[$i+1]}"
         FILE="${BASH_SOURCE[$i+1]##*/}"
-        _error "${*} ${RED}Line ${LINE}:${NC}${YELLOW}"\
-               "${FUNC} ${RED}From: ${NC}${YELLOW}${FILE##*/}"
+        _error "${*} ${RED}${MSG_ERR_LINE}"\
+               "${LINE}:${NC}${YELLOW} ${FUNC}"\
+               "${RED}${MSG_ERR_FROM}:"\
+               "${NC}${YELLOW}${FILE##*/}"
 
         # Run again last failed command
         _ask_for_run_again
-        if [[ ${RUN_AGAIN} == True ]]; then
+        if [[ ${RUN_AGAIN} == True ]]
+        then
+            if test ! -z "${START_TIME}"
+            then
+                START_TIME=$(TZ=${TIMEZONE} date +%s)
+            fi
             "${@}" & wait ${!}
         else
             _exit
@@ -152,12 +168,14 @@ _check() {
 _exit() {
 
     # Kill make PID child on interrupt
-    if pidof make; then
+    if pidof make
+    then
         pkill make || sleep 0.1
     fi
 
     # Get user inputs and add them to logfile
-    if [[ -f ${DIR}/bashvar ]] && [[ -f ${LOG} ]]; then
+    if [[ -f ${DIR}/bashvar ]] && [[ -f ${LOG} ]]
+    then
         set | grep -v "${EXCLUDE_VARS}" > buildervar
         printf "\n### USER INPUT LOGS ###\n" >> "${LOG}"
         diff bashvar buildervar | grep -E \
@@ -169,15 +187,18 @@ _exit() {
 
     # Remove inputs files
     FILES=(bashvar buildervar linuxver "${LOG##*/}")
-    for FILE in "${FILES[@]}"; do
-        if [[ -f ${DIR}/${FILE} ]]; then
+    for FILE in "${FILES[@]}"
+    do
+        if [[ -f ${DIR}/${FILE} ]]
+        then
             rm "${DIR}/${FILE}" || sleep 0.1
         fi
     done
 
     # Exit with 3s timeout
-    for (( SECOND=3; SECOND>=1; SECOND-- )); do
-        echo -ne "\r\033[K${BLUE}Exiting Neternels-Builder"\
+    for (( SECOND=3; SECOND>=1; SECOND-- ))
+    do
+        echo -ne "\r\033[K${BLUE}${MSG_EXIT}"\
                  "in ${SECOND}s...${NC}"
         sleep 1
     done
@@ -187,9 +208,10 @@ _exit() {
 
 # Clean AnyKernel folder
 _clean_anykernel() {
-    _note "Cleaning AnyKernel repository..."
+    _note "${MSG_NOTE_CLEAN_AK3}..."
     UNWANTED=(*.zip Image* *-dtb init.spectrum.rc)
-    for UW in "${UNWANTED[@]}"; do
+    for UW in "${UNWANTED[@]}"
+    do
         rm -f "${ANYKERNEL_DIR}/${UW}" || sleep 0.1
     done
 }
@@ -197,26 +219,28 @@ _clean_anykernel() {
 
 # Show list of kernels
 _list_all_kernels() {
-    if [[ -d ${DIR}/out ]] && [[ -n $(ls -d out/*/) ]]; then
-        _note "List of Android Kernels :"
+    if [[ -d ${DIR}/out ]] && [[ -n $(ls -d out/*/) ]]
+    then
+        _note "${MSG_NOTE_LISTKERNEL} :"
         find out/ -mindepth 1 -maxdepth 1 -type d \
             | cut -f2 -d'/' | cat -n
     else
-        _error "no kernel found in out folder"
+        _error "${MSG_ERR_LISTKERNEL}"
     fi
 }
 
 
 # Get latest linux stable tag
 _get_linux_tag() {
-    _note "Scanning Linux Stable (this could take a while)..."
+    _note "${MSG_NOTE_LTAG}..."
     LTAG=$(git ls-remote --refs --sort='v:refname' --tags \
         "${LINUX_STABLE}" | grep "${OPTARG}" | tail --lines=1 \
         | cut --delimiter='/' --fields=3)
-    if [[ ${LTAG} == ${OPTARG}* ]]; then
-        _note "Latest Linux Stable : ${RED}${LTAG}"
+    if [[ ${LTAG} == ${OPTARG}* ]]
+    then
+        _note "${MSG_SUCCESS_LTAG} : ${RED}${LTAG}"
     else
-        _error "invalid Linux Stable tag ${RED}${OPTARG}"
+        _error "${MSG_ERR_LTAG} ${RED}${OPTARG}"
     fi
 }
 

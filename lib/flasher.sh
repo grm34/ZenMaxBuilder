@@ -23,13 +23,14 @@
 
 
 _create_flashable_zip() {
-    _note "Creating ${KERNEL_NAME}-${DATE}.zip..."
+    _note "${MSG_NOTE_ZIP} ${KERNEL_NAME}-${DATE}.zip..."
 
     # Send zip status on Telegram
     _send_zip_creation_status
 
     # Create init.spectrum.rc
-    if [[ -f ${KERNEL_DIR}/${SPECTRUM} ]]; then
+    if [[ -f ${KERNEL_DIR}/${SPECTRUM} ]]
+    then
         _check cp -af \
             "${KERNEL_DIR}/${SPECTRUM}" \
             init.spectrum.rc
@@ -40,11 +41,11 @@ _create_flashable_zip() {
     fi
 
     # Move Kernel Image to AnyKernel folder
-    _check cp "${KERNEL_IMG}" "${ANYKERNEL_DIR}"
+    _check cp "${K_IMG}" "${ANYKERNEL_DIR}"
 
     # CD to AnyKernel folder
     cd "${ANYKERNEL_DIR}" || \
-        (_error "dir not found ${RED}AnyKernel"; _exit)
+        (_error "${MSG_ERR_DIR} ${RED}AnyKernel"; _exit)
 
     # Set anykernel.sh
     _check sed -i \
@@ -80,12 +81,12 @@ _create_flashable_zip() {
     _check mv "${KERNEL_NAME}-${DATE}.zip" "${BUILD_DIR}"
 
     # Back to script dir
-    cd "${DIR}" || (_error "dir not found ${RED}${DIR}"; _exit)
+    cd "${DIR}" || (_error "${MSG_ERR_DIR} ${RED}${DIR}"; _exit)
 }
 
 
 _sign_flashable_zip() {
-    _note "Signing Zip file with AOSP keys..."
+    _note "${MSG_NOTE_SIGN}..."
 
     # Send signing status on Telegram
     _send_zip_signing_status
@@ -99,30 +100,32 @@ _sign_flashable_zip() {
 
 
 _create_zip_option() {
-    if [[ -f ${OPTARG} ]] && [[ ${OPTARG} == Image* ]]; then
+    if [[ -f ${OPTARG} ]] && [[ ${OPTARG} == Image* ]]
+    then
         _clean_anykernel
-        _note "Creating ${OPTARG}-{DATE}_${TIME}.zip..."
+        _note "${MSG_NOTE_ZIP} ${OPTARG}-{DATE}_${TIME}.zip..."
 
         # Move Image to AnyKernel folder
         _check cp "${OPTARG}" "${ANYKERNEL_DIR}"
 
         # CD to AnyKernel folder
         cd "${ANYKERNEL_DIR}" || \
-            (_error "dir not found ${RED}AnyKernel"; _exit)
+            (_error "${MSG_ERR_DIR} ${RED}AnyKernel"; _exit)
 
         # Create flashable zip
         _check zip -r9 "${OPTARG##*/}-${DATE}-${TIME}.zip" \
             ./* -x .git README.md ./*placeholder
 
         # Sign flashable zip
-        _note "Signing Zip file with AOSP keys..."
+        _note "${MSG_NOTE_SIGN}..."
         _check java -jar \
             "${DIR}/lib/tools/zipsigner-3.0.jar" \
             "${OPTARG##*/}-${DATE}_${TIME}.zip" \
             "${OPTARG##*/}-${DATE}_${TIME}-signed.zip"
 
         # Move zip to builds folder
-        if [[ ! -d ${DIR}/builds/default ]]; then
+        if [[ ! -d ${DIR}/builds/default ]]
+        then
             _check mkdir "${DIR}/builds/default"
         fi
         _check mv \
@@ -131,11 +134,12 @@ _create_zip_option() {
 
         # Back to script dir
         _clean_anykernel
-        cd "${DIR}" || (_error "dir not found ${RED}${DIR}"; _exit)
+        cd "${DIR}" || \
+            (_error "${MSG_ERR_DIR} ${RED}${DIR}"; _exit)
 
     else
         # Display error while invalid
-        _error "invalid kernel image ${RED}${OPTARG}"
+        _error "${MSG_ERR_IMG} ${RED}${OPTARG}"
     fi
 }
 
