@@ -33,6 +33,17 @@ DIR=${PWD}/${DIRNAME}
 set > "${DIR}/bashvar"
 set -m -E -o pipefail #-b -v
 
+# App Language
+LANGUAGE="${DIR}/lang/${LANG:0:2}.sh"
+if test -f "${LANGUAGE}"
+then
+    # shellcheck source=/dev/null
+    source "${LANGUAGE}"
+else
+    # shellcheck source=/dev/null
+    source "${DIR}/lang/en.sh"
+fi
+
 # shellcheck source=config.sh
 source "${DIR}/config.sh"
 # shellcheck source=lib/manager.sh
@@ -51,20 +62,24 @@ source "${DIR}/lib/prompter.sh"
 source "${DIR}/lib/updater.sh"
 
 # Ban all ('n00bz')
-if [[ $(uname) != Linux ]]; then
-    _error "you must run this script on Linux"
+if [[ $(uname) != Linux ]]
+then
+    _error "${MSG_ERR_LINUX}"
     _exit
-elif [[ ! -f ${PWD}/config.sh ]] || [[ ! -d ${PWD}/lib ]]; then
-    _error "run this script from Neternels-Builder directory"
+elif [[ ! -f ${PWD}/config.sh ]] || [[ ! -d ${PWD}/lib ]]
+then
+    _error "${MSG_ERR_PWD}"
     _exit
 elif [[ $KERNEL_DIR != default  ]] && \
-        [[ ! -f $KERNEL_DIR/Makefile ]]; then
-    _error "invalid kernel directory (see config.sh)"
+        [[ ! -f $KERNEL_DIR/Makefile ]]
+then
+    _error "${MSG_ERR_KDIR}"
     _exit
 fi
 
 # Transform long opts to short
-for OPT in "${@}"; do
+for OPT in "${@}"
+do
     shift
     case ${OPT} in
         "--help") set -- "${@}" "-h"; break;;
@@ -80,11 +95,13 @@ for OPT in "${@}"; do
 done
 
 # Handle app opts
-if [[ ${#} -eq 0 ]]; then
-    _error "you must specify an option (use --help)"
+if [[ ${#} -eq 0 ]]
+then
+    _error "${MSG_ERR_EOPT}"
     _exit
 fi
-while getopts ':hsult:m:f:z:' OPTION; do
+while getopts ':hsult:m:f:z:' OPTION
+do
     case ${OPTION} in
         h)  _neternels_builder_banner; _usage
             _check rm "./bashvar"; exit 0;;
@@ -95,14 +112,15 @@ while getopts ':hsult:m:f:z:' OPTION; do
         l)  _list_all_kernels; _exit;;
         t)  _get_linux_tag; _exit;;
         s)  _neternels_builder_banner;;
-        :)  _error "missing argument for ${RED}-${OPTARG}"
+        :)  _error "${MSG_ERR_MARG} ${RED}-${OPTARG}"
             _exit;;
-        \?) _error "invalid option ${RED}-${OPTARG}"
+        \?) _error "${MSG_ERR_IOPT} ${RED}-${OPTARG}"
             _exit
     esac
 done
-if [[ ${OPTIND} -eq 1 ]]; then
-    _error "invalid option ${RED}${1}"
+if [[ ${OPTIND} -eq 1 ]]
+then
+    _error "${MSG_ERR_IOPT} ${RED}${1}"
     _exit
 fi
 
@@ -110,24 +128,27 @@ fi
 shift $(( OPTIND - 1 ))
 
 # Trap interrupt signals
-trap '_error "keyboard interrupt"; _exit' INT QUIT TSTP CONT
+trap '_error ${MSG_ERR_KBOARD}; _exit' INT QUIT TSTP CONT
 
 
 #######################
 ### Start new build ###
 #######################
-_note "Starting new Android Kernel build ${DATE}"
+_note "${MSG_NOTE_START} ${DATE}"
 
 # Get device codename
 _ask_for_codename
 
 # Create device folders
 FOLDERS=(builds logs toolchains out)
-for FOLDER in "${FOLDERS[@]}"; do
+for FOLDER in "${FOLDERS[@]}"
+do
     if [[ ! -d ${DIR}/${FOLDER}/${CODENAME} ]] && \
-            [[ ${FOLDER} != toolchains ]]; then
+            [[ ${FOLDER} != toolchains ]]
+    then
         _check mkdir -p "${DIR}/${FOLDER}/${CODENAME}"
-    elif [[ ! -d ${DIR}/${FOLDER} ]]; then
+    elif [[ ! -d ${DIR}/${FOLDER} ]]
+    then
         _check mkdir "${DIR}/${FOLDER}"
     fi
 done
@@ -161,7 +182,7 @@ export ANDROID_MAJOR_RELEASE=${ANDROID_MAJOR_RELEASE}
 _export_path_and_options
 
 # Make kernel version
-_note "Make kernel version..."
+_note "${MSG_NOTE_LINUXVER}..."
 make -C "${KERNEL_DIR}" kernelversion \
     | grep -v make > linuxver & wait ${!}
 LINUX_VERSION=$(cat linuxver)
@@ -170,7 +191,8 @@ KERNEL_NAME=${TAG}-${CODENAME}-${LINUX_VERSION}
 # Make clean
 _ask_for_make_clean
 _clean_anykernel
-if [[ ${MAKE_CLEAN} == True ]]; then
+if [[ ${MAKE_CLEAN} == True ]]
+then
     _make_clean
     _make_mrproper
     _check rm -rf "${OUT_DIR}"
@@ -180,14 +202,17 @@ fi
 _make_defconfig
 
 # Make menuconfig
-if [[ ${MENUCONFIG} == True ]]; then
+if [[ ${MENUCONFIG} == True ]]
+then
     _make_menuconfig
     _ask_for_save_defconfig
-    if [[ ${SAVE_DEFCONFIG} == True ]]; then
+    if [[ ${SAVE_DEFCONFIG} == True ]]
+    then
         _save_defconfig
     else
-        if [[ ${ORIGINAL_DEFCONFIG} == False ]]; then
-            _note "Build cancelled: ${KERNEL_NAME}..."
+        if [[ ${ORIGINAL_DEFCONFIG} == False ]]
+        then
+            _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."
             _exit
         fi
     fi
@@ -195,8 +220,9 @@ fi
 
 # Make new build
 _ask_for_new_build
-if [[ ${NEW_BUILD} == False ]]; then
-    _note "Build cancelled: ${KERNEL_NAME}..."
+if [[ ${NEW_BUILD} == False ]]
+then
+    _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."
     _exit
 else
     # TG build status
@@ -218,13 +244,13 @@ M=$((BUILD_TIME / 60))
 S=$((BUILD_TIME % 60))
 
 # Display build status
-MSG="Successfully compiled after ${M} minutes and ${S} seconds"
-_note "${MSG}"
+_note "${MSG_NOTE_SUCCESS} ${M}m${S}s"
 _send_success_build_status
 
 # Create flashable zip
 _ask_for_flashable_zip
-if [[ ${FLASH_ZIP} == True ]]; then
+if [[ ${FLASH_ZIP} == True ]]
+then
     _ask_for_kernel_image
     _create_flashable_zip | tee -a "${LOG}"
     _sign_flashable_zip | tee -a "${LOG}"
