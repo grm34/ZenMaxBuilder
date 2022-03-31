@@ -244,7 +244,7 @@ M=$((BUILD_TIME / 60))
 S=$((BUILD_TIME % 60))
 
 # Display build status
-_note "${MSG_NOTE_SUCCESS} ${M}m${S}s"
+_note "${MSG_NOTE_SUCCESS} ${M}m${S}s !"
 _send_success_build_status
 
 # Create flashable zip
@@ -254,6 +254,7 @@ then
     _ask_for_kernel_image
     _create_flashable_zip | tee -a "${LOG}"
     _sign_flashable_zip | tee -a "${LOG}"
+    _note "${MSG_NOTE_ZIPPED} !"
 fi
 
 # Upload build and exit
