@@ -151,6 +151,10 @@ _check() {
         _ask_for_run_again
         if [[ ${RUN_AGAIN} == True ]]
         then
+            if test ! -z "${START_TIME}"
+            then
+                START_TIME=$(TZ=${TIMEZONE} date +%s)
+            fi
             "${@}" & wait ${!}
         else
             _exit
