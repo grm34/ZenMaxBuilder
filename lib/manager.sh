@@ -34,6 +34,7 @@ then
         YELL="$(tput bold setaf 3)"
         YELLOW="$(tput setaf 3)"
         BLUE="$(tput bold setaf 4)"
+        MAGENTA="$(tput setaf 5)"
         CYAN="$(tput bold setaf 6)"
     fi
 fi
@@ -42,20 +43,21 @@ fi
 # Display script banner
 _neternels_builder_banner() {
     echo -e "$BOLD
-   ┌─────────────────────────────────────────────┐
-   │ ┏┓╻┏━╸╺┳╸┏━╸┏━┓┏┓╻┏━╸╻  ┏━┓   ╺┳╸┏━╸┏━┓┏┓┏┓ │
-   │ ┃┗┫┣╸  ┃ ┣╸ ┣┳┛┃┗┫┣╸ ┃  ┗━┓    ┃ ┣╸ ┣╸┫┃┗┛┃ │
-   │ ╹ ╹┗━╸ ╹ ┗━╸╹┗╸╹ ╹┗━╸┗━╸┗━┛    ╹ ┗━╸╹ ╹╹  ╹ │
-   └─────────────────────────────────────────────┘"
+   ┌──────────────────────────────────────────────┐
+   │  ╔═╗┌─┐┌┐┌  ╔╦╗┌─┐─┐ ┬  ╔╗ ┬ ┬┬┬  ┌┬┐┌─┐┬─┐  │
+   │  ╔═╝├┤ │││  ║║║├─┤┌┴┬┘  ╠╩╗│ │││   ││├┤ ├┬┘  │
+   │  ╚═╝└─┘┘└┘  ╩ ╩┴ ┴┴ └─  ╚═╝└─┘┴┴─┘─┴┘└─┘┴└─  │
+   │ Android Kernel Builder ㉿ ZMB NetErnels Team │
+   └──────────────────────────────────────────────┘"
 }
 
 
 # Help (--help or -h)
 _usage() {
     echo -e "
-${BOLD}Usage:$NC \
-${GREEN}bash Neternels-Builder \
-${NC}[${YELLOW}OPTION${NC}] [${YELLOW}ARGUMENT${NC}]
+${BOLD}Usage:$NC ${GREEN}bash zmb \
+${NC}[${YELLOW}OPTION${NC}] [${YELLOW}ARGUMENT${NC}] \
+(e.q. ${MAGENTA}bash zmb --start${NC})
 
   ${BOLD}Options$NC
     -h, --help                      $MSG_HELP_H

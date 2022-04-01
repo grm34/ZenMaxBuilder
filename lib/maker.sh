@@ -50,26 +50,26 @@ _export_path_and_options() {
 
 
 _make_clean() {
-    _note "${MSG_NOTE_MAKE_CLEAN}..."
+    _note "${MSG_NOTE_MAKE_CLEAN} [${LINUX_VERSION}]..."
     _check unbuffer make -C "$KERNEL_DIR" clean 2>&1
 }
 
 
 _make_mrproper() {
-    _note "${MSG_NOTE_MRPROPER}..."
+    _note "${MSG_NOTE_MRPROPER} [${LINUX_VERSION}]..."
     _check unbuffer make -C "$KERNEL_DIR" mrproper 2>&1
 }
 
 
 _make_defconfig() {
-    _note "$MSG_NOTE_DEF $DEFCONFIG (${LINUX_VERSION})..."
+    _note "$MSG_NOTE_DEFCONFIG $DEFCONFIG [${LINUX_VERSION}]..."
     _check unbuffer make -C "$KERNEL_DIR" \
         O="$OUT_DIR" ARCH="$ARCH" "$DEFCONFIG" 2>&1
 }
 
 
 _make_menuconfig() {
-    _note "$MSG_NOTE_MENUCONFIG (${LINUX_VERSION})..."
+    _note "$MSG_NOTE_MENUCONFIG [${LINUX_VERSION}]..."
     make -C "$KERNEL_DIR" O="$OUT_DIR" \
         ARCH="$ARCH" menuconfig "${OUT_DIR}/.config"
 }
@@ -89,7 +89,7 @@ _save_defconfig() {
 
 
 _make_build() {
-    _note "$MSG_NOTE_MAKE $CODENAME (${LINUX_VERSION})..."
+    _note "$MSG_NOTE_MAKE $CODENAME [${LINUX_VERSION}]..."
 
     # Send build status on Telegram
     _send_make_build_status

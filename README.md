@@ -6,15 +6,14 @@
 
 ![codequality](https://api.codiga.io/project/23638/score/svg)
 ![codescore](https://api.codiga.io/project/23638/status/svg)
-![codefactor](https://www.codefactor.io/repository/github/grm34/neternels-builder/badge)
+![codefactor](https://www.codefactor.io/repository/github/grm34/zenmaxbuilder/badge)
 
-Neternels-Builder is an Android Kernel Builder written in bash, which can be
-runned on any Linux System (feel free to Pull Request for Windows support). By
-default it uses Proton-Clang, Eva-GCC or Proton-GCC but you can use any
-toolchains you like by editing
-[config.sh](https://github.com/grm34/Neternels-Builder/blob/main/config.sh)
-file. The perfect tool to compile on the fly and keep fresh and clean kernel
-paths.
+ZenMaxBuilder is an Android Kernel Builder written in bash, which can be runned
+on any Linux System (feel free to Pull Request for Windows support). By default
+it uses Proton-Clang, Eva-GCC or Proton-GCC but you can use any toolchains you
+like by editing
+[config.sh](https://github.com/grm34/ZenMaxBuilder/blob/main/config.sh) file.
+The perfect tool to compile on the fly and keep fresh and clean kernel paths.
 
 ## Requirements
 
@@ -24,16 +23,15 @@ Dependencies will be prompted to install or you can manually install them.
 
 ## Usage
 
-1. `git clone https://github.com/grm34/Neternels-Builder.git`
-2. `cd Neternels-Builder`
-3. Edit
-   [config.sh](https://github.com/grm34/Neternels-Builder/blob/main/config.sh)
+1. `git clone https://github.com/grm34/ZenMaxBuilder.git`
+2. `cd ZenMaxBuilder`
+3. Edit [config.sh](https://github.com/grm34/ZenMaxBuilder/blob/main/config.sh)
    to set your settings (optional)
-4. `bash Neternels-Builder --start`
+4. `bash zmb --start`
 
 ## Options
 
-    Usage: bash Neternels-Builder [OPTION] [ARGUMENT]
+    Usage: bash zmb [OPTION] [ARGUMENT] (e.q. bash zmb --start)
 
     Options
         -h, --help                     show this message and exit
@@ -47,7 +45,7 @@ Dependencies will be prompted to install or you can manually install them.
 
 ## Working structure
 
-    Neternels-Builder/
+    ZenMaxBuilder/
     |
     |---- builds/               # Flashable kernel zips
     |     |---- DEVICE1/
@@ -63,7 +61,7 @@ Dependencies will be prompted to install or you can manually install them.
 
 ## Screenshot
 
-![screenshot](https://raw.githubusercontent.com/grm34/Neternels-Builder/main/docs/assets/images/screenshot.png)
+![screenshot](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/main/docs/assets/images/screenshot.png)
 
 ## Credits
 
@@ -75,7 +73,7 @@ Dependencies will be prompted to install or you can manually install them.
 ## Links
 
 - Codiga Code Review:
-  [link](https://app.codiga.io/public/project/23638/Neternels-Builder/dashboard)
+  [link](https://app.codiga.io/public/project/23638/ZenMaxBuilder/dashboard)
 - Codefactor Code Review:
-  [link](https://www.codefactor.io/repository/github/grm34/neternels-builder)
+  [link](https://www.codefactor.io/repository/github/grm34/zenmaxbuilder)
 - Website: [https://kernel-builder.com](https://kernel-builder.com)
