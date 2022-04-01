@@ -25,7 +25,7 @@
 # lib/main.sh
 # ===========
 MSG_ERR_LINUX="you must run this script on Linux"
-MSG_ERR_PWD="run this script from Neternels-Builder directory"
+MSG_ERR_PWD="run this script from ZenMaxBuilder directory"
 MSG_ERR_KDIR="invalid kernel directory (see config.sh)"
 MSG_ERR_EOPT="you must specify an option (use --help)"
 MSG_ERR_MARG="missing argument for"
@@ -52,7 +52,7 @@ MSG_ERR_CONFIRM="enter yes or no"
 MSG_ERROR="Error"
 MSG_ERR_LINE="Line"
 MSG_ERR_FROM="From"
-MSG_EXIT="Exiting Neternels-Builder"
+MSG_EXIT="Exiting ZenMaxBuilder"
 MSG_NOTE_CLEAN_AK3="Cleaning AnyKernel repository"
 MSG_NOTE_LISTKERNEL="List of Android Kernels"
 MSG_ERR_LISTKERNEL="no kernel found in out folder"
@@ -101,7 +101,7 @@ MSG_HTML_I="Android"
 
 # lib/updater.sh
 # ==============
-MSG_UP_NB="Updating Neternels Builder"
+MSG_UP_NB="Updating ZenMaxBuilder"
 MSG_UP_AK3="Updating AnyKernel"
 MSG_UP_CLANG="Updating Proton Clang"
 MSG_UP_GCC64="Updating GCC ARM64"
