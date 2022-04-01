@@ -166,7 +166,7 @@ _ask_for_make_clean() {
     # Request "make clean" and "make mrproper" commands.
     # Validation checks are not needed here.
     export N="[y/N]"
-    _confirm "${MSG_ASK_MCLEAN}: $LINUX_VERSION ?"
+    _confirm "${MSG_ASK_MCLEAN}: v$LINUX_VERSION ?"
     case $CONFIRM in
         y|Y|yes|Yes|YES)
             MAKE_CLEAN=True
