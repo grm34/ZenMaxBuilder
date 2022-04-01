@@ -41,7 +41,7 @@ fi
 
 # Display script banner
 _neternels_builder_banner() {
-    echo -e "${BOLD}
+    echo -e "$BOLD
    ┌─────────────────────────────────────────────┐
    │ ┏┓╻┏━╸╺┳╸┏━╸┏━┓┏┓╻┏━╸╻  ┏━┓   ╺┳╸┏━╸┏━┓┏┓┏┓ │
    │ ┃┗┫┣╸  ┃ ┣╸ ┣┳┛┃┗┫┣╸ ┃  ┗━┓    ┃ ┣╸ ┣╸┫┃┗┛┃ │
@@ -53,40 +53,40 @@ _neternels_builder_banner() {
 # Help (--help or -h)
 _usage() {
     echo -e "
-${BOLD}Usage:${NC} \
+${BOLD}Usage:$NC \
 ${GREEN}bash Neternels-Builder \
 ${NC}[${YELLOW}OPTION${NC}] [${YELLOW}ARGUMENT${NC}]
 
-  ${BOLD}Options${NC}
-    -h, --help                      ${MSG_HELP_H}
-    -s, --start                     ${MSG_HELP_S}
-    -u, --update                    ${MSG_HELP_U}
-    -l, --list                      ${MSG_HELP_L}
-    -t, --tag            [v4.19]    ${MSG_HELP_T}
-    -m, --msg          [message]    ${MSG_HELP_M}
-    -f, --file            [file]    ${MSG_HELP_F}
-    -z, --zip     [Image.gz-dtb]    ${MSG_HELP_Z}
+  ${BOLD}Options$NC
+    -h, --help                      $MSG_HELP_H
+    -s, --start                     $MSG_HELP_S
+    -u, --update                    $MSG_HELP_U
+    -l, --list                      $MSG_HELP_L
+    -t, --tag            [v4.19]    $MSG_HELP_T
+    -m, --msg          [message]    $MSG_HELP_M
+    -f, --file            [file]    $MSG_HELP_F
+    -z, --zip     [Image.gz-dtb]    $MSG_HELP_Z
 
 ${BOLD}${MSG_HELP_INFO}: \
-${CYAN}https://kernel-builder.com${NC}
+${CYAN}https://kernel-builder.com$NC
 "
 }
 
 
 # Ask some information
 _prompt() {
-    LENTH=${*}; COUNT=${#LENTH}
-    echo -ne "\n${YELL}==> ${GREEN}${1} ${RED}${2}"
+    LENTH=$*; COUNT=${#LENTH}
+    echo -ne "\n${YELL}==> ${GREEN}$1 ${RED}$2"
     echo -ne "${YELL}\n==> "
     for (( CHAR=1; CHAR<=COUNT; CHAR++ ))
     do
         echo -ne "─"
     done
-    if [[ ! ${PROMPT_TYPE} ]]
+    if [[ ! $PROMPT_TYPE ]]
     then
-        echo -ne "\n==> ${NC}"
+        echo -ne "\n==> $NC"
     else
-        echo -ne "\n${NC}"
+        echo -ne "\n$NC"
     fi
 }
 
@@ -100,19 +100,19 @@ _confirm_msg() {
     do
         echo -ne "─"
     done
-    echo -ne "\n==> ${NC}"
+    echo -ne "\n==> $NC"
     read -r CONFIRM
 }
 
 
 # Ask confirmation (Yes/No)
 _confirm() {
-    _confirm_msg "${@}"
-    until [[ ${CONFIRM} =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]] \
-            || test -z "${CONFIRM}"
+    _confirm_msg "$@"
+    until [[ $CONFIRM =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]] \
+            || test -z "$CONFIRM"
     do
-        _error "${MSG_ERR_CONFIRM}"
-        _confirm_msg "${@}"
+        _error "$MSG_ERR_CONFIRM"
+        _confirm_msg "$@"
     done
 }
 
@@ -135,9 +135,9 @@ _check() {
 
     # Run command as child, check
     # its output and notify on ERR
-    "${@}" & wait ${!}
+    "$@" & wait $!
     local STATUS=$?
-    until [[ ${STATUS} -eq 0 ]]
+    until [[ $STATUS -eq 0 ]]
     do
         LINE="${BASH_LINENO[$i+1]}"
         FUNC="${FUNCNAME[$i+1]}"
@@ -149,13 +149,13 @@ _check() {
 
         # Run again last failed command
         _ask_for_run_again
-        if [[ ${RUN_AGAIN} == True ]]
+        if [[ $RUN_AGAIN == True ]]
         then
-            if test ! -z "${START_TIME}"
+            if test ! -z "$START_TIME"
             then
-                START_TIME=$(TZ=${TIMEZONE} date +%s)
+                START_TIME=$(TZ=$TIMEZONE date +%s)
             fi
-            "${@}" & wait ${!}
+            "$@" & wait $!
         else
             _exit
             break
@@ -174,12 +174,12 @@ _exit() {
     fi
 
     # Get user inputs and add them to logfile
-    if [[ -f ${DIR}/bashvar ]] && [[ -f ${LOG} ]]
+    if [[ -f ${DIR}/bashvar ]] && [[ -f $LOG ]]
     then
-        set | grep -v "${EXCLUDE_VARS}" > buildervar
-        printf "\n### USER INPUT LOGS ###\n" >> "${LOG}"
+        set | grep -v "$EXCLUDE_VARS" > buildervar
+        printf "\n### USER INPUT LOGS ###\n" >> "$LOG"
         diff bashvar buildervar | grep -E \
-            "^> [A-Z_]{3,26}=" >> "${LOG}" || sleep 0.1
+            "^> [A-Z_]{3,26}=" >> "$LOG" || sleep 0.1
     fi
 
     # Send ERR logs on Telegram
@@ -199,10 +199,10 @@ _exit() {
     for (( SECOND=3; SECOND>=1; SECOND-- ))
     do
         echo -ne "\r\033[K${BLUE}${MSG_EXIT}"\
-                 "in ${SECOND}s...${NC}"
+                 "in ${SECOND}s...$NC"
         sleep 1
     done
-    echo && kill -- ${$}
+    echo && kill -- $$
 }
 
 
@@ -221,11 +221,11 @@ _clean_anykernel() {
 _list_all_kernels() {
     if [[ -d ${DIR}/out ]] && [[ -n $(ls -d out/*/) ]]
     then
-        _note "${MSG_NOTE_LISTKERNEL} :"
+        _note "$MSG_NOTE_LISTKERNEL :"
         find out/ -mindepth 1 -maxdepth 1 -type d \
             | cut -f2 -d'/' | cat -n
     else
-        _error "${MSG_ERR_LISTKERNEL}"
+        _error "$MSG_ERR_LISTKERNEL"
     fi
 }
 
@@ -234,13 +234,13 @@ _list_all_kernels() {
 _get_linux_tag() {
     _note "${MSG_NOTE_LTAG}..."
     LTAG=$(git ls-remote --refs --sort='v:refname' --tags \
-        "${LINUX_STABLE}" | grep "${OPTARG}" | tail --lines=1 \
+        "$LINUX_STABLE" | grep "$OPTARG" | tail --lines=1 \
         | cut --delimiter='/' --fields=3)
-    if [[ ${LTAG} == ${OPTARG}* ]]
+    if [[ $LTAG == ${OPTARG}* ]]
     then
-        _note "${MSG_SUCCESS_LTAG} : ${RED}${LTAG}"
+        _note "$MSG_SUCCESS_LTAG : ${RED}${LTAG}"
     else
-        _error "${MSG_ERR_LTAG} ${RED}${OPTARG}"
+        _error "$MSG_ERR_LTAG ${RED}${OPTARG}"
     fi
 }
 

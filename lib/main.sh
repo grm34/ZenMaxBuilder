@@ -22,11 +22,11 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # Date & Time
-DATE=$(TZ=${TIMEZONE} date +%Y-%m-%d)
-TIME=$(TZ=${TIMEZONE} date +%Hh%Mm%Ss)
+DATE=$(TZ=$TIMEZONE date +%Y-%m-%d)
+TIME=$(TZ=$TIMEZONE date +%Hh%Mm%Ss)
 
 # Get absolute path
-DIRNAME=$(dirname "${0}")
+DIRNAME=$(dirname "$0")
 DIR=${PWD}/${DIRNAME}
 
 # Bash job control
@@ -35,10 +35,10 @@ set -m -E -o pipefail #-b -v
 
 # App Language
 LANGUAGE="${DIR}/lang/${LANG:0:2}.sh"
-if test -f "${LANGUAGE}"
+if test -f "$LANGUAGE"
 then
     # shellcheck source=/dev/null
-    source "${LANGUAGE}"
+    source "$LANGUAGE"
 else
     # shellcheck source=/dev/null
     source "${DIR}/lang/en.sh"
@@ -64,45 +64,45 @@ source "${DIR}/lib/updater.sh"
 # Ban all ('n00bz')
 if [[ $(uname) != Linux ]]
 then
-    _error "${MSG_ERR_LINUX}"
+    _error "$MSG_ERR_LINUX"
     _exit
 elif [[ ! -f ${PWD}/config.sh ]] || [[ ! -d ${PWD}/lib ]]
 then
-    _error "${MSG_ERR_PWD}"
+    _error "$MSG_ERR_PWD"
     _exit
 elif [[ $KERNEL_DIR != default  ]] && \
-        [[ ! -f $KERNEL_DIR/Makefile ]]
+        [[ ! -f ${KERNEL_DIR}/Makefile ]]
 then
-    _error "${MSG_ERR_KDIR}"
+    _error "$MSG_ERR_KDIR"
     _exit
 fi
 
 # Transform long opts to short
-for OPT in "${@}"
+for OPT in "$@"
 do
     shift
-    case ${OPT} in
-        "--help") set -- "${@}" "-h"; break;;
-        "--start") set -- "${@}" "-s";;
-        "--update") set -- "${@}" "-u";;
-        "--msg") set -- "${@}" "-m";;
-        "--file") set -- "${@}" "-f";;
-        "--zip") set -- "${@}" "-z";;
-        "--list") set -- "${@}" "-l";;
-        "--tag") set -- "${@}" "-t";;
-        *) set -- "${@}" "${OPT}"
+    case $OPT in
+        "--help") set -- "$@" "-h"; break;;
+        "--start") set -- "$@" "-s";;
+        "--update") set -- "$@" "-u";;
+        "--msg") set -- "$@" "-m";;
+        "--file") set -- "$@" "-f";;
+        "--zip") set -- "$@" "-z";;
+        "--list") set -- "$@" "-l";;
+        "--tag") set -- "$@" "-t";;
+        *) set -- "$@" "$OPT"
     esac
 done
 
 # Handle app opts
-if [[ ${#} -eq 0 ]]
+if [[ $# -eq 0 ]]
 then
-    _error "${MSG_ERR_EOPT}"
+    _error "$MSG_ERR_EOPT"
     _exit
 fi
 while getopts ':hsult:m:f:z:' OPTION
 do
-    case ${OPTION} in
+    case $OPTION in
         h)  _neternels_builder_banner; _usage
             _check rm "./bashvar"; exit 0;;
         u)  _full_upgrade; _exit;;
@@ -112,15 +112,15 @@ do
         l)  _list_all_kernels; _exit;;
         t)  _get_linux_tag; _exit;;
         s)  _neternels_builder_banner;;
-        :)  _error "${MSG_ERR_MARG} ${RED}-${OPTARG}"
+        :)  _error "$MSG_ERR_MARG ${RED}-${OPTARG}"
             _exit;;
-        \?) _error "${MSG_ERR_IOPT} ${RED}-${OPTARG}"
+        \?) _error "$MSG_ERR_IOPT ${RED}-${OPTARG}"
             _exit
     esac
 done
-if [[ ${OPTIND} -eq 1 ]]
+if [[ $OPTIND -eq 1 ]]
 then
-    _error "${MSG_ERR_IOPT} ${RED}${1}"
+    _error "$MSG_ERR_IOPT ${RED}$1"
     _exit
 fi
 
@@ -128,13 +128,13 @@ fi
 shift $(( OPTIND - 1 ))
 
 # Trap interrupt signals
-trap '_error ${MSG_ERR_KBOARD}; _exit' INT QUIT TSTP CONT
+trap '_error $MSG_ERR_KBOARD; _exit' INT QUIT TSTP CONT
 
 
 #######################
 ### Start new build ###
 #######################
-_note "${MSG_NOTE_START} ${DATE}"
+_note "$MSG_NOTE_START $DATE"
 
 # Get device codename
 _ask_for_codename
@@ -144,7 +144,7 @@ FOLDERS=(builds logs toolchains out)
 for FOLDER in "${FOLDERS[@]}"
 do
     if [[ ! -d ${DIR}/${FOLDER}/${CODENAME} ]] && \
-            [[ ${FOLDER} != toolchains ]]
+            [[ $FOLDER != toolchains ]]
     then
         _check mkdir -p "${DIR}/${FOLDER}/${CODENAME}"
     elif [[ ! -d ${DIR}/${FOLDER} ]]
@@ -170,47 +170,47 @@ _clone_toolchains
 _clone_anykernel
 
 # Export target variables
-if [[ ${BUILDER} == default ]]; then BUILDER=$(whoami); fi
-if [[ ${HOST} == default ]]; then HOST=$(uname -n); fi
-if [[ ${LLVM} == True ]]; then export LLVM=1; fi
-export KBUILD_BUILD_USER=${BUILDER}
-export KBUILD_BUILD_HOST=${HOST}
-export PLATFORM_VERSION=${PLATFORM_VERSION}
-export ANDROID_MAJOR_RELEASE=${ANDROID_MAJOR_RELEASE}
+if [[ $BUILDER == default ]]; then BUILDER=$(whoami); fi
+if [[ $HOST == default ]]; then HOST=$(uname -n); fi
+if [[ $LLVM == True ]]; then export LLVM=1; fi
+export KBUILD_BUILD_USER=$BUILDER
+export KBUILD_BUILD_HOST=$HOST
+export PLATFORM_VERSION=$PLATFORM_VERSION
+export ANDROID_MAJOR_RELEASE=$ANDROID_MAJOR_RELEASE
 
 # Export TC path and options
 _export_path_and_options
 
 # Make kernel version
 _note "${MSG_NOTE_LINUXVER}..."
-make -C "${KERNEL_DIR}" kernelversion \
-    | grep -v make > linuxver & wait ${!}
+make -C "$KERNEL_DIR" kernelversion \
+    | grep -v make > linuxver & wait $!
 LINUX_VERSION=$(cat linuxver)
 KERNEL_NAME=${TAG}-${CODENAME}-${LINUX_VERSION}
 
 # Make clean
 _ask_for_make_clean
 _clean_anykernel
-if [[ ${MAKE_CLEAN} == True ]]
+if [[ $MAKE_CLEAN == True ]]
 then
     _make_clean
     _make_mrproper
-    _check rm -rf "${OUT_DIR}"
+    _check rm -rf "$OUT_DIR"
 fi
 
 # Make defconfig
 _make_defconfig
 
 # Make menuconfig
-if [[ ${MENUCONFIG} == True ]]
+if [[ $MENUCONFIG == True ]]
 then
     _make_menuconfig
     _ask_for_save_defconfig
-    if [[ ${SAVE_DEFCONFIG} == True ]]
+    if [[ $SAVE_DEFCONFIG == True ]]
     then
         _save_defconfig
     else
-        if [[ ${ORIGINAL_DEFCONFIG} == False ]]
+        if [[ $ORIGINAL_DEFCONFIG == False ]]
         then
             _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."
             _exit
@@ -220,7 +220,7 @@ fi
 
 # Make new build
 _ask_for_new_build
-if [[ ${NEW_BUILD} == False ]]
+if [[ $NEW_BUILD == False ]]
 then
     _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."
     _exit
@@ -230,31 +230,31 @@ else
     _set_html_status_msg
 
     # Build logs
-    START_TIME=$(TZ=${TIMEZONE} date +%s)
+    START_TIME=$(TZ=$TIMEZONE date +%s)
     LOG=${DIR}/logs/${CODENAME}/${KERNEL_NAME}_${DATE}_${TIME}.log
 
     # Make kernel
-    _make_build | tee -a "${LOG}"
+    _make_build | tee -a "$LOG"
 fi
 
 # Get build time
-END_TIME=$(TZ=${TIMEZONE} date +%s)
+END_TIME=$(TZ=$TIMEZONE date +%s)
 BUILD_TIME=$((END_TIME - START_TIME))
 M=$((BUILD_TIME / 60))
 S=$((BUILD_TIME % 60))
 
 # Display build status
-_note "${MSG_NOTE_SUCCESS} ${M}m${S}s !"
+_note "$MSG_NOTE_SUCCESS ${M}m${S}s !"
 _send_success_build_status
 
 # Create flashable zip
 _ask_for_flashable_zip
-if [[ ${FLASH_ZIP} == True ]]
+if [[ $FLASH_ZIP == True ]]
 then
     _ask_for_kernel_image
-    _create_flashable_zip | tee -a "${LOG}"
-    _sign_flashable_zip | tee -a "${LOG}"
-    _note "${MSG_NOTE_ZIPPED} !"
+    _create_flashable_zip | tee -a "$LOG"
+    _sign_flashable_zip | tee -a "$LOG"
+    _note "$MSG_NOTE_ZIPPED !"
 fi
 
 # Upload build and exit
