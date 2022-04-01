@@ -42,6 +42,7 @@ _ask_for_kernel_dir() {
 
 _ask_for_toolchain() {
     # Question to get the toolchain to use.
+    # Choices: Proton-Clang Eva-GCC Proton-GCC
     # Validation checks are not needed here.
     export N="[Y/n]"
     _confirm "${MSG_ASK_TC}: $DEFAULT_COMPILER ?"
@@ -85,6 +86,8 @@ _ask_for_codename() {
 
 _ask_for_defconfig() {
     # Prompt to select the defconfig file to use.
+    # Choices: all defconfig files located in "configs"
+    # folder corresponding to the current architecture.
     # Validation checks are not needed here.
     PROMPT_TYPE="echo"
     config="${KERNEL_DIR}/arch/${ARCH}/configs"
