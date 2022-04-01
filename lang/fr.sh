@@ -25,7 +25,7 @@
 # lib/main.sh
 # ===========
 MSG_ERR_LINUX="vous devez exécuter ce script sous Linux"
-MSG_ERR_PWD="exécutez ce script depuis le dossier Neternels-Builder"
+MSG_ERR_PWD="exécutez ce script depuis le dossier ZenMaxBuilder"
 MSG_ERR_KDIR="dossier du noyau invalide (voir config.sh)"
 MSG_ERR_EOPT="vous devez spécifier une option (voir --help)"
 MSG_ERR_MARG="argument manquant pour"
@@ -52,7 +52,7 @@ MSG_ERR_CONFIRM="entrez yes ou no"
 MSG_ERROR="Erreur"
 MSG_ERR_LINE="Ligne"
 MSG_ERR_FROM="Depuis"
-MSG_EXIT="Sortie de Neternels-Builder"
+MSG_EXIT="Sortie de ZenMaxBuilder"
 MSG_NOTE_CLEAN_AK3="Nettoyage du dépôt AnyKernel"
 MSG_NOTE_LISTKERNEL="Liste des Noyaux Android"
 MSG_ERR_LISTKERNEL="aucun noyau trouvé dans le dossier out"
@@ -101,7 +101,7 @@ MSG_HTML_I="Android"
 
 # lib/updater.sh
 # ==============
-MSG_UP_NB="Mise à jour de Neternels Builder"
+MSG_UP_NB="Mise à jour de ZenMaxBuilder"
 MSG_UP_AK3="Mise à jour de AnyKernel"
 MSG_UP_CLANG="Mise à jour de Proton Clang"
 MSG_UP_GCC64="Mise à jour de GCC ARM64"
