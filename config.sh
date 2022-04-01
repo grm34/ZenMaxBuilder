@@ -116,9 +116,9 @@ TELEGRAM_BOT_TOKEN=""
 DEPENDENCIES=(git zip llvm lld clang expect)
 
 
-# Neternels-Builder repo
+# ZenMaxBuilder repo
 # Change this if you are using
-# your own Neternels-Builder fork.
+# your own ZenMaxBuilder fork.
 # ================================
 NB_BRANCH="main"
 
@@ -129,7 +129,7 @@ NB_BRANCH="main"
 # ==============================
 ANYKERNEL_DIR="AnyKernel"
 ANYKERNEL_URL="https://github.com/grm34/AnyKernel3.git"
-ANYKERNEL_BRANCH="Neternels-Builder"
+ANYKERNEL_BRANCH="ZenMaxBuilder"
 
 
 # Proton-Clang repo
