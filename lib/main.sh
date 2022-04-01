@@ -103,7 +103,7 @@ fi
 while getopts ':hsult:m:f:z:' OPTION
 do
     case $OPTION in
-        h)  _neternels_builder_banner; _usage
+        h)  _terminal_banner; _usage
             _check rm "./bashvar"; exit 0;;
         u)  _full_upgrade; _exit;;
         m)  _send_msg_option; _exit;;
@@ -111,7 +111,7 @@ do
         z)  _create_zip_option; _exit;;
         l)  _list_all_kernels; _exit;;
         t)  _get_linux_tag; _exit;;
-        s)  _neternels_builder_banner;;
+        s)  _terminal_banner;;
         :)  _error "$MSG_ERR_MARG ${RED}-${OPTARG}"
             _exit;;
         \?) _error "$MSG_ERR_IOPT ${RED}-${OPTARG}"
@@ -232,6 +232,7 @@ else
     # Build logs
     START_TIME=$(TZ=$TIMEZONE date +%s)
     LOG=${DIR}/logs/${CODENAME}/${KERNEL_NAME}_${DATE}_${TIME}.log
+    _terminal_banner > "$LOG"
 
     # Make kernel
     _make_build | tee -a "$LOG"

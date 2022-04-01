@@ -41,7 +41,7 @@ fi
 
 
 # Display script banner
-_neternels_builder_banner() {
+_terminal_banner() {
     echo -e "$BOLD
    ┌──────────────────────────────────────────────┐
    │  ╔═╗┌─┐┌┐┌  ╔╦╗┌─┐─┐ ┬  ╔╗ ┬ ┬┬┬  ┌┬┐┌─┐┬─┐  │
@@ -154,8 +154,12 @@ _check() {
         if [[ $RUN_AGAIN == True ]]
         then
             if test ! -z "$START_TIME"
-            then
+            then    # Reset start time
                 START_TIME=$(TZ=$TIMEZONE date +%s)
+            fi
+            if test -f "$LOG"
+            then    # clear logs
+                _terminal_banner > "$LOG"
             fi
             "$@" & wait $!
         else
