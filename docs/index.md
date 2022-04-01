@@ -31,14 +31,14 @@ Dependencies will be prompted to install or you can manually install them.
     Usage: bash zmb [OPTION] [ARGUMENT] (e.q. bash zmb --start)
 
     Options
-        -h, --help                     show this message and exit
-        -s, --start                    start new kernel compilation
-        -u, --update                   update script and toolchains
-        -l, --list                     show list of your kernels
-        -t, --tag     [v4.19]          show the latest Linux tag
-        -m, --msg     [message]        send message on Telegram
-        -f, --file    [file]           send file on Telegram
-        -z, --zip     [Image.gz-dtb]   create flashable zip
+        -h, --help                      show this message and exit
+        -s, --start                     start new kernel compilation
+        -u, --update                    update script and toolchains
+        -l, --list                      show list of your kernels
+        -t, --tag            [v4.19]    show the latest Linux tag
+        -m, --msg          [message]    send message on Telegram
+        -f, --file            [file]    send file on Telegram
+        -z, --zip     [Image.gz-dtb]    create flashable zip
 
 ## Working structure
 
