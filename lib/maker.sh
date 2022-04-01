@@ -26,14 +26,14 @@
 _export_path_and_options() {
 
     # Link Time Optimization (LTO)
-    if [[ ${LTO} == True ]]
+    if [[ $LTO == True ]]
     then
-        export LD=${LTO_LIBRARY}
-        export LD_LIBRARY_PATH=${LTO_LIBRARY_DIR}
+        export LD=$LTO_LIBRARY
+        export LD_LIBRARY_PATH=$LTO_LIBRARY_DIR
     fi
 
     # Toolchain compiler options
-    case ${COMPILER} in
+    case $COMPILER in
         Proton-Clang)
             export PATH=${PROTON_CLANG_PATH}:${PATH}
             TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
@@ -51,51 +51,51 @@ _export_path_and_options() {
 
 _make_clean() {
     _note "${MSG_NOTE_MAKE_CLEAN}..."
-    _check unbuffer make -C "${KERNEL_DIR}" clean 2>&1
+    _check unbuffer make -C "$KERNEL_DIR" clean 2>&1
 }
 
 
 _make_mrproper() {
     _note "${MSG_NOTE_MRPROPER}..."
-    _check unbuffer make -C "${KERNEL_DIR}" mrproper 2>&1
+    _check unbuffer make -C "$KERNEL_DIR" mrproper 2>&1
 }
 
 
 _make_defconfig() {
-    _note "${MSG_NOTE_DEF} ${DEFCONFIG} (${LINUX_VERSION})..."
-    _check unbuffer make -C "${KERNEL_DIR}" \
-        O="${OUT_DIR}" ARCH="${ARCH}" "${DEFCONFIG}" 2>&1
+    _note "$MSG_NOTE_DEF $DEFCONFIG (${LINUX_VERSION})..."
+    _check unbuffer make -C "$KERNEL_DIR" \
+        O="$OUT_DIR" ARCH="$ARCH" "$DEFCONFIG" 2>&1
 }
 
 
 _make_menuconfig() {
-    _note "${MSG_NOTE_MENUCONFIG} (${LINUX_VERSION})..."
-    make -C "${KERNEL_DIR}" O="${OUT_DIR}" \
-        ARCH="${ARCH}" menuconfig "${OUT_DIR}"/.config
+    _note "$MSG_NOTE_MENUCONFIG (${LINUX_VERSION})..."
+    make -C "$KERNEL_DIR" O="$OUT_DIR" \
+        ARCH="$ARCH" menuconfig "${OUT_DIR}/.config"
 }
 
 
 _save_defconfig() {
     # When a defconfig file is modified with menuconfig,
     # the original will be saved as "example_defconfig_save"
-    _note "${MSG_NOTE_SAVE} ${DEFCONFIG} (arch/${ARCH}/configs)..."
+    _note "$MSG_NOTE_SAVE $DEFCONFIG (arch/${ARCH}/configs)..."
     _check cp \
         "${KERNEL_DIR}/arch/${ARCH}/configs/${DEFCONFIG}" \
         "${KERNEL_DIR}/arch/${ARCH}/configs/${DEFCONFIG}_save"
     _check cp \
-        "${OUT_DIR}"/.config \
+        "${OUT_DIR}/.config" \
         "${KERNEL_DIR}/arch/${ARCH}/configs/${DEFCONFIG}"
 }
 
 
 _make_build() {
-    _note "${MSG_NOTE_MAKE} ${CODENAME} (${LINUX_VERSION})..."
+    _note "$MSG_NOTE_MAKE $CODENAME (${LINUX_VERSION})..."
 
     # Send build status on Telegram
     _send_make_build_status
 
     # Make new kernel build
-    _check unbuffer make -C "${KERNEL_DIR}" -j"${CORES}" \
-        O="${OUT_DIR}" "${TC_OPTIONS[@]}" 2>&1
+    _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
+        O="$OUT_DIR" "${TC_OPTIONS[@]}" 2>&1
 }
 

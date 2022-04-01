@@ -39,7 +39,7 @@ _install_dependencies() {
     OS=(pacman yum emerge zypper dnf pkg apt)
     for PKG in "${OS[@]}"
     do
-        if which "${PKG}" &>/dev/null
+        if which "$PKG" &>/dev/null
         then
             IFS=" "
             PM="${PMS[${PKG}]}"
@@ -56,63 +56,63 @@ _install_dependencies() {
             if ! which "${PACKAGE/llvm/llvm-ar}" &>/dev/null
             then
                 _ask_for_install_pkg
-                if [[ ${INSTALL_PKG} == True ]]
+                if [[ $INSTALL_PKG == True ]]
                 then
                     eval "${PM[0]/_/}" "${PM[1]}" \
-                         "${PM[2]}" "${PM[3]}" "${PACKAGE}"
+                         "${PM[2]}" "${PM[3]}" "$PACKAGE"
                 fi
             fi
         done
     else
-        _error "${MSG_ERR_OS}"
+        _error "$MSG_ERR_OS"
     fi
 }
 
 
 _clone_toolchains() {
     _clone_proton() {
-        if [[ ! -d ${PROTON_DIR} ]]
+        if [[ ! -d $PROTON_DIR ]]
         then
             export TC=${PROTON_DIR##*/}
             _ask_for_clone_toolchain
-            if [[ ${CLONE_TC} == True ]]
+            if [[ $CLONE_TC == True ]]
             then
                 git clone --depth=1 -b \
-                    "${PROTON_BRANCH}" \
-                    "${PROTON_URL}" \
-                    "${PROTON_DIR}"
+                    "$PROTON_BRANCH" \
+                    "$PROTON_URL" \
+                    "$PROTON_DIR"
             fi
         fi
     }
     _clone_gcc_arm() {
-        if [[ ! -d ${GCC_ARM_DIR} ]]
+        if [[ ! -d $GCC_ARM_DIR ]]
         then
             export TC=${GCC_ARM_DIR##*/}
             _ask_for_clone_toolchain
-            if [[ ${CLONE_TC} == True ]]
+            if [[ $CLONE_TC == True ]]
             then
                 git clone --depth=1 -b \
-                    "${GCC_ARM_BRANCH}" \
-                    "${GCC_ARM_URL}" \
-                    "${GCC_ARM_DIR}"
+                    "$GCC_ARM_BRANCH" \
+                    "$GCC_ARM_URL" \
+                    "$GCC_ARM_DIR"
             fi
         fi
     }
     _clone_gcc_arm64() {
-        if [[ ! -d ${GCC_ARM64_DIR} ]]
+        if [[ ! -d $GCC_ARM64_DIR ]]
         then
             export TC=${GCC_ARM64_DIR##*/}
             _ask_for_clone_toolchain
-            if [[ ${CLONE_TC} == True ]]
+            if [[ $CLONE_TC == True ]]
             then
                 git clone --depth=1 -b \
-                    "${GCC_ARM64_BRANCH}" \
-                    "${GCC_ARM64_URL}" \
-                    "${GCC_ARM64_DIR}"
+                    "$GCC_ARM64_BRANCH" \
+                    "$GCC_ARM64_URL" \
+                    "$GCC_ARM64_DIR"
             fi
         fi
     }
-    case ${COMPILER} in
+    case $COMPILER in
         Proton-Clang)
             _clone_proton
             ;;
@@ -129,15 +129,15 @@ _clone_toolchains() {
 
 
 _clone_anykernel() {
-    if [[ ! -d ${ANYKERNEL_DIR} ]]
+    if [[ ! -d $ANYKERNEL_DIR ]]
     then
         _ask_for_clone_anykernel
-        if [[ ${CLONE_AK} == True ]]
+        if [[ $CLONE_AK == True ]]
         then
             git clone -b \
-                "${ANYKERNEL_BRANCH}" \
-                "${ANYKERNEL_URL}" \
-                "${ANYKERNEL_DIR}"
+                "$ANYKERNEL_BRANCH" \
+                "$ANYKERNEL_URL" \
+                "$ANYKERNEL_DIR"
         fi
     fi
 }

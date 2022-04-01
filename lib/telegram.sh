@@ -26,15 +26,15 @@
 ### Telegram API ###
 ####################
 
-API="https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}"
+API="https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN"
 
 
 _send_msg() {
     curl --progress-bar -o /dev/null -fL \
         -X POST "${API}/sendMessage" \
         -d "parse_mode=html" \
-        -d "chat_id=${TELEGRAM_CHAT_ID}" \
-        -d "text=${1}" \
+        -d "chat_id=$TELEGRAM_CHAT_ID" \
+        -d "text=$1" \
         | tee /dev/null
 }
 
@@ -42,9 +42,9 @@ _send_msg() {
 _send_file() {
     curl --progress-bar -o /dev/null -fL \
         -X POST "${API}/sendDocument" \
-        -F "document=@${1}" \
-        -F "caption=${2}" \
-        -F "chat_id=${TELEGRAM_CHAT_ID}" \
+        -F "document=@$1" \
+        -F "caption=$2" \
+        -F "chat_id=$TELEGRAM_CHAT_ID" \
         -F "disable_web_page_preview=true" \
         | tee /dev/null
 }
@@ -56,30 +56,30 @@ _send_file() {
 
 
 _send_msg_option() {
-    if [[ ${TELEGRAM_CHAT_ID} ]] && \
-            [[ ${TELEGRAM_BOT_TOKEN} ]]
+    if [[ $TELEGRAM_CHAT_ID ]] && \
+            [[ $TELEGRAM_BOT_TOKEN ]]
     then
         _note "${MSG_NOTE_SEND}..."
         _send_msg "${OPTARG//_/-}"
     else
-        _error "${MSG_ERR_API}"
+        _error "$MSG_ERR_API"
     fi
 }
 
 
 _send_file_option() {
-    if [[ -f ${OPTARG} ]]
+    if [[ -f $OPTARG ]]
     then
-        if [[ ${TELEGRAM_CHAT_ID} ]] && \
-                [[ ${TELEGRAM_BOT_TOKEN} ]]
+        if [[ $TELEGRAM_CHAT_ID ]] && \
+                [[ $TELEGRAM_BOT_TOKEN ]]
         then
-            _note "${MSG_NOTE_UPLOAD} : ${OPTARG##*/}..."
-            _send_file "${OPTARG}"
+            _note "$MSG_NOTE_UPLOAD : ${OPTARG##*/}..."
+            _send_file "$OPTARG"
         else
-            _error "${MSG_ERR_API}"
+            _error "$MSG_ERR_API"
         fi
     else
-        _error "${MSG_ERR_FILE} ${RED}${OPTARG}"
+        _error "$MSG_ERR_FILE ${RED}${OPTARG}"
     fi
 }
 
@@ -90,65 +90,65 @@ _send_file_option() {
 
 
 _send_make_build_status() {
-    if [[ ${BUILD_STATUS} == True ]]
+    if [[ $BUILD_STATUS == True ]]
     then
-        _send_msg "<b>${MSG_TG_NEW}</b> ${STATUS_MSG}"
+        _send_msg "<b>${MSG_TG_NEW}</b> $STATUS_MSG"
     fi
 }
 
 
 _send_success_build_status() {
-    if [[ ${BUILD_STATUS} == True ]]
+    if [[ $BUILD_STATUS == True ]]
     then
-        _send_msg "${KERNEL_NAME//_/-} | ${MSG}"
+        _send_msg "${KERNEL_NAME//_/-} | $MSG"
     fi
 }
 
 
 _send_zip_creation_status() {
-    if [[ ${BUILD_STATUS} == True ]]
+    if [[ $BUILD_STATUS == True ]]
     then
-        _send_msg "${KERNEL_NAME//_/-} | ${MSG_NOTE_ZIP}"
+        _send_msg "${KERNEL_NAME//_/-} | $MSG_NOTE_ZIP"
     fi
 }
 
 
 _send_zip_signing_status() {
-    if [[ ${BUILD_STATUS} == True ]]
+    if [[ $BUILD_STATUS == True ]]
     then
-        _send_msg "${KERNEL_NAME//_/-} | ${MSG_NOTE_SIGN}"
+        _send_msg "${KERNEL_NAME//_/-} | $MSG_NOTE_SIGN"
     fi
 }
 
 
 _send_failed_build_logs() {
-    if [[ ${START_TIME} ]] && [[ ! $BUILD_TIME ]] && \
-            [[ ${BUILD_STATUS} == True ]]
+    if [[ $START_TIME ]] && [[ ! $BUILD_TIME ]] && \
+            [[ $BUILD_STATUS == True ]]
     then
-        END_TIME=$(TZ=${TIMEZONE} date +%s)
+        END_TIME=$(TZ=$TIMEZONE date +%s)
         BUILD_TIME=$((END_TIME - START_TIME))
         M=$((BUILD_TIME / 60))
         S=$((BUILD_TIME % 60))
         sed -r \
             "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" \
-            "${LOG}" > "${LOG##*/}"
-        MSG="${MSG_TG_FAILED} ${M}m${S}s"
+            "$LOG" > "${LOG##*/}"
+        MSG="$MSG_TG_FAILED ${M}m${S}s"
         _send_file \
-            "${DIR}/${LOG##*/}" "v${LINUX_VERSION//_/-} | ${MSG}"
+            "${DIR}/${LOG##*/}" "v${LINUX_VERSION//_/-} | $MSG"
     fi
 }
 
 
 _upload_signed_build() {
-    if [[ ${BUILD_STATUS} == True ]] && \
-            [[ ${FLASH_ZIP} == True ]]
+    if [[ $BUILD_STATUS == True ]] && \
+            [[ $FLASH_ZIP == True ]]
     then
         FILE=${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip
-        _note "${MSG_NOTE_UPLOAD} : ${FILE##*/}..."
-        MD5=$(md5sum "${FILE}" | cut -d' ' -f1)
-        CAPTION="${MSG_TG_CAPTION}: ${M}m${S}s"
+        _note "$MSG_NOTE_UPLOAD : ${FILE##*/}..."
+        MD5=$(md5sum "$FILE" | cut -d' ' -f1)
+        CAPTION="$MSG_TG_CAPTION: ${M}m${S}s"
         _send_file \
-            "${FILE}" "${CAPTION} | MD5 Checksum: ${MD5//_/-}"
+            "$FILE" "$CAPTION | MD5 Checksum: ${MD5//_/-}"
     fi
 }
 
