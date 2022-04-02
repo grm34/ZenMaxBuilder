@@ -104,7 +104,7 @@ while getopts ':hsult:m:f:z:' OPTION
 do
     case $OPTION in
         h)  _terminal_banner; _usage
-            _check rm "./bashvar"; exit 0;;
+            rm "./bashvar" || sleep 0.5; exit 0;;
         u)  _full_upgrade; _exit;;
         m)  _send_msg_option; _exit;;
         f)  _send_file_option; _exit;;
