@@ -100,6 +100,7 @@ _send_make_build_status() {
 _send_success_build_status() {
     if [[ $BUILD_STATUS == True ]]
     then
+        MSG="$MSG_NOTE_SUCCESS ${M}m${S}s"
         _send_msg "${KERNEL_NAME//_/-} | $MSG"
     fi
 }
