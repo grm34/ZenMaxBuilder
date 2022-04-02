@@ -89,7 +89,7 @@ MSG_ERR_FILE="file not found"
 MSG_TG_NEW="Android Kernel Build Triggered"
 MSG_TG_FAILED="Build failed to compile after"
 MSG_TG_CAPTION="Build took"
-MSG_HTML=(
+MSG_TG_HTML=(
     "Android Device"
     "Kernel Version"
     "Kernel Variant"
