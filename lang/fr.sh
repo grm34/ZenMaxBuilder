@@ -89,15 +89,17 @@ MSG_ERR_FILE="fichier non trouvé"
 MSG_TG_NEW="Android Kernel Build Triggered"
 MSG_TG_FAILED="Build failed to compile after"
 MSG_TG_CAPTION="Build took"
-MSG_HTML_A="Android Device"
-MSG_HTML_B="Kernel Version"
-MSG_HTML_C="Kernel Variant"
-MSG_HTML_D="Host Builder"
-MSG_HTML_E="Host Core Count"
-MSG_HTML_F="Compiler Used"
-MSG_HTML_G="Operating System"
-MSG_HTML_H="Build Tag"
-MSG_HTML_I="Android"
+MSG_HTML=(
+    "Android Device"
+    "Kernel Version"
+    "Kernel Variant"
+    "Host Builder"
+    "Host Core Count"
+    "Compiler Used"
+    "Operating System"
+    "Build Tag"
+    "Android"
+)
 
 # lib/updater.sh
 # ==============

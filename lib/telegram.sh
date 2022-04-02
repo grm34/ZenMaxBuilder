@@ -157,14 +157,14 @@ _upload_signed_build() {
 _set_html_status_msg() {
     export STATUS_MSG="
 
-<b>${MSG_HTML_A} :</b>  <code>${CODENAME//_/-}</code>
-<b>${MSG_HTML_B} :</b>  <code>v${LINUX_VERSION//_/-}</code>
-<b>${MSG_HTML_C} :</b>  <code>${KERNEL_VARIANT//_/-}</code>
-<b>${MSG_HTML_D} :</b>  <code>${BUILDER//_/-}</code>
-<b>${MSG_HTML_E} :</b>  <code>${CORES//_/-}</code>
-<b>${MSG_HTML_F} :</b>  <code>${COMPILER//_/-}</code>
-<b>${MSG_HTML_G} :</b>  <code>${HOST//_/-}</code>
-<b>${MSG_HTML_H} :</b>  <code>${TAG//_/-}</code>
-<b>${MSG_HTML_I} :</b>  <code>${PLATFORM_VERSION//_/-}</code>"
+<b>${MSG_HTML[0]} :</b>  <code>${CODENAME//_/-}</code>
+<b>${MSG_HTML[1]} :</b>  <code>v${LINUX_VERSION//_/-}</code>
+<b>${MSG_HTML[2]} :</b>  <code>${KERNEL_VARIANT//_/-}</code>
+<b>${MSG_HTML[3]} :</b>  <code>${BUILDER//_/-}</code>
+<b>${MSG_HTML[4]} :</b>  <code>${CORES//_/-}</code>
+<b>${MSG_HTML[5]} :</b>  <code>${COMPILER//_/-}</code>
+<b>${MSG_HTML[6]} :</b>  <code>${HOST//_/-}</code>
+<b>${MSG_HTML[7]} :</b>  <code>${TAG//_/-}</code>
+<b>${MSG_HTML[8]} :</b>  <code>${PLATFORM_VERSION//_/-}</code>"
 }
 
