@@ -47,7 +47,7 @@ _terminal_banner() {
    │  ╔═╗┌─┐┌┐┌  ╔╦╗┌─┐─┐ ┬  ╔╗ ┬ ┬┬┬  ┌┬┐┌─┐┬─┐  │
    │  ╔═╝├┤ │││  ║║║├─┤┌┴┬┘  ╠╩╗│ │││   ││├┤ ├┬┘  │
    │  ╚═╝└─┘┘└┘  ╩ ╩┴ ┴┴ └─  ╚═╝└─┘┴┴─┘─┴┘└─┘┴└─  │
-   │ Android Kernel Builder ㉿ ZMB NetErnels Team │
+   │ Android Kernel Builder ∆∆ ZMB Neternels Team │
    └──────────────────────────────────────────────┘"
 }
 
