@@ -34,7 +34,7 @@ MSG_ERR_KBOARD="interruption clavier"
 MSG_NOTE_START="Compilation d'un nouveau Noyau Android"
 MSG_NOTE_LINUXVER="Make kernelversion (version du noyau)"
 MSG_NOTE_CANCEL="Compilation annulée"
-MSG_NOTE_SUCCES="Compilation réussie après"
+MSG_NOTE_SUCCESS="Compilation réussie après"
 MSG_NOTE_ZIPPED="Zip réussi, regardez dans le dossier builds"
 
 # lib/manager.sh
