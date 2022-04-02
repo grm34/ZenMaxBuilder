@@ -74,7 +74,7 @@ MSG_NOTE_MRPROPER="Make mrproper (this could take a while)"
 MSG_NOTE_DEFCONFIG="Make config"
 MSG_NOTE_MENUCONFIG="Make menuconfig"
 MSG_NOTE_SAVE="Saving config"
-MSG_NOTE_MAKE="Starting new build for"
+MSG_NOTE_MAKE="Starting new build"
 
 # lib/requirements.sh
 # ===================

@@ -71,10 +71,10 @@ MSG_ERR_IMG="image du noyau invalide"
 # ============
 MSG_NOTE_MAKE_CLEAN="Make clean (nettoyage du noyau)"
 MSG_NOTE_MRPROPER="Make mrproper (purge du noyau)"
-MSG_NOTE_DEFCONFIG="Make config (lancement de la configuration)"
-MSG_NOTE_MENUCONFIG="Make menuconfig (mode édition du noyau)"
+MSG_NOTE_DEFCONFIG="Make configuration"
+MSG_NOTE_MENUCONFIG="Make menuconfig (édition)"
 MSG_NOTE_SAVE="Sauvegarde de la configuration"
-MSG_NOTE_MAKE="Nouvelle compilation de"
+MSG_NOTE_MAKE="Nouvelle compilation"
 
 # lib/requirements.sh
 # ===================
