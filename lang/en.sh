@@ -34,6 +34,7 @@ MSG_ERR_KBOARD="keyboard interrupt"
 MSG_NOTE_START="Starting new Android Kernel build"
 MSG_NOTE_LINUXVER="Make kernel version"
 MSG_NOTE_CANCEL="Build cancelled"
+MSG_ERR_MAKE="command interrupted (make)"
 MSG_NOTE_SUCCESS="Successfully compiled after"
 MSG_NOTE_ZIPPED="Successfully zipped, take a look at builds folder"
 
