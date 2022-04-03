@@ -73,7 +73,7 @@ _send_file_option() {
         if [[ $TELEGRAM_CHAT_ID ]] && \
                 [[ $TELEGRAM_BOT_TOKEN ]]
         then
-            _note "$MSG_NOTE_UPLOAD : ${OPTARG##*/}..."
+            _note "${MSG_NOTE_UPLOAD}: ${OPTARG##*/}..."
             _send_file "$OPTARG"
         else
             _error "$MSG_ERR_API"
@@ -145,9 +145,9 @@ _upload_signed_build() {
             [[ $FLASH_ZIP == True ]]
     then
         FILE=${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip
-        _note "$MSG_NOTE_UPLOAD : ${FILE##*/}..."
+        _note "${MSG_NOTE_UPLOAD}: ${FILE##*/}..."
         MD5=$(md5sum "$FILE" | cut -d' ' -f1)
-        CAPTION="$MSG_TG_CAPTION: ${M}m${S}s"
+        CAPTION="${MSG_TG_CAPTION}: ${M}m${S}s"
         _send_file \
             "$FILE" "$CAPTION | MD5 Checksum: ${MD5//_/-}"
     fi
