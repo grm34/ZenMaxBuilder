@@ -80,11 +80,9 @@ _save_defconfig() {
     # the original will be saved as "example_defconfig_save"
     _note "$MSG_NOTE_SAVE $DEFCONFIG (arch/${ARCH}/configs)..."
     _check cp \
-        "${KERNEL_DIR}/arch/${ARCH}/configs/${DEFCONFIG}" \
-        "${KERNEL_DIR}/arch/${ARCH}/configs/${DEFCONFIG}_save"
-    _check cp \
-        "${OUT_DIR}/.config" \
-        "${KERNEL_DIR}/arch/${ARCH}/configs/${DEFCONFIG}"
+        "${CONF_DIR}/${DEFCONFIG}" \
+        "${CONF_DIR}/${DEFCONFIG}_save"
+    _check cp "${OUT_DIR}/.config" "${CONF_DIR}/${DEFCONFIG}"
 }
 
 
