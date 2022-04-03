@@ -244,6 +244,14 @@ BUILD_TIME=$((END_TIME - START_TIME))
 M=$((BUILD_TIME / 60))
 S=$((BUILD_TIME % 60))
 
+# Check if make success
+BOOT_DIR=${DIR}/out/${CODENAME}/arch/${ARCH}/boot
+if test ! -d "$BOOT_DIR"
+then
+    _error "$MSG_ERR_MAKE"
+    _exit
+fi
+
 # Display build status
 _note "$MSG_NOTE_SUCCESS ${M}m${S}s !"
 _send_success_build_status

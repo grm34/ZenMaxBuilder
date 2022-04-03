@@ -30,7 +30,8 @@ _ask_for_kernel_dir() {
     then
         _prompt "$MSG_ASK_KDIR :"
         read -r -e KERNEL_DIR
-        until [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]
+        CONF_DIR=${KERNEL_DIR}/arch/${ARCH}/configs
+        until [[ -d $CONF_DIR ]]
         do
             _error "$MSG_ERR_KDIR ${RED}${KERNEL_DIR}"
             _prompt "$MSG_ASK_KDIR :"
@@ -90,9 +91,8 @@ _ask_for_defconfig() {
     # folder corresponding to the current architecture.
     # Validation checks are not needed here.
     PROMPT_TYPE="echo"
-    config="${KERNEL_DIR}/arch/${ARCH}/configs"
-    cd "$config" || \
-        (_error "$MSG_ERR_DIR ${RED}${config}"; _exit)
+    cd "$CONF_DIR" || \
+        (_error "$MSG_ERR_DIR ${RED}${CONF_DIR}"; _exit)
     _prompt "$MSG_ASK_DEF :"
     select DEFCONFIG in *_defconfig
     do
@@ -255,9 +255,8 @@ _ask_for_kernel_image() {
     # Question to get the kernel image to zip.
     # Validation checks the presence of this file in
     # "boot" folder and verify it starts with "Image".
-    boot="${DIR}/out/${CODENAME}/arch/${ARCH}/boot"
-    cd "$boot" || \
-        (_error "$MSG_ERR_DIR ${RED}${boot}"; _exit)
+    cd "$BOOT_DIR" || \
+        (_error "$MSG_ERR_DIR ${RED}${BOOT_DIR}"; _exit)
     _prompt "$MSG_ASK_IMG :"
     read -r -e K_IMG
     until [[ -f $K_IMG ]] && [[ $K_IMG == Image* ]]
@@ -266,7 +265,7 @@ _ask_for_kernel_image() {
         _prompt "$MSG_ASK_IMG"
         read -r -e K_IMG
     done
-    K_IMG="${DIR}/out/${CODENAME}/arch/${ARCH}/boot/${K_IMG}"
+    K_IMG=${BOOT_DIR}/${K_IMG}
     cd "$DIR" || (_error "$MSG_ERR_DIR ${RED}${DIR}"; _exit)
 }
 
