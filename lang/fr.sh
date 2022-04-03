@@ -63,7 +63,7 @@ MSG_ERR_LTAG="tag Linux Stable invalide"
 
 # lib/flasher.sh
 # ==============
-MSG_NOTE_ZIP="Création du zip"
+MSG_NOTE_ZIP="Création du ficher Zip"
 MSG_ERR_DIR="dossier non trouvé"
 MSG_NOTE_SIGN="Signature du fichier Zip avec AOSP keys"
 MSG_ERR_IMG="image du noyau invalide"
