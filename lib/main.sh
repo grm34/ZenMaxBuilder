@@ -246,9 +246,9 @@ S=$((BUILD_TIME % 60))
 
 # Check if make success
 BOOT_DIR=${DIR}/out/${CODENAME}/arch/${ARCH}/boot
-if test ! -d $BOOT_DIR
+if test ! -d "$BOOT_DIR"
 then
-    _error $MSG_ERR_MAKE
+    _error "$MSG_ERR_MAKE"
     _exit
 fi
 
