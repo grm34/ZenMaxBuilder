@@ -77,7 +77,8 @@ ${CYAN}https://kernel-builder.com$NC
 
 # Ask some information
 _prompt() {
-    LENTH=$*; COUNT=${#LENTH}
+    LENTH=$*
+    COUNT=${#LENTH}
     echo -ne "\n${YELL}==> ${GREEN}$1 ${RED}$2"
     echo -ne "${YELL}\n==> "
     for (( CHAR=1; CHAR<=COUNT; CHAR++ ))
@@ -95,7 +96,8 @@ _prompt() {
 
 # Confirmation prompt
 _confirm_msg() {
-    CONFIRM=False; COUNT=$(( ${#1} + 6 ))
+    CONFIRM=False
+    COUNT=$(( ${#1} + 6 ))
     echo -ne "${YELL}\n==> ${GREEN}${1}"\
              "${RED}${N}${YELL}\n==> "
     for (( CHAR=1; CHAR<=COUNT; CHAR++ ))
@@ -141,9 +143,9 @@ _check() {
     local STATUS=$?
     until [[ $STATUS -eq 0 ]]
     do
-        LINE="${BASH_LINENO[$i+1]}"
-        FUNC="${FUNCNAME[$i+1]}"
-        FILE="${BASH_SOURCE[$i+1]##*/}"
+        LINE=${BASH_LINENO[$i+1]}
+        FUNC=${FUNCNAME[$i+1]}
+        FILE=${BASH_SOURCE[$i+1]##*/}
         _error "${*} ${RED}${MSG_ERR_LINE}"\
                "${LINE}:${NC}${YELLOW} ${FUNC}"\
                "${RED}${MSG_ERR_FROM}:"\

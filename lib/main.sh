@@ -34,7 +34,7 @@ set > "${DIR}/bashvar"
 set -m -E -o pipefail #-b -v
 
 # App Language
-LANGUAGE="${DIR}/lang/${LANG:0:2}.sh"
+LANGUAGE=${DIR}/lang/${LANG:0:2}.sh
 if test -f "$LANGUAGE"
 then
     # shellcheck source=/dev/null
