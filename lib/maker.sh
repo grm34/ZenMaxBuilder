@@ -89,7 +89,7 @@ _save_defconfig() {
 
 
 _make_build() {
-    _note "$MSG_NOTE_MAKE : ${KERNEL_NAME}..."
+    _note "${MSG_NOTE_MAKE}: ${KERNEL_NAME}..."
 
     # Send build status on Telegram
     _send_make_build_status
