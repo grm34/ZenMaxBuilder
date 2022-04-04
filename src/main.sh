@@ -76,11 +76,16 @@ fi
 # Set Date & Time
 if [[ $TIMEZONE == default ]]
 then
-    TIMEZONE=$(cat /etc/timezone 2>/dev/null)
-    if ! $TIMEZONE
+    TIMEZONE=$(
+        (timedatectl | grep 'Time zone' \
+            | xargs | cut -d' ' -f3) 2>/dev/null
+    )
+    if [[ ! $TIMEZONE ]]
     then
-        TIMEZONE=$(getprop | grep timezone | cut -d' ' -f2 \
-            | sed 's/\[//g' | sed 's/\]//g' 2>/dev/null)
+        TIMEZONE=$(
+            (getprop | grep timezone | cut -d' ' -f2 \
+                | sed 's/\[//g' | sed 's/\]//g') 2>/dev/null
+        )
     fi
 fi
 DATE=$(TZ=$TIMEZONE date +%Y-%m-%d)

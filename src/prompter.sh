@@ -53,7 +53,7 @@ _ask_for_toolchain() {
             _prompt "$MSG_SELECT_TC :"
             select COMPILER in Proton-Clang Eva-GCC Proton-GCC
             do
-                [[ -n $COMPILER ]] && break
+                [[ $COMPILER ]] && break
                 _error "$MSG_ERR_SELECT"
             done
             unset $PROMPT_TYPE
@@ -96,7 +96,7 @@ _ask_for_defconfig() {
     _prompt "$MSG_ASK_DEF :"
     select DEFCONFIG in *_defconfig
     do
-        [[ -n $DEFCONFIG ]] && break
+        [[ $DEFCONFIG ]] && break
         _error "$MSG_ERR_SELECT"
     done
     cd "$DIR" || \

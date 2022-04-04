@@ -155,7 +155,7 @@ _check() {
         _ask_for_run_again
         if [[ $RUN_AGAIN == True ]]
         then
-            if [[ -n $START_TIME ]]
+            if [[ $START_TIME ]]
             then    # Reset start time
                 START_TIME=$(TZ=$TIMEZONE date +%s)
             fi
@@ -227,7 +227,7 @@ _clean_anykernel() {
 
 # Show list of kernels
 _list_all_kernels() {
-    if [[ -d ${DIR}/out ]] && [[ -n $(ls -d out/*/) ]]
+    if [[ -d ${DIR}/out ]] && [[ $(ls -d out/*/) ]]
     then
         _note "$MSG_NOTE_LISTKERNEL :"
         find out/ -mindepth 1 -maxdepth 1 -type d \
