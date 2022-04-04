@@ -123,7 +123,8 @@ _confirm() {
 
 # Display some notes
 _note() {
-    echo -e "${YELL}\n[$(date +%T)] ${CYAN}${1}${NC}"
+    echo -e "${YELL}\n[$(TZ=$TIMEZONE date +%T)]"\
+            "${CYAN}${1}${NC}"
     sleep 1
 }
 
