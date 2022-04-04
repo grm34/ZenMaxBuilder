@@ -22,7 +22,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# lib/main.sh
+# src/main.sh
 # ===========
 MSG_ERR_LINUX="you must run this script on Linux"
 MSG_ERR_PWD="run this script from ZenMaxBuilder directory"
@@ -38,7 +38,7 @@ MSG_ERR_MAKE="command interrupted (make)"
 MSG_NOTE_SUCCESS="Successfully compiled after"
 MSG_NOTE_ZIPPED="Successfully zipped, take a look at builds folder"
 
-# lib/manager.sh
+# src/manager.sh
 # ==============
 MSG_HELP_H="show this message and exit"
 MSG_HELP_S="start new kernel compilation"
@@ -61,14 +61,14 @@ MSG_NOTE_LTAG="Scanning Linux Stable (this could take a while)"
 MSG_SUCCESS_LTAG="Latest Linux Stable"
 MSG_ERR_LTAG="invalid Linux Stable tag"
 
-# lib/flasher.sh
+# src/flasher.sh
 # ==============
 MSG_NOTE_ZIP="Started zip creation"
 MSG_ERR_DIR="dir not found"
 MSG_NOTE_SIGN="Signing Zip file with AOSP keys"
 MSG_ERR_IMG="invalid kernel image"
 
-# lib/maker.sh
+# src/maker.sh
 # ============
 MSG_NOTE_MAKE_CLEAN="Make clean (this could take a while)"
 MSG_NOTE_MRPROPER="Make mrproper (this could take a while)"
@@ -77,11 +77,11 @@ MSG_NOTE_MENUCONFIG="Make menuconfig"
 MSG_NOTE_SAVE="Saving config"
 MSG_NOTE_MAKE="Starting new build"
 
-# lib/requirements.sh
+# src/requirements.sh
 # ===================
 MSG_ERR_OS="OS not found, some dependencies may be required"
 
-# lib/telegram.sh
+# src/telegram.sh
 # ===============
 MSG_NOTE_SEND="Sending message on Telegram"
 MSG_ERR_API="you must configure Telegram API settings first"
@@ -102,7 +102,7 @@ MSG_TG_HTML=(
     "Android"
 )
 
-# lib/updater.sh
+# src/updater.sh
 # ==============
 MSG_UP_NB="Updating ZenMaxBuilder"
 MSG_UP_AK3="Updating AnyKernel"
@@ -110,7 +110,7 @@ MSG_UP_CLANG="Updating Proton Clang"
 MSG_UP_GCC64="Updating GCC ARM64"
 MSG_UP_GCC32="Updating GCC ARM"
 
-# lib/prompter.sh
+# src/prompter.sh
 # ===============
 MSG_ASK_KDIR="Enter kernel path (use TAB for autocompletion)"
 MSG_ERR_KDIR="invalid kernel directory"

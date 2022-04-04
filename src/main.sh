@@ -42,27 +42,27 @@ fi
 
 # shellcheck source=config.sh
 source "${DIR}/config.sh"
-# shellcheck source=lib/manager.sh
-source "${DIR}/lib/manager.sh"
-# shellcheck source=lib/requirements.sh
-source "${DIR}/lib/requirements.sh"
-# shellcheck source=lib/telegram.sh
-source "${DIR}/lib/telegram.sh"
-# shellcheck source=lib/flasher.sh
-source "${DIR}/lib/flasher.sh"
-# shellcheck source=lib/maker.sh
-source "${DIR}/lib/maker.sh"
-# shellcheck source=lib/prompter.sh
-source "${DIR}/lib/prompter.sh"
-# shellcheck source=lib/updater.sh
-source "${DIR}/lib/updater.sh"
+# shellcheck source=src/manager.sh
+source "${DIR}/src/manager.sh"
+# shellcheck source=src/requirements.sh
+source "${DIR}/src/requirements.sh"
+# shellcheck source=src/telegram.sh
+source "${DIR}/src/telegram.sh"
+# shellcheck source=src/flasher.sh
+source "${DIR}/src/flasher.sh"
+# shellcheck source=src/maker.sh
+source "${DIR}/src/maker.sh"
+# shellcheck source=src/prompter.sh
+source "${DIR}/src/prompter.sh"
+# shellcheck source=src/updater.sh
+source "${DIR}/src/updater.sh"
 
 # Ban all ('n00bz')
 if [[ $(uname) != Linux ]]
 then
     _error "$MSG_ERR_LINUX"
     _exit
-elif [[ ! -f ${PWD}/config.sh ]] || [[ ! -d ${PWD}/lib ]]
+elif [[ ! -f ${PWD}/config.sh ]] || [[ ! -d ${PWD}/src ]]
 then
     _error "$MSG_ERR_PWD"
     _exit

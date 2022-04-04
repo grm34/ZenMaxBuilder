@@ -61,14 +61,14 @@ MSG_NOTE_LTAG="Détection de Linux Stable (patientez)"
 MSG_SUCCESS_LTAG="Dernier tag Linux Stable"
 MSG_ERR_LTAG="tag Linux Stable invalide"
 
-# lib/flasher.sh
+# src/flasher.sh
 # ==============
 MSG_NOTE_ZIP="Création du fichier Zip"
 MSG_ERR_DIR="dossier non trouvé"
 MSG_NOTE_SIGN="Signature du fichier Zip avec AOSP keys"
 MSG_ERR_IMG="image du noyau invalide"
 
-# lib/maker.sh
+# src/maker.sh
 # ============
 MSG_NOTE_MAKE_CLEAN="Make clean (nettoyage du noyau)"
 MSG_NOTE_MRPROPER="Make mrproper (purge du noyau)"
@@ -77,11 +77,11 @@ MSG_NOTE_MENUCONFIG="Make menuconfig (édition)"
 MSG_NOTE_SAVE="Sauvegarde de la configuration"
 MSG_NOTE_MAKE="Nouvelle compilation"
 
-# lib/requirements.sh
+# src/requirements.sh
 # ===================
 MSG_ERR_OS="OS non trouvé, des dépendances peuvent être requises"
 
-# lib/telegram.sh
+# src/telegram.sh
 # ===============
 MSG_NOTE_SEND="Envoi du message sur Telegram"
 MSG_ERR_API="vous devez d'abord configurer Telegram API"
@@ -102,7 +102,7 @@ MSG_TG_HTML=(
     "Android version"
 )
 
-# lib/updater.sh
+# src/updater.sh
 # ==============
 MSG_UP_NB="Mise à jour de ZenMaxBuilder"
 MSG_UP_AK3="Mise à jour de AnyKernel"
@@ -110,7 +110,7 @@ MSG_UP_CLANG="Mise à jour de Proton Clang"
 MSG_UP_GCC64="Mise à jour de GCC ARM64"
 MSG_UP_GCC32="Mise à jour de GCC ARM"
 
-# lib/prompter.sh
+# src/prompter.sh
 # ===============
 MSG_ASK_KDIR="Entrez le dossier du noyau (TAB pour l'autocompletion)"
 MSG_ERR_KDIR="dossier du noyau invalide"

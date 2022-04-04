@@ -93,7 +93,7 @@ _sign_flashable_zip() {
 
     # Sign flashable zip
     _check unbuffer java -jar \
-        "${DIR}/lib/tools/zipsigner-3.0.jar" \
+        "${DIR}/bin/zipsigner-3.0.jar" \
         "${BUILD_DIR}/${KERNEL_NAME}-${DATE}.zip" \
         "${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip" 2>&1
 }
@@ -119,7 +119,7 @@ _create_zip_option() {
         # Sign flashable zip
         _note "${MSG_NOTE_SIGN}..."
         _check java -jar \
-            "${DIR}/lib/tools/zipsigner-3.0.jar" \
+            "${DIR}/bin/zipsigner-3.0.jar" \
             "${OPTARG##*/}-${DATE}_${TIME}.zip" \
             "${OPTARG##*/}-${DATE}_${TIME}-signed.zip"
 
