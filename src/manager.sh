@@ -248,7 +248,7 @@ _get_linux_tag() {
         | cut --delimiter='/' --fields=3)
     if [[ $LTAG == ${OPTARG}* ]]
     then
-        _note "$MSG_SUCCESS_LTAG : ${RED}${LTAG}"
+        _note "${MSG_SUCCESS_LTAG}: ${RED}${LTAG}"
     else
         _error "$MSG_ERR_LTAG ${RED}${OPTARG}"
     fi
