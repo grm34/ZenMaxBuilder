@@ -31,15 +31,12 @@ _full_upgrade() {
         _ask_for_save_config
         if [[ $SAVE_CONFIG == True ]]
         then
-            _check mv config.sh config_save.sh
+            _check cp config.sh config_save.sh
         fi
     fi
     git checkout "$NB_BRANCH"
-    git pull origin "$NB_BRANCH"
-    if [[ ! -f config.sh ]]
-    then
-        _check cp config_save.sh config.sh
-    fi
+    git reset --hard HEAD
+    git pull
 
     # AnyKernel
     if [[ -d $ANYKERNEL_DIR ]]
