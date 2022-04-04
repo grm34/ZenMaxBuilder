@@ -155,7 +155,7 @@ _check() {
         _ask_for_run_again
         if [[ $RUN_AGAIN == True ]]
         then
-            if [[ ! -z $START_TIME ]]
+            if [[ -n $START_TIME ]]
             then    # Reset start time
                 START_TIME=$(TZ=$TIMEZONE date +%s)
             fi
