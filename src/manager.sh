@@ -227,7 +227,8 @@ _clean_anykernel() {
 
 # Show list of kernels
 _list_all_kernels() {
-    if [[ -d ${DIR}/out ]] && [[ $(ls -d out/*/) ]]
+    if [[ -d ${DIR}/out ]] && \
+        [[ $(ls -d out/*/ 2>/dev/null) ]]
     then
         _note "$MSG_NOTE_LISTKERNEL :"
         find out/ -mindepth 1 -maxdepth 1 -type d \
