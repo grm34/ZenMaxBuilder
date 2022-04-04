@@ -21,10 +21,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# Date & Time
-DATE=$(TZ=$TIMEZONE date +%Y-%m-%d)
-TIME=$(TZ=$TIMEZONE date +%Hh%Mm%Ss)
-
 # Get absolute path
 DIRNAME=$(dirname "$0")
 DIR=${PWD}/${DIRNAME}
@@ -76,6 +72,19 @@ then
     _error "$MSG_ERR_KDIR"
     _exit
 fi
+
+# Set Date & Time
+if [[ $TIMEZONE == default ]]
+then
+    TIMEZONE=$(cat /etc/timezone 2>/dev/null)
+    if ! $TIMEZONE
+    then
+        TIMEZONE=$(getprop | grep timezone | cut -d' ' -f2 \
+            | sed 's/\[//g' | sed 's/\]//g' 2>/dev/null)
+    fi
+fi
+DATE=$(TZ=$TIMEZONE date +%Y-%m-%d)
+TIME=$(TZ=$TIMEZONE date +%Hh%Mm%Ss)
 
 # Transform long opts to short
 for OPT in "$@"

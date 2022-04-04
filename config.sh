@@ -28,9 +28,11 @@
 ########################
 
 # TIMEZONE (e.q. "America/NewYork")
-# To set the time in your time zone
+# To set the time in your timezone.
+# Will be auto-detected when this
+# option is set to:  "default"
 # =================================
-TIMEZONE="Europe/Paris"
+TIMEZONE="default"
 
 
 # DEVICE CODENAME (e.q. "X00TD")
