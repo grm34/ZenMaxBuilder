@@ -28,9 +28,11 @@
 ########################
 
 # TIMEZONE (e.q. "America/NewYork")
-# To set the time in your time zone
+# To set the time in your timezone.
+# Will be auto-detected when this
+# option is set to:  "default"
 # =================================
-TIMEZONE="Europe/Paris"
+TIMEZONE="default"
 
 
 # DEVICE CODENAME (e.q. "X00TD")
@@ -111,7 +113,7 @@ TELEGRAM_BOT_TOKEN=""
 # Some required dependencies
 # Be carefull adding some deps, they are checked
 # with "which" bash in-built. Changes like variables
-# replacement may be required in "lib/requirements.sh".
+# replacement may be required in "src/requirements.sh".
 # =====================================================
 DEPENDENCIES=(git zip llvm lld clang expect)
 

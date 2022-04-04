@@ -53,7 +53,7 @@ _ask_for_toolchain() {
             _prompt "$MSG_SELECT_TC :"
             select COMPILER in Proton-Clang Eva-GCC Proton-GCC
             do
-                test -n "$COMPILER" && break
+                [[ $COMPILER ]] && break
                 _error "$MSG_ERR_SELECT"
             done
             unset $PROMPT_TYPE
@@ -96,7 +96,7 @@ _ask_for_defconfig() {
     _prompt "$MSG_ASK_DEF :"
     select DEFCONFIG in *_defconfig
     do
-        test -n "$DEFCONFIG" && break
+        [[ $DEFCONFIG ]] && break
         _error "$MSG_ERR_SELECT"
     done
     cd "$DIR" || \
@@ -150,7 +150,7 @@ _ask_for_telegram() {
     # Request the upload of build status on Telegram.
     # Validation checks are not needed here.
     if [[ $TELEGRAM_CHAT_ID ]] && \
-            [[ $TELEGRAM_BOT_TOKEN ]]
+        [[ $TELEGRAM_BOT_TOKEN ]]
     then
         export N="[y/N]"
         _confirm "$MSG_ASK_TG ?"

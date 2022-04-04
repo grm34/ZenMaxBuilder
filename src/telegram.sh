@@ -57,7 +57,7 @@ _send_file() {
 
 _send_msg_option() {
     if [[ $TELEGRAM_CHAT_ID ]] && \
-            [[ $TELEGRAM_BOT_TOKEN ]]
+        [[ $TELEGRAM_BOT_TOKEN ]]
     then
         _note "${MSG_NOTE_SEND}..."
         _send_msg "${OPTARG//_/-}"
@@ -71,7 +71,7 @@ _send_file_option() {
     if [[ -f $OPTARG ]]
     then
         if [[ $TELEGRAM_CHAT_ID ]] && \
-                [[ $TELEGRAM_BOT_TOKEN ]]
+            [[ $TELEGRAM_BOT_TOKEN ]]
         then
             _note "${MSG_NOTE_UPLOAD}: ${OPTARG##*/}..."
             _send_file "$OPTARG"
@@ -124,7 +124,7 @@ _send_zip_signing_status() {
 
 _send_failed_build_logs() {
     if [[ $START_TIME ]] && [[ ! $BUILD_TIME ]] && \
-            [[ $BUILD_STATUS == True ]]
+        [[ $BUILD_STATUS == True ]]
     then
         END_TIME=$(TZ=$TIMEZONE date +%s)
         BUILD_TIME=$((END_TIME - START_TIME))
@@ -142,7 +142,7 @@ _send_failed_build_logs() {
 
 _upload_signed_build() {
     if [[ $BUILD_STATUS == True ]] && \
-            [[ $FLASH_ZIP == True ]]
+        [[ $FLASH_ZIP == True ]]
     then
         FILE=${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip
         _note "${MSG_NOTE_UPLOAD}: ${FILE##*/}..."

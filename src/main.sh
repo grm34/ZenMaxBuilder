@@ -21,10 +21,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# Date & Time
-DATE=$(TZ=$TIMEZONE date +%Y-%m-%d)
-TIME=$(TZ=$TIMEZONE date +%Hh%Mm%Ss)
-
 # Get absolute path
 DIRNAME=$(dirname "$0")
 DIR=${PWD}/${DIRNAME}
@@ -35,7 +31,7 @@ set -m -E -o pipefail #-b -v
 
 # App Language
 LANGUAGE=${DIR}/lang/${LANG:0:2}.sh
-if test -f "$LANGUAGE"
+if [[ -f $LANGUAGE ]]
 then
     # shellcheck source=/dev/null
     source "$LANGUAGE"
@@ -46,27 +42,27 @@ fi
 
 # shellcheck source=config.sh
 source "${DIR}/config.sh"
-# shellcheck source=lib/manager.sh
-source "${DIR}/lib/manager.sh"
-# shellcheck source=lib/requirements.sh
-source "${DIR}/lib/requirements.sh"
-# shellcheck source=lib/telegram.sh
-source "${DIR}/lib/telegram.sh"
-# shellcheck source=lib/flasher.sh
-source "${DIR}/lib/flasher.sh"
-# shellcheck source=lib/maker.sh
-source "${DIR}/lib/maker.sh"
-# shellcheck source=lib/prompter.sh
-source "${DIR}/lib/prompter.sh"
-# shellcheck source=lib/updater.sh
-source "${DIR}/lib/updater.sh"
+# shellcheck source=src/manager.sh
+source "${DIR}/src/manager.sh"
+# shellcheck source=src/requirements.sh
+source "${DIR}/src/requirements.sh"
+# shellcheck source=src/telegram.sh
+source "${DIR}/src/telegram.sh"
+# shellcheck source=src/flasher.sh
+source "${DIR}/src/flasher.sh"
+# shellcheck source=src/maker.sh
+source "${DIR}/src/maker.sh"
+# shellcheck source=src/prompter.sh
+source "${DIR}/src/prompter.sh"
+# shellcheck source=src/updater.sh
+source "${DIR}/src/updater.sh"
 
 # Ban all ('n00bz')
 if [[ $(uname) != Linux ]]
 then
     _error "$MSG_ERR_LINUX"
     _exit
-elif [[ ! -f ${PWD}/config.sh ]] || [[ ! -d ${PWD}/lib ]]
+elif [[ ! -f ${PWD}/config.sh ]] || [[ ! -d ${PWD}/src ]]
 then
     _error "$MSG_ERR_PWD"
     _exit
@@ -76,6 +72,24 @@ then
     _error "$MSG_ERR_KDIR"
     _exit
 fi
+
+# Set Date & Time
+if [[ $TIMEZONE == default ]]
+then
+    TIMEZONE=$(
+        (timedatectl | grep 'Time zone' \
+            | xargs | cut -d' ' -f3) 2>/dev/null
+    )
+    if [[ ! $TIMEZONE ]]
+    then
+        TIMEZONE=$(
+            (getprop | grep timezone | cut -d' ' -f2 \
+                | sed 's/\[//g' | sed 's/\]//g') 2>/dev/null
+        )
+    fi
+fi
+DATE=$(TZ=$TIMEZONE date +%Y-%m-%d)
+TIME=$(TZ=$TIMEZONE date +%Hh%Mm%Ss)
 
 # Transform long opts to short
 for OPT in "$@"
@@ -144,7 +158,7 @@ FOLDERS=(builds logs toolchains out)
 for FOLDER in "${FOLDERS[@]}"
 do
     if [[ ! -d ${DIR}/${FOLDER}/${CODENAME} ]] && \
-            [[ $FOLDER != toolchains ]]
+        [[ $FOLDER != toolchains ]]
     then
         _check mkdir -p "${DIR}/${FOLDER}/${CODENAME}"
     elif [[ ! -d ${DIR}/${FOLDER} ]]
@@ -246,7 +260,7 @@ S=$((BUILD_TIME % 60))
 
 # Check if make success
 BOOT_DIR=${DIR}/out/${CODENAME}/arch/${ARCH}/boot
-if test ! -d "$BOOT_DIR"
+if [[ ! -d $BOOT_DIR ]]
 then
     _error "$MSG_ERR_MAKE"
     _exit
