@@ -22,10 +22,10 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # Shell color codes
-if test -t 1
+if [[ -t 1 ]]
 then
     ncolors=$(tput colors)
-    if test -n "$ncolors" && test "$ncolors" -ge 8
+    if [[ -n $ncolors ]] && [[ $ncolors -ge 8 ]]
     then
         BOLD="$(tput bold)"
         NC="$(tput sgr0)"
@@ -112,8 +112,8 @@ _confirm_msg() {
 # Ask confirmation (Yes/No)
 _confirm() {
     _confirm_msg "$@"
-    until [[ $CONFIRM =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]] \
-            || test -z "$CONFIRM"
+    until [[ -z $CONFIRM ]] || \
+        [[ $CONFIRM =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]]
     do
         _error "$MSG_ERR_CONFIRM"
         _confirm_msg "$@"
@@ -155,11 +155,11 @@ _check() {
         _ask_for_run_again
         if [[ $RUN_AGAIN == True ]]
         then
-            if test ! -z "$START_TIME"
+            if [[ ! -z $START_TIME ]]
             then    # Reset start time
                 START_TIME=$(TZ=$TIMEZONE date +%s)
             fi
-            if test -f "$LOG"
+            if [[ -f $LOG ]]
             then    # clear logs
                 _terminal_banner > "$LOG"
             fi

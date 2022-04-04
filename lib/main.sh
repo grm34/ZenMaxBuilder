@@ -31,7 +31,7 @@ set -m -E -o pipefail #-b -v
 
 # App Language
 LANGUAGE=${DIR}/lang/${LANG:0:2}.sh
-if test -f "$LANGUAGE"
+if [[ -f $LANGUAGE ]]
 then
     # shellcheck source=/dev/null
     source "$LANGUAGE"
@@ -153,7 +153,7 @@ FOLDERS=(builds logs toolchains out)
 for FOLDER in "${FOLDERS[@]}"
 do
     if [[ ! -d ${DIR}/${FOLDER}/${CODENAME} ]] && \
-            [[ $FOLDER != toolchains ]]
+        [[ $FOLDER != toolchains ]]
     then
         _check mkdir -p "${DIR}/${FOLDER}/${CODENAME}"
     elif [[ ! -d ${DIR}/${FOLDER} ]]
@@ -255,7 +255,7 @@ S=$((BUILD_TIME % 60))
 
 # Check if make success
 BOOT_DIR=${DIR}/out/${CODENAME}/arch/${ARCH}/boot
-if test ! -d "$BOOT_DIR"
+if [[ ! -d $BOOT_DIR ]]
 then
     _error "$MSG_ERR_MAKE"
     _exit
