@@ -24,6 +24,7 @@
 # Get absolute path
 DIRNAME=$(dirname "$0")
 DIR=${PWD}/${DIRNAME}
+cd "$DIR" || exit $?
 
 # Bash job control
 set > "${DIR}/bashvar"
@@ -62,12 +63,9 @@ if [[ $(uname) != Linux ]]
 then
     _error "$MSG_ERR_LINUX"
     _exit
-elif [[ ! -f ${PWD}/config.sh ]] || [[ ! -d ${PWD}/src ]]
-then
-    _error "$MSG_ERR_PWD"
-    _exit
 elif [[ $KERNEL_DIR != default  ]] && \
-        [[ ! -f ${KERNEL_DIR}/Makefile ]]
+    [[ ! -f ${KERNEL_DIR}/Makefile ]] && \
+    [[ ! -d ${KERNEL_DIR}/arch ]]
 then
     _error "$MSG_ERR_KDIR"
     _exit

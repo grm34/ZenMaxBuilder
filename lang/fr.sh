@@ -25,7 +25,6 @@
 # lib/main.sh
 # ===========
 MSG_ERR_LINUX="vous devez exécuter ce script sous Linux"
-MSG_ERR_PWD="exécutez ce script depuis le dossier ZenMaxBuilder"
 MSG_ERR_KDIR="dossier du noyau invalide (voir config.sh)"
 MSG_ERR_EOPT="vous devez spécifier une option (voir --help)"
 MSG_ERR_MARG="argument manquant pour"
