@@ -85,7 +85,7 @@ _prompt() {
     do
         echo -ne "─"
     done
-    if [[ ! $PROMPT_TYPE ]]
+    if [[ $PROMPT_TYPE != echo ]]
     then
         echo -ne "\n==> $NC"
     else
