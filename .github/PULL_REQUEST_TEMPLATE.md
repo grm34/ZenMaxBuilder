@@ -1,4 +1,4 @@
-# Thank you for taking the time to contribute to ZenMaxBuilder! ♥
+# Thank you for taking the time to contribute to ZenMaxBuilder ♥
 
 ## 🚨 IMPORTANT 🚨
 
@@ -26,4 +26,3 @@
 - [ ] My changes follow the coding style of this project
 - [ ] My changes build without any errors or warnings
 - [ ] My changes have been formatted and linted
-- [ ] My changes have been applied to the wiki as needed

@@ -1,4 +1,4 @@
-## Thank you for taking the time to contribute to ZenMaxBuilder! ♥
+## Thank you for taking the time to contribute to ZenMaxBuilder ♥
 
 ### Contributing
 
