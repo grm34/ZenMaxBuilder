@@ -34,9 +34,9 @@ _create_flashable_zip() {
         _check cp -af \
             "${KERNEL_DIR}/${SPECTRUM}" \
             init.spectrum.rc
-        B=$KERNEL_NAME
+        kn=$KERNEL_NAME
         _check sed -i \
-            "s/*.spectrum.kernel.*/*.spectrum.kernel ${B}/g" \
+            "s/*.spectrum.kernel.*/*.spectrum.kernel ${kn}/g" \
             init.spectrum.rc
     fi
 
