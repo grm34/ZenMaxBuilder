@@ -56,7 +56,7 @@ _ask_for_toolchain() {
                 [[ $COMPILER ]] && break
                 _error "$MSG_ERR_SELECT"
             done
-            PROMPT_TYPE="default"
+            export PROMPT_TYPE="default"
             ;;
         *)
             export COMPILER=$DEFAULT_COMPILER
@@ -101,7 +101,7 @@ _ask_for_defconfig() {
     done
     cd "$DIR" || \
         (_error "$MSG_ERR_DIR ${RED}${DIR}"; _exit)
-    PROMPT_TYPE="default"
+    export PROMPT_TYPE="default"
 }
 
 
