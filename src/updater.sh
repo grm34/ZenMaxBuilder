@@ -38,7 +38,6 @@ _full_upgrade() {
     git fetch
     git reset --hard HEAD
     git merge origin "$ZMB_BRANCH"
-    git pull
 
     # AnyKernel
     if [[ -d $ANYKERNEL_DIR ]]
@@ -47,7 +46,9 @@ _full_upgrade() {
         cd "$ANYKERNEL_DIR" || \
             (_error "$MSG_ERR_DIR ${RED}${ANYKERNEL_DIR}"; _exit)
         git checkout "$ANYKERNEL_BRANCH"
-        git pull origin "$ANYKERNEL_BRANCH"
+        git fetch
+        git reset --hard HEAD
+        git merge origin "$ANYKERNEL_BRANCH"
         cd "$DIR" || \
             (_error "$MSG_ERR_DIR ${RED}${DIR}"; _exit)
     fi
@@ -59,7 +60,9 @@ _full_upgrade() {
         cd "$PROTON_DIR" || \
             (_error "$MSG_ERR_DIR ${RED}${PROTON_DIR}"; _exit)
         git checkout "$PROTON_BRANCH"
-        git pull origin "$PROTON_BRANCH"
+        git fetch
+        git reset --hard HEAD
+        git merge origin "$PROTON_BRANCH"
         cd "$DIR" || \
             (_error "$MSG_ERR_DIR ${RED}${DIR}"; _exit)
     fi
@@ -71,7 +74,9 @@ _full_upgrade() {
         cd "$GCC_ARM64_DIR" || \
             (_error "$MSG_ERR_DIR ${RED}${GCC_ARM64_DIR}"; _exit)
         git checkout "$GCC_ARM64_BRANCH"
-        git pull origin "$GCC_ARM64_BRANCH"
+        git fetch
+        git reset --hard HEAD
+        git merge origin "$GCC_ARM64_BRANCH"
         cd "$DIR" || \
             (_error "$MSG_ERR_DIR ${RED}${DIR}"; _exit)
     fi
@@ -83,7 +88,9 @@ _full_upgrade() {
         cd "$GCC_ARM_DIR" || \
             (_error "$MSG_ERR_DIR ${RED}${GCC_ARM_DIR}"; _exit)
         git checkout "$GCC_ARM_BRANCH"
-        git pull origin "$GCC_ARM_BRANCH"
+        git fetch
+        git reset --hard HEAD
+        git merge origin "$GCC_ARM_BRANCH"
         cd "$DIR" || \
             (_error "$MSG_ERR_DIR ${RED}${DIR}"; _exit)
     fi
