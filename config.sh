@@ -56,10 +56,12 @@ BUILDER="default"
 HOST="default"
 
 
-# DEFAULT TOOLCHAIN COMPILER
-# "Proton-Clang" | "Eva-GCC" | "Proton-GCC"
-# =========================================
-DEFAULT_COMPILER="Proton-Clang"
+# TOOLCHAIN COMPILER
+# The question will be asked by the script
+# when this option is set to:  "default"
+# Choices: Proton-Clang | Eva-GCC | Proton-GC
+# ===========================================
+COMPILER="default"
 
 
 # ANDROID KERNEL DIRECTORY

@@ -45,22 +45,17 @@ _ask_for_toolchain() {
     # Question to get the toolchain to use.
     # Choices: Proton-Clang Eva-GCC Proton-GCC
     # Validation checks are not needed here.
-    export N="[Y/n]"
-    _confirm "${MSG_ASK_TC}: $DEFAULT_COMPILER ?"
-    case $CONFIRM in
-        n|N|no|No|NO)
-            PROMPT_TYPE="echo"
-            _prompt "$MSG_SELECT_TC :"
-            select COMPILER in Proton-Clang Eva-GCC Proton-GCC
-            do
-                [[ $COMPILER ]] && break
-                _error "$MSG_ERR_SELECT"
-            done
-            export PROMPT_TYPE="default"
-            ;;
-        *)
-            export COMPILER=$DEFAULT_COMPILER
-    esac
+    if [[ $COMPILER == default ]]
+    then
+        PROMPT_TYPE="echo"
+        _prompt "$MSG_SELECT_TC :"
+        select COMPILER in Proton-Clang Eva-GCC Proton-GCC
+        do
+            [[ $COMPILER ]] && break
+            _error "$MSG_ERR_SELECT"
+        done
+        export PROMPT_TYPE="default"
+    fi
 }
 
 
