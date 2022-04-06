@@ -2,7 +2,7 @@
 { % seo % }
 ---
 
-# ZenMaxBuilder ![logo](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/main/docs/assets/images/kali.png)
+# ZenMaxBuilder ![logo](assets/images/kali.png) Neternels Team
 
 ![Proton-Clang](https://img.shields.io/badge/Proton--Clang-⛓-yellow)
 ![Eva-GCC](https://img.shields.io/badge/Eva--GCC-⛓-blue)
@@ -65,7 +65,7 @@ to set your settings (optional)
 
 ## Screenshot
 
-![screenshot](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/main/docs/assets/images/screenshot.png)
+![screenshot](assets/images/screenshot.png)
 
 ## License
 
