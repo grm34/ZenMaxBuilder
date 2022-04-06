@@ -11,13 +11,11 @@
 | 1.4     | :white_check_mark: |
 | 1.2     | :white_check_mark: |
 
-| Branch  | Supported          |
-| ------- | ------------------ |
-| main    | :white_check_mark: |
-| dev     | :x:                |
+| Branch | Supported          |
+| ------ | ------------------ |
+| main   | :white_check_mark: |
+| dev    | :x:                |
 
 ## Reporting a Vulnerability
 
-Open an issue (use Bug Report section): 
-
-https://github.com/grm34/ZenMaxBuilder/issues/new/choose
+Open an issue: [Bug Report Section](https://github.com/grm34/ZenMaxBuilder/issues/new/choose)

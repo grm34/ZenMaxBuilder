@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a report to help us improve ZenMaxBuilder
-title: "[BUG]"
+title: "Bug:"
 labels: bug
 assignees: grm34
 ---
@@ -23,16 +23,16 @@ If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
 
-- OS: [e.g. ArchLinux]
-- Terminal used: [e.g. Terminator]
-- Bash version: [e.g. 5.1.16]
+- OS: (e.g. ArchLinux)
+- Terminal used: (e.g. Terminator)
+- Bash version: (e.g. 5.1.16)
 
 **Smartphone (please complete the following information):**
 
-- Device: [e.g. Galaxy S20]
-- OS: [e.g. Android 12]
-- Termux: [e.g. 0.118.0]
-- Bash version [e.g. 5.1.16]
+- Device: (e.g. Galaxy S20)
+- OS: (e.g. Android 12)
+- Termux: (e.g. 0.118.0)
+- Bash version: (e.g. 5.1.16)
 
 **Additional context**
 Add any other context about the problem here.
