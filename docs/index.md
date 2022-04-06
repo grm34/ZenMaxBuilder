@@ -2,7 +2,7 @@
 { % seo % }
 ---
 
-# Zen Max Builder
+# ZenMaxBuilder ![logo](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/main/docs/assets/images/kali.png)
 
 ![Proton-Clang](https://img.shields.io/badge/Proton--Clang-⛓-yellow)
 ![Eva-GCC](https://img.shields.io/badge/Eva--GCC-⛓-blue)
