@@ -113,7 +113,6 @@ MSG_UP_GCC32="Mise à jour de GCC ARM"
 # ===============
 MSG_ASK_KDIR="Entrez le dossier du noyau (TAB pour l'autocompletion)"
 MSG_ERR_KDIR="dossier du noyau invalide"
-MSG_ASK_TC="Voulez-vous utiliser le compiler"
 MSG_SELECT_TC="Sélectionnez le Compiler à utiliser"
 MSG_ERR_SELECT="sélection invalide (utilisez un nombre)"
 MSG_ASK_DEV="Entrez le nom de code du téléphone (ex: X00TD)"
