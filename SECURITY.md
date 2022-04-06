@@ -9,7 +9,7 @@
 | 1.2     | :white_check_mark: |
 | 1.3     | :white_check_mark: |
 | 1.4     | :white_check_mark: |
-| 1.2     | :white_check_mark: |
+| 1.5     | :white_check_mark: |
 
 | Branch | Supported          |
 | ------ | ------------------ |
