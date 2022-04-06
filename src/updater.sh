@@ -34,8 +34,10 @@ _full_upgrade() {
             _check cp config.sh config_save.sh
         fi
     fi
-    git checkout "$NB_BRANCH"
+    git checkout "$ZMB_BRANCH"
+    git fetch
     git reset --hard HEAD
+    git merge origin "$ZMB_BRANCH"
     git pull
 
     # AnyKernel

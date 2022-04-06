@@ -120,11 +120,11 @@ TELEGRAM_BOT_TOKEN=""
 DEPENDENCIES=(git zip llvm lld clang expect)
 
 
-# ZenMaxBuilder repo
+# ZenMaxBuilder banch
 # Change this if you are using
 # your own ZenMaxBuilder fork.
 # ================================
-NB_BRANCH="main"
+ZMB_BRANCH="main"
 
 
 # AnyKernel repo
