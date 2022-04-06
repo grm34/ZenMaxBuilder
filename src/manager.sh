@@ -75,6 +75,22 @@ ${CYAN}https://kernel-builder.com$NC
 }
 
 
+# Get OS timezone
+_get_user_timezone() {
+    TIMEZONE=$(        # LINUX
+        (timedatectl | grep 'Time zone' \
+            | xargs | cut -d' ' -f3) 2>/dev/null
+    )
+    if [[ ! $TIMEZONE ]]
+    then
+        TIMEZONE=$(    # TERMUX
+            (getprop | grep timezone | cut -d' ' -f2 \
+                | sed 's/\[//g' | sed 's/\]//g') 2>/dev/null
+        )
+    fi
+}
+
+
 # Ask some information
 _prompt() {
     LENTH=$*
