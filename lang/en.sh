@@ -113,7 +113,6 @@ MSG_UP_GCC32="Updating GCC ARM"
 # ===============
 MSG_ASK_KDIR="Enter kernel path (use TAB for autocompletion)"
 MSG_ERR_KDIR="invalid kernel directory"
-MSG_ASK_TC="Do you wish to use compiler"
 MSG_SELECT_TC="Select the Toolchain Compiler to use"
 MSG_ERR_SELECT="invalid selection (use number)"
 MSG_ASK_DEV="Enter android device codename (e.g. X00TD)"
