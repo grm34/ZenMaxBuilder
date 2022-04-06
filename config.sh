@@ -72,7 +72,7 @@ KERNEL_DIR="default"
 
 
 # TARGET ARCHITECTURE
-# "arm" | "arm64" | "x86"
+# arm | arm64 | x86 | ...
 # =======================
 ARCH="arm64"
 
@@ -86,15 +86,15 @@ ANDROID_MAJOR_VERSION="s"
 
 
 # KERNEL VARIANT
-# "Stable" | "CAF" | "..."
-# ========================
-KERNEL_VARIANT="Nethunter"
+# Stable | CAF | ...
+# ==================
+KERNEL_VARIANT="ZMB"
 
 
 # KERNEL NAME
-# Enter a name for your kernel
-# ============================
-TAG="Neternels"
+# Name of your kernel
+# ===================
+TAG="ZenMax"
 
 
 # TELEGRAM API CONFIGURATION
