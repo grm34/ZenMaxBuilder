@@ -25,7 +25,7 @@
 _full_upgrade() {
 
     # Neternels Builder
-    _note "${MSG_UP_NB}..."
+    _note "${MSG_UP_ZMB}..."
     if git diff config.sh | grep -q config.sh &>/dev/null
     then
         _ask_for_save_config

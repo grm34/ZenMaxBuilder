@@ -103,7 +103,7 @@ MSG_TG_HTML=(
 
 # src/updater.sh
 # ==============
-MSG_UP_NB="Mise à jour de ZenMaxBuilder"
+MSG_UP_ZMB="Mise à jour de ZenMaxBuilder"
 MSG_UP_AK3="Mise à jour de AnyKernel"
 MSG_UP_CLANG="Mise à jour de Proton Clang"
 MSG_UP_GCC64="Mise à jour de GCC ARM64"
