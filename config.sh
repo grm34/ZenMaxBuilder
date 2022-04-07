@@ -124,7 +124,7 @@ DEPENDENCIES=(git zip llvm lld clang expect)
 # Change this if you are using
 # your own ZenMaxBuilder fork.
 # ================================
-ZMB_BRANCH="main"
+ZMB_BRANCH="zmb"
 
 
 # AnyKernel repo
