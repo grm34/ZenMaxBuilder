@@ -1,0 +1,4 @@
+#!/bin/sh
+git checkout dev
+git rebase main
+git checkout main
