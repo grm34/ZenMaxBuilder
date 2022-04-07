@@ -4,9 +4,9 @@
 
 # ZenMaxBuilder ![logo](assets/images/kali.png) Neternels Team
 
-<img src="https://api.codiga.io/project/23638/score/svg" alt="Codescore"> <img src="https://api.codiga.io/project/23638/status/svg" alt="Codequality"> <img src="https://www.codefactor.io/repository/github/grm34/zenmaxbuilder/badge" alt="Codefactor">
+<img src="https://api.codiga.io/project/23638/score/svg" alt="Codescore"><img src="https://api.codiga.io/project/23638/status/svg" alt="Codequality"><img src="https://www.codefactor.io/repository/github/grm34/zenmaxbuilder/badge" alt="Codefactor">
 
-<img src="https://img.shields.io/badge/license-MIT-blue.svg?logo=keepassxc" alt="License: MIT"> <img src="https://img.shields.io/github/issues/grm34/ZenMaxBuilder.svg?logo=git" alt="Issues"> <img src="https://img.shields.io/github/forks/grm34/ZenMaxBuilder.svg?logo=github" alt="Forks"> <img src="https://img.shields.io/github/stars/grm34/ZenMaxBuilder.svg?logo=github-sponsors" alt="Stars">
+<img src="https://img.shields.io/badge/license-MIT-blue.svg?logo=keepassxc" alt="License: MIT"><img src="https://img.shields.io/github/issues/grm34/ZenMaxBuilder.svg?logo=git" alt="Issues"><img src="https://img.shields.io/github/forks/grm34/ZenMaxBuilder.svg?logo=github" alt="Forks"><img src="https://img.shields.io/github/stars/grm34/ZenMaxBuilder.svg?logo=github-sponsors" alt="Stars">
 
 ## Requirements
 
@@ -16,16 +16,16 @@ Dependencies will be prompted to install or you can manually install them.
 
 ## Usage
 
-:arrow_right: Clone the repository
+➡️ Clone the repository
 
     git clone https://github.com/grm34/ZenMaxBuilder.git
 
-:arrow_right: Enter ZenMaxBuilder repo and edit [config.sh](https://github.com/grm34/ZenMaxBuilder/blob/main/config.sh)
+➡️ Enter ZenMaxBuilder repo and edit [config.sh](https://github.com/grm34/ZenMaxBuilder/blob/main/config.sh)
 to set your settings (optional)
 
     cd ZenMaxBuilder && vi config.sh
 
-:arrow_right: Start ZenMaxBuilder and follow instructions
+➡️ Start ZenMaxBuilder and follow instructions
 
     bash zmb --start
 
