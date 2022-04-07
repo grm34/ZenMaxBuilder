@@ -22,7 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # Create ZMB lock
-exec 201> $(basename $0).lock
+exec 201> "$(basename "$0").lock"
 
 # Get absolute path
 DIRNAME=$(dirname "$0")
