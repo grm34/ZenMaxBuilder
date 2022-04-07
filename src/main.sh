@@ -21,6 +21,9 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+# Create ZMB lock
+exec 201> "$(basename "$0").lock"
+
 # Get absolute path
 DIRNAME=$(dirname "$0")
 DIR=${PWD}/${DIRNAME}
@@ -62,6 +65,10 @@ source "${DIR}/src/updater.sh"
 if [[ $(uname) != Linux ]]
 then
     _error "$MSG_ERR_LINUX"
+    _exit
+elif ! flock -n 201
+then
+    _error "$MSG_ERR_DUPE"
     _exit
 elif [[ $KERNEL_DIR != default  ]] && \
     [[ ! -f ${KERNEL_DIR}/Makefile ]] && \

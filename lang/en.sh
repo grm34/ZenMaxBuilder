@@ -24,8 +24,9 @@
 
 # src/main.sh
 # ===========
-MSG_ERR_LINUX="you must run this script on Linux"
+MSG_ERR_LINUX="you must run ZenMaxBuilder on Linux"
 MSG_ERR_KDIR="invalid kernel directory (see config.sh)"
+MSG_ERR_DUPE="ZenMaxBuilder is already running"
 MSG_ERR_EOPT="you must specify an option (use --help)"
 MSG_ERR_MARG="missing argument for"
 MSG_ERR_IOPT="invalid option"
