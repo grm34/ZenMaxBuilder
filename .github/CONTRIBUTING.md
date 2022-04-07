@@ -32,7 +32,7 @@ ZenMaxBuilder, here are the steps to get started:
 - Clone the fork on your local machine. Your remote repo on Github is called `origin`.
 - Add the original repository as a remote called `upstream`.
 - If you created your fork a while ago be sure to pull `upstream` changes into it.
-- Create a new branch `dev` to work on!
+- Create a new branch to work on!
 - Implement/fix your feature, comment your code.
 - Follow the code style of the project, including indentation.
 - Squash your commits into a single commit with git's [interactive rebase](https://help.github.com/en/github/using-git/about-git-rebase).

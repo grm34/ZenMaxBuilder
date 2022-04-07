@@ -9,6 +9,7 @@
   - Use the future tense ("Adds feature" not "Added feature")
   - Limit the first line to 72 characters or less
   - Reference issues and pull requests liberally after the first line
+  - Use signed commits
 
 <!-- You can erase any parts of this template not applicable to your Pull Request. -->
 
@@ -25,4 +26,4 @@
 - [ ] My changes are based off of the `dev` branch
 - [ ] My changes follow the coding style of this project
 - [ ] My changes build without any errors or warnings
-- [ ] My changes have been formatted and linted
+- [ ] My changes have been signed, formatted and linted
