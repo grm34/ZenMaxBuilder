@@ -8,7 +8,7 @@
 
 | Branch | Supported          |
 | ------ | ------------------ |
-| main   | :white_check_mark: |
+| zmb    | :white_check_mark: |
 | dev    | :x:                |
 
 ## Reporting a Vulnerability
