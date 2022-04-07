@@ -59,6 +59,7 @@ source "${DIR}/src/prompter.sh"
 source "${DIR}/src/updater.sh"
 
 # Ban all ('n00bz')
+zmb=$(ps -ef | grep zmb | grep -v grep | wc -l | xargs)
 if [[ $(uname) != Linux ]]
 then
     _error "$MSG_ERR_LINUX"
@@ -68,6 +69,10 @@ elif [[ $KERNEL_DIR != default  ]] && \
     [[ ! -d ${KERNEL_DIR}/arch ]]
 then
     _error "$MSG_ERR_KDIR"
+    _exit
+elif [[ $zmb -gt 2 ]]
+then
+    _error "$MSG_ERR_DUPE"
     _exit
 fi
 

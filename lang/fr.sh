@@ -24,8 +24,9 @@
 
 # lib/main.sh
 # ===========
-MSG_ERR_LINUX="vous devez exécuter ce script sous Linux"
+MSG_ERR_LINUX="merci d'exécuter ZenMaxBuilder sur Linux"
 MSG_ERR_KDIR="dossier du noyau invalide (voir config.sh)"
+MSG_ERR_DUPE="ZenMaxBuilder est en cours d'exécution"
 MSG_ERR_EOPT="vous devez spécifier une option (voir --help)"
 MSG_ERR_MARG="argument manquant pour"
 MSG_ERR_IOPT="option invalide"
