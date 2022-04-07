@@ -120,7 +120,7 @@ TELEGRAM_BOT_TOKEN=""
 DEPENDENCIES=(git zip llvm lld clang expect)
 
 
-# ZenMaxBuilder banch
+# ZenMaxBuilder branch
 # Change this if you are using
 # your own ZenMaxBuilder fork.
 # ================================
