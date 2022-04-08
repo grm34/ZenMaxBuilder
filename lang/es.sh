@@ -24,6 +24,7 @@
 
 # src/main.sh
 # ===========
+MSG_ERR_TERM="debe ejecutar ZenMaxBuilder en Terminal"
 MSG_ERR_LINUX="debe ejecutar ZenMaxBuilder en Linux"
 MSG_ERR_KDIR="directorio del kernel no válido (ver config.sh)"
 MSG_ERR_DUPE="ZenMaxBuilder está funcionando"
@@ -42,7 +43,7 @@ MSG_NOTE_ZIPPED="Concluido compresión, eche un vistazo en builds"
 # ==============
 MSG_HELP_H="mostrar este mensaje y salir"
 MSG_HELP_S="iniciar una nueva compilación del kernel"
-MSG_HELP_U="actualizar el script y las toolchains"
+MSG_HELP_U="actualizar ZMB y las toolchains"
 MSG_HELP_L="mostrar la lista de sus kernels"
 MSG_HELP_T="mostrar la última etiqueta de Linux"
 MSG_HELP_M="enviar mensaje en Telegram"
