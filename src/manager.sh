@@ -57,7 +57,7 @@ _usage() {
     echo -e "
 ${BOLD}Usage:$NC ${GREEN}bash zmb \
 ${NC}[${YELLOW}OPTION${NC}] [${YELLOW}ARGUMENT${NC}] \
-(e.q. ${MAGENTA}bash zmb --start${NC})
+(e.g. ${MAGENTA}bash zmb --start${NC})
 
   ${BOLD}Options$NC
     -h, --help                      $MSG_HELP_H
