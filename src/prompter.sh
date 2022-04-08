@@ -30,8 +30,7 @@ _ask_for_kernel_dir() {
     then
         _prompt "$MSG_ASK_KDIR :"
         read -r -e KERNEL_DIR
-        CONF_DIR=${KERNEL_DIR}/arch/${ARCH}/configs
-        until [[ -d $CONF_DIR ]]
+        until [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]
         do
             _error "$MSG_ERR_KDIR ${RED}${KERNEL_DIR}"
             _prompt "$MSG_ASK_KDIR :"
@@ -86,6 +85,7 @@ _ask_for_defconfig() {
     # folder corresponding to the current architecture.
     # Validation checks are not needed here.
     PROMPT_TYPE="echo"
+    CONF_DIR=${KERNEL_DIR}/arch/${ARCH}/configs
     cd "$CONF_DIR" || \
         (_error "$MSG_ERR_DIR ${RED}${CONF_DIR}"; _exit)
     _prompt "$MSG_ASK_DEF :"
