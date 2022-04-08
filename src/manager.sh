@@ -247,7 +247,7 @@ _list_all_kernels() {
     if [[ -d ${DIR}/out ]] && \
         [[ $(ls -d out/*/ 2>/dev/null) ]]
     then
-        _note "$MSG_NOTE_LISTKERNEL:"
+        _note "${MSG_NOTE_LISTKERNEL}:"
         find out/ -mindepth 1 -maxdepth 1 -type d \
             | cut -f2 -d'/' | cat -n
     else
