@@ -24,6 +24,7 @@
 
 # lib/main.sh
 # ===========
+MSG_ERR_TERM="merci d'exécuter ZenMaxBuilder sur un Terminal"
 MSG_ERR_LINUX="merci d'exécuter ZenMaxBuilder sur Linux"
 MSG_ERR_KDIR="dossier du noyau invalide (voir config.sh)"
 MSG_ERR_DUPE="ZenMaxBuilder est en cours d'exécution"

@@ -62,18 +62,22 @@ source "${DIR}/src/prompter.sh"
 source "${DIR}/src/updater.sh"
 
 # Ban all ('n00bz')
-if [[ $(uname) != Linux ]]
-then
+if [[ ! -t 0 ]]
+then    # Terminal mandatory
+    _error "$MSG_ERR_TERM"
+    _exit
+elif [[ $(uname) != Linux ]]
+then    # Linux mandatory
     _error "$MSG_ERR_LINUX"
     _exit
 elif ! flock -n 201
-then
+then    # Single instance
     _error "$MSG_ERR_DUPE"
     _exit
 elif [[ $KERNEL_DIR != default  ]] && \
     [[ ! -f ${KERNEL_DIR}/Makefile ]] && \
     [[ ! -d ${KERNEL_DIR}/arch ]]
-then
+then    # Bad kernel dir
     _error "$MSG_ERR_KDIR"
     _exit
 fi

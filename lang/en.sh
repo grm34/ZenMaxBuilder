@@ -24,6 +24,7 @@
 
 # src/main.sh
 # ===========
+MSG_ERR_TERM="you must run ZenMaxBuilder from Terminal"
 MSG_ERR_LINUX="you must run ZenMaxBuilder on Linux"
 MSG_ERR_KDIR="invalid kernel directory (see config.sh)"
 MSG_ERR_DUPE="ZenMaxBuilder is already running"
@@ -42,7 +43,7 @@ MSG_NOTE_ZIPPED="Successfully zipped, take a look at builds folder"
 # ==============
 MSG_HELP_H="show this message and exit"
 MSG_HELP_S="start new kernel compilation"
-MSG_HELP_U="update script and toolchains"
+MSG_HELP_U="update ZMB and toolchains"
 MSG_HELP_L="show list of your kernels"
 MSG_HELP_T="show the latest Linux tag"
 MSG_HELP_M="send message on Telegram"
