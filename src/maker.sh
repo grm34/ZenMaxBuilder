@@ -49,18 +49,21 @@ _export_path_and_options() {
 }
 
 
+# Run MAKE CLEAN
 _make_clean() {
     _note "${MSG_NOTE_MAKE_CLEAN} [${LINUX_VERSION}]..."
     _check unbuffer make -C "$KERNEL_DIR" clean 2>&1
 }
 
 
+# Run MAKE MRPROPER
 _make_mrproper() {
     _note "${MSG_NOTE_MRPROPER} [${LINUX_VERSION}]..."
     _check unbuffer make -C "$KERNEL_DIR" mrproper 2>&1
 }
 
 
+# Run MAKE DEFCONFIG
 _make_defconfig() {
     _note "$MSG_NOTE_DEFCONFIG $DEFCONFIG [${LINUX_VERSION}]..."
     _check unbuffer make -C "$KERNEL_DIR" \
@@ -68,6 +71,7 @@ _make_defconfig() {
 }
 
 
+# Run MAKE MENUCONFIG
 _make_menuconfig() {
     _note "$MSG_NOTE_MENUCONFIG [${LINUX_VERSION}]..."
     make -C "$KERNEL_DIR" O="$OUT_DIR" \
@@ -75,6 +79,7 @@ _make_menuconfig() {
 }
 
 
+# Save DEFCONFIG [MENUCONFIG]
 _save_defconfig() {
     # When a defconfig file is modified with menuconfig,
     # the original will be saved as "example_defconfig_save"
@@ -86,6 +91,7 @@ _save_defconfig() {
 }
 
 
+# Run MAKE [BUILD]
 _make_build() {
     _note "${MSG_NOTE_MAKE}: ${KERNEL_NAME}..."
 
