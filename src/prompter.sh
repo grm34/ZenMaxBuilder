@@ -22,10 +22,10 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+# Question to get the kernel location.
+# Validation checks the presence of the "configs"
+# folder corresponding to the current architecture.
 _ask_for_kernel_dir() {
-    # Question to get the kernel location.
-    # Validation checks the presence of the "configs"
-    # folder corresponding to the current architecture.
     if [[ $KERNEL_DIR == default ]]
     then
         _prompt "$MSG_ASK_KDIR :"
@@ -40,10 +40,10 @@ _ask_for_kernel_dir() {
 }
 
 
+# Question to get the toolchain to use.
+# Choices: Proton-Clang Eva-GCC Proton-GCC
+# Validation checks are not needed here.
 _ask_for_toolchain() {
-    # Question to get the toolchain to use.
-    # Choices: Proton-Clang Eva-GCC Proton-GCC
-    # Validation checks are not needed here.
     if [[ $COMPILER == default ]]
     then
         PROMPT_TYPE="echo"
@@ -58,12 +58,12 @@ _ask_for_toolchain() {
 }
 
 
+# Question to get the device codename.
+# Validation checks REGEX to prevent invalid string.
+# Match "letters" and "numbers" and "-" and "_" only.
+# Should be at least "3" characters long and maximum "20".
+# Device codename can't start with "_" or "-" characters.
 _ask_for_codename() {
-    # Question to get the device codename.
-    # Validation checks REGEX to prevent invalid string.
-    # Match "letters" and "numbers" and "-" and "_" only.
-    # Should be at least "3" characters long and maximum "20".
-    # Device codename can't start with "_" or "-" characters.
     if [[ $CODENAME == default ]]
     then
         _prompt "$MSG_ASK_DEV :"
@@ -79,11 +79,11 @@ _ask_for_codename() {
 }
 
 
+# Prompt to select the defconfig file to use.
+# Choices: all defconfig files located in "configs"
+# folder corresponding to the current architecture.
+# Validation checks are not needed here.
 _ask_for_defconfig() {
-    # Prompt to select the defconfig file to use.
-    # Choices: all defconfig files located in "configs"
-    # folder corresponding to the current architecture.
-    # Validation checks are not needed here.
     PROMPT_TYPE="echo"
     CONF_DIR=${KERNEL_DIR}/arch/${ARCH}/configs
     cd "$CONF_DIR" || \
@@ -100,9 +100,9 @@ _ask_for_defconfig() {
 }
 
 
+# Request a "make menuconfig" command.
+# Validation checks are not needed here.
 _ask_for_menuconfig() {
-    # Request a "make menuconfig" command.
-    # Validation checks are not needed here.
     export N="[y/N]"
     _confirm "$MSG_ASK_CONF ?"
     case $CONFIRM in
@@ -115,11 +115,11 @@ _ask_for_menuconfig() {
 }
 
 
+# Question to get the number of CPU cores to use.
+# Validation checks for a valid number corresponding
+# to the amount of available CPU cores (no limits here).
+# Otherwise all available CPU cores will be used.
 _ask_for_cores() {
-    # Question to get the number of CPU cores to use.
-    # Validation checks for a valid number corresponding
-    # to the amount of available CPU cores (no limits here).
-    # Otherwise all available CPU cores will be used.
     export N="[Y/n]"
     CPU=$(nproc --all)
     _confirm "$MSG_ASK_CPU ?"
@@ -141,9 +141,9 @@ _ask_for_cores() {
 }
 
 
+# Request the upload of build status on Telegram.
+# Validation checks are not needed here.
 _ask_for_telegram() {
-    # Request the upload of build status on Telegram.
-    # Validation checks are not needed here.
     if [[ $TELEGRAM_CHAT_ID ]] && \
         [[ $TELEGRAM_BOT_TOKEN ]]
     then
@@ -160,9 +160,9 @@ _ask_for_telegram() {
 }
 
 
+# Request "make clean" and "make mrproper" commands.
+# Validation checks are not needed here.
 _ask_for_make_clean() {
-    # Request "make clean" and "make mrproper" commands.
-    # Validation checks are not needed here.
     export N="[y/N]"
     _confirm "${MSG_ASK_MCLEAN}: v$LINUX_VERSION ?"
     case $CONFIRM in
@@ -175,10 +175,10 @@ _ask_for_make_clean() {
 }
 
 
+# Request to save and use the modified defconfig.
+# Otherwise request to continue with original one.
+# Validation checks are not needed here.
 _ask_for_save_defconfig() {
-    # Request to save and use the modified defconfig.
-    # Otherwise request to continue with original one.
-    # Validation checks are not needed here.
     export N="[Y/n]"
     _confirm "${MSG_ASK_SAVE_DEF}: $DEFCONFIG ?"
     case $CONFIRM in
@@ -199,9 +199,9 @@ _ask_for_save_defconfig() {
 }
 
 
+# Request "make" command for kernel build.
+# Validation checks are not needed here.
 _ask_for_new_build() {
-    # Request "make" command for kernel build.
-    # Validation checks are not needed here.
     export N="[Y/n]"
     _confirm \
         "$MSG_START ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
@@ -215,9 +215,9 @@ _ask_for_new_build() {
 }
 
 
+# Request to run again failed command.
+# Validation checks are not needed here.
 _ask_for_run_again() {
-    # Request to run again failed command.
-    # Validation checks are not needed here.
     export N="[y/N]"
     _confirm "$MSG_RUN_AGAIN ?"
     case $CONFIRM in
@@ -230,9 +230,9 @@ _ask_for_run_again() {
 }
 
 
+# Request the creation of flashable zip.
+# Validation checks are not needed here.
 _ask_for_flashable_zip() {
-    # Request the creation of flashable zip.
-    # Validation checks are not needed here.
     export N="[y/N]"
     _confirm \
         "$MSG_ASK_ZIP ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
@@ -246,10 +246,10 @@ _ask_for_flashable_zip() {
 }
 
 
+# Question to get the kernel image to zip.
+# Validation checks the presence of this file in
+# "boot" folder and verify it starts with "Image".
 _ask_for_kernel_image() {
-    # Question to get the kernel image to zip.
-    # Validation checks the presence of this file in
-    # "boot" folder and verify it starts with "Image".
     cd "$BOOT_DIR" || \
         (_error "$MSG_ERR_DIR ${RED}${BOOT_DIR}"; _exit)
     _prompt "$MSG_ASK_IMG :"
@@ -265,10 +265,10 @@ _ask_for_kernel_image() {
 }
 
 
+# Request the installation of missing packages.
+# Warn the user that when false the script may crash.
+# Validation checks are not needed here.
 _ask_for_install_pkg() {
-    # Request the installation of missing packages.
-    # Warn the user that when false the script may crash.
-    # Validation checks are not needed here.
     export N="[Y/n]"
     _confirm "$MSG_ASK_PKG $PACKAGE ?"
     case $CONFIRM in
@@ -283,10 +283,10 @@ _ask_for_install_pkg() {
 }
 
 
+# Request to clone missing tookchains.
+# Warn the user and exit the script when false.
+# Validation checks are not needed here.
 _ask_for_clone_toolchain() {
-    # Request to clone missing tookchains.
-    # Warn the user and exit the script when false.
-    # Validation checks are not needed here.
     export N="[Y/n]"
     _confirm "$MSG_ASK_CLONE_TC $TC ?"
     case $CONFIRM in
@@ -302,10 +302,10 @@ _ask_for_clone_toolchain() {
 }
 
 
+# Request to clone missing AnyKernel repo.
+# Warn the user and exit the script when false.
+# Validation checks are not needed here.
 _ask_for_clone_anykernel() {
-    # Request to clone missing AnyKernel repo.
-    # Warn the user and exit the script when false.
-    # Validation checks are not needed here.
     export N="[Y/n]"
     _confirm "$MSG_ASK_CLONE_AK3 ?"
     case $CONFIRM in
@@ -321,9 +321,9 @@ _ask_for_clone_anykernel() {
 }
 
 
+# Request to save the modified config.sh before update.
+# Validation checks are not needed here.
 _ask_for_save_config() {
-    # Request to save the modified config.sh before update.
-    # Validation checks are not needed here.
     export N="[Y/n]"
     _confirm "$MSG_SAVE_USER_CONFIG ?"
     case $CONFIRM in

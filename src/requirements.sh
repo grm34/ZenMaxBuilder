@@ -22,6 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+# Install missing dependencies
 _install_dependencies() {
 
     # Set the package manager for each Linux distribution
@@ -69,7 +70,10 @@ _install_dependencies() {
 }
 
 
+# Clone missing toolchains repos
 _clone_toolchains() {
+
+    # PROTON CLANG
     _clone_proton() {
         if [[ ! -d $PROTON_DIR ]]
         then
@@ -84,6 +88,8 @@ _clone_toolchains() {
             fi
         fi
     }
+
+    # GCC ARM
     _clone_gcc_arm() {
         if [[ ! -d $GCC_ARM_DIR ]]
         then
@@ -98,6 +104,8 @@ _clone_toolchains() {
             fi
         fi
     }
+
+    # GCC ARM64
     _clone_gcc_arm64() {
         if [[ ! -d $GCC_ARM64_DIR ]]
         then
@@ -112,6 +120,8 @@ _clone_toolchains() {
             fi
         fi
     }
+
+    # Clone required toolchain(s)
     case $COMPILER in
         Proton-Clang)
             _clone_proton
@@ -128,6 +138,7 @@ _clone_toolchains() {
 }
 
 
+# Clone missing AK3 repo
 _clone_anykernel() {
     if [[ ! -d $ANYKERNEL_DIR ]]
     then

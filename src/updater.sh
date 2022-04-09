@@ -22,6 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+# Update script and toolchains
 _full_upgrade() {
 
     # Neternels Builder

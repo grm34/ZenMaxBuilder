@@ -22,6 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+# Flashable ZIP creation
 _create_flashable_zip() {
     _note "$MSG_NOTE_ZIP ${KERNEL_NAME}-${DATE}.zip..."
 
@@ -85,6 +86,7 @@ _create_flashable_zip() {
 }
 
 
+# AOSP Keys ZIP signing
 _sign_flashable_zip() {
     _note "${MSG_NOTE_SIGN}..."
 
@@ -99,6 +101,7 @@ _sign_flashable_zip() {
 }
 
 
+# [OPTION] Create Flashable ZIP
 _create_zip_option() {
     if [[ -f $OPTARG ]] && [[ $OPTARG == Image* ]]
     then

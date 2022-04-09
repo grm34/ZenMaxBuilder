@@ -29,6 +29,7 @@
 API="https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN"
 
 
+# Send message [POST]
 _send_msg() {
     curl --progress-bar -o /dev/null -fL \
         -X POST "${API}/sendMessage" \
@@ -39,6 +40,7 @@ _send_msg() {
 }
 
 
+# Send file [POST]
 _send_file() {
     curl --progress-bar -o /dev/null -fL \
         -X POST "${API}/sendDocument" \
@@ -55,6 +57,7 @@ _send_file() {
 ########################
 
 
+# [OPTION] Send message
 _send_msg_option() {
     if [[ $TELEGRAM_CHAT_ID ]] && \
         [[ $TELEGRAM_BOT_TOKEN ]]
@@ -67,6 +70,7 @@ _send_msg_option() {
 }
 
 
+# [OPTION] Send file
 _send_file_option() {
     if [[ -f $OPTARG ]]
     then
@@ -89,6 +93,7 @@ _send_file_option() {
 #########################
 
 
+# New build triggered
 _send_make_build_status() {
     if [[ $BUILD_STATUS == True ]]
     then
@@ -97,6 +102,7 @@ _send_make_build_status() {
 }
 
 
+# Success build
 _send_success_build_status() {
     if [[ $BUILD_STATUS == True ]]
     then
@@ -106,6 +112,7 @@ _send_success_build_status() {
 }
 
 
+# Zipping build
 _send_zip_creation_status() {
     if [[ $BUILD_STATUS == True ]]
     then
@@ -114,6 +121,7 @@ _send_zip_creation_status() {
 }
 
 
+# Signing build
 _send_zip_signing_status() {
     if [[ $BUILD_STATUS == True ]]
     then
@@ -122,6 +130,7 @@ _send_zip_signing_status() {
 }
 
 
+# Failed build with logfile
 _send_failed_build_logs() {
     if [[ $START_TIME ]] && [[ ! $BUILD_TIME ]] && \
         [[ $BUILD_STATUS == True ]]
@@ -140,6 +149,7 @@ _send_failed_build_logs() {
 }
 
 
+# Upload build
 _upload_signed_build() {
     if [[ $BUILD_STATUS == True ]] && \
         [[ $FLASH_ZIP == True ]]
@@ -154,6 +164,7 @@ _upload_signed_build() {
 }
 
 
+# HTML Starting message
 _set_html_status_msg() {
     export STATUS_MSG="
 
