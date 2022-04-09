@@ -22,10 +22,19 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Update script and toolchains
+# Update git repository
+_update_git() {
+    git checkout "$1"
+    git fetch
+    git reset --hard HEAD
+    git merge origin "$1"
+}
+
+
+# Update ZMB, AK3 and all toolchains
 _full_upgrade() {
 
-    # Neternels Builder
+    # ZenMaxBuilder
     _note "${MSG_UP_ZMB}..."
     if git diff config.sh | grep -q config.sh &>/dev/null
     then
@@ -35,65 +44,36 @@ _full_upgrade() {
             _check cp config.sh config_save.sh
         fi
     fi
-    git checkout "$ZMB_BRANCH"
-    git fetch
-    git reset --hard HEAD
-    git merge origin "$ZMB_BRANCH"
+    _update_git "$ZMB_BRANCH"
 
-    # AnyKernel
-    if [[ -d $ANYKERNEL_DIR ]]
-    then
-        _note "${MSG_UP_AK3}..."
-        cd "$ANYKERNEL_DIR" || \
-            (_error "$MSG_ERR_DIR ${RED}${ANYKERNEL_DIR}"; _exit)
-        git checkout "$ANYKERNEL_BRANCH"
-        git fetch
-        git reset --hard HEAD
-        git merge origin "$ANYKERNEL_BRANCH"
-        cd "$DIR" || \
-            (_error "$MSG_ERR_DIR ${RED}${DIR}"; _exit)
-    fi
+    # Declare AK3 and toolchains
+    declare -A TC_DATA=(
+        [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}€$MSG_UP_AK3"
+        [t1]="${PROTON_DIR}€${PROTON_BRANCH}€$MSG_UP_CLANG"
+        [t2]="${GCC_ARM_DIR}€${GCC_ARM_BRANCH}€$MSG_UP_GCC32"
+        [t3]="${GCC_ARM64_DIR}€${GCC_ARM64_BRANCH}€$MSG_UP_GCC64"
+    )
 
-    # Proton-Clang
-    if [[ -d $PROTON_DIR ]]
-    then
-        _note "${MSG_UP_CLANG}..."
-        cd "$PROTON_DIR" || \
-            (_error "$MSG_ERR_DIR ${RED}${PROTON_DIR}"; _exit)
-        git checkout "$PROTON_BRANCH"
-        git fetch
-        git reset --hard HEAD
-        git merge origin "$PROTON_BRANCH"
-        cd "$DIR" || \
-            (_error "$MSG_ERR_DIR ${RED}${DIR}"; _exit)
-    fi
-
-    # GCC-arm64
-    if [[ -d $GCC_ARM64_DIR ]]
-    then
-        _note "${MSG_UP_GCC64}..."
-        cd "$GCC_ARM64_DIR" || \
-            (_error "$MSG_ERR_DIR ${RED}${GCC_ARM64_DIR}"; _exit)
-        git checkout "$GCC_ARM64_BRANCH"
-        git fetch
-        git reset --hard HEAD
-        git merge origin "$GCC_ARM64_BRANCH"
-        cd "$DIR" || \
-            (_error "$MSG_ERR_DIR ${RED}${DIR}"; _exit)
-    fi
-
-    # GCC-arm32
-    if [[ -d $GCC_ARM_DIR ]]
-    then
-        _note "${MSG_UP_GCC32}..."
-        cd "$GCC_ARM_DIR" || \
-            (_error "$MSG_ERR_DIR ${RED}${GCC_ARM_DIR}"; _exit)
-        git checkout "$GCC_ARM_BRANCH"
-        git fetch
-        git reset --hard HEAD
-        git merge origin "$GCC_ARM_BRANCH"
-        cd "$DIR" || \
-            (_error "$MSG_ERR_DIR ${RED}${DIR}"; _exit)
-    fi
+    # Update AK3 and toolchains
+    TC_LIST=(ak3 t1 t2 t3)
+    for repository in "${TC_LIST[@]}"
+    do
+        IFS="€"
+        REPO="${TC_DATA[${repository}]}"
+        read -ra REPO <<< "$REPO"
+        if [[ -d ${REPO[0]} ]]
+        then
+            _note "${REPO[2]}..."
+            cd "${REPO[0]}" || (
+                _error "$MSG_ERR_DIR ${RED}${REPO[0]}"
+                _exit
+            )
+            _update_git "${REPO[1]}"
+            cd "$DIR" || (
+                _error "$MSG_ERR_DIR ${RED}${DIR}"
+                _exit
+            )
+        fi
+    done
 }
 
