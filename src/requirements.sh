@@ -22,7 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Install missing dependencies
+# Find oud and install requirements
 _install_dependencies() {
 
     # Set the package manager for each Linux distribution
@@ -36,7 +36,7 @@ _install_dependencies() {
         [dnf]="sudo dnf install -y"
     )
 
-    # Get current package manager cmd
+    # Get current package manager command
     OS=(pacman yum emerge zypper dnf pkg apt)
     for PKG in "${OS[@]}"
     do
@@ -73,67 +73,44 @@ _install_dependencies() {
 # Clone missing toolchains repos
 _clone_toolchains() {
 
-    # PROTON CLANG
-    _clone_proton() {
-        if [[ ! -d $PROTON_DIR ]]
+    # Clone command
+    _clone_tc() {
+        if [[ ! -d $3 ]]
         then
-            export TC=${PROTON_DIR##*/}
+            export TC=${3##*/}
             _ask_for_clone_toolchain
             if [[ $CLONE_TC == True ]]
             then
-                git clone --depth=1 -b \
-                    "$PROTON_BRANCH" \
-                    "$PROTON_URL" \
-                    "$PROTON_DIR"
+                git clone --depth=1 -b "$1" "$2" "$3"
             fi
         fi
     }
 
-    # GCC ARM
-    _clone_gcc_arm() {
-        if [[ ! -d $GCC_ARM_DIR ]]
-        then
-            export TC=${GCC_ARM_DIR##*/}
-            _ask_for_clone_toolchain
-            if [[ $CLONE_TC == True ]]
-            then
-                git clone --depth=1 -b \
-                    "$GCC_ARM_BRANCH" \
-                    "$GCC_ARM_URL" \
-                    "$GCC_ARM_DIR"
-            fi
-        fi
-    }
+    # Proton-Clang
+    case $COMPILER in
+        Proton-Clang|Proton-GCC)
+            _clone_tc \
+                "$PROTON_BRANCH" \
+                "$PROTON_URL" \
+                "$PROTON_DIR"
+    esac
+
+    # GCC ARM32
+    case $COMPILER in
+        Eva-GCC|Proton-GCC)
+            _clone_tc \
+                "$GCC_ARM_BRANCH" \
+                "$GCC_ARM_URL" \
+                "$GCC_ARM_DIR"
+    esac
 
     # GCC ARM64
-    _clone_gcc_arm64() {
-        if [[ ! -d $GCC_ARM64_DIR ]]
-        then
-            export TC=${GCC_ARM64_DIR##*/}
-            _ask_for_clone_toolchain
-            if [[ $CLONE_TC == True ]]
-            then
-                git clone --depth=1 -b \
-                    "$GCC_ARM64_BRANCH" \
-                    "$GCC_ARM64_URL" \
-                    "$GCC_ARM64_DIR"
-            fi
-        fi
-    }
-
-    # Clone required toolchain(s)
     case $COMPILER in
-        Proton-Clang)
-            _clone_proton
-            ;;
-        Eva-GCC)
-            _clone_gcc_arm
-            _clone_gcc_arm64
-            ;;
-        Proton-GCC)
-            _clone_proton
-            _clone_gcc_arm
-            _clone_gcc_arm64
+        Eva-GCC|Proton-GCC)
+            _clone_tc \
+                "$GCC_ARM64_BRANCH" \
+                "$GCC_ARM64_URL" \
+                "$GCC_ARM64_DIR"
     esac
 }
 
