@@ -30,7 +30,7 @@ DIR=${PWD}/${DIRNAME}
 cd "$DIR" || exit $?
 
 # Bash job control
-set > "${DIR}/bashvar"
+( set -o posix; set )> "${DIR}/bashvar"
 set -m -E -o pipefail #-b -v
 
 # App Language

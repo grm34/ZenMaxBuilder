@@ -201,10 +201,11 @@ _exit() {
     # Get user inputs and add them to logfile
     if [[ -f ${DIR}/bashvar ]] && [[ -f $LOG ]]
     then
-        set | grep -v "$EXCLUDE_VARS" > buildervar
-        printf "\n### USER INPUT LOGS ###\n" >> "$LOG"
+        ( set -o posix; set | grep -v "$EXCLUDE_VARS" )> \
+            "${DIR}/buildervar"
+        printf "\n\n### ZMB SETTINGS ###\n" >> "$LOG"
         diff bashvar buildervar | grep -E \
-            "^> [A-Z_]{3,26}=" >> "$LOG" || sleep 0.1
+            "^> [A-Z0-9_]{3,32}=" >> "$LOG" || sleep 0.1
     fi
 
     # Send ERR logs on Telegram
