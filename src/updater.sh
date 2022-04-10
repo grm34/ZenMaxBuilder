@@ -22,16 +22,17 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Update git repository
+# Reset then pull git repository
 _update_git() {
     git checkout "$1"
     git fetch
     git reset --hard HEAD
     git merge origin "$1"
+    git pull
 }
 
 
-# Update ZMB, AK3 and all toolchains
+# [UPDATE] ZMB AK3 Toolchains
 _full_upgrade() {
 
     # ZenMaxBuilder
