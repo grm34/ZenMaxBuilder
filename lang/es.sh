@@ -42,7 +42,7 @@ MSG_NOTE_ZIPPED="Concluido compresión, eche un vistazo en builds"
 # src/manager.sh
 # ==============
 MSG_HELP_H="mostrar este mensaje y salir"
-MSG_HELP_S="iniciar una nueva compilación del kernel"
+MSG_HELP_S="iniciar nueva compilación del kernel"
 MSG_HELP_U="actualizar ZMB y las toolchains"
 MSG_HELP_L="mostrar la lista de sus kernels"
 MSG_HELP_T="mostrar la última etiqueta de Linux"
