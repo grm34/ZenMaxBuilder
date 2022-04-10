@@ -22,32 +22,6 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# [MAIN]
-# Create Flashable ZIP
-# Sign ZIP with AOSP Keys
-_create_flashable_zip() {
-    _zip "${KERNEL_NAME}-${DATE}" "$K_IMG" "$BUILD_DIR"
-    _sign_zip "${BUILD_DIR}/${KERNEL_NAME}-${DATE}"
-}
-
-
-# [OPTION]
-# Create Flashable ZIP
-# Sign ZIP wuth AOSP Keys
-_create_zip_option() {
-    if [[ -f $OPTARG ]] && [[ ${OPTARG##*/} == Image* ]]
-    then
-        _clean_anykernel
-        _zip "${OPTARG##*/}-${DATE}-${TIME}" "$OPTARG" \
-            "${DIR}/builds/default"
-        _sign_zip "${OPTARG##*/}-${DATE}-${TIME}"
-        _clean_anykernel
-    else
-        _error "$MSG_ERR_IMG ${RED}${OPTARG}"
-    fi
-}
-
-
 # Flashable ZIP Creation
 # ======================
 #   $1 = kernel name
@@ -153,5 +127,22 @@ _set_ak3_conf() {
     _check sed -i \
         "s/device.name1=.*/device.name1=${CODENAME}/g" \
         anykernel.sh
+}
+
+
+# [OPTION]
+# Create Flashable ZIP
+# Sign ZIP wuth AOSP Keys
+_create_zip_option() {
+    if [[ -f $OPTARG ]] && [[ ${OPTARG##*/} == Image* ]]
+    then
+        _clean_anykernel
+        _zip "${OPTARG##*/}-${DATE}-${TIME}" "$OPTARG" \
+            "${DIR}/builds/default"
+        _sign_zip "${OPTARG##*/}-${DATE}-${TIME}"
+        _clean_anykernel
+    else
+        _error "$MSG_ERR_IMG ${RED}${OPTARG}"
+    fi
 }
 
