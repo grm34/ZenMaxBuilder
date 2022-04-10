@@ -22,12 +22,93 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Flashable ZIP creation
+# [MAIN] Create Flashable ZIP
 _create_flashable_zip() {
-    _note "$MSG_NOTE_ZIP ${KERNEL_NAME}-${DATE}.zip..."
+    _zip "${KERNEL_NAME}-${DATE}" "$K_IMG" "$BUILD_DIR"
+    _sign_zip "${BUILD_DIR}/${KERNEL_NAME}-${DATE}"
+}
+
+
+# [OPTION] Create Flashable ZIP
+_create_zip_option() {
+    if [[ -f $OPTARG ]] && [[ ${OPTARG##*/} == Image* ]]
+    then
+        _clean_anykernel
+        _zip "${OPTARG##*/}-${DATE}-${TIME}" "$OPTARG" \
+            "${DIR}/builds/default"
+        _sign_zip "${OPTARG##*/}-${DATE}_${TIME}"
+        _clean_anykernel
+    else
+        _error "$MSG_ERR_IMG ${RED}${OPTARG}"
+    fi
+}
+
+
+# [AK3] Flashable ZIP creation
+# ============================
+# $1 = kernel name
+# $2 = kernel image
+# $3 = build folder
+#
+_zip() {
+    _note "$MSG_NOTE_ZIP ${1}.zip..."
 
     # Send zip status on Telegram
     _send_zip_creation_status
+
+    # Move Kernel Image to AK3 folder
+    _check cp "$2" "$ANYKERNEL_DIR"
+
+    # CD to AK3 folder
+    cd "$ANYKERNEL_DIR" || (
+        _error "$MSG_ERR_DIR ${RED}AnyKernel"
+        _exit
+    )
+
+    # Set AK3 configuration
+    if [[ $START_TIME ]]
+    then
+        _set_ak3_conf
+    fi
+
+    # Create flashable zip
+    _check unbuffer zip -r9 "${1}.zip" \
+        ./* -x .git README.md ./*placeholder 2>&1
+
+    # Move zip to builds folder
+    if [[ ! -d $3 ]]
+    then
+        _check mkdir "$3"
+    fi
+    _check mv "${1}.zip" "$3"
+
+    # Back to script dir
+    cd "$DIR" || (
+        _error "$MSG_ERR_DIR ${RED}${DIR}"
+        _exit
+    )
+}
+
+
+# [JAVA] AOSP Keys ZIP signing
+# ============================
+# $1 = kernel name
+#
+_sign_zip() {
+    _note "${MSG_NOTE_SIGN}..."
+
+    # Send signing status on Telegram
+    _send_zip_signing_status
+
+    # Sign flashable zip
+    _check unbuffer java -jar \
+        "${DIR}/bin/zipsigner-3.0.jar" \
+        "${1}.zip" "${1}-signed.zip" 2>&1
+}
+
+
+# [AK3] Configuration
+_set_ak3_conf() {
 
     # Create init.spectrum.rc
     if [[ -f ${KERNEL_DIR}/${SPECTRUM} ]]
@@ -40,13 +121,6 @@ _create_flashable_zip() {
             "s/*.spectrum.kernel.*/*.spectrum.kernel ${kn}/g" \
             init.spectrum.rc
     fi
-
-    # Move Kernel Image to AnyKernel folder
-    _check cp "$K_IMG" "$ANYKERNEL_DIR"
-
-    # CD to AnyKernel folder
-    cd "$ANYKERNEL_DIR" || \
-        (_error "$MSG_ERR_DIR ${RED}AnyKernel"; _exit)
 
     # Set anykernel.sh
     _check sed -i \
@@ -73,76 +147,5 @@ _create_flashable_zip() {
     _check sed -i \
         "s/device.name1=.*/device.name1=${CODENAME}/g" \
         anykernel.sh
-
-    # Create flashable zip
-    _check unbuffer zip -r9 "${KERNEL_NAME}-${DATE}.zip" \
-        ./* -x .git README.md ./*placeholder 2>&1
-
-    # Move zip to builds folder
-    _check mv "${KERNEL_NAME}-${DATE}.zip" "$BUILD_DIR"
-
-    # Back to script dir
-    cd "$DIR" || (_error "$MSG_ERR_DIR ${RED}${DIR}"; _exit)
-}
-
-
-# AOSP Keys ZIP signing
-_sign_flashable_zip() {
-    _note "${MSG_NOTE_SIGN}..."
-
-    # Send signing status on Telegram
-    _send_zip_signing_status
-
-    # Sign flashable zip
-    _check unbuffer java -jar \
-        "${DIR}/bin/zipsigner-3.0.jar" \
-        "${BUILD_DIR}/${KERNEL_NAME}-${DATE}.zip" \
-        "${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip" 2>&1
-}
-
-
-# [OPTION] Create Flashable ZIP
-_create_zip_option() {
-    if [[ -f $OPTARG ]] && [[ $OPTARG == Image* ]]
-    then
-        _clean_anykernel
-        _note "$MSG_NOTE_ZIP ${OPTARG}-{DATE}_${TIME}.zip..."
-
-        # Move Image to AnyKernel folder
-        _check cp "$OPTARG" "$ANYKERNEL_DIR"
-
-        # CD to AnyKernel folder
-        cd "$ANYKERNEL_DIR" || \
-            (_error "$MSG_ERR_DIR ${RED}AnyKernel"; _exit)
-
-        # Create flashable zip
-        _check zip -r9 "${OPTARG##*/}-${DATE}-${TIME}.zip" \
-            ./* -x .git README.md ./*placeholder
-
-        # Sign flashable zip
-        _note "${MSG_NOTE_SIGN}..."
-        _check java -jar \
-            "${DIR}/bin/zipsigner-3.0.jar" \
-            "${OPTARG##*/}-${DATE}_${TIME}.zip" \
-            "${OPTARG##*/}-${DATE}_${TIME}-signed.zip"
-
-        # Move zip to builds folder
-        if [[ ! -d ${DIR}/builds/default ]]
-        then
-            _check mkdir "${DIR}/builds/default"
-        fi
-        _check mv \
-            "${OPTARG##*/}-${DATE}_${TIME}-signed.zip" \
-            "${DIR}/builds/default"
-
-        # Back to script dir
-        _clean_anykernel
-        cd "$DIR" || \
-            (_error "$MSG_ERR_DIR ${RED}${DIR}"; _exit)
-
-    else
-        # Display error while invalid
-        _error "$MSG_ERR_IMG ${RED}${OPTARG}"
-    fi
 }
 

@@ -275,7 +275,6 @@ if [[ $FLASH_ZIP == True ]]
 then
     _ask_for_kernel_image
     _create_flashable_zip | tee -a "$LOG"
-    _sign_flashable_zip | tee -a "$LOG"
     _note "$MSG_NOTE_ZIPPED !"
 fi
 
