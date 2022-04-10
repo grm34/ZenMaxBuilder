@@ -44,12 +44,12 @@ _create_zip_option() {
 }
 
 
-# [AK3] Flashable ZIP creation
+# [AK3] Flashable ZIP Creation
 # ============================
-# $1 = kernel name
-# $2 = kernel image
-# $3 = build folder
-#
+#   $1 = kernel name
+#   $2 = kernel image
+#   $3 = build folder
+# ============================
 _zip() {
     _note "$MSG_NOTE_ZIP ${1}.zip..."
 
@@ -90,10 +90,10 @@ _zip() {
 }
 
 
-# [JAVA] AOSP Keys ZIP signing
+# [JAVA] AOSP Keys ZIP Signing
 # ============================
-# $1 = kernel name
-#
+#   $1 = kernel name
+# ============================
 _sign_zip() {
     _note "${MSG_NOTE_SIGN}..."
 
