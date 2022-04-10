@@ -92,6 +92,10 @@ _get_user_timezone() {
 
 
 # Ask some information
+# ====================
+#   $1 = question
+#   $2 = example
+# ====================
 _prompt() {
     LENTH=$*
     COUNT=${#LENTH}
@@ -111,11 +115,15 @@ _prompt() {
 
 
 # Confirmation prompt
+# ===================
+#   $1 = question
+#   $2 = Yes/no
+# ===================
 _confirm_msg() {
     CONFIRM=False
     COUNT=$(( ${#1} + 6 ))
     echo -ne "${YELL}\n==> ${GREEN}${1}"\
-             "${RED}${N}${YELL}\n==> "
+             "${RED}${2}${YELL}\n==> "
     for (( CHAR=1; CHAR<=COUNT; CHAR++ ))
     do
         echo -ne "─"

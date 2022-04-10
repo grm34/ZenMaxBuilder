@@ -86,16 +86,20 @@ _ask_for_codename() {
 _ask_for_defconfig() {
     PROMPT_TYPE="echo"
     CONF_DIR=${KERNEL_DIR}/arch/${ARCH}/configs
-    cd "$CONF_DIR" || \
-        (_error "$MSG_ERR_DIR ${RED}${CONF_DIR}"; _exit)
+    cd "$CONF_DIR" || (
+        _error "$MSG_ERR_DIR ${RED}${CONF_DIR}"
+        _exit
+    )
     _prompt "$MSG_ASK_DEF :"
     select DEFCONFIG in *_defconfig
     do
         [[ $DEFCONFIG ]] && break
         _error "$MSG_ERR_SELECT"
     done
-    cd "$DIR" || \
-        (_error "$MSG_ERR_DIR ${RED}${DIR}"; _exit)
+    cd "$DIR" || (
+        _error "$MSG_ERR_DIR ${RED}${DIR}"
+        _exit
+    )
     export PROMPT_TYPE="default"
 }
 
@@ -103,8 +107,7 @@ _ask_for_defconfig() {
 # Request a "make menuconfig" command.
 # Validation checks are not needed here.
 _ask_for_menuconfig() {
-    export N="[y/N]"
-    _confirm "$MSG_ASK_CONF ?"
+    _confirm "$MSG_ASK_CONF ?" "[y/N]"
     case $CONFIRM in
         y|Y|yes|Yes|YES)
             MENUCONFIG=True
@@ -120,9 +123,8 @@ _ask_for_menuconfig() {
 # to the amount of available CPU cores (no limits here).
 # Otherwise all available CPU cores will be used.
 _ask_for_cores() {
-    export N="[Y/n]"
     CPU=$(nproc --all)
-    _confirm "$MSG_ASK_CPU ?"
+    _confirm "$MSG_ASK_CPU ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
             _prompt "$MSG_ASK_CORES :"
@@ -136,7 +138,7 @@ _ask_for_cores() {
             done
             ;;
         *)
-            CORES=$CPU
+            export CORES=$CPU
     esac
 }
 
@@ -147,8 +149,7 @@ _ask_for_telegram() {
     if [[ $TELEGRAM_CHAT_ID ]] && \
         [[ $TELEGRAM_BOT_TOKEN ]]
     then
-        export N="[y/N]"
-        _confirm "$MSG_ASK_TG ?"
+        _confirm "$MSG_ASK_TG ?" "[y/N]"
         case $CONFIRM in
             y|Y|yes|Yes|YES)
                 BUILD_STATUS=True
@@ -163,8 +164,7 @@ _ask_for_telegram() {
 # Request "make clean" and "make mrproper" commands.
 # Validation checks are not needed here.
 _ask_for_make_clean() {
-    export N="[y/N]"
-    _confirm "${MSG_ASK_MCLEAN}: v$LINUX_VERSION ?"
+    _confirm "${MSG_ASK_MCLEAN}: v$LINUX_VERSION ?" "[y/N]"
     case $CONFIRM in
         y|Y|yes|Yes|YES)
             MAKE_CLEAN=True
@@ -179,8 +179,7 @@ _ask_for_make_clean() {
 # Otherwise request to continue with original one.
 # Validation checks are not needed here.
 _ask_for_save_defconfig() {
-    export N="[Y/n]"
-    _confirm "${MSG_ASK_SAVE_DEF}: $DEFCONFIG ?"
+    _confirm "${MSG_ASK_SAVE_DEF}: $DEFCONFIG ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
             SAVE_DEFCONFIG=False
@@ -202,9 +201,9 @@ _ask_for_save_defconfig() {
 # Request "make" command for kernel build.
 # Validation checks are not needed here.
 _ask_for_new_build() {
-    export N="[Y/n]"
     _confirm \
-        "$MSG_START ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
+        "$MSG_START ${TAG}-${CODENAME}-${LINUX_VERSION} ?" \
+        "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
             NEW_BUILD=False
@@ -218,8 +217,7 @@ _ask_for_new_build() {
 # Request to run again failed command.
 # Validation checks are not needed here.
 _ask_for_run_again() {
-    export N="[y/N]"
-    _confirm "$MSG_RUN_AGAIN ?"
+    _confirm "$MSG_RUN_AGAIN ?" "[y/N]"
     case $CONFIRM in
         y|Y|yes|Yes|YES)
             RUN_AGAIN=True
@@ -233,9 +231,9 @@ _ask_for_run_again() {
 # Request the creation of flashable zip.
 # Validation checks are not needed here.
 _ask_for_flashable_zip() {
-    export N="[y/N]"
     _confirm \
-        "$MSG_ASK_ZIP ${TAG}-${CODENAME}-${LINUX_VERSION} ?"
+        "$MSG_ASK_ZIP ${TAG}-${CODENAME}-${LINUX_VERSION} ?" \
+        "[y/N]"
     case $CONFIRM in
         y|Y|yes|Yes|YES)
             FLASH_ZIP=True
@@ -250,8 +248,10 @@ _ask_for_flashable_zip() {
 # Validation checks the presence of this file in
 # "boot" folder and verify it starts with "Image".
 _ask_for_kernel_image() {
-    cd "$BOOT_DIR" || \
-        (_error "$MSG_ERR_DIR ${RED}${BOOT_DIR}"; _exit)
+    cd "$BOOT_DIR" || (
+        _error "$MSG_ERR_DIR ${RED}${BOOT_DIR}"
+        _exit
+    )
     _prompt "$MSG_ASK_IMG :"
     read -r -e K_IMG
     until [[ -f $K_IMG ]] && [[ $K_IMG == Image* ]]
@@ -261,7 +261,10 @@ _ask_for_kernel_image() {
         read -r -e K_IMG
     done
     K_IMG=${BOOT_DIR}/${K_IMG}
-    cd "$DIR" || (_error "$MSG_ERR_DIR ${RED}${DIR}"; _exit)
+    cd "$DIR" || (
+        _error "$MSG_ERR_DIR ${RED}${DIR}"
+        _exit
+    )
 }
 
 
@@ -269,8 +272,7 @@ _ask_for_kernel_image() {
 # Warn the user that when false the script may crash.
 # Validation checks are not needed here.
 _ask_for_install_pkg() {
-    export N="[Y/n]"
-    _confirm "$MSG_ASK_PKG $PACKAGE ?"
+    _confirm "$MSG_ASK_PKG $PACKAGE ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
             INSTALL_PKG=False
@@ -287,12 +289,11 @@ _ask_for_install_pkg() {
 # Warn the user and exit the script when false.
 # Validation checks are not needed here.
 _ask_for_clone_toolchain() {
-    export N="[Y/n]"
-    _confirm "$MSG_ASK_CLONE_TC $TC ?"
+    _confirm "$MSG_ASK_CLONE_TC $1 ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
             CLONE_TC=False
-            _error "$MSG_ERR_TCDIR ${RED}${TC}"\
+            _error "$MSG_ERR_TCDIR ${RED}$1"\
                    "${YELL}${MSG_ERR_SEE_CONF}"
             _exit
             ;;
@@ -306,8 +307,7 @@ _ask_for_clone_toolchain() {
 # Warn the user and exit the script when false.
 # Validation checks are not needed here.
 _ask_for_clone_anykernel() {
-    export N="[Y/n]"
-    _confirm "$MSG_ASK_CLONE_AK3 ?"
+    _confirm "$MSG_ASK_CLONE_AK3 ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
             CLONE_AK=False
@@ -324,8 +324,7 @@ _ask_for_clone_anykernel() {
 # Request to save the modified config.sh before update.
 # Validation checks are not needed here.
 _ask_for_save_config() {
-    export N="[Y/n]"
-    _confirm "$MSG_SAVE_USER_CONFIG ?"
+    _confirm "$MSG_SAVE_USER_CONFIG ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
             SAVE_CONFIG=False
