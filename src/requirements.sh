@@ -82,8 +82,7 @@ _clone_toolchains() {
     _clone_tc() {
         if [[ ! -d $3 ]]
         then
-            export TC=${3##*/}
-            _ask_for_clone_toolchain
+            _ask_for_clone_toolchain "${3##*/}"
             if [[ $CLONE_TC == True ]]
             then
                 git clone --depth=1 -b "$1" "$2" "$3"
