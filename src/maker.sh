@@ -80,9 +80,9 @@ _make_menuconfig() {
 
 
 # Save DEFCONFIG [MENUCONFIG]
+# When a defconfig file is modified with menuconfig,
+# the original will be saved as "example_defconfig_save"
 _save_defconfig() {
-    # When a defconfig file is modified with menuconfig,
-    # the original will be saved as "example_defconfig_save"
     _note "$MSG_NOTE_SAVE $DEFCONFIG (arch/${ARCH}/configs)..."
     _check cp \
         "${CONF_DIR}/${DEFCONFIG}" \
