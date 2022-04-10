@@ -22,9 +22,30 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-########################
-### UPDATE: --update ###
-########################
+##################
+### ZIP OPTION ###
+##################
+
+
+# Create Flashable ZIP
+# Sign ZIP wuth AOSP Keys
+_create_zip_option() {
+    if [[ -f $OPTARG ]] && [[ ${OPTARG##*/} == Image* ]]
+    then
+        _clean_anykernel
+        _zip "${OPTARG##*/}-${DATE}-${TIME}" "$OPTARG" \
+            "${DIR}/builds/default"
+        _sign_zip "${OPTARG##*/}-${DATE}-${TIME}"
+        _clean_anykernel
+    else
+        _error "$MSG_ERR_IMG ${RED}${OPTARG}"
+    fi
+}
+
+
+#####################
+### UPDATE OPTION ###
+#####################
 
 
 # GitHub repository
@@ -89,9 +110,9 @@ _full_upgrade() {
 }
 
 
-############################
-### LIST KERNELS: --list ###
-############################
+###########################
+### LIST KERNELS OPTION ###
+###########################
 
 
 # Show list of kernels
@@ -110,7 +131,7 @@ _list_all_kernels() {
 
 
 ########################
-### LINUX TAG: --tag ###
+### LINUX TAG OPTION ###
 ########################
 
 
@@ -125,6 +146,42 @@ _get_linux_tag() {
         _note "${MSG_SUCCESS_LTAG}: ${RED}${LTAG}"
     else
         _error "$MSG_ERR_LTAG ${RED}${OPTARG}"
+    fi
+}
+
+
+########################
+### TELEGRAM OPTIONS ###
+########################
+
+
+# Send message
+_send_msg_option() {
+    if [[ $TELEGRAM_CHAT_ID ]] && \
+        [[ $TELEGRAM_BOT_TOKEN ]]
+    then
+        _note "${MSG_NOTE_SEND}..."
+        _send_msg "${OPTARG//_/-}"
+    else
+        _error "$MSG_ERR_API"
+    fi
+}
+
+
+# Send file
+_send_file_option() {
+    if [[ -f $OPTARG ]]
+    then
+        if [[ $TELEGRAM_CHAT_ID ]] && \
+            [[ $TELEGRAM_BOT_TOKEN ]]
+        then
+            _note "${MSG_NOTE_UPLOAD}: ${OPTARG##*/}..."
+            _send_file "$OPTARG"
+        else
+            _error "$MSG_ERR_API"
+        fi
+    else
+        _error "$MSG_ERR_FILE ${RED}${OPTARG}"
     fi
 }
 

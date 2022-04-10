@@ -59,42 +59,6 @@ _send_file() {
 }
 
 
-########################
-### External Options ###
-########################
-
-
-# [OPTION] Send message
-_send_msg_option() {
-    if [[ $TELEGRAM_CHAT_ID ]] && \
-        [[ $TELEGRAM_BOT_TOKEN ]]
-    then
-        _note "${MSG_NOTE_SEND}..."
-        _send_msg "${OPTARG//_/-}"
-    else
-        _error "$MSG_ERR_API"
-    fi
-}
-
-
-# [OPTION] Send file
-_send_file_option() {
-    if [[ -f $OPTARG ]]
-    then
-        if [[ $TELEGRAM_CHAT_ID ]] && \
-            [[ $TELEGRAM_BOT_TOKEN ]]
-        then
-            _note "${MSG_NOTE_UPLOAD}: ${OPTARG##*/}..."
-            _send_file "$OPTARG"
-        else
-            _error "$MSG_ERR_API"
-        fi
-    else
-        _error "$MSG_ERR_FILE ${RED}${OPTARG}"
-    fi
-}
-
-
 #########################
 ### Make build status ###
 #########################
