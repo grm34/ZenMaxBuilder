@@ -22,7 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Find oud and install requirements
+# Find out and install requirements
 _install_dependencies() {
 
     # Set the package manager for each Linux distribution
