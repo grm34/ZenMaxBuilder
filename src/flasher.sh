@@ -36,7 +36,7 @@ _create_zip_option() {
         _clean_anykernel
         _zip "${OPTARG##*/}-${DATE}-${TIME}" "$OPTARG" \
             "${DIR}/builds/default"
-        _sign_zip "${OPTARG##*/}-${DATE}_${TIME}"
+        _sign_zip "${OPTARG##*/}-${DATE}-${TIME}"
         _clean_anykernel
     else
         _error "$MSG_ERR_IMG ${RED}${OPTARG}"
