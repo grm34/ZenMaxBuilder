@@ -22,7 +22,12 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Update repository
+########################
+### UPDATE: --update ###
+########################
+
+
+# GitHub repository
 # =================
 #   $1 = branch
 # =================
@@ -35,7 +40,6 @@ _update_git() {
 }
 
 
-# [UPDATE]
 # ZMB: ZenMaxBuilder
 # AK3: AnyKernel3
 # Toolchains
@@ -82,5 +86,45 @@ _full_upgrade() {
             )
         fi
     done
+}
+
+
+############################
+### LIST KERNELS: --list ###
+############################
+
+
+# Show list of kernels
+# List folders in OUT
+_list_all_kernels() {
+    if [[ -d ${DIR}/out ]] && \
+        [[ $(ls -d out/*/ 2>/dev/null) ]]
+    then
+        _note "${MSG_NOTE_LISTKERNEL}:"
+        find out/ -mindepth 1 -maxdepth 1 -type d \
+            | cut -f2 -d'/' | cat -n
+    else
+        _error "$MSG_ERR_LISTKERNEL"
+    fi
+}
+
+
+########################
+### LINUX TAG: --tag ###
+########################
+
+
+# Get latest linux stable tag
+_get_linux_tag() {
+    _note "${MSG_NOTE_LTAG}..."
+    LTAG=$(git ls-remote --refs --sort='v:refname' --tags \
+        "$LINUX_STABLE" | grep "$OPTARG" | tail --lines=1 \
+        | cut --delimiter='/' --fields=3)
+    if [[ $LTAG == ${OPTARG}* ]]
+    then
+        _note "${MSG_SUCCESS_LTAG}: ${RED}${LTAG}"
+    else
+        _error "$MSG_ERR_LTAG ${RED}${OPTARG}"
+    fi
 }
 

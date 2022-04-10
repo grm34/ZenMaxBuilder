@@ -58,8 +58,8 @@ source "${DIR}/src/flasher.sh"
 source "${DIR}/src/maker.sh"
 # shellcheck source=src/prompter.sh
 source "${DIR}/src/prompter.sh"
-# shellcheck source=src/updater.sh
-source "${DIR}/src/updater.sh"
+# shellcheck source=src/options.sh
+source "${DIR}/src/options.sh"
 
 # Ban all ('n00bz')
 if [[ ! -t 0 ]]
