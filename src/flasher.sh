@@ -129,20 +129,3 @@ _set_ak3_conf() {
         anykernel.sh
 }
 
-
-# [OPTION]
-# Create Flashable ZIP
-# Sign ZIP wuth AOSP Keys
-_create_zip_option() {
-    if [[ -f $OPTARG ]] && [[ ${OPTARG##*/} == Image* ]]
-    then
-        _clean_anykernel
-        _zip "${OPTARG##*/}-${DATE}-${TIME}" "$OPTARG" \
-            "${DIR}/builds/default"
-        _sign_zip "${OPTARG##*/}-${DATE}-${TIME}"
-        _clean_anykernel
-    else
-        _error "$MSG_ERR_IMG ${RED}${OPTARG}"
-    fi
-}
-
