@@ -22,7 +22,10 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Reset then pull git repository
+# Pull git repository
+# ===================
+#   $1 = branch
+# ===================
 _update_git() {
     git checkout "$1"
     git fetch
