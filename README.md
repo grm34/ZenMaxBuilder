@@ -31,7 +31,7 @@
 
 ## Description
 
-ZenMaxBuilder is an Android Kernel Builder written in bash, which can be runned on any Linux System (feel free to Pull Request for Windows support). By default it uses Proton-Clang, Eva-GCC or Proton-GCC but you can use any toolchains you like by editing [config.sh](https://github.com/grm34/ZenMaxBuilder/blob/main/config.sh) file. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
+ZenMaxBuilder is an Android Kernel Builder written in bash, which can be runned on any Linux System (feel free to Pull Request for Windows support). By default it uses Proton-Clang, Eva-GCC or Proton-GCC but you can use any toolchains you like by editing [config.sh](https://github.com/grm34/ZenMaxBuilder/blob/zmb/config.sh) file. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
 
 ## Requirements
 
@@ -45,7 +45,7 @@ Dependencies will be prompted to install or you can manually install them.
 
     git clone https://github.com/grm34/ZenMaxBuilder.git
 
-:arrow_right: Enter ZenMaxBuilder repo and edit [config.sh](https://github.com/grm34/ZenMaxBuilder/blob/main/config.sh) to set your settings (optional)
+:arrow_right: Enter ZenMaxBuilder repo and edit [config.sh](https://github.com/grm34/ZenMaxBuilder/blob/zmb/config.sh) to set your settings (optional)
 
     cd ZenMaxBuilder && vi config.sh
 
@@ -85,7 +85,7 @@ Dependencies will be prompted to install or you can manually install them.
 
 ## Screenshot
 
-![screenshot](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/main/docs/assets/images/screenshot.png)
+![screenshot](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/screenshot.png)
 
 ## License
 
