@@ -274,7 +274,10 @@ _ask_for_flashable_zip
 if [[ $FLASH_ZIP == True ]]
 then
     _ask_for_kernel_image
-    _create_flashable_zip | tee -a "$LOG"
+    _zip "${KERNEL_NAME}-${DATE}" "$K_IMG" \
+        "$BUILD_DIR" | tee -a "$LOG"
+    _sign_zip "${BUILD_DIR}/${KERNEL_NAME}-${DATE}" \
+        | tee -a "$LOG"
     _note "$MSG_NOTE_ZIPPED !"
 fi
 
