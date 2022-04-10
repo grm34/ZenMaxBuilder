@@ -16,12 +16,12 @@
 | prompter.sh     | 36    | 68      | 232  |
 | manager.sh      | 34    | 63      | 191  |
 | main.sh         | 34    | 63      | 170  |
-| telegram.sh     | 32    | 47      | 109  |
+| options.sh      | 29    | 52      | 106  |
 | requirements.sh | 15    | 35      | 86   |
-| flasher.sh      | 21    | 47      | 80   |
-| options.sh      | 19    | 42      | 46   |
+| telegram.sh     | 26    | 42      | 84   |
+| flasher.sh      | 19    | 44      | 68   |
 | maker.sh        | 20    | 33      | 52   |
-| TOTAL           | 211   | 398     | 989  |
+| TOTAL           | 213   | 400     | 989  |
 
 ## Reporting a Vulnerability
 
