@@ -40,7 +40,7 @@ then
 fi
 
 
-# Display script banner
+# ZMB banner
 _terminal_banner() {
     echo -e "$BOLD
    ┌──────────────────────────────────────────────┐
@@ -117,7 +117,7 @@ _prompt() {
 # Confirmation prompt
 # ===================
 #   $1 = question
-#   $2 = Yes/no
+#   $2 = yes/no
 # ===================
 _confirm_msg() {
     CONFIRM=False
@@ -133,7 +133,13 @@ _confirm_msg() {
 }
 
 
-# Ask confirmation (Yes/No)
+# Ask confirmation [y/n]
+# ======================
+#   $@ = $1 + $2
+#   -------------
+#   $1 = question
+#   $2 = yes/no
+# ======================
 _confirm() {
     _confirm_msg "$@"
     until [[ -z $CONFIRM ]] || \
@@ -146,6 +152,9 @@ _confirm() {
 
 
 # Display some notes
+# ==================
+#   $1 = note
+# ==================
 _note() {
     echo -e "${YELL}\n[$(TZ=$TIMEZONE date +%T)]"\
             "${CYAN}${1}${NC}"
@@ -153,13 +162,19 @@ _note() {
 }
 
 
-# Display ERR
+# Display any error
+# =================
+#   $* = ERR
+# =================
 _error() {
     echo -e "\n${RED}${MSG_ERROR}: ${NC}${YELLOW}${*}${NC}"
 }
 
 
-# Handle ERR
+# Handle command error
+# ====================
+#   $@ = command
+# ====================
 _check() {
 
     # Run command as child, check
@@ -251,7 +266,7 @@ _clean_anykernel() {
 }
 
 
-# Show list of kernels
+# [OPTION] Show list of kernels
 _list_all_kernels() {
     if [[ -d ${DIR}/out ]] && \
         [[ $(ls -d out/*/ 2>/dev/null) ]]
@@ -265,7 +280,7 @@ _list_all_kernels() {
 }
 
 
-# Get latest linux stable tag
+# [OPTION] Get latest linux stable tag
 _get_linux_tag() {
     _note "${MSG_NOTE_LTAG}..."
     LTAG=$(git ls-remote --refs --sort='v:refname' --tags \

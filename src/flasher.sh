@@ -22,14 +22,18 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# [MAIN] Create Flashable ZIP
+# [MAIN]
+# Create Flashable ZIP
+# Sign ZIP with AOSP Keys
 _create_flashable_zip() {
     _zip "${KERNEL_NAME}-${DATE}" "$K_IMG" "$BUILD_DIR"
     _sign_zip "${BUILD_DIR}/${KERNEL_NAME}-${DATE}"
 }
 
 
-# [OPTION] Create Flashable ZIP
+# [OPTION]
+# Create Flashable ZIP
+# Sign ZIP wuth AOSP Keys
 _create_zip_option() {
     if [[ -f $OPTARG ]] && [[ ${OPTARG##*/} == Image* ]]
     then
@@ -44,19 +48,19 @@ _create_zip_option() {
 }
 
 
-# [AK3] Flashable ZIP Creation
-# ============================
+# Flashable ZIP Creation
+# ======================
 #   $1 = kernel name
 #   $2 = kernel image
 #   $3 = build folder
-# ============================
+# ======================
 _zip() {
     _note "$MSG_NOTE_ZIP ${1}.zip..."
 
     # Send zip status on Telegram
     _send_zip_creation_status
 
-    # Move Kernel Image to AK3 folder
+    # Move image to AK3 folder
     _check cp "$2" "$ANYKERNEL_DIR"
 
     # CD to AK3 folder
@@ -71,7 +75,7 @@ _zip() {
         _set_ak3_conf
     fi
 
-    # Create flashable zip
+    # Create zip
     _check unbuffer zip -r9 "${1}.zip" \
         ./* -x .git README.md ./*placeholder 2>&1
 
@@ -90,27 +94,29 @@ _zip() {
 }
 
 
-# [JAVA] AOSP Keys ZIP Signing
-# ============================
+# Signing ZIP with AOSP Keys
+# ==========================
 #   $1 = kernel name
-# ============================
+# ==========================
 _sign_zip() {
     _note "${MSG_NOTE_SIGN}..."
 
     # Send signing status on Telegram
     _send_zip_signing_status
 
-    # Sign flashable zip
+    # Sign zip
     _check unbuffer java -jar \
         "${DIR}/bin/zipsigner-3.0.jar" \
         "${1}.zip" "${1}-signed.zip" 2>&1
 }
 
 
-# [AK3] Configuration
+# [AK3]
+# Set init.spectrum.rc
+# Set anykernel.sh
 _set_ak3_conf() {
 
-    # Create init.spectrum.rc
+    # init.spectrum.rc
     if [[ -f ${KERNEL_DIR}/${SPECTRUM} ]]
     then
         _check cp -af \
@@ -122,7 +128,7 @@ _set_ak3_conf() {
             init.spectrum.rc
     fi
 
-    # Set anykernel.sh
+    # anykernel.sh
     _check sed -i \
         "s/kernel.string=.*/kernel.string=${TAG}-${CODENAME}/g" \
         anykernel.sh

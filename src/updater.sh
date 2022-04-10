@@ -22,10 +22,10 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Pull git repository
-# ===================
+# Update repository
+# =================
 #   $1 = branch
-# ===================
+# =================
 _update_git() {
     git checkout "$1"
     git fetch
@@ -35,7 +35,10 @@ _update_git() {
 }
 
 
-# [UPDATE] ZMB AK3 Toolchains
+# [UPDATE]
+# ZMB: ZenMaxBuilder
+# AK3: AnyKernel3
+# Toolchains
 _full_upgrade() {
 
     # ZenMaxBuilder
@@ -50,7 +53,7 @@ _full_upgrade() {
     fi
     _update_git "$ZMB_BRANCH"
 
-    # Declare AK3 and toolchains
+    # Set AK3 and toolchains parameters
     declare -A TC_DATA=(
         [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}€$MSG_UP_AK3"
         [t1]="${PROTON_DIR}€${PROTON_BRANCH}€$MSG_UP_CLANG"

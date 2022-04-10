@@ -29,7 +29,10 @@
 API="https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN"
 
 
-# Send message [POST]
+# [POST] Send message
+# ===================
+#   $1 = message
+# ===================
 _send_msg() {
     curl --progress-bar -o /dev/null -fL \
         -X POST "${API}/sendMessage" \
@@ -40,7 +43,11 @@ _send_msg() {
 }
 
 
-# Send file [POST]
+# [POST] Send file
+# ================
+#   $1 = file
+#   $2 = caption
+# ================
 _send_file() {
     curl --progress-bar -o /dev/null -fL \
         -X POST "${API}/sendDocument" \
@@ -164,7 +171,7 @@ _upload_signed_build() {
 }
 
 
-# HTML Starting message
+# Starting build message
 _set_html_status_msg() {
     export STATUS_MSG="
 
