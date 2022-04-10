@@ -31,7 +31,7 @@
 
 ## Description
 
-ZenMaxBuilder is an Android Kernel Builder written in bash, which can be runned on any Linux System (feel free to Pull Request for Windows support). By default it uses Proton-Clang, Eva-GCC or Proton-GCC but you can use any toolchains you like by editing [config.sh](https://github.com/grm34/ZenMaxBuilder/blob/zmb/config.sh) file. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
+ZenMaxBuilder is an Android Kernel Builder written in bash, which can be runned on any Linux System (feel free to Pull Request for Windows support). By default it uses Proton-Clang, Eva-GCC or Proton-GCC but you can use any toolchains you like. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
 
 ## Requirements
 
