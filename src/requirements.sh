@@ -92,7 +92,7 @@ _clone_toolchains() {
 
     # Proton-Clang
     case $COMPILER in
-        Proton-Clang|Proton-GCC)
+        "$PROTON_CLANG_NAME"|"$PROTON_GCC_NAME")
             _clone_tc \
                 "$PROTON_BRANCH" \
                 "$PROTON_URL" \
@@ -101,7 +101,7 @@ _clone_toolchains() {
 
     # GCC ARM32
     case $COMPILER in
-        Eva-GCC|Proton-GCC)
+        "$EVA_GCC_NAME"|"$PROTON_GCC_NAME")
             _clone_tc \
                 "$GCC_ARM_BRANCH" \
                 "$GCC_ARM_URL" \
@@ -110,7 +110,7 @@ _clone_toolchains() {
 
     # GCC ARM64
     case $COMPILER in
-        Eva-GCC|Proton-GCC)
+        "$EVA_GCC_NAME"|"$PROTON_GCC_NAME")
             _clone_tc \
                 "$GCC_ARM64_BRANCH" \
                 "$GCC_ARM64_URL" \

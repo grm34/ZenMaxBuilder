@@ -124,43 +124,43 @@ DEPENDENCIES=(git zip llvm lld clang expect)
 # Change this if you are using
 # your own ZenMaxBuilder fork.
 # ================================
-ZMB_BRANCH="zmb"
+ZMB_BRANCH=zmb
 
 
 # AnyKernel repo
 # Change this if you are using
 # your own AnyKernel repository.
 # ==============================
-ANYKERNEL_DIR="AnyKernel"
+ANYKERNEL_DIR=AnyKernel
 ANYKERNEL_URL="https://github.com/grm34/AnyKernel3.git"
-ANYKERNEL_BRANCH="ZenMaxBuilder"
+ANYKERNEL_BRANCH=ZenMaxBuilder
 
 
 # Proton-Clang repo
 # Change this if you are using
 # your own Clang toolchain repository.
 # ====================================
-PROTON_DIR="${PWD}/toolchains/proton_clang"
+PROTON_DIR=${PWD}/toolchains/proton_clang
 PROTON_URL="https://github.com/kdrag0n/proton-clang.git"
-PROTON_BRANCH="master"
+PROTON_BRANCH=master
 
 
 # GCC-ARM64 repo
 # Change this if you are using
 # your own GCC ARM64 repository.
 # ==============================
-GCC_ARM64_DIR="${PWD}/toolchains/gcc_arm64"
+GCC_ARM64_DIR=${PWD}/toolchains/gcc_arm64
 GCC_ARM64_URL="https://github.com/mvaisakh/gcc-arm64.git"
-GCC_ARM64_BRANCH="gcc-master"
+GCC_ARM64_BRANCH=gcc-master
 
 
 # GCC-ARM32 repo
 # Change this if you are using
 # your own GCC ARM32 repository.
 # ==============================
-GCC_ARM_DIR="${PWD}/toolchains/gcc_arm"
+GCC_ARM_DIR=${PWD}/toolchains/gcc_arm
 GCC_ARM_URL="https://github.com/mvaisakh/gcc-arm.git"
-GCC_ARM_BRANCH="gcc-master"
+GCC_ARM_BRANCH=gcc-master
 
 
 # Linux Stable repo
@@ -190,6 +190,7 @@ SPECTRUM="init.spectrum.rc"
 
 # Proton-Clang Settings
 # =====================
+PROTON_CLANG_NAME=Proton-Clang
 PROTON_CLANG_PATH=${PROTON_DIR}/bin
 PROTON_CLANG_OPTIONS=(
     ARCH=arm64
@@ -207,6 +208,7 @@ PROTON_CLANG_OPTIONS=(
 
 # Eva-GCC Settings
 # ================
+EVA_GCC_NAME=Eva-GCC
 EVA_GCC_PATH=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin
 EVA_GCC_OPTIONS=(
     ARCH=arm64
@@ -221,6 +223,7 @@ EVA_GCC_OPTIONS=(
 
 # Proton-GCC Settings
 # ===================
+PROTON_GCC_NAME=Proton-GCC
 PROTON_GCC_PATH=${PROTON_DIR}/bin:${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin
 PROTON_GCC_OPTIONS=(
     ARCH=arm64

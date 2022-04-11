@@ -34,15 +34,15 @@ _export_path_and_options() {
 
     # Toolchain compiler options
     case $COMPILER in
-        Proton-Clang)
+        "$PROTON_CLANG_NAME")
             export PATH=${PROTON_CLANG_PATH}:${PATH}
             TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
             ;;
-        Eva-GCC)
+        "$EVA_GCC_NAME")
             export PATH=${EVA_GCC_PATH}:${PATH}
             TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
             ;;
-        Proton-GCC)
+        "$PROTON_GCC_NAME")
             export PATH=${PROTON_GCC_PATH}:${PATH}
             TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
     esac
