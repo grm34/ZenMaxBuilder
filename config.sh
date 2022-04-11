@@ -124,125 +124,125 @@ DEPENDENCIES=(git zip llvm lld clang expect)
 # Change this if you are using
 # your own ZenMaxBuilder fork.
 # ================================
-ZMB_BRANCH=zmb
+ZMB_BRANCH="zmb"
 
 
 # AnyKernel repo
 # Change this if you are using
 # your own AnyKernel repository.
 # ==============================
-ANYKERNEL_DIR=AnyKernel
-ANYKERNEL_URL=https://github.com/grm34/AnyKernel3.git
-ANYKERNEL_BRANCH=ZenMaxBuilder
+ANYKERNEL_DIR="AnyKernel"
+ANYKERNEL_URL="https://github.com/grm34/AnyKernel3.git"
+ANYKERNEL_BRANCH="ZenMaxBuilder"
 
 
 # Proton-Clang repo
 # Change this if you are using
 # your own Clang toolchain repository.
 # ====================================
-PROTON_DIR=${PWD}/toolchains/proton_clang
-PROTON_URL=https://github.com/kdrag0n/proton-clang.git
-PROTON_BRANCH=master
+PROTON_DIR="${PWD}/toolchains/proton_clang"
+PROTON_URL="https://github.com/kdrag0n/proton-clang.git"
+PROTON_BRANCH="master"
 
 
 # GCC-ARM64 repo
 # Change this if you are using
 # your own GCC ARM64 repository.
 # ==============================
-GCC_ARM64_DIR=${PWD}/toolchains/gcc_arm64
-GCC_ARM64_URL=https://github.com/mvaisakh/gcc-arm64.git
-GCC_ARM64_BRANCH=gcc-master
+GCC_ARM64_DIR="${PWD}/toolchains/gcc_arm64"
+GCC_ARM64_URL="https://github.com/mvaisakh/gcc-arm64.git"
+GCC_ARM64_BRANCH="gcc-master"
 
 
 # GCC-ARM32 repo
 # Change this if you are using
 # your own GCC ARM32 repository.
 # ==============================
-GCC_ARM_DIR=${PWD}/toolchains/gcc_arm
-GCC_ARM_URL=https://github.com/mvaisakh/gcc-arm.git
-GCC_ARM_BRANCH=gcc-master
+GCC_ARM_DIR="${PWD}/toolchains/gcc_arm"
+GCC_ARM_URL="https://github.com/mvaisakh/gcc-arm.git"
+GCC_ARM_BRANCH="gcc-master"
 
 
 # Linux Stable repo
 # To get latest stable tag.
 # =========================
-LINUX_STABLE=https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
+LINUX_STABLE="https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git"
 
 
 # LLVM Library
 # Set this setting to
 # "True" to export "LLVM=1".
 # ==========================
-LLVM=True
+LLVM="True"
 
 
 # Link Time Optimization (LTO)
 # ============================
-LTO=False
-LTO_LIBRARY=ld.lld
-LTO_LIBRARY_DIR=${PROTON_DIR}/lib
+LTO="False"
+LTO_LIBRARY="ld.lld"
+LTO_LIBRARY_DIR="${PROTON_DIR}/lib"
 
 
 # Kernel init.spectrum.rc
 # =======================
-SPECTRUM=init.spectrum.rc
+SPECTRUM="init.spectrum.rc"
 
 
 # Proton-Clang Settings
 # =====================
-PROTON_CLANG_NAME=Proton-Clang
-PROTON_CLANG_PATH=${PROTON_DIR}/bin
+PROTON_CLANG_NAME="Proton-Clang"
+PROTON_CLANG_PATH="${PROTON_DIR}/bin"
 PROTON_CLANG_OPTIONS=(
-    ARCH=arm64
-    SUBARCH=arm64
-    CROSS_COMPILE=aarch64-linux-gnu-
-    CROSS_COMPILE_ARM32=arm-linux-gnueabi-
-    CC=clang
-    AR=llvm-ar
-    NM=llvm-nm
-    OBJCOPY=llvm-objcopy
-    OBJDUMP=llvm-objdump
-    STRIP=llvm-strip
+    ARCH="arm64"
+    SUBARCH="arm64"
+    CROSS_COMPILE="aarch64-linux-gnu-"
+    CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
+    CC="clang"
+    AR="llvm-ar"
+    NM="llvm-nm"
+    OBJCOPY="llvm-objcopy"
+    OBJDUMP="llvm-objdump"
+    STRIP="llvm-strip"
 )
 
 
 # Eva-GCC Settings
 # ================
-EVA_GCC_NAME=Eva-GCC
-EVA_GCC_PATH=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin
+EVA_GCC_NAME="Eva-GCC"
+EVA_GCC_PATH="${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin"
 EVA_GCC_OPTIONS=(
-    ARCH=arm64
-    SUBARCH=arm64
-    CROSS_COMPILE_ARM32=arm-eabi-
-    CROSS_COMPILE=aarch64-elf-
-    AR=aarch64-elf-ar
-    OBJDUMP=aarch64-elf-objdump
-    STRIP=aarch64-elf-strip
+    ARCH="arm64"
+    SUBARCH="arm64"
+    CROSS_COMPILE_ARM32="arm-eabi-"
+    CROSS_COMPILE="aarch64-elf-"
+    AR="aarch64-elf-ar"
+    OBJDUMP="aarch64-elf-objdump"
+    STRIP="aarch64-elf-strip"
 )
 
 
 # Proton-GCC Settings
 # ===================
-PROTON_GCC_NAME=Proton-GCC
-PROTON_GCC_PATH=${PROTON_DIR}/bin:${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin
+PROTON_GCC_NAME="Proton-GCC"
+PROTON_GCC_PATH="${PROTON_DIR}/bin:${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin"
 PROTON_GCC_OPTIONS=(
-    ARCH=arm64
-    SUBARCH=arm64
-    CC=clang
-    CROSS_COMPILE=aarch64-linux-gnu-
-    CROSS_COMPILE_ARM32=arm-linux-gnueabi-
-    AR=llvm-ar
-    AS=llvm-as
-    NM=llvm-nm
-    STRIP=llvm-strip
-    OBJCOPY=llvm-objcopy
-    OBJDUMP=llvm-objdump
-    OBJSIZE=llvm-size
-    READELF=llvm-readelf
-    HOSTCC=clang
-    HOSTCXX=clang++
-    HOSTAR=llvm-ar
-    CLANG_TRIPLE=aarch64-linux-gnu-
+    ARCH="arm64"
+    SUBARCH="arm64"
+    CC="clang"
+    CROSS_COMPILE="aarch64-linux-gnu-"
+    CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
+    AR="llvm-ar"
+    AS="llvm-as"
+    NM="llvm-nm"
+    STRIP="llvm-strip"
+    OBJCOPY="llvm-objcopy"
+    OBJDUMP="llvm-objdump"
+    OBJSIZE="llvm-size"
+    READELF="llvm-readelf"
+    HOSTCC="clang"
+    HOSTCXX="clang++"
+    HOSTAR="llvm-ar"
+    CLANG_TRIPLE="aarch64-linux-gnu-"
 )
 
 
