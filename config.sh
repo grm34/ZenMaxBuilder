@@ -132,7 +132,7 @@ ZMB_BRANCH=zmb
 # your own AnyKernel repository.
 # ==============================
 ANYKERNEL_DIR=AnyKernel
-ANYKERNEL_URL="https://github.com/grm34/AnyKernel3.git"
+ANYKERNEL_URL=https://github.com/grm34/AnyKernel3.git
 ANYKERNEL_BRANCH=ZenMaxBuilder
 
 
@@ -141,7 +141,7 @@ ANYKERNEL_BRANCH=ZenMaxBuilder
 # your own Clang toolchain repository.
 # ====================================
 PROTON_DIR=${PWD}/toolchains/proton_clang
-PROTON_URL="https://github.com/kdrag0n/proton-clang.git"
+PROTON_URL=https://github.com/kdrag0n/proton-clang.git
 PROTON_BRANCH=master
 
 
@@ -150,7 +150,7 @@ PROTON_BRANCH=master
 # your own GCC ARM64 repository.
 # ==============================
 GCC_ARM64_DIR=${PWD}/toolchains/gcc_arm64
-GCC_ARM64_URL="https://github.com/mvaisakh/gcc-arm64.git"
+GCC_ARM64_URL=https://github.com/mvaisakh/gcc-arm64.git
 GCC_ARM64_BRANCH=gcc-master
 
 
@@ -159,14 +159,14 @@ GCC_ARM64_BRANCH=gcc-master
 # your own GCC ARM32 repository.
 # ==============================
 GCC_ARM_DIR=${PWD}/toolchains/gcc_arm
-GCC_ARM_URL="https://github.com/mvaisakh/gcc-arm.git"
+GCC_ARM_URL=https://github.com/mvaisakh/gcc-arm.git
 GCC_ARM_BRANCH=gcc-master
 
 
 # Linux Stable repo
 # To get latest stable tag.
 # =========================
-LINUX_STABLE="https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git"
+LINUX_STABLE=https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
 
 
 # LLVM Library
@@ -185,7 +185,7 @@ LTO_LIBRARY_DIR=${PROTON_DIR}/lib
 
 # Kernel init.spectrum.rc
 # =======================
-SPECTRUM="init.spectrum.rc"
+SPECTRUM=init.spectrum.rc
 
 
 # Proton-Clang Settings
