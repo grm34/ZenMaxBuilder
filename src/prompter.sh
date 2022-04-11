@@ -48,7 +48,8 @@ _ask_for_toolchain() {
     then
         PROMPT_TYPE="echo"
         _prompt "$MSG_SELECT_TC :"
-        select COMPILER in Proton-Clang Eva-GCC Proton-GCC
+        select COMPILER in $PROTON_CLANG_NAME \
+            $EVA_GCC_NAME $PROTON_GCC_NAME
         do
             [[ $COMPILER ]] && break
             _error "$MSG_ERR_SELECT"
