@@ -32,7 +32,6 @@ _export_path_and_options() {
         export LD_LIBRARY_PATH=$LTO_LIBRARY_DIR
     fi
 
-
     # Get Toolchain Version
     # =====================
     #   $1 = TC lib DIR
