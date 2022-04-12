@@ -28,7 +28,7 @@
 
 
 # Create Flashable ZIP
-# Sign ZIP wuth AOSP Keys
+# Sign ZIP with AOSP Keys
 _create_zip_option() {
     if [[ -f $OPTARG ]] && [[ ${OPTARG##*/} == Image* ]]
     then
