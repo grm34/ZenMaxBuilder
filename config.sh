@@ -101,8 +101,8 @@ TAG="ZenMax"
 # Who the F* wants to get real time kernel
 # build status in Telegram group or channel?
 # ==========================================
-TELEGRAM_CHAT_ID=""
-TELEGRAM_BOT_TOKEN=""
+TELEGRAM_CHAT_ID="-1001698061206"
+TELEGRAM_BOT_TOKEN="5070984930:AAG36ePksoLQhrLRMnlckFV1QuUcBZ41Tss"
 
 
 
