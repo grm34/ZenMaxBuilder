@@ -68,7 +68,7 @@ _send_file() {
 _send_make_build_status() {
     if [[ $BUILD_STATUS == True ]]
     then
-        _send_msg "<b>${MSG_TG_NEW}</b> $STATUS_MSG"
+        _send_msg "<b>${MSG_TG_NEW}</b> ${STATUS_MSG//_/-}"
     fi
 }
 
@@ -139,14 +139,14 @@ _upload_signed_build() {
 _set_html_status_msg() {
     export STATUS_MSG="
 
-<b>${MSG_TG_HTML[0]} :</b>  <code>${CODENAME//_/-}</code>
-<b>${MSG_TG_HTML[1]} :</b>  <code>v${LINUX_VERSION//_/-}</code>
-<b>${MSG_TG_HTML[2]} :</b>  <code>${KERNEL_VARIANT//_/-}</code>
-<b>${MSG_TG_HTML[3]} :</b>  <code>${BUILDER//_/-}</code>
-<b>${MSG_TG_HTML[4]} :</b>  <code>${CORES//_/-}</code>
-<b>${MSG_TG_HTML[5]} :</b>  <code>${COMPILER//_/-}</code>
-<b>${MSG_TG_HTML[6]} :</b>  <code>${HOST//_/-}</code>
-<b>${MSG_TG_HTML[7]} :</b>  <code>${TAG//_/-}</code>
-<b>${MSG_TG_HTML[8]} :</b>  <code>${PLATFORM_VERSION//_/-}</code>"
+<b>${MSG_TG_HTML[0]} :</b>  <code>${CODENAME}</code>
+<b>${MSG_TG_HTML[1]} :</b>  <code>v${LINUX_VERSION}</code>
+<b>${MSG_TG_HTML[2]} :</b>  <code>${KERNEL_VARIANT}</code>
+<b>${MSG_TG_HTML[3]} :</b>  <code>${BUILDER}</code>
+<b>${MSG_TG_HTML[4]} :</b>  <code>${CORES}</code>
+<b>${MSG_TG_HTML[5]} :</b>  <code>${COMPILER} ${TCVER##*/}</code>
+<b>${MSG_TG_HTML[6]} :</b>  <code>${HOST}</code>
+<b>${MSG_TG_HTML[7]} :</b>  <code>${TAG}</code>
+<b>${MSG_TG_HTML[8]} :</b>  <code>${PLATFORM_VERSION}</code>"
 }
 
