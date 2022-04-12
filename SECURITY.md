@@ -14,8 +14,8 @@
 | File            | blank | comment | code |
 | --------------- | ----- | ------- | ---- |
 | prompter.sh     | 36    | 68      | 232  |
-| manager.sh      | 34    | 63      | 191  |
-| main.sh         | 34    | 63      | 170  |
+| main.sh         | 34    | 63      | 191  |
+| manager.sh      | 34    | 63      | 170  |
 | options.sh      | 29    | 52      | 106  |
 | requirements.sh | 15    | 35      | 86   |
 | telegram.sh     | 26    | 42      | 84   |
