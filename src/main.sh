@@ -259,7 +259,10 @@ S=$((BUILD_TIME % 60))
 
 # Check if make success
 BOOT_DIR=${DIR}/out/${CODENAME}/arch/${ARCH}/boot
-if [[ ! -d $BOOT_DIR ]]
+most_recent_file=$(find "$BOOT_DIR" -mindepth 1 \
+    -maxdepth 1 -type f -mtime -1 2>/dev null | head -n 1)
+file_time=$(stat -c %Z "$most_recent_file" 2>/dev/null)
+if [[ ! -d $BOOT_DIR ]] || [[ $file_time < $START_TIME ]]
 then
     _error "$MSG_ERR_MAKE"
     _exit
