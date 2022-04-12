@@ -32,27 +32,34 @@ _export_path_and_options() {
         export LD_LIBRARY_PATH=$LTO_LIBRARY_DIR
     fi
 
+
+    # Get Toolchain Version
+    # =====================
+    #   $1 = TC lib DIR
+    # =====================
+    _get_tc_version() {
+        _check find "$1" -mindepth 1 \
+            -maxdepth 1 -type d | head -n 1
+
+    }
+
     # Toolchain compiler options
     case $COMPILER in
         "$PROTON_CLANG_NAME")
             export PATH=${PROTON_CLANG_PATH}:${PATH}
             TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
-            TCVER=$(find "${PROTON_VERSION}" -mindepth 1 \
-                -maxdepth 1 -type d | head -n 1)
+            TCVER=$(_get_tc_version "$PROTON_VERSION")
             ;;
         "$EVA_GCC_NAME")
             export PATH=${EVA_GCC_PATH}:${PATH}
             TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
-            TCVER=$(find "${GCC_ARM64_VERSION}" -mindepth 1 \
-                -maxdepth 1 -type d | head -n 1)
+            TCVER=$(_get_tc_version "$GCC_ARM64_VERSION")
             ;;
         "$PROTON_GCC_NAME")
             export PATH=${PROTON_GCC_PATH}:${PATH}
             TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
-            clangver=$(find "${PROTON_VERSION}" -mindepth 1 \
-                -maxdepth 1 -type d | head -n 1)
-            gccver=$(find "${GCC_ARM64_VERSION}" -mindepth 1 \
-                -maxdepth 1 -type d | head -n 1)
+            clangver=$(_get_tc_version "$PROTON_VERSION")
+            gccver=$(_get_tc_version "$GCC_ARM64_VERSION")
             export TCVER="${clangver##*/}-${gccver##*/}"
     esac
 }
