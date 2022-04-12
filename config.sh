@@ -143,6 +143,7 @@ ANYKERNEL_BRANCH="ZenMaxBuilder"
 PROTON_DIR="${PWD}/toolchains/proton_clang"
 PROTON_URL="https://github.com/kdrag0n/proton-clang.git"
 PROTON_BRANCH="master"
+PROTON_VERSION="${PROTON_DIR}/lib/clang"
 
 
 # GCC-ARM64 repo
@@ -152,6 +153,7 @@ PROTON_BRANCH="master"
 GCC_ARM64_DIR="${PWD}/toolchains/gcc_arm64"
 GCC_ARM64_URL="https://github.com/mvaisakh/gcc-arm64.git"
 GCC_ARM64_BRANCH="gcc-master"
+GCC_ARM64_VERSION="${GCC_ARM64_DIR}/lib/gcc/aarch64-elf"
 
 
 # GCC-ARM32 repo
@@ -161,6 +163,7 @@ GCC_ARM64_BRANCH="gcc-master"
 GCC_ARM_DIR="${PWD}/toolchains/gcc_arm"
 GCC_ARM_URL="https://github.com/mvaisakh/gcc-arm.git"
 GCC_ARM_BRANCH="gcc-master"
+GCC_ARM_VERSION="${GCC_ARM_DIR}/lib/gcc/arm-eabi"
 
 
 # Linux Stable repo
