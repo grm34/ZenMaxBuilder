@@ -20,10 +20,10 @@ Dependencies will be prompted to install or you can manually install them.
 
     git clone https://github.com/grm34/ZenMaxBuilder.git
 
-➡️ Enter ZenMaxBuilder repo and edit [zmb.cfg](https://github.com/grm34/ZenMaxBuilder/blob/zmb/zmb.cfg)
+➡️ Enter ZenMaxBuilder repo and edit [settings.cfg](https://github.com/grm34/ZenMaxBuilder/blob/zmb/settings.cfg)
 to set your settings (optional)
 
-    cd ZenMaxBuilder && vi zmb.cfg
+    cd ZenMaxBuilder && vi settings.cfg
 
 ➡️ Start ZenMaxBuilder and follow instructions
 
