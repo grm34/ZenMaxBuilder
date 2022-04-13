@@ -45,7 +45,7 @@ else
 fi
 
 # shellcheck source=/dev/null
-source "${DIR}/zmb.cfg"
+source "${DIR}/settings.cfg"
 # shellcheck source=src/manager.sh
 source "${DIR}/src/manager.sh"
 # shellcheck source=src/requirements.sh
