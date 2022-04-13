@@ -39,7 +39,6 @@ _export_path_and_options() {
     _get_tc_version() {
         _check find "$1" -mindepth 1 \
             -maxdepth 1 -type d | head -n 1
-
     }
 
     # Toolchain compiler options
