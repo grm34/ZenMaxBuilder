@@ -4,7 +4,7 @@
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.7     | :white_check_mark: |
+| 1.8     | :white_check_mark: |
 
 | Branch | Supported          |
 | ------ | ------------------ |
@@ -13,15 +13,15 @@
 
 | File            | blank | comment | code |
 | --------------- | ----- | ------- | ---- |
-| prompter.sh     | 36    | 68      | 232  |
-| main.sh         | 34    | 63      | 191  |
-| manager.sh      | 34    | 63      | 170  |
+| prompter.sh     | 36    | 68      | 233  |
+| main.sh         | 34    | 64      | 195  |
+| manager.sh      | 34    | 63      | 171  |
 | options.sh      | 29    | 52      | 106  |
 | requirements.sh | 15    | 35      | 86   |
 | telegram.sh     | 26    | 42      | 84   |
 | flasher.sh      | 19    | 44      | 68   |
-| maker.sh        | 20    | 33      | 52   |
-| TOTAL           | 213   | 400     | 989  |
+| maker.sh        | 21    | 37      | 61   |
+| TOTAL           | 214   | 405     | 1004 |
 
 ## Reporting a Vulnerability
 
