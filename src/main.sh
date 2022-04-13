@@ -208,7 +208,7 @@ if [[ $MAKE_CLEAN == True ]]
 then
     _make_clean
     _make_mrproper
-    _check rm -rf "$OUT_DIR"
+    rm -rf "$OUT_DIR" || sleep 0.1
 fi
 
 # Make defconfig
