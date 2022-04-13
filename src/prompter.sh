@@ -22,43 +22,6 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Question to get the kernel location.
-# Validation checks the presence of the "configs"
-# folder corresponding to the current architecture.
-_ask_for_kernel_dir() {
-    if [[ $KERNEL_DIR == default ]]
-    then
-        _prompt "$MSG_ASK_KDIR :"
-        read -r -e KERNEL_DIR
-        until [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]
-        do
-            _error "$MSG_ERR_KDIR ${RED}${KERNEL_DIR}"
-            _prompt "$MSG_ASK_KDIR :"
-            read -r -e KERNEL_DIR
-        done
-    fi
-}
-
-
-# Question to get the toolchain to use.
-# Choices: Proton-Clang Eva-GCC Proton-GCC
-# Validation checks are not needed here.
-_ask_for_toolchain() {
-    if [[ $COMPILER == default ]]
-    then
-        PROMPT_TYPE="echo"
-        _prompt "$MSG_SELECT_TC :"
-        select COMPILER in $PROTON_CLANG_NAME \
-            $EVA_GCC_NAME $PROTON_GCC_NAME
-        do
-            [[ $COMPILER ]] && break
-            _error "$MSG_ERR_SELECT"
-        done
-        export PROMPT_TYPE="default"
-    fi
-}
-
-
 # Question to get the device codename.
 # Validation checks REGEX to prevent invalid string.
 # Match "letters" and "numbers" and "-" and "_" only.
@@ -75,6 +38,24 @@ _ask_for_codename() {
             _error "$MSG_ERR_DEV ${RED}${CODENAME}"
             _prompt "$MSG_ASK_DEV :"
             read -r CODENAME
+        done
+    fi
+}
+
+
+# Question to get the kernel location.
+# Validation checks the presence of the "configs"
+# folder corresponding to the current architecture.
+_ask_for_kernel_dir() {
+    if [[ $KERNEL_DIR == default ]]
+    then
+        _prompt "$MSG_ASK_KDIR :"
+        read -r -e KERNEL_DIR
+        until [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]
+        do
+            _error "$MSG_ERR_KDIR ${RED}${KERNEL_DIR}"
+            _prompt "$MSG_ASK_KDIR :"
+            read -r -e KERNEL_DIR
         done
     fi
 }
@@ -119,6 +100,48 @@ _ask_for_menuconfig() {
 }
 
 
+# Request to save and use the modified defconfig.
+# Otherwise request to continue with original one.
+# Validation checks are not needed here.
+_ask_for_save_defconfig() {
+    _confirm "${MSG_ASK_SAVE_DEF}: $DEFCONFIG ?" "[Y/n]"
+    case $CONFIRM in
+        n|N|no|No|NO)
+            SAVE_DEFCONFIG=False
+            _confirm "$MSG_ASK_USE_DEF ?"
+            case $CONFIRM in
+                n|N|no|No|NO)
+                    ORIGINAL_DEFCONFIG=False
+                    ;;
+                *)
+                    export ORIGINAL_DEFCONFIG=True
+            esac
+            ;;
+        *)
+            export SAVE_DEFCONFIG=True
+    esac
+}
+
+
+# Question to get the toolchain to use.
+# Choices: Proton-Clang Eva-GCC Proton-GCC
+# Validation checks are not needed here.
+_ask_for_toolchain() {
+    if [[ $COMPILER == default ]]
+    then
+        PROMPT_TYPE="echo"
+        _prompt "$MSG_SELECT_TC :"
+        select COMPILER in $PROTON_CLANG_NAME \
+            $EVA_GCC_NAME $PROTON_GCC_NAME
+        do
+            [[ $COMPILER ]] && break
+            _error "$MSG_ERR_SELECT"
+        done
+        export PROMPT_TYPE="default"
+    fi
+}
+
+
 # Question to get the number of CPU cores to use.
 # Validation checks for a valid number corresponding
 # to the amount of available CPU cores (no limits here).
@@ -144,24 +167,6 @@ _ask_for_cores() {
 }
 
 
-# Request the upload of build status on Telegram.
-# Validation checks are not needed here.
-_ask_for_telegram() {
-    if [[ $TELEGRAM_CHAT_ID ]] && \
-        [[ $TELEGRAM_BOT_TOKEN ]]
-    then
-        _confirm "$MSG_ASK_TG ?" "[y/N]"
-        case $CONFIRM in
-            y|Y|yes|Yes|YES)
-                BUILD_STATUS=True
-                ;;
-            *)
-                export BUILD_STATUS=False
-        esac
-    fi
-}
-
-
 # Request "make clean" and "make mrproper" commands.
 # Validation checks are not needed here.
 _ask_for_make_clean() {
@@ -172,29 +177,6 @@ _ask_for_make_clean() {
             ;;
         *)
             export MAKE_CLEAN=False
-    esac
-}
-
-
-# Request to save and use the modified defconfig.
-# Otherwise request to continue with original one.
-# Validation checks are not needed here.
-_ask_for_save_defconfig() {
-    _confirm "${MSG_ASK_SAVE_DEF}: $DEFCONFIG ?" "[Y/n]"
-    case $CONFIRM in
-        n|N|no|No|NO)
-            SAVE_DEFCONFIG=False
-            _confirm "$MSG_ASK_USE_DEF ?"
-            case $CONFIRM in
-                n|N|no|No|NO)
-                    ORIGINAL_DEFCONFIG=False
-                    ;;
-                *)
-                    export ORIGINAL_DEFCONFIG=True
-            esac
-            ;;
-        *)
-            export SAVE_DEFCONFIG=True
     esac
 }
 
@@ -215,17 +197,21 @@ _ask_for_new_build() {
 }
 
 
-# Request to run again failed command.
+# Request the upload of build status on Telegram.
 # Validation checks are not needed here.
-_ask_for_run_again() {
-    _confirm "$MSG_RUN_AGAIN ?" "[y/N]"
-    case $CONFIRM in
-        y|Y|yes|Yes|YES)
-            RUN_AGAIN=True
-            ;;
-        *)
-            export RUN_AGAIN=False
-    esac
+_ask_for_telegram() {
+    if [[ $TELEGRAM_CHAT_ID ]] && \
+        [[ $TELEGRAM_BOT_TOKEN ]]
+    then
+        _confirm "$MSG_ASK_TG ?" "[y/N]"
+        case $CONFIRM in
+            y|Y|yes|Yes|YES)
+                BUILD_STATUS=True
+                ;;
+            *)
+                export BUILD_STATUS=False
+        esac
+    fi
 }
 
 
@@ -266,6 +252,20 @@ _ask_for_kernel_image() {
         _error "$MSG_ERR_DIR ${RED}${DIR}"
         _exit
     )
+}
+
+
+# Request to run again failed command.
+# Validation checks are not needed here.
+_ask_for_run_again() {
+    _confirm "$MSG_RUN_AGAIN ?" "[y/N]"
+    case $CONFIRM in
+        y|Y|yes|Yes|YES)
+            RUN_AGAIN=True
+            ;;
+        *)
+            export RUN_AGAIN=False
+    esac
 }
 
 
