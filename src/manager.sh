@@ -224,7 +224,8 @@ _exit() {
     # Get user inputs and add them to logfile
     if [[ -f ${DIR}/bashvar ]] && [[ -f $LOG ]]
     then
-        ( set -o posix; set | grep -v "$EXCLUDE_VARS" )> \
+        null=$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")
+        (set -o posix; set | grep -v "${null//|/\\|}")> \
             "${DIR}/buildervar"
         printf "\n\n### ZMB SETTINGS ###\n" >> "$LOG"
         diff bashvar buildervar | grep -E \
