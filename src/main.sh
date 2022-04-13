@@ -30,22 +30,22 @@ DIR=${PWD}/${DIRNAME}
 cd "$DIR" || exit $?
 
 # Bash job control
-( set -o posix; set )> "${DIR}/bashvar"
+(set -o posix; set)> "${DIR}/bashvar"
 set -m -E -o pipefail #-b -v
 
 # App Language
-LANGUAGE=${DIR}/lang/${LANG:0:2}.sh
+LANGUAGE=${DIR}/lang/${LANG:0:2}.cfg
 if [[ -f $LANGUAGE ]]
 then
     # shellcheck source=/dev/null
     source "$LANGUAGE"
 else
     # shellcheck source=/dev/null
-    source "${DIR}/lang/en.sh"
+    source "${DIR}/lang/en.cfg"
 fi
 
-# shellcheck source=config.sh
-source "${DIR}/config.sh"
+# shellcheck source=/dev/null
+source "${DIR}/zmb.cfg"
 # shellcheck source=src/manager.sh
 source "${DIR}/src/manager.sh"
 # shellcheck source=src/requirements.sh
@@ -60,6 +60,8 @@ source "${DIR}/src/maker.sh"
 source "${DIR}/src/prompter.sh"
 # shellcheck source=src/options.sh
 source "${DIR}/src/options.sh"
+# shellcheck source=/dev/null
+source "${DIR}/etc/excluded.cfg"
 
 # Ban all ('n00bz')
 if [[ ! -t 0 ]]
