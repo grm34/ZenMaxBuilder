@@ -38,6 +38,7 @@ _create_zip_option() {
         _sign_zip \
             "${DIR}/builds/default/${OPTARG##*/}-${DATE}-${TIME}"
         _clean_anykernel
+        _note "$MSG_NOTE_ZIPPED !"
     else
         _error "$MSG_ERR_IMG ${RED}${OPTARG}"
     fi

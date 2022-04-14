@@ -77,7 +77,7 @@ _send_make_build_status() {
 _send_success_build_status() {
     if [[ $BUILD_STATUS == True ]]
     then
-        msg="$MSG_NOTE_SUCCESS ${BUILD_TIME}"
+        msg="$MSG_NOTE_SUCCESS $BUILD_TIME"
         _send_msg "${KERNEL_NAME//_/-} | $msg"
     fi
 }
@@ -110,7 +110,7 @@ _send_failed_build_logs() {
         sed -r \
             "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" \
             "$LOG" > "${LOG##*/}"
-        msg="$MSG_TG_FAILED ${BUILD_TIME}"
+        msg="$MSG_TG_FAILED $BUILD_TIME"
         _send_file \
             "${DIR}/${LOG##*/}" "v${LINUX_VERSION//_/-} | $msg"
     fi
@@ -125,7 +125,7 @@ _upload_signed_build() {
         file=${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip
         _note "${MSG_NOTE_UPLOAD}: ${file##*/}..."
         MD5=$(md5sum "$file" | cut -d' ' -f1)
-        caption="${MSG_TG_CAPTION}: ${M}m${S}s"
+        caption="${MSG_TG_CAPTION}: $BUILD_TIME"
         _send_file \
             "$file" "$caption | MD5 Checksum: ${MD5//_/-}"
     fi
