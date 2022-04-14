@@ -68,7 +68,7 @@ _send_file() {
 _send_make_build_status() {
     if [[ $BUILD_STATUS == True ]]
     then
-        _send_msg "<b>${MSG_TG_NEW}</b> ${STATUS_MSG//_/-}"
+        _send_msg "${STATUS_MSG//_/-}"
     fi
 }
 
