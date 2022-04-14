@@ -6,5 +6,5 @@ toolchains
 bashvar
 buildervar
 linuxver
-config_save.sh
+settings_save.cfg
 zmb.lock
