@@ -119,7 +119,7 @@ _set_ak3_conf() {
         "s/kernel.version=.*/kernel.version=${LINUX_VERSION}/g" \
         anykernel.sh
     _check sed -i \
-        "s/message.word=.*/message.word=Netenerls Team/g" \
+        "s/message.word=.*/message.word=ZenMaxBuilder/g" \
         anykernel.sh
     _check sed -i \
         "s/build.date=.*/build.date=${DATE}/g" \
