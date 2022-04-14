@@ -51,7 +51,7 @@ Dependencies will be prompted to install or you can manually install them.
     cp etc/settings.cfg etc/user.cfg
     vi etc/user.cfg
 
-:arrow_right: Start ZenMaxBuilder and follow instructions
+:arrow_right: Start ZMB and follow instructions
 
     bash zmb --start
 
