@@ -196,7 +196,7 @@ if [[ $LLVM == True ]]; then export LLVM=1; fi
 export KBUILD_BUILD_USER=$BUILDER
 export KBUILD_BUILD_HOST=$HOST
 export PLATFORM_VERSION=$PLATFORM_VERSION
-export ANDROID_MAJOR_RELEASE=$ANDROID_MAJOR_RELEASE
+export ANDROID_MAJOR_VERSION=$ANDROID_MAJOR_VERSION
 
 # Export TC path and options
 _export_path_and_options
