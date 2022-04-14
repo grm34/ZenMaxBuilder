@@ -124,7 +124,7 @@ while getopts ':hsult:m:f:z:' OPTION
 do
     case $OPTION in
         h)  _terminal_banner; _usage
-            rm "./bashvar" || sleep 0.1; exit 0;;
+            rm -f "./bashvar"; exit 0;;
         u)  _full_upgrade; _exit;;
         m)  _send_msg_option; _exit;;
         f)  _send_file_option; _exit;;
@@ -215,7 +215,7 @@ if [[ $MAKE_CLEAN == True ]]
 then
     _make_clean
     _make_mrproper
-    rm -rf "$OUT_DIR" || sleep 0.1
+    rm -rf "$OUT_DIR"
 fi
 
 # Make defconfig

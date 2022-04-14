@@ -101,7 +101,7 @@ _prompt() {
     COUNT=${#LENTH}
     echo -ne "\n${YELL}==> ${GREEN}$1 ${RED}$2"
     echo -ne "${YELL}\n==> "
-    for (( CHAR=1; CHAR<=COUNT; CHAR++ ))
+    for ((CHAR=1; CHAR<=COUNT; CHAR++))
     do
         echo -ne "─"
     done
@@ -121,10 +121,10 @@ _prompt() {
 # ===================
 _confirm_msg() {
     CONFIRM=False
-    COUNT=$(( ${#1} + 6 ))
+    COUNT=$((${#1} + 6))
     echo -ne "${YELL}\n==> ${GREEN}${1}"\
              "${RED}${2}${YELL}\n==> "
-    for (( CHAR=1; CHAR<=COUNT; CHAR++ ))
+    for ((CHAR=1; CHAR<=COUNT; CHAR++))
     do
         echo -ne "─"
     done
@@ -239,10 +239,7 @@ _exit() {
     FILES=(bashvar buildervar linuxver "${LOG##*/}")
     for FILE in "${FILES[@]}"
     do
-        if [[ -f ${DIR}/${FILE} ]]
-        then
-            rm "${DIR}/${FILE}" || sleep 0.1
-        fi
+        rm -f "${DIR}/${FILE}" 2>/dev/null || sleep 0.1
     done
 
     # Exit with 3s timeout
@@ -259,10 +256,8 @@ _exit() {
 # Clean AnyKernel folder
 _clean_anykernel() {
     _note "${MSG_NOTE_CLEAN_AK3}..."
-    UNWANTED=(*.zip Image* *-dtb init.spectrum.rc)
-    for UW in "${UNWANTED[@]}"
-    do
-        rm -f "${ANYKERNEL_DIR}/${UW}" || sleep 0.1
-    done
+    ak3=${DIR}/${ANYKERNEL_DIR}
+    rm -f "${ak3}/*.zip" "${ak3}/Image*" "${ak3}/*-dtb"
+    rm -f init.spectrum.rc 2>/dev/null || sleep 0.1
 }
 
