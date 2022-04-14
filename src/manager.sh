@@ -236,10 +236,13 @@ _exit() {
     _send_failed_build_logs
 
     # Remove inputs files
-    FILES=(bashvar buildervar linuxver "${LOG##*/}")
-    for FILE in "${FILES[@]}"
+    files=(bashvar buildervar linuxver "${LOG##*/}")
+    for file in "${files[@]}"
     do
-        rm -f "${DIR}/${FILE}" 2>/dev/null || sleep 0.1
+        if [[ -f $file ]]
+        then
+            rm -f "${DIR}/${file}" || sleep 0.1
+        fi
     done
 
     # Exit with 3s timeout
@@ -256,8 +259,12 @@ _exit() {
 # Clean AnyKernel folder
 _clean_anykernel() {
     _note "${MSG_NOTE_CLEAN_AK3}..."
-    ak3=${DIR}/${ANYKERNEL_DIR}
-    rm -f "${ak3}/*.zip" "${ak3}/Image*" "${ak3}/*-dtb"
-    rm -f init.spectrum.rc 2>/dev/null || sleep 0.1
+    for file in "${DIR}/${ANYKERNEL_DIR}"/*
+    do
+        case $file in
+            (*.zip*|*Image*|*-dtb*|*spectrum.rc*)
+                rm -f "${file}" || sleep 0.1
+        esac
+    done
 }
 
