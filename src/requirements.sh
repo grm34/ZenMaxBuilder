@@ -26,7 +26,7 @@
 _install_dependencies() {
 
     # Set the package manager for each Linux distribution
-    declare -A PMS=(
+    declare -A pms=(
         [apt]="sudo apt install -y"
         [pkg]="_ pkg install -y"
         [pacman]="sudo pacman -S --noconfirm"
@@ -37,30 +37,30 @@ _install_dependencies() {
     )
 
     # Get current package manager command
-    OS=(pacman yum emerge zypper dnf pkg apt)
-    for PKG in "${OS[@]}"
+    os=(pacman yum emerge zypper dnf pkg apt)
+    for pkg in "${os[@]}"
     do
-        if which "$PKG" &>/dev/null
+        if which "$pkg" &>/dev/null
         then
             IFS=" "
-            PM="${PMS[${PKG}]}"
-            read -ra PM <<< "$PM"
+            pm="${pms[${pkg}]}"
+            read -ra pm <<< "$pm"
             break
         fi
     done
 
     # Install missing dependencies
-    if [[ ${PM[3]} ]]
+    if [[ ${pm[3]} ]]
     then
-        for PACKAGE in "${DEPENDENCIES[@]}"
+        for package in "${DEPENDENCIES[@]}"
         do
-            if ! which "${PACKAGE/llvm/llvm-ar}" &>/dev/null
+            if ! which "${package/llvm/llvm-ar}" &>/dev/null
             then
                 _ask_for_install_pkg
                 if [[ $INSTALL_PKG == True ]]
                 then
-                    eval "${PM[0]/_/}" "${PM[1]}" \
-                         "${PM[2]}" "${PM[3]}" "$PACKAGE"
+                    eval "${pm[0]/_/}" "${pm[1]}" \
+                         "${pm[2]}" "${pm[3]}" "$package"
                 fi
             fi
         done
