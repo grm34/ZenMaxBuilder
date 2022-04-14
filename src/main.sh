@@ -44,8 +44,16 @@ else
     source "${DIR}/lang/en.cfg"
 fi
 
-# shellcheck source=/dev/null
-source "${DIR}/settings.cfg"
+# User Configuration
+if [[ -f ${DIR}/etc/user.cfg ]]
+then
+    # shellcheck source=/dev/null
+    source "${DIR}/etc/user.cfg"
+else
+    # shellcheck source=/dev/null
+    source "${DIR}/etc/settings.cfg"
+fi
+
 # shellcheck source=src/manager.sh
 source "${DIR}/src/manager.sh"
 # shellcheck source=src/requirements.sh
