@@ -68,12 +68,12 @@ _full_upgrade() {
 
     # ZenMaxBuilder
     _note "${MSG_UP_ZMB}..."
-    if git diff config.sh | grep -q config.sh &>/dev/null
+    if git diff settings.cfg | grep -q settings.cfg &>/dev/null
     then
         _ask_for_save_config
         if [[ $SAVE_CONFIG == True ]]
         then
-            _check cp config.sh config_save.sh
+            _check cp settings.cfg settings_save.cfg
         fi
     fi
     _update_git "$ZMB_BRANCH"

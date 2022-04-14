@@ -22,7 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Set user options (from config.sh)
+# Set user options (from settings.cfg)
 _export_path_and_options() {
 
     # Link Time Optimization (LTO)

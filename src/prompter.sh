@@ -322,7 +322,7 @@ _ask_for_clone_anykernel() {
 }
 
 
-# Request to save the modified config.sh before update.
+# Request to save the modified settings.cfg before update.
 # Validation checks are not needed here.
 _ask_for_save_config() {
     _confirm "$MSG_SAVE_USER_CONFIG ?" "[Y/n]"
