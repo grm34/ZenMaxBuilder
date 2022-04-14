@@ -259,10 +259,7 @@ else
 fi
 
 # Get build time
-END_TIME=$(TZ=$TIMEZONE date +%s)
-BUILD_TIME=$((END_TIME - START_TIME))
-M=$((BUILD_TIME / 60))
-S=$((BUILD_TIME % 60))
+_get_build_time
 
 # Check if make success
 BOOT_DIR=${DIR}/out/${CODENAME}/arch/${ARCH}/boot
@@ -276,7 +273,7 @@ then
 fi
 
 # Display build status
-_note "$MSG_NOTE_SUCCESS ${M}m${S}s !"
+_note "$MSG_NOTE_SUCCESS $BUILD_TIME !"
 _send_success_build_status
 
 # Create flashable zip

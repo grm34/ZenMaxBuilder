@@ -91,6 +91,16 @@ _get_user_timezone() {
 }
 
 
+# Get build time
+_get_build_time() {
+    end_time=$(TZ=$TIMEZONE date +%s)
+    diff_time=$((end_time - START_TIME))
+    min=$((diff_time / 60))
+    sec=$((diff_time % 60))
+    export BUILD_TIME=${min}m${sec}s
+}
+
+
 # Ask some information
 # ====================
 #   $1 = question
@@ -246,10 +256,10 @@ _exit() {
     done
 
     # Exit with 3s timeout
-    for (( SECOND=3; SECOND>=1; SECOND-- ))
+    for ((second=3; second>=1; second--))
     do
         echo -ne "\r\033[K${BLUE}${MSG_EXIT}"\
-                 "in ${SECOND}s...$NC"
+                 "in ${second}s...$NC"
         sleep 1
     done
     echo && kill -- $$

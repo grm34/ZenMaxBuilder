@@ -77,7 +77,7 @@ _send_make_build_status() {
 _send_success_build_status() {
     if [[ $BUILD_STATUS == True ]]
     then
-        msg="$MSG_NOTE_SUCCESS ${M}m${S}s"
+        msg="$MSG_NOTE_SUCCESS ${BUILD_TIME}"
         _send_msg "${KERNEL_NAME//_/-} | $msg"
     fi
 }
@@ -106,14 +106,11 @@ _send_failed_build_logs() {
     if [[ $START_TIME ]] && [[ ! $BUILD_TIME ]] && \
         [[ $BUILD_STATUS == True ]]
     then
-        END_TIME=$(TZ=$TIMEZONE date +%s)
-        BUILD_TIME=$((END_TIME - START_TIME))
-        M=$((BUILD_TIME / 60))
-        S=$((BUILD_TIME % 60))
+        _get_build_time
         sed -r \
             "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" \
             "$LOG" > "${LOG##*/}"
-        msg="$MSG_TG_FAILED ${M}m${S}s"
+        msg="$MSG_TG_FAILED ${BUILD_TIME}"
         _send_file \
             "${DIR}/${LOG##*/}" "v${LINUX_VERSION//_/-} | $msg"
     fi
