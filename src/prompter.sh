@@ -30,13 +30,13 @@
 _ask_for_codename() {
     if [[ $CODENAME == default ]]
     then
-        _prompt "$MSG_ASK_DEV :"
+        _prompt "$MSG_ASK_DEV :" 1
         read -r CODENAME
         regex="^[a-zA-Z0-9][a-zA-Z0-9_-]{2,20}$"
         until [[ $CODENAME =~ $regex ]]
         do
             _error "$MSG_ERR_DEV ${RED}${CODENAME}"
-            _prompt "$MSG_ASK_DEV :"
+            _prompt "$MSG_ASK_DEV :" 1
             read -r CODENAME
         done
     fi
@@ -49,12 +49,12 @@ _ask_for_codename() {
 _ask_for_kernel_dir() {
     if [[ $KERNEL_DIR == default ]]
     then
-        _prompt "$MSG_ASK_KDIR :"
+        _prompt "$MSG_ASK_KDIR :" 1
         read -r -e KERNEL_DIR
         until [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]
         do
             _error "$MSG_ERR_KDIR ${RED}${KERNEL_DIR}"
-            _prompt "$MSG_ASK_KDIR :"
+            _prompt "$MSG_ASK_KDIR :" 1
             read -r -e KERNEL_DIR
         done
     fi
@@ -66,14 +66,13 @@ _ask_for_kernel_dir() {
 # folder corresponding to the current architecture.
 # Validation checks are not needed here.
 _ask_for_defconfig() {
-    PROMPT_TYPE="echo"
     folder=${KERNEL_DIR}/arch/${ARCH}/configs
     CONF_DIR=${folder//\/\//\/}
     cd "$CONF_DIR" || (
         _error "$MSG_ERR_DIR ${RED}${CONF_DIR}"
         _exit
     )
-    _prompt "$MSG_ASK_DEF :"
+    _prompt "$MSG_ASK_DEF :" 2
     select DEFCONFIG in *_defconfig
     do
         [[ $DEFCONFIG ]] && break
@@ -83,7 +82,6 @@ _ask_for_defconfig() {
         _error "$MSG_ERR_DIR ${RED}${DIR}"
         _exit
     )
-    export PROMPT_TYPE="default"
 }
 
 
@@ -130,15 +128,13 @@ _ask_for_save_defconfig() {
 _ask_for_toolchain() {
     if [[ $COMPILER == default ]]
     then
-        PROMPT_TYPE="echo"
-        _prompt "$MSG_SELECT_TC :"
+        _prompt "$MSG_SELECT_TC :" 2
         select COMPILER in $PROTON_CLANG_NAME \
             $EVA_GCC_NAME $PROTON_GCC_NAME
         do
             [[ $COMPILER ]] && break
             _error "$MSG_ERR_SELECT"
         done
-        export PROMPT_TYPE="default"
     fi
 }
 
@@ -152,13 +148,13 @@ _ask_for_cores() {
     _confirm "$MSG_ASK_CPU ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
-            _prompt "$MSG_ASK_CORES :"
+            _prompt "$MSG_ASK_CORES :" 1
             read -r CORES
             until (( 1<=CORES && CORES<=CPU ))
             do
                 _error "$MSG_ERR_CORES ${RED}${CORES}"\
                        "${YELL}(${MSG_ERR_TOTAL}: ${CPU})"
-                _prompt "$MSG_ASK_CORES :"
+                _prompt "$MSG_ASK_CORES :" 1
                 read -r CORES
             done
             ;;
@@ -240,12 +236,12 @@ _ask_for_kernel_image() {
         _error "$MSG_ERR_DIR ${RED}${BOOT_DIR}"
         _exit
     )
-    _prompt "$MSG_ASK_IMG :"
+    _prompt "$MSG_ASK_IMG :" 1
     read -r -e K_IMG
     until [[ -f $K_IMG ]] && [[ $K_IMG == Image* ]]
     do
         _error "$MSG_ERR_IMG ${RED}${K_IMG}"
-        _prompt "$MSG_ASK_IMG"
+        _prompt "$MSG_ASK_IMG" 1
         read -r -e K_IMG
     done
     K_IMG=${BOOT_DIR}/${K_IMG}

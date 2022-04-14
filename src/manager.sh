@@ -104,18 +104,18 @@ _get_build_time() {
 # Ask some information
 # ====================
 #   $1 = question
-#   $2 = example
+#   $2 = type
 # ====================
 _prompt() {
     lenth=$*
     count=${#lenth}
-    echo -ne "\n${YELL}==> ${GREEN}$1 ${RED}$2"
+    echo -ne "\n${YELL}==> ${GREEN}$1"
     echo -ne "${YELL}\n==> "
-    for ((char=1; char<=count; char++))
+    for ((char=1; char<=count-2; char++))
     do
         echo -ne "─"
     done
-    if [[ $PROMPT_TYPE != echo ]]
+    if [[ $2 == 1 ]]
     then
         echo -ne "\n==> $NC"
     else
