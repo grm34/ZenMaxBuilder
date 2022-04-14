@@ -54,9 +54,8 @@ _create_zip_option() {
 # =================
 _update_git() {
     git checkout "$1"
-    git fetch
-    git reset --hard HEAD
-    git merge origin "$1"
+    git fetch origin "$1"
+    git reset --hard "origin/$1"
     git pull
 }
 
