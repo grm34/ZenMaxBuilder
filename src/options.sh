@@ -66,32 +66,21 @@ _update_git() {
 # Toolchains
 _full_upgrade() {
 
-    # ZenMaxBuilder
-    _note "${MSG_UP_ZMB}..."
-    if git diff settings.cfg | grep -q settings.cfg &>/dev/null
-    then
-        _ask_for_save_config
-        if [[ $SAVE_CONFIG == True ]]
-        then
-            _check cp settings.cfg settings_save.cfg
-        fi
-    fi
-    _update_git "$ZMB_BRANCH"
-
-    # Set AK3 and toolchains parameters
-    declare -A tc_data=(
+    # Set ZMB, AK3 and toolchains data
+    declare -A up_data=(
+        [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
         [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}€$MSG_UP_AK3"
         [t1]="${PROTON_DIR}€${PROTON_BRANCH}€$MSG_UP_CLANG"
         [t2]="${GCC_ARM_DIR}€${GCC_ARM_BRANCH}€$MSG_UP_GCC32"
         [t3]="${GCC_ARM64_DIR}€${GCC_ARM64_BRANCH}€$MSG_UP_GCC64"
     )
 
-    # Update AK3 and toolchains
-    tc_list=(ak3 t1 t2 t3)
-    for repository in "${tc_list[@]}"
+    # Update ZMB, AK3 and toolchains
+    up_list=(zmb ak3 t1 t2 t3)
+    for repository in "${up_list[@]}"
     do
         IFS="€"
-        repo="${tc_data[${repository}]}"
+        repo="${up_data[${repository}]}"
         read -ra repo <<< "$repo"
         if [[ -d ${repo[0]} ]]
         then

@@ -321,17 +321,3 @@ _ask_for_clone_anykernel() {
     esac
 }
 
-
-# Request to save the modified settings.cfg before update.
-# Validation checks are not needed here.
-_ask_for_save_config() {
-    _confirm "$MSG_SAVE_USER_CONFIG ?" "[Y/n]"
-    case $CONFIRM in
-        n|N|no|No|NO)
-            SAVE_CONFIG=False
-            ;;
-        *)
-            export SAVE_CONFIG=True
-    esac
-}
-
