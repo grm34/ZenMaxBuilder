@@ -67,7 +67,8 @@ _ask_for_kernel_dir() {
 # Validation checks are not needed here.
 _ask_for_defconfig() {
     PROMPT_TYPE="echo"
-    CONF_DIR=${KERNEL_DIR}/arch/${ARCH}/configs
+    folder=${KERNEL_DIR}/arch/${ARCH}/configs
+    CONF_DIR=${folder//\/\//\/}
     cd "$CONF_DIR" || (
         _error "$MSG_ERR_DIR ${RED}${CONF_DIR}"
         _exit

@@ -106,10 +106,10 @@ DATE=$(TZ=$TIMEZONE date +%Y-%m-%d)
 TIME=$(TZ=$TIMEZONE date +%Hh%Mm%Ss)
 
 # Transform long opts to short
-for OPT in "$@"
+for opt in "$@"
 do
     shift
-    case $OPT in
+    case $opt in
         "--help") set -- "$@" "-h"; break;;
         "--start") set -- "$@" "-s";;
         "--update") set -- "$@" "-u";;
@@ -118,7 +118,7 @@ do
         "--zip") set -- "$@" "-z";;
         "--list") set -- "$@" "-l";;
         "--tag") set -- "$@" "-t";;
-        *) set -- "$@" "$OPT"
+        *) set -- "$@" "$opt"
     esac
 done
 
@@ -128,9 +128,9 @@ then
     _error "$MSG_ERR_EOPT"
     _exit
 fi
-while getopts ':hsult:m:f:z:' OPTION
+while getopts ':hsult:m:f:z:' option
 do
-    case $OPTION in
+    case $option in
         h)  _terminal_banner; _usage
             rm -f "./bashvar"; exit 0;;
         u)  _full_upgrade; _exit;;
