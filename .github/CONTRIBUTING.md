@@ -22,7 +22,7 @@ ZenMaxBuilder, here are the steps to get started:
 - Follow pull request guidelines as described below.
 - Create a new file for your language in `lang` folder.
 - Name this file with the code of your language.
-- Copy all the content of `lang/en.sh` in to it.
+- Copy all the content of `lang/en.cfg` in to it.
 - Implement your translations.
 - Create a new pull request to submit your language.
 
