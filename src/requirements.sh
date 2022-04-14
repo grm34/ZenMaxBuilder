@@ -56,7 +56,7 @@ _install_dependencies() {
         do
             if ! which "${package/llvm/llvm-ar}" &>/dev/null
             then
-                _ask_for_install_pkg
+                _ask_for_install_pkg "$package"
                 if [[ $INSTALL_PKG == True ]]
                 then
                     eval "${pm[0]/_/}" "${pm[1]}" \

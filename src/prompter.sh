@@ -273,7 +273,7 @@ _ask_for_run_again() {
 # Warn the user that when false the script may crash.
 # Validation checks are not needed here.
 _ask_for_install_pkg() {
-    _confirm "$MSG_ASK_PKG $PACKAGE ?" "[Y/n]"
+    _confirm "$MSG_ASK_PKG $1 ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
             INSTALL_PKG=False
