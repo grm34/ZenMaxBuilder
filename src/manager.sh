@@ -97,7 +97,7 @@ _get_build_time() {
     diff_time=$((end_time - START_TIME))
     min=$((diff_time / 60))
     sec=$((diff_time % 60))
-    BUILD_TIME=${min}m${sec}s
+    export BUILD_TIME=${min}m${sec}s
 }
 
 
