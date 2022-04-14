@@ -13,15 +13,15 @@
 
 | File            | blank | comment | code |
 | --------------- | ----- | ------- | ---- |
-| prompter.sh     | 36    | 68      | 233  |
-| main.sh         | 34    | 64      | 200  |
-| manager.sh      | 34    | 63      | 171  |
-| options.sh      | 29    | 52      | 106  |
+| prompter.sh     | 34    | 66      | 223  |
+| main.sh         | 35    | 66      | 202  |
+| manager.sh      | 36    | 64      | 180  |
+| options.sh      | 28    | 51      | 97   |
 | requirements.sh | 15    | 35      | 86   |
-| telegram.sh     | 26    | 42      | 84   |
+| telegram.sh     | 26    | 42      | 81   |
 | flasher.sh      | 19    | 44      | 68   |
 | maker.sh        | 21    | 37      | 61   |
-| TOTAL           | 214   | 405     | 1009 |
+| TOTAL           | 214   | 405     | 998  |
 
 ## Reporting a Vulnerability
 
