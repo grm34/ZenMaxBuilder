@@ -160,16 +160,16 @@ _note "$MSG_NOTE_START $DATE"
 _ask_for_codename
 
 # Create device folders
-FOLDERS=(builds logs toolchains out)
-for FOLDER in "${FOLDERS[@]}"
+folders=(builds logs toolchains out)
+for folder in "${folders[@]}"
 do
-    if [[ ! -d ${DIR}/${FOLDER}/${CODENAME} ]] && \
-        [[ $FOLDER != toolchains ]]
+    if [[ ! -d ${DIR}/${folder}/${CODENAME} ]] && \
+        [[ $folder != toolchains ]]
     then
-        _check mkdir -p "${DIR}/${FOLDER}/${CODENAME}"
-    elif [[ ! -d ${DIR}/${FOLDER} ]]
+        _check mkdir -p "${DIR}/${folder}/${CODENAME}"
+    elif [[ ! -d ${DIR}/${folder} ]]
     then
-        _check mkdir "${DIR}/${FOLDER}"
+        _check mkdir "${DIR}/${folder}"
     fi
 done
 

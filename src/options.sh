@@ -79,7 +79,7 @@ _full_upgrade() {
     _update_git "$ZMB_BRANCH"
 
     # Set AK3 and toolchains parameters
-    declare -A TC_DATA=(
+    declare -A tc_data=(
         [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}€$MSG_UP_AK3"
         [t1]="${PROTON_DIR}€${PROTON_BRANCH}€$MSG_UP_CLANG"
         [t2]="${GCC_ARM_DIR}€${GCC_ARM_BRANCH}€$MSG_UP_GCC32"
@@ -87,20 +87,20 @@ _full_upgrade() {
     )
 
     # Update AK3 and toolchains
-    TC_LIST=(ak3 t1 t2 t3)
-    for repository in "${TC_LIST[@]}"
+    tc_list=(ak3 t1 t2 t3)
+    for repository in "${tc_list[@]}"
     do
         IFS="€"
-        REPO="${TC_DATA[${repository}]}"
-        read -ra REPO <<< "$REPO"
-        if [[ -d ${REPO[0]} ]]
+        repo="${tc_data[${repository}]}"
+        read -ra repo <<< "$repo"
+        if [[ -d ${repo[0]} ]]
         then
-            _note "${REPO[2]}..."
-            cd "${REPO[0]}" || (
-                _error "$MSG_ERR_DIR ${RED}${REPO[0]}"
+            _note "${repo[2]}..."
+            cd "${repo[0]}" || (
+                _error "$MSG_ERR_DIR ${RED}${repo[0]}"
                 _exit
             )
-            _update_git "${REPO[1]}"
+            _update_git "${repo[1]}"
             cd "$DIR" || (
                 _error "$MSG_ERR_DIR ${RED}${DIR}"
                 _exit
@@ -138,12 +138,12 @@ _list_all_kernels() {
 # Get latest linux stable tag
 _get_linux_tag() {
     _note "${MSG_NOTE_LTAG}..."
-    LTAG=$(git ls-remote --refs --sort='v:refname' --tags \
+    ltag=$(git ls-remote --refs --sort='v:refname' --tags \
         "$LINUX_STABLE" | grep "$OPTARG" | tail --lines=1 \
         | cut --delimiter='/' --fields=3)
-    if [[ $LTAG == ${OPTARG}* ]]
+    if [[ $ltag == ${OPTARG}* ]]
     then
-        _note "${MSG_SUCCESS_LTAG}: ${RED}${LTAG}"
+        _note "${MSG_SUCCESS_LTAG}: ${RED}${ltag}"
     else
         _error "$MSG_ERR_LTAG ${RED}${OPTARG}"
     fi

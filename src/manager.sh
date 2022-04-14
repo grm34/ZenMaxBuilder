@@ -97,11 +97,11 @@ _get_user_timezone() {
 #   $2 = example
 # ====================
 _prompt() {
-    LENTH=$*
-    COUNT=${#LENTH}
+    lenth=$*
+    count=${#lenth}
     echo -ne "\n${YELL}==> ${GREEN}$1 ${RED}$2"
     echo -ne "${YELL}\n==> "
-    for ((CHAR=1; CHAR<=COUNT; CHAR++))
+    for ((char=1; char<=count; char++))
     do
         echo -ne "─"
     done
@@ -121,10 +121,10 @@ _prompt() {
 # ===================
 _confirm_msg() {
     CONFIRM=False
-    COUNT=$((${#1} + 6))
+    count=$((${#1} + 6))
     echo -ne "${YELL}\n==> ${GREEN}${1}"\
              "${RED}${2}${YELL}\n==> "
-    for ((CHAR=1; CHAR<=COUNT; CHAR++))
+    for ((char=1; char<=count; char++))
     do
         echo -ne "─"
     done
@@ -180,16 +180,16 @@ _check() {
     # Run command as child, check
     # its output and notify on ERR
     "$@" & wait $!
-    local STATUS=$?
-    until [[ $STATUS -eq 0 ]]
+    local status=$?
+    until [[ $status -eq 0 ]]
     do
-        LINE=${BASH_LINENO[$i+1]}
-        FUNC=${FUNCNAME[$i+1]}
-        FILE=${BASH_SOURCE[$i+1]##*/}
+        line=${BASH_LINENO[$i+1]}
+        func=${FUNCNAME[$i+1]}
+        file=${BASH_SOURCE[$i+1]##*/}
         _error "${*} ${RED}${MSG_ERR_LINE}"\
-               "${LINE}:${NC}${YELLOW} ${FUNC}"\
+               "${line}:${NC}${YELLOW} ${func}"\
                "${RED}${MSG_ERR_FROM}:"\
-               "${NC}${YELLOW}${FILE##*/}"
+               "${NC}${YELLOW}${file##*/}"
 
         # Run again last failed command
         _ask_for_run_again

@@ -26,7 +26,7 @@
 ### Telegram API ###
 ####################
 
-API="https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN"
+api="https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN"
 
 
 # [POST] Send message
@@ -35,7 +35,7 @@ API="https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN"
 # ===================
 _send_msg() {
     curl --progress-bar -o /dev/null -fL \
-        -X POST "${API}/sendMessage" \
+        -X POST "${api}/sendMessage" \
         -d "parse_mode=html" \
         -d "chat_id=$TELEGRAM_CHAT_ID" \
         -d "text=$1" \
@@ -50,7 +50,7 @@ _send_msg() {
 # ================
 _send_file() {
     curl --progress-bar -o /dev/null -fL \
-        -X POST "${API}/sendDocument" \
+        -X POST "${api}/sendDocument" \
         -F "document=@$1" \
         -F "caption=$2" \
         -F "chat_id=$TELEGRAM_CHAT_ID" \
@@ -77,8 +77,8 @@ _send_make_build_status() {
 _send_success_build_status() {
     if [[ $BUILD_STATUS == True ]]
     then
-        MSG="$MSG_NOTE_SUCCESS ${M}m${S}s"
-        _send_msg "${KERNEL_NAME//_/-} | $MSG"
+        msg="$MSG_NOTE_SUCCESS ${M}m${S}s"
+        _send_msg "${KERNEL_NAME//_/-} | $msg"
     fi
 }
 
@@ -113,9 +113,9 @@ _send_failed_build_logs() {
         sed -r \
             "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" \
             "$LOG" > "${LOG##*/}"
-        MSG="$MSG_TG_FAILED ${M}m${S}s"
+        msg="$MSG_TG_FAILED ${M}m${S}s"
         _send_file \
-            "${DIR}/${LOG##*/}" "v${LINUX_VERSION//_/-} | $MSG"
+            "${DIR}/${LOG##*/}" "v${LINUX_VERSION//_/-} | $msg"
     fi
 }
 
@@ -125,12 +125,12 @@ _upload_signed_build() {
     if [[ $BUILD_STATUS == True ]] && \
         [[ $FLASH_ZIP == True ]]
     then
-        FILE=${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip
-        _note "${MSG_NOTE_UPLOAD}: ${FILE##*/}..."
-        MD5=$(md5sum "$FILE" | cut -d' ' -f1)
-        CAPTION="${MSG_TG_CAPTION}: ${M}m${S}s"
+        file=${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip
+        _note "${MSG_NOTE_UPLOAD}: ${file##*/}..."
+        MD5=$(md5sum "$file" | cut -d' ' -f1)
+        caption="${MSG_TG_CAPTION}: ${M}m${S}s"
         _send_file \
-            "$FILE" "$CAPTION | MD5 Checksum: ${MD5//_/-}"
+            "$file" "$caption | MD5 Checksum: ${MD5//_/-}"
     fi
 }
 
