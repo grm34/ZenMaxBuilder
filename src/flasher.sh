@@ -38,10 +38,7 @@ _zip() {
     _check cp "$2" "$ANYKERNEL_DIR"
 
     # CD to AK3 folder
-    cd "$ANYKERNEL_DIR" || (
-        _error "$MSG_ERR_DIR ${RED}AnyKernel"
-        _exit
-    )
+    _cd "$ANYKERNEL_DIR" "$MSG_ERR_DIR ${RED}AnyKernel"
 
     # Set AK3 configuration
     if [[ $START_TIME ]]
@@ -61,10 +58,7 @@ _zip() {
     _check mv "${1}.zip" "$3"
 
     # Back to script dir
-    cd "$DIR" || (
-        _error "$MSG_ERR_DIR ${RED}${DIR}"
-        _exit
-    )
+    _cd "$DIR" "$MSG_ERR_DIR ${RED}${DIR}"
 }
 
 

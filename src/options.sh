@@ -86,15 +86,9 @@ _full_upgrade() {
         if [[ -d ${repo[0]} ]]
         then
             _note "${repo[2]}..."
-            cd "${repo[0]}" || (
-                _error "$MSG_ERR_DIR ${RED}${repo[0]}"
-                _exit
-            )
+            _cd "${repo[0]}" "$MSG_ERR_DIR ${RED}${repo[0]}"
             _update_git "${repo[1]}"
-            cd "$DIR" || (
-                _error "$MSG_ERR_DIR ${RED}${DIR}"
-                _exit
-            )
+            _cd "$DIR" "$MSG_ERR_DIR ${RED}${DIR}"
         fi
     done
 }
