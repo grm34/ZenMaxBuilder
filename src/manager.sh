@@ -21,24 +21,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# Shell color codes
-if [[ -t 1 ]]
-then
-    ncolors=$(tput colors)
-    if [[ -n $ncolors ]] && [[ $ncolors -ge 8 ]]
-    then
-        BOLD="$(tput bold)"
-        NC="$(tput sgr0)"
-        RED="$(tput bold setaf 1)"
-        GREEN="$(tput bold setaf 2)"
-        YELL="$(tput bold setaf 3)"
-        YELLOW="$(tput setaf 3)"
-        BLUE="$(tput bold setaf 4)"
-        MAGENTA="$(tput setaf 5)"
-        CYAN="$(tput bold setaf 6)"
-    fi
-fi
-
 
 # ZMB banner
 _terminal_banner() {
@@ -49,6 +31,27 @@ _terminal_banner() {
    │  ╚═╝└─┘┘└┘  ╩ ╩┴ ┴┴ └─  ╚═╝└─┘┴┴─┘─┴┘└─┘┴└─  │
    │ Android Kernel Builder ∆∆ ZMB Neternels Team │
    └──────────────────────────────────────────────┘"
+}
+
+
+# Shell color codes
+_terminal_colors() {
+    if [[ -t 1 ]]
+    then
+        ncolors=$(tput colors)
+        if [[ -n $ncolors ]] && [[ $ncolors -ge 8 ]]
+        then
+            BOLD="$(tput bold)"
+            NC="$(tput sgr0)"
+            RED="$(tput bold setaf 1)"
+            GREEN="$(tput bold setaf 2)"
+            YELL="$(tput bold setaf 3)"
+            YELLOW="$(tput setaf 3)"
+            BLUE="$(tput bold setaf 4)"
+            MAGENTA="$(tput setaf 5)"
+            CYAN="$(tput bold setaf 6)"
+        fi
+    fi
 }
 
 
@@ -246,7 +249,8 @@ _exit() {
     for ((second=3; second>=1; second--))
     do
         echo -ne "\r\033[K${BLUE}${MSG_EXIT}"\
-                 "in ${second}s...$NC"
+                 "in ${MAGENTA}${second}${BLUE}"\
+                 "second(s)...$NC"
         sleep 1
     done
     echo && kill -- $$

@@ -72,6 +72,7 @@ source "${DIR}/src/options.sh"
 source "${DIR}/etc/excluded.cfg"
 
 # Ban all ('n00bz')
+_terminal_colors
 if [[ ! -t 0 ]]
 then    # Terminal mandatory
     _error "$MSG_ERR_TERM"
