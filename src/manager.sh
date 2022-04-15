@@ -101,6 +101,16 @@ _get_build_time() {
 }
 
 
+# CD to specified DIR
+# ===================
+#   $1 = location
+#   $2 = error msg
+# ===================
+_cd() {
+    cd "$1" || (_error "$2"; _exit)
+}
+
+
 # Ask some information
 # ====================
 #   $1 = question

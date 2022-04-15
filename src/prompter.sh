@@ -68,20 +68,14 @@ _ask_for_kernel_dir() {
 _ask_for_defconfig() {
     folder=${KERNEL_DIR}/arch/${ARCH}/configs
     CONF_DIR=${folder//\/\//\/}
-    cd "$CONF_DIR" || (
-        _error "$MSG_ERR_DIR ${RED}${CONF_DIR}"
-        _exit
-    )
+    _cd "$CONF_DIR" "$MSG_ERR_DIR ${RED}${CONF_DIR}"
     _prompt "$MSG_ASK_DEF :" 2
     select DEFCONFIG in *_defconfig
     do
         [[ $DEFCONFIG ]] && break
         _error "$MSG_ERR_SELECT"
     done
-    cd "$DIR" || (
-        _error "$MSG_ERR_DIR ${RED}${DIR}"
-        _exit
-    )
+    _cd "$DIR" "$MSG_ERR_DIR ${RED}${DIR}"
 }
 
 
@@ -232,10 +226,7 @@ _ask_for_flashable_zip() {
 # Validation checks the presence of this file in
 # "boot" folder and verify it starts with "Image".
 _ask_for_kernel_image() {
-    cd "$BOOT_DIR" || (
-        _error "$MSG_ERR_DIR ${RED}${BOOT_DIR}"
-        _exit
-    )
+    _cd "$BOOT_DIR" "$MSG_ERR_DIR ${RED}${BOOT_DIR}"
     _prompt "$MSG_ASK_IMG :" 1
     read -r -e K_IMG
     until [[ -f $K_IMG ]] && [[ $K_IMG == Image* ]]
@@ -245,10 +236,7 @@ _ask_for_kernel_image() {
         read -r -e K_IMG
     done
     K_IMG=${BOOT_DIR}/${K_IMG}
-    cd "$DIR" || (
-        _error "$MSG_ERR_DIR ${RED}${DIR}"
-        _exit
-    )
+    _cd "$DIR" "$MSG_ERR_DIR ${RED}${DIR}"
 }
 
 
