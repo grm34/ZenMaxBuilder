@@ -22,26 +22,31 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-##################
-### ZIP OPTION ###
-##################
+####################
+### USAGE OPTION ###
+####################
 
 
-# Create Flashable ZIP
-# Sign ZIP with AOSP Keys
-_create_zip_option() {
-    if [[ -f $OPTARG ]] && [[ ${OPTARG##*/} == Image* ]]
-    then
-        _clean_anykernel
-        _zip "${OPTARG##*/}-${DATE}-${TIME}" "$OPTARG" \
-            "${DIR}/builds/default"
-        _sign_zip \
-            "${DIR}/builds/default/${OPTARG##*/}-${DATE}-${TIME}"
-        _clean_anykernel
-        _note "$MSG_NOTE_ZIPPED !"
-    else
-        _error "$MSG_ERR_IMG ${RED}${OPTARG}"
-    fi
+# Help (--help or -h)
+_usage() {
+    echo -e "
+${BOLD}Usage:$NC ${GREEN}bash zmb \
+${NC}[${YELLOW}OPTION${NC}] [${YELLOW}ARGUMENT${NC}] \
+(e.g. ${MAGENTA}bash zmb --start${NC})
+
+  ${BOLD}Options$NC
+    -h, --help                      $MSG_HELP_H
+    -s, --start                     $MSG_HELP_S
+    -u, --update                    $MSG_HELP_U
+    -l, --list                      $MSG_HELP_L
+    -t, --tag            [v4.19]    $MSG_HELP_T
+    -m, --msg          [message]    $MSG_HELP_M
+    -f, --file            [file]    $MSG_HELP_F
+    -z, --zip     [Image.gz-dtb]    $MSG_HELP_Z
+
+${BOLD}${MSG_HELP_INFO}: \
+${CYAN}https://kernel-builder.com$NC
+"
 }
 
 
@@ -166,6 +171,29 @@ _send_file_option() {
         fi
     else
         _error "$MSG_ERR_FILE ${RED}${OPTARG}"
+    fi
+}
+
+
+##################
+### ZIP OPTION ###
+##################
+
+
+# Create Flashable ZIP
+# Sign ZIP with AOSP Keys
+_create_zip_option() {
+    if [[ -f $OPTARG ]] && [[ ${OPTARG##*/} == Image* ]]
+    then
+        _clean_anykernel
+        _zip "${OPTARG##*/}-${DATE}-${TIME}" "$OPTARG" \
+            "${DIR}/builds/default"
+        _sign_zip \
+            "${DIR}/builds/default/${OPTARG##*/}-${DATE}-${TIME}"
+        _clean_anykernel
+        _note "$MSG_NOTE_ZIPPED !"
+    else
+        _error "$MSG_ERR_IMG ${RED}${OPTARG}"
     fi
 }
 

@@ -52,29 +52,6 @@ _terminal_banner() {
 }
 
 
-# Help (--help or -h)
-_usage() {
-    echo -e "
-${BOLD}Usage:$NC ${GREEN}bash zmb \
-${NC}[${YELLOW}OPTION${NC}] [${YELLOW}ARGUMENT${NC}] \
-(e.g. ${MAGENTA}bash zmb --start${NC})
-
-  ${BOLD}Options$NC
-    -h, --help                      $MSG_HELP_H
-    -s, --start                     $MSG_HELP_S
-    -u, --update                    $MSG_HELP_U
-    -l, --list                      $MSG_HELP_L
-    -t, --tag            [v4.19]    $MSG_HELP_T
-    -m, --msg          [message]    $MSG_HELP_M
-    -f, --file            [file]    $MSG_HELP_F
-    -z, --zip     [Image.gz-dtb]    $MSG_HELP_Z
-
-${BOLD}${MSG_HELP_INFO}: \
-${CYAN}https://kernel-builder.com$NC
-"
-}
-
-
 # Get OS timezone
 _get_user_timezone() {
     TIMEZONE=$(        # LINUX
