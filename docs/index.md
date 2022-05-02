@@ -99,6 +99,7 @@ ZMB is a tool to facilitate the compilation of the Android kernel, it does not m
 - Proton-Clang: [@kdrag0n](https://github.com/kdrag0n)
 - Eva-GCC: [@mvaisakh](https://github.com/mvaisakh)
 - AnyKernel3: [@osm0sis](https://github.com/osm0sis)
+- ZipSigner: [@MrRob0-X](https://github.com/MrRob0-X)
 
 ## Links
 
