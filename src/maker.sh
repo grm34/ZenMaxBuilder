@@ -22,7 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Set user options (from settings.cfg)
+# Set user options (from settings.cfg or user.cfg)
 _export_path_and_options() {
 
     # Link Time Optimization (LTO)
@@ -42,6 +42,9 @@ _export_path_and_options() {
     }
 
     # Toolchain compiler options
+    # Set and export required $PATH
+    # Set make options from compiler
+    # Get Toolchain version
     case $COMPILER in
         "$PROTON_CLANG_NAME")
             export PATH=${PROTON_CLANG_PATH}:${PATH}
