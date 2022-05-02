@@ -91,7 +91,7 @@ Dependencies will be prompted to install or you can manually install them.
 
 ## Warning
 
-ZMB is a tool to facilitate the compilation of the Android kernel, it does not modify the source and does not correct possible modifications that must be made to Makefile. Sources are often configured for a specific compilation (firmware, modules, ...) and little changes are often necessary. For a kernel building support, you can ask for help on [Telegram](https://t.me/ZenMaxBuilder).
+ZMB is a tool to facilitate the compilation of the Android kernel, it does not modify the source and does not correct possible modifications that must be made to Makefile. Sources are often configured for a specific compilation (vendor, firmware, modules) and little changes are often necessary. For a kernel building support, you can ask for help on [Telegram](https://t.me/ZenMaxBuilder).
 
 ## License
 
