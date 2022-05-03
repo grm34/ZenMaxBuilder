@@ -93,7 +93,7 @@ _full_upgrade() {
             _note "${repo[2]}..."
             _cd "${repo[0]}" "$MSG_ERR_DIR ${RED}${repo[0]}"
             _update_git "${repo[1]}"
-            _cd "$DIR" "$MSG_ERR_DIR ${RED}${DIR}"
+            _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
         fi
     done
 }
@@ -132,9 +132,9 @@ _get_linux_tag() {
         | cut --delimiter='/' --fields=3)
     if [[ $ltag == ${OPTARG}* ]]
     then
-        _note "${MSG_SUCCESS_LTAG}: ${RED}${ltag}"
+        _note "${MSG_SUCCESS_LTAG}: ${RED}$ltag"
     else
-        _error "$MSG_ERR_LTAG ${RED}${OPTARG}"
+        _error "$MSG_ERR_LTAG ${RED}$OPTARG"
     fi
 }
 
@@ -170,7 +170,7 @@ _send_file_option() {
             _error "$MSG_ERR_API"
         fi
     else
-        _error "$MSG_ERR_FILE ${RED}${OPTARG}"
+        _error "$MSG_ERR_FILE ${RED}$OPTARG"
     fi
 }
 
@@ -186,14 +186,14 @@ _create_zip_option() {
     if [[ -f $OPTARG ]] && [[ ${OPTARG##*/} == Image* ]]
     then
         _clean_anykernel
-        _zip "${OPTARG##*/}-${DATE}-${TIME}" "$OPTARG" \
+        _zip "${OPTARG##*/}-${DATE}-$TIME" "$OPTARG" \
             "${DIR}/builds/default"
         _sign_zip \
-            "${DIR}/builds/default/${OPTARG##*/}-${DATE}-${TIME}"
+            "${DIR}/builds/default/${OPTARG##*/}-${DATE}-$TIME"
         _clean_anykernel
         _note "$MSG_NOTE_ZIPPED !"
     else
-        _error "$MSG_ERR_IMG ${RED}${OPTARG}"
+        _error "$MSG_ERR_IMG ${RED}$OPTARG"
     fi
 }
 

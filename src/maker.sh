@@ -47,17 +47,17 @@ _export_path_and_options() {
     # Get Toolchain version
     case $COMPILER in
         "$PROTON_CLANG_NAME")
-            export PATH=${PROTON_CLANG_PATH}:${PATH}
+            export PATH=${PROTON_CLANG_PATH}:$PATH
             TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
             TCVER=$(_get_tc_version "$PROTON_VERSION")
             ;;
         "$EVA_GCC_NAME")
-            export PATH=${EVA_GCC_PATH}:${PATH}
+            export PATH=${EVA_GCC_PATH}:$PATH
             TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
             TCVER=$(_get_tc_version "$GCC_ARM64_VERSION")
             ;;
         "$PROTON_GCC_NAME")
-            export PATH=${PROTON_GCC_PATH}:${PATH}
+            export PATH=${PROTON_GCC_PATH}:$PATH
             TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
             clangver=$(_get_tc_version "$PROTON_VERSION")
             gccver=$(_get_tc_version "$GCC_ARM64_VERSION")
@@ -68,14 +68,14 @@ _export_path_and_options() {
 
 # Run MAKE CLEAN
 _make_clean() {
-    _note "${MSG_NOTE_MAKE_CLEAN} [${LINUX_VERSION}]..."
+    _note "$MSG_NOTE_MAKE_CLEAN [${LINUX_VERSION}]..."
     _check unbuffer make -C "$KERNEL_DIR" clean 2>&1
 }
 
 
 # Run MAKE MRPROPER
 _make_mrproper() {
-    _note "${MSG_NOTE_MRPROPER} [${LINUX_VERSION}]..."
+    _note "$MSG_NOTE_MRPROPER [${LINUX_VERSION}]..."
     _check unbuffer make -C "$KERNEL_DIR" mrproper 2>&1
 }
 
@@ -102,9 +102,9 @@ _make_menuconfig() {
 _save_defconfig() {
     _note "$MSG_NOTE_SAVE $DEFCONFIG (arch/${ARCH}/configs)..."
     _check cp \
-        "${CONF_DIR}/${DEFCONFIG}" \
+        "${CONF_DIR}/$DEFCONFIG" \
         "${CONF_DIR}/${DEFCONFIG}_save"
-    _check cp "${OUT_DIR}/.config" "${CONF_DIR}/${DEFCONFIG}"
+    _check cp "${OUT_DIR}/.config" "${CONF_DIR}/$DEFCONFIG"
 }
 
 

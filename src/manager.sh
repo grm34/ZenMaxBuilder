@@ -157,7 +157,7 @@ _confirm() {
 # ==================
 _note() {
     echo -e "${YELL}\n[$(TZ=$TIMEZONE date +%T)]"\
-            "${CYAN}${1}${NC}"
+            "${CYAN}${1}$NC"
     sleep 1
 }
 
@@ -167,7 +167,7 @@ _note() {
 #   $* = ERR
 # =================
 _error() {
-    echo -e "\n${RED}${MSG_ERROR}: ${NC}${YELLOW}${*}${NC}"
+    echo -e "\n${RED}${MSG_ERROR}: ${NC}${YELLOW}${*}$NC"
 }
 
 
@@ -241,7 +241,7 @@ _exit() {
     do
         if [[ -f $file ]]
         then
-            rm -f "${DIR}/${file}" || sleep 0.1
+            rm -f "${DIR}/$file" || sleep 0.1
         fi
     done
 
