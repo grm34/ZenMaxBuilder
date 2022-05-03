@@ -35,7 +35,7 @@ _ask_for_codename() {
         regex="^[a-zA-Z0-9][a-zA-Z0-9_-]{2,20}$"
         until [[ $CODENAME =~ $regex ]]
         do
-            _error "$MSG_ERR_DEV ${RED}${CODENAME}"
+            _error "$MSG_ERR_DEV ${RED}$CODENAME"
             _prompt "$MSG_ASK_DEV :" 1
             read -r CODENAME
         done
@@ -53,7 +53,7 @@ _ask_for_kernel_dir() {
         read -r -e KERNEL_DIR
         until [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]
         do
-            _error "$MSG_ERR_KDIR ${RED}${KERNEL_DIR}"
+            _error "$MSG_ERR_KDIR ${RED}$KERNEL_DIR"
             _prompt "$MSG_ASK_KDIR :" 1
             read -r -e KERNEL_DIR
         done
@@ -68,14 +68,14 @@ _ask_for_kernel_dir() {
 _ask_for_defconfig() {
     folder=${KERNEL_DIR}/arch/${ARCH}/configs
     CONF_DIR=${folder//\/\//\/}
-    _cd "$CONF_DIR" "$MSG_ERR_DIR ${RED}${CONF_DIR}"
+    _cd "$CONF_DIR" "$MSG_ERR_DIR ${RED}$CONF_DIR"
     _prompt "$MSG_ASK_DEF :" 2
     select DEFCONFIG in *_defconfig
     do
         [[ $DEFCONFIG ]] && break
         _error "$MSG_ERR_SELECT"
     done
-    _cd "$DIR" "$MSG_ERR_DIR ${RED}${DIR}"
+    _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
 }
 
 
@@ -176,7 +176,7 @@ _ask_for_make_clean() {
 # Validation checks are not needed here.
 _ask_for_new_build() {
     _confirm \
-        "$MSG_START ${TAG}-${CODENAME}-${LINUX_VERSION} ?" \
+        "$MSG_START ${TAG}-${CODENAME}-$LINUX_VERSION ?" \
         "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
@@ -210,7 +210,7 @@ _ask_for_telegram() {
 # Validation checks are not needed here.
 _ask_for_flashable_zip() {
     _confirm \
-        "$MSG_ASK_ZIP ${TAG}-${CODENAME}-${LINUX_VERSION} ?" \
+        "$MSG_ASK_ZIP ${TAG}-${CODENAME}-$LINUX_VERSION ?" \
         "[y/N]"
     case $CONFIRM in
         y|Y|yes|Yes|YES)
@@ -226,17 +226,17 @@ _ask_for_flashable_zip() {
 # Validation checks the presence of this file in
 # "boot" folder and verify it starts with "Image".
 _ask_for_kernel_image() {
-    _cd "$BOOT_DIR" "$MSG_ERR_DIR ${RED}${BOOT_DIR}"
+    _cd "$BOOT_DIR" "$MSG_ERR_DIR ${RED}$BOOT_DIR"
     _prompt "$MSG_ASK_IMG :" 1
     read -r -e K_IMG
     until [[ -f $K_IMG ]] && [[ $K_IMG == Image* ]]
     do
-        _error "$MSG_ERR_IMG ${RED}${K_IMG}"
+        _error "$MSG_ERR_IMG ${RED}$K_IMG"
         _prompt "$MSG_ASK_IMG" 1
         read -r -e K_IMG
     done
-    K_IMG=${BOOT_DIR}/${K_IMG}
-    _cd "$DIR" "$MSG_ERR_DIR ${RED}${DIR}"
+    K_IMG=${BOOT_DIR}/$K_IMG
+    _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
 }
 
 
@@ -263,7 +263,7 @@ _ask_for_install_pkg() {
         n|N|no|No|NO)
             INSTALL_PKG=False
             _error "$MSG_ERR_DEP ${RED}${PACKAGE}"\
-                   "${YELL}${MSG_ERR_MFAIL}"
+                   "${YELL}$MSG_ERR_MFAIL"
             ;;
         *)
             export INSTALL_PKG=True
@@ -280,7 +280,7 @@ _ask_for_clone_toolchain() {
         n|N|no|No|NO)
             CLONE_TC=False
             _error "$MSG_ERR_TCDIR ${RED}$1"\
-                   "${YELL}${MSG_ERR_SEE_CONF}"
+                   "${YELL}$MSG_ERR_SEE_CONF"
             _exit
             ;;
         *)
@@ -298,7 +298,7 @@ _ask_for_clone_anykernel() {
         n|N|no|No|NO)
             CLONE_AK=False
             _error "$MSG_ERR_PATH ${RED}AnyKernel"\
-                   "${YELL}${MSG_ERR_SEE_CONF}"
+                   "${YELL}$MSG_ERR_SEE_CONF"
             _exit
             ;;
         *)

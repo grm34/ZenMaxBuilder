@@ -58,7 +58,7 @@ _zip() {
     _check mv "${1}.zip" "$3"
 
     # Back to script dir
-    _cd "$DIR" "$MSG_ERR_DIR ${RED}${DIR}"
+    _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
 }
 
 
@@ -85,10 +85,10 @@ _sign_zip() {
 _set_ak3_conf() {
 
     # init.spectrum.rc
-    if [[ -f ${KERNEL_DIR}/${SPECTRUM} ]]
+    if [[ -f ${KERNEL_DIR}/$SPECTRUM ]]
     then
         _check cp -af \
-            "${KERNEL_DIR}/${SPECTRUM}" \
+            "${KERNEL_DIR}/$SPECTRUM" \
             init.spectrum.rc
         kn=$KERNEL_NAME
         _check sed -i \

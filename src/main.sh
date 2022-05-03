@@ -26,7 +26,7 @@ exec 201> "$(basename "$0").lock"
 
 # Get absolute path
 DIRNAME=$(dirname "$0")
-DIR=${PWD}/${DIRNAME}
+DIR=${PWD}/$DIRNAME
 cd "$DIR" || exit $?
 
 # Bash job control
@@ -141,9 +141,9 @@ do
         l)  _list_all_kernels; _exit;;
         t)  _get_linux_tag; _exit;;
         s)  _terminal_banner;;
-        :)  _error "$MSG_ERR_MARG ${RED}-${OPTARG}"
+        :)  _error "$MSG_ERR_MARG ${RED}-$OPTARG"
             _exit;;
-        \?) _error "$MSG_ERR_IOPT ${RED}-${OPTARG}"
+        \?) _error "$MSG_ERR_IOPT ${RED}-$OPTARG"
             _exit
     esac
 done
@@ -172,19 +172,19 @@ _ask_for_codename
 folders=(builds logs toolchains out)
 for folder in "${folders[@]}"
 do
-    if [[ ! -d ${DIR}/${folder}/${CODENAME} ]] && \
+    if [[ ! -d ${DIR}/${folder}/$CODENAME ]] && \
         [[ $folder != toolchains ]]
     then
-        _check mkdir -p "${DIR}/${folder}/${CODENAME}"
-    elif [[ ! -d ${DIR}/${folder} ]]
+        _check mkdir -p "${DIR}/${folder}/$CODENAME"
+    elif [[ ! -d ${DIR}/$folder ]]
     then
-        _check mkdir "${DIR}/${folder}"
+        _check mkdir "${DIR}/$folder"
     fi
 done
 
 # Export working folders
-export OUT_DIR=${DIR}/out/${CODENAME}
-export BUILD_DIR=${DIR}/builds/${CODENAME}
+export OUT_DIR=${DIR}/out/$CODENAME
+export BUILD_DIR=${DIR}/builds/$CODENAME
 
 # Get user configuration
 _ask_for_kernel_dir
@@ -215,7 +215,7 @@ _note "${MSG_NOTE_LINUXVER}..."
 make -C "$KERNEL_DIR" kernelversion \
     | grep -v make > linuxver & wait $!
 LINUX_VERSION=$(cat linuxver)
-KERNEL_NAME=${TAG}-${CODENAME}-${LINUX_VERSION}
+KERNEL_NAME=${TAG}-${CODENAME}-$LINUX_VERSION
 
 # Make clean
 _ask_for_make_clean
@@ -290,9 +290,9 @@ _ask_for_flashable_zip
 if [[ $FLASH_ZIP == True ]]
 then
     _ask_for_kernel_image
-    _zip "${KERNEL_NAME}-${DATE}" "$K_IMG" \
+    _zip "${KERNEL_NAME}-$DATE" "$K_IMG" \
         "$BUILD_DIR" | tee -a "$LOG"
-    _sign_zip "${BUILD_DIR}/${KERNEL_NAME}-${DATE}" \
+    _sign_zip "${BUILD_DIR}/${KERNEL_NAME}-$DATE" \
         | tee -a "$LOG"
     _note "$MSG_NOTE_ZIPPED !"
 fi
