@@ -66,7 +66,7 @@ Dependencies will be prompted to install or you can manually install them.
 
 ## Warning
 
-ZMB is a tool to facilitate the compilation of the Android kernel, it does not modify the source and does not adds possible modifications that must be made to Makefile, in most cases at least :
+ZMB is a tool to facilitate the compilation of the Android kernel, it does not modify the source and does not adds possible modifications that must be made to Makefile, in most cases at least (commenting on these lines is usually sufficient, being declared by ZMB) :
 
     # Proton-Clang / Proton-GCC
     CROSS_COMPILE = <path_to>/ZenMaxBuilder/toolchains/proton_clang/bin/aarch64-linux-gnu-
