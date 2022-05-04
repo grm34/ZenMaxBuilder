@@ -93,7 +93,7 @@ _get_build_logs() {
         diff bashvar buildervar | grep -E \
             "^> [A-Z0-9_]{3,32}=" >> "$LOG" || sleep 0.1
         # Removes color codes from logs
-        sed -r \
+        sed -ri \
             "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" \
             "$LOG"
     fi
