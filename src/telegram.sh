@@ -107,9 +107,6 @@ _send_failed_build_logs() {
         [[ $BUILD_STATUS == True ]]
     then
         _get_build_time
-        sed -r \
-            "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" \
-            "$LOG" > "${LOG##*/}"
         msg="$MSG_TG_FAILED $BUILD_TIME"
         _send_file \
             "${DIR}/${LOG##*/}" "v${LINUX_VERSION//_/-} | $msg"

@@ -81,6 +81,14 @@ _get_build_time() {
 }
 
 
+# Removes color codes from logs
+_clean_build_logs() {
+    sed -r \
+        "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" \
+        "$LOG" > "${LOG##*/}"
+}
+
+
 # CD to specified DIR
 # ===================
 #   $1 = location
@@ -230,6 +238,7 @@ _exit() {
         printf "\n\n### ZMB SETTINGS ###\n" >> "$LOG"
         diff bashvar buildervar | grep -E \
             "^> [A-Z0-9_]{3,32}=" >> "$LOG" || sleep 0.1
+        _clean_build_logs
     fi
 
     # Send ERR logs on Telegram
