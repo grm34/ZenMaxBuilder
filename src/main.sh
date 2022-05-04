@@ -299,7 +299,7 @@ fi
 
 # Upload build and exit
 _upload_signed_build
-_clean_build_logs
 _clean_anykernel
+_get_build_logs
 _exit
 
