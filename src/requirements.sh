@@ -37,13 +37,13 @@ _install_dependencies() {
     )
 
     # Get current package manager command
-    os=(pacman yum emerge zypper dnf pkg apt)
-    for pkg in "${os[@]}"
+    pm_list=(pacman yum emerge zypper dnf pkg apt)
+    for manager in "${pm_list[@]}"
     do
-        if which "$pkg" &>/dev/null
+        if which "$manager" &>/dev/null
         then
             IFS=" "
-            pm="${pms[${pkg}]}"
+            pm="${pms[$manager]}"
             read -ra pm <<< "$pm"
             break
         fi
