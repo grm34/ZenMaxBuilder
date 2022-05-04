@@ -74,11 +74,11 @@ _full_upgrade() {
 
     # Set ZMB, AK3 and toolchains data
     declare -A up_data=(
-        [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
-        [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}€$MSG_UP_AK3"
-        [t1]="${PROTON_DIR}€${PROTON_BRANCH}€$MSG_UP_CLANG"
-        [t2]="${GCC_ARM_DIR}€${GCC_ARM_BRANCH}€$MSG_UP_GCC32"
-        [t3]="${GCC_ARM64_DIR}€${GCC_ARM64_BRANCH}€$MSG_UP_GCC64"
+        [zmb]="${DIR}€${ZMB_BRANCH}€${MSG_UP_ZMB}"
+        [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}€${MSG_UP_AK3}"
+        [t1]="${PROTON_DIR}€${PROTON_BRANCH}€${MSG_UP_CLANG}"
+        [t2]="${GCC_ARM_DIR}€${GCC_ARM_BRANCH}€${MSG_UP_GCC32}"
+        [t3]="${GCC_ARM64_DIR}€${GCC_ARM64_BRANCH}€${MSG_UP_GCC64}"
     )
 
     # Update ZMB, AK3 and toolchains
