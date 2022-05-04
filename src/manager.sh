@@ -81,11 +81,24 @@ _get_build_time() {
 }
 
 
-# Removes color codes from logs
-_clean_build_logs() {
-    sed -r \
-        "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" \
-        "$LOG" > "${LOG##*/}"
+# Get build logs
+_get_build_logs() {
+    if [[ -f ${DIR}/bashvar ]] && [[ -f $LOG ]]
+    then
+        # Get user inputs and add them to logfile
+        null=$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")
+        (set -o posix; set | grep -v "${null//|/\\|}")> \
+            "${DIR}/buildervar"
+        printf "\n\n### ZMB SETTINGS ###\n" >> "$LOG"
+        diff bashvar buildervar | grep -E \
+            "^> [A-Z0-9_]{3,32}=" >> "$LOG" || sleep 0.1
+        # Removes color codes from logs
+        sed -i \
+            "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" \
+            "$LOG"
+    fi
+    # Send ERR logs on Telegram
+    _send_failed_build_logs
 }
 
 
@@ -198,6 +211,7 @@ _check() {
                "${line}:${NC}${YELLOW} ${func}"\
                "${RED}${MSG_ERR_FROM}:"\
                "${NC}${YELLOW}${file##*/}"
+        _get_build_logs
 
         # Run again last failed command
         _ask_for_run_again
@@ -210,6 +224,7 @@ _check() {
             if [[ -f $LOG ]]
             then    # clear logs
                 _terminal_banner > "$LOG"
+                _send_make_build_status
             fi
             "$@" & wait $!
         else
@@ -229,23 +244,8 @@ _exit() {
         pkill make || sleep 0.1
     fi
 
-    # Get user inputs and add them to logfile
-    if [[ -f ${DIR}/bashvar ]] && [[ -f $LOG ]]
-    then
-        null=$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")
-        (set -o posix; set | grep -v "${null//|/\\|}")> \
-            "${DIR}/buildervar"
-        printf "\n\n### ZMB SETTINGS ###\n" >> "$LOG"
-        diff bashvar buildervar | grep -E \
-            "^> [A-Z0-9_]{3,32}=" >> "$LOG" || sleep 0.1
-        _clean_build_logs
-    fi
-
-    # Send ERR logs on Telegram
-    _send_failed_build_logs
-
     # Remove inputs files
-    files=(bashvar buildervar linuxver "${LOG##*/}")
+    files=(bashvar buildervar linuxver)
     for file in "${files[@]}"
     do
         if [[ -f $file ]]

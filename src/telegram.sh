@@ -107,9 +107,8 @@ _send_failed_build_logs() {
         [[ $BUILD_STATUS == True ]]
     then
         _get_build_time
-        msg="$MSG_TG_FAILED $BUILD_TIME"
-        _send_file \
-            "${DIR}/${LOG##*/}" "v${LINUX_VERSION//_/-} | $msg"
+        _send_file "$LOG" \
+            "v${LINUX_VERSION//_/-} | $MSG_TG_FAILED $BUILD_TIME"
     fi
 }
 
