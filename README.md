@@ -94,10 +94,10 @@ Dependencies will be prompted to install or you can manually install them.
 ZMB is a tool to facilitate the compilation of the Android kernel, it does not touch at the source and does not adds possible modifications that must be made to Makefile, except the setting of CROSS_COMPILE like this :
 
     # Proton-Clang / Proton-GCC
-    CROSS_COMPILE = aarch64-linux-gnu-
+    CROSS_COMPILE ?= aarch64-linux-gnu-
 
     # Eva-GCC
-    CROSS_COMPILE = aarch64-elf-
+    CROSS_COMPILE ?= aarch64-elf-
 
 Sources are often configured for a specific compilation (vendor, firmware, modules) and little changes are often necessary. For a kernel building support, you can ask for help on [Telegram](https://t.me/ZenMaxBuilder).
 
