@@ -24,40 +24,29 @@
 
 # Flashable ZIP Creation
 # ======================
+# Send status on Telegram
+# Move image to AK3 folder
+# Set AK3 configuration
+# Create Flashable ZIP
+# Move ZIP to builds folder
+#
+# Arguments:
 #   $1 = kernel name
 #   $2 = kernel image
 #   $3 = build folder
 # ======================
 _zip() {
     _note "$MSG_NOTE_ZIP ${1}.zip..."
-
-    # Send zip status on Telegram
     _send_zip_creation_status
-
-    # Move image to AK3 folder
     _check cp "$2" "$ANYKERNEL_DIR"
-
-    # CD to AK3 folder
     _cd "$ANYKERNEL_DIR" "$MSG_ERR_DIR ${RED}AnyKernel"
+    if [[ $START_TIME ]]; then _set_ak3_conf; fi
 
-    # Set AK3 configuration
-    if [[ $START_TIME ]]
-    then
-        _set_ak3_conf
-    fi
-
-    # Create zip
     _check unbuffer zip -r9 "${1}.zip" \
         ./* -x .git README.md ./*placeholder 2>&1
 
-    # Move zip to builds folder
-    if [[ ! -d $3 ]]
-    then
-        _check mkdir "$3"
-    fi
+    if [[ ! -d $3 ]]; then _check mkdir "$3"; fi
     _check mv "${1}.zip" "$3"
-
-    # Back to script dir
     _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
 }
 
@@ -97,29 +86,18 @@ _set_ak3_conf() {
     fi
 
     # anykernel.sh
-    _check sed -i \
-        "s/kernel.string=.*/kernel.string=${TAG}-${CODENAME}/g" \
-        anykernel.sh
-    _check sed -i \
-        "s/kernel.for=.*/kernel.for=${KERNEL_VARIANT}/g" \
-        anykernel.sh
-    _check sed -i \
-        "s/kernel.compiler=.*/kernel.compiler=${COMPILER}/g" \
-        anykernel.sh
-    _check sed -i \
-        "s/kernel.made=.*/kernel.made=${BUILDER}/g" \
-        anykernel.sh
-    _check sed -i \
-        "s/kernel.version=.*/kernel.version=${LINUX_VERSION}/g" \
-        anykernel.sh
-    _check sed -i \
-        "s/message.word=.*/message.word=ZenMaxBuilder/g" \
-        anykernel.sh
-    _check sed -i \
-        "s/build.date=.*/build.date=${DATE}/g" \
-        anykernel.sh
-    _check sed -i \
-        "s/device.name1=.*/device.name1=${CODENAME}/g" \
-        anykernel.sh
+    strings=(
+        "s/kernel.string=.*/kernel.string=${TAG}-${CODENAME}/g"
+        "s/kernel.for=.*/kernel.for=${KERNEL_VARIANT}/g"
+        "s/kernel.compiler=.*/kernel.compiler=${COMPILER}/g"
+        "s/kernel.made=.*/kernel.made=${BUILDER}/g"
+        "s/kernel.version=.*/kernel.version=${LINUX_VERSION}/g"
+        "s/message.word=.*/message.word=ZenMaxBuilder/g"
+        "s/build.date=.*/build.date=${DATE}/g"
+        "s/device.name1=.*/device.name1=${CODENAME}/g")
+    for string in "${strings[@]}"
+    do
+        _check sed -i "$string" anykernel.sh
+    done
 }
 
