@@ -142,7 +142,6 @@ _ask_for_edit_cross_compile() {
             EDIT_CC=True
             ;;
         *)
-            _note "$MSG_WARN_CC"
             export EDIT_CC=False
     esac
 }
