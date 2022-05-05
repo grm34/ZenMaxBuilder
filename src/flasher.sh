@@ -24,40 +24,29 @@
 
 # Flashable ZIP Creation
 # ======================
+# Send status on Telegram
+# Move image to AK3 folder
+# Set AK3 configuration
+# Create Flashable ZIP
+# Move ZIP to builds folder
+#
+# Arguments:
 #   $1 = kernel name
 #   $2 = kernel image
 #   $3 = build folder
 # ======================
 _zip() {
     _note "$MSG_NOTE_ZIP ${1}.zip..."
-
-    # Send zip status on Telegram
     _send_zip_creation_status
-
-    # Move image to AK3 folder
     _check cp "$2" "$ANYKERNEL_DIR"
-
-    # CD to AK3 folder
     _cd "$ANYKERNEL_DIR" "$MSG_ERR_DIR ${RED}AnyKernel"
+    if [[ $START_TIME ]]; then _set_ak3_conf; fi
 
-    # Set AK3 configuration
-    if [[ $START_TIME ]]
-    then
-        _set_ak3_conf
-    fi
-
-    # Create zip
     _check unbuffer zip -r9 "${1}.zip" \
         ./* -x .git README.md ./*placeholder 2>&1
 
-    # Move zip to builds folder
-    if [[ ! -d $3 ]]
-    then
-        _check mkdir "$3"
-    fi
+    if [[ ! -d $3 ]]; then _check mkdir "$3"; fi
     _check mv "${1}.zip" "$3"
-
-    # Back to script dir
     _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
 }
 
