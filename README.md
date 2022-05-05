@@ -57,7 +57,7 @@ Dependencies will be prompted to install or you can manually install them.
 
 ## Options
 
-    Usage: bash zmb [OPTION] [ARGUMENT] (e.q. bash zmb --start)
+    Usage: bash zmb [OPTION] [ARGUMENT] (e.g. bash zmb --start)
 
     Options
         -h, --help                      show this message and exit
