@@ -133,6 +133,21 @@ _ask_for_toolchain() {
 }
 
 
+# Request to edit Makefile CROSS_COMPILE.
+# Validation checks are not needed here.
+_ask_for_edit_cross_compile() {
+    _confirm "$MSG_ASK_CC $COMPILER ?" "[y/N]"
+    case $CONFIRM in
+        y|Y|yes|Yes|YES)
+            EDIT_CC=True
+            ;;
+        *)
+            _note "$MSG_WARN_CC"
+            export EDIT_CC=False
+    esac
+}
+
+
 # Question to get the number of CPU cores to use.
 # Validation checks for a valid number corresponding
 # to the amount of available CPU cores (no limits here).

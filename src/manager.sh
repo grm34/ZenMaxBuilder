@@ -102,6 +102,38 @@ _get_build_logs() {
 }
 
 
+# Edit CROSS_COMPILE in Makefile
+_edit_makefile_cross_compile() {
+    cc=${ccompiler/CROSS_COMPILE=/}
+    _check sed -i \
+        "s/CROSS_COMPILE.*?=.*/CROSS_COMPILE ?= ${cc}/g" \
+        "${KERNEL_DIR}/Makefile"
+}
+
+
+# Get CROSS_COMPILE and edit Makefile
+_get_cross_compile() {
+    _note "$MSG_NOTE_CC"
+    grepcc=$(grep CROSS_COMPILE "${KERNEL_DIR}/Makefile")
+    echo "$grepcc" | grep -v "ifneq\|export\|#"
+    _ask_for_edit_cross_compile
+    case $COMPILER in
+        "$PROTON_CLANG_NAME")
+            ccompiler=${PROTON_CLANG_OPTIONS[2]}
+            ;;
+        "$PROTON_GCC_NAME")
+            ccompiler=${PROTON_GCC_OPTIONS[3]}
+            ;;
+        "$EVA_GCC_NAME")
+            ccompiler=${EVA_GCC_OPTIONS[3]}
+    esac
+    if [[ $EDIT_CC == True ]]
+    then
+        _edit_makefile_cross_compile
+    fi
+}
+
+
 # CD to specified DIR
 # ===================
 #   $1 = location

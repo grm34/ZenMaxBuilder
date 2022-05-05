@@ -191,6 +191,7 @@ _ask_for_kernel_dir
 _ask_for_defconfig
 _ask_for_menuconfig
 _ask_for_toolchain
+_get_cross_compile
 _ask_for_cores
 
 # Install and clone requirements
