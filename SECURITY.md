@@ -4,7 +4,7 @@
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.8     | :white_check_mark: |
+| 1.9     | :white_check_mark: |
 
 | Branch | Supported          |
 | ------ | ------------------ |
@@ -20,12 +20,12 @@ Open an issue: [Bug Report Section](https://github.com/grm34/ZenMaxBuilder/issue
 | File            |    blank |  comment |     code |
 | :-------------- | -------: | -------: | -------: |
 | prompter.sh     |       36 |       68 |      218 |
-| manager.sh      |       39 |       72 |      207 |
+| manager.sh      |       39 |       72 |      212 |
 | main.sh         |       35 |       66 |      205 |
-| options.sh      |       34 |       55 |      110 |
+| options.sh      |       34 |       55 |      115 |
 | requirements.sh |       15 |       35 |       86 |
 | telegram.sh     |       26 |       42 |       77 |
 | maker.sh        |       21 |       40 |       61 |
 | flasher.sh      |       14 |       44 |       45 |
 | --------        | -------- | -------- | -------- |
-| SUM:            |      220 |      422 |     1009 |
+| SUM:            |      220 |      422 |     1019 |
