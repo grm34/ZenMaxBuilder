@@ -132,7 +132,7 @@ fi
 while getopts ':hsult:m:f:z:' option
 do
     case $option in
-        h)  _terminal_banner; _usage
+        h)  clear; _terminal_banner; _usage
             rm -f "./bashvar"; exit 0;;
         u)  _full_upgrade; _exit;;
         m)  _send_msg_option; _exit;;
@@ -140,7 +140,7 @@ do
         z)  _create_zip_option; _exit;;
         l)  _list_all_kernels; _exit;;
         t)  _get_linux_tag; _exit;;
-        s)  _terminal_banner;;
+        s)  clear; _terminal_banner;;
         :)  _error "$MSG_ERR_MARG ${RED}-$OPTARG"
             _exit;;
         \?) _error "$MSG_ERR_IOPT ${RED}-$OPTARG"

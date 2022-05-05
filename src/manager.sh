@@ -130,6 +130,12 @@ _get_cross_compile() {
     if [[ $EDIT_CC == True ]]
     then
         _edit_makefile_cross_compile
+    else
+        mk=$(grep "CROSS_COMPILE.*?=" "${KERNEL_DIR}/Makefile")
+        if [[ -n ${mk##*"${ccompiler/CROSS_COMPILE=/}"*} ]]
+        then
+            _error WARN "$MSG_WARN_CC"
+        fi
     fi
 }
 
@@ -215,12 +221,17 @@ _note() {
 }
 
 
-# Display any error
-# =================
-#   $* = ERR
-# =================
+# Display error/warning
+# =====================
+#   $* = ERR/WARN
+# =====================
 _error() {
-    echo -e "\n${RED}${MSG_ERROR}: ${NC}${YELLOW}${*}$NC"
+    if [[ $1 == WARN ]]
+    then
+        echo -e "\n${BLUE}${MSG_WARN}:${NC}${YELLOW}${*/WARN/}$NC"
+    else
+        echo -e "\n${RED}${MSG_ERROR}: ${NC}${YELLOW}${*}$NC"
+    fi
 }
 
 
