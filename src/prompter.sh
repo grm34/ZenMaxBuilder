@@ -276,7 +276,7 @@ _ask_for_install_pkg() {
     case $CONFIRM in
         n|N|no|No|NO)
             INSTALL_PKG=False
-            _error "$MSG_ERR_DEP ${RED}${PACKAGE}"\
+            _error WARN "$MSG_ERR_DEP ${RED}${PACKAGE}"\
                    "${YELL}$MSG_ERR_MFAIL"
             ;;
         *)
