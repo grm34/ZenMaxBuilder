@@ -114,8 +114,8 @@ _edit_makefile_cross_compile() {
 # Get CROSS_COMPILE and edit Makefile
 _get_cross_compile() {
     _note "$MSG_NOTE_CC"
-    cat "${KERNEL_DIR}/Makefile" | \
-        grep CROSS_COMPILE | grep -v "ifneq\|export\|#"
+    grepcc=$(grep CROSS_COMPILE "${KERNEL_DIR}/Makefile")
+    echo "$grepcc" | grep -v "ifneq\|export\|#"
     _ask_for_edit_cross_compile
     case $COMPILER in
         "$PROTON_CLANG_NAME")
