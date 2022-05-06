@@ -58,7 +58,7 @@ ${CYAN}https://kernel-builder.com$NC
 # GitHub repository
 # =================
 #   $1 = branch
-# =================
+#
 _update_git() {
     git checkout "$1"
     git fetch origin "$1"

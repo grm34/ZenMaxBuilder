@@ -36,7 +36,7 @@ _install_dependencies() {
         [dnf]="sudo dnf install -y"
     )
 
-    # Get current package manager command
+    # Get the current package manager command
     pm_list=(pacman yum emerge zypper dnf pkg apt)
     for manager in "${pm_list[@]}"
     do
@@ -70,25 +70,26 @@ _install_dependencies() {
 }
 
 
-# Clone missing toolchains repos
-_clone_toolchains() {
-
-    # Github Clone command
-    # ====================
-    #   $1 = repo branch
-    #   $2 = repo url
-    #   $3 = repo folder
-    # ====================
-    _clone_tc() {
-        if [[ ! -d $3 ]]
+# Github Clone command
+# ====================
+#   $1 = repo branch
+#   $2 = repo url
+#   $3 = repo folder
+#
+_clone_tc() {
+    if [[ ! -d $3 ]]
+    then
+        _ask_for_clone_toolchain "${3##*/}"
+        if [[ $CLONE_TC == True ]]
         then
-            _ask_for_clone_toolchain "${3##*/}"
-            if [[ $CLONE_TC == True ]]
-            then
-                git clone --depth=1 -b "$1" "$2" "$3"
-            fi
+            git clone --depth=1 -b "$1" "$2" "$3"
         fi
-    }
+    fi
+}
+
+
+# Clone toolchains repos
+_clone_toolchains() {
 
     # Proton-Clang
     case $COMPILER in
@@ -119,7 +120,7 @@ _clone_toolchains() {
 }
 
 
-# Clone missing AK3 repo
+# Clone AK3 repo
 _clone_anykernel() {
     if [[ ! -d $ANYKERNEL_DIR ]]
     then

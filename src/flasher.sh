@@ -24,17 +24,16 @@
 
 # Flashable ZIP Creation
 # ======================
-# Send status on Telegram
-# Move image to AK3 folder
-# Set AK3 configuration
-# Create Flashable ZIP
-# Move ZIP to builds folder
+# - send status on Telegram
+# - move image to AK3 folder
+# - set AK3 configuration
+# - create Flashable ZIP
+# - move ZIP to builds folder
 #
-# Arguments:
 #   $1 = kernel name
 #   $2 = kernel image
 #   $3 = build folder
-# ======================
+#
 _zip() {
     _note "$MSG_NOTE_ZIP ${1}.zip..."
     _send_zip_creation_status
@@ -53,24 +52,25 @@ _zip() {
 
 # Signing ZIP with AOSP Keys
 # ==========================
+# - send signing status on Telegram
+# - sign ZIP with AOSP Keys (JAVA)
+#
 #   $1 = kernel name
-# ==========================
+#
 _sign_zip() {
     _note "${MSG_NOTE_SIGN}..."
-
-    # Send signing status on Telegram
     _send_zip_signing_status
-
-    # Sign zip
     _check unbuffer java -jar \
         "${DIR}/bin/zipsigner-3.0.jar" \
         "${1}.zip" "${1}-signed.zip" 2>&1
 }
 
 
-# [AK3]
-# Set init.spectrum.rc
-# Set anykernel.sh
+# AnyKernel Configuration
+# =======================
+# - edit anykernel.sh (SED)
+# - edit init.spectrum.rc (SED)
+#
 _set_ak3_conf() {
 
     # init.spectrum.rc
