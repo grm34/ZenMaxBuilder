@@ -42,7 +42,7 @@ _terminal_colors() {
         if [[ -n $ncolors ]] && [[ $ncolors -ge 8 ]]
         then
             BOLD="$(tput bold)"
-            NC="$(tput sgr0)"
+            NC="\e[0m"
             RED="$(tput bold setaf 1)"
             GREEN="$(tput bold setaf 2)"
             YELL="$(tput bold setaf 3)"
@@ -81,6 +81,15 @@ _get_build_time() {
 }
 
 
+# Clean logfile
+_cleanlog() {
+    if [[ -f $LOG ]]
+    then # Removes color codes from logs
+        sed -ri "s/\x1b\[[0-9;]*[mGKHF]//g" "$LOG"
+    fi
+}
+
+
 # Get build logs
 _get_build_logs() {
     if [[ -f ${DIR}/bashvar ]] && [[ -f $LOG ]]
@@ -92,10 +101,7 @@ _get_build_logs() {
         printf "\n\n### ZMB SETTINGS ###\n" >> "$LOG"
         diff bashvar buildervar | grep -E \
             "^> [A-Z0-9_]{3,32}=" >> "$LOG" || sleep 0.1
-        # Removes color codes from logs
-        sed -ri \
-            "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" \
-            "$LOG"
+        _cleanlog
     fi
     # Send ERR logs on Telegram
     _send_failed_build_logs
@@ -288,6 +294,7 @@ _exit() {
     fi
 
     # Remove inputs files
+    _cleanlog
     files=(bashvar buildervar linuxver)
     for file in "${files[@]}"
     do
