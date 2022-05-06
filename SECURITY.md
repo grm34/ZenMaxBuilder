@@ -20,7 +20,7 @@ Open an issue: [Bug Report Section](https://github.com/grm34/ZenMaxBuilder/issue
 | File            |    blank |  comment |     code |
 | :-------------- | -------: | -------: | -------: |
 | prompter.sh     |       36 |       68 |      218 |
-| manager.sh      |       39 |       72 |      212 |
+| manager.sh      |       41 |       72 |      217 |
 | main.sh         |       35 |       66 |      205 |
 | options.sh      |       34 |       55 |      115 |
 | requirements.sh |       15 |       35 |       86 |
@@ -28,4 +28,4 @@ Open an issue: [Bug Report Section](https://github.com/grm34/ZenMaxBuilder/issue
 | maker.sh        |       21 |       40 |       61 |
 | flasher.sh      |       14 |       44 |       45 |
 | --------        | -------- | -------- | -------- |
-| SUM:            |      220 |      422 |     1019 |
+| SUM:            |      222 |      422 |     1024 |
