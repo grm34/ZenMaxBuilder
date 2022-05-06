@@ -22,12 +22,12 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-####################
-### USAGE OPTION ###
-####################
+###################
+### HELP OPTION ###
+###################
 
 
-# Help (--help or -h)
+# ZMB help and usage
 _usage() {
     echo -e "
 ${BOLD}Usage:$NC ${GREEN}bash zmb \
@@ -55,9 +55,14 @@ ${CYAN}https://kernel-builder.com$NC
 #####################
 
 
-# GitHub repository
+# Github repository
 # =================
-#   $1 = branch
+# - checkout and fetch
+# - ZMB: check if settings.cfg was updated
+# - ZMB: warn the user to edit user.cfg if true
+# - reset to origin then pull changes
+#
+#   $1 = repo branch
 #
 _update_git() {
     git checkout "$1"
@@ -72,12 +77,10 @@ _update_git() {
 }
 
 
-# ZMB: ZenMaxBuilder
-# AK3: AnyKernel3
-# Toolchains
+# Updates everything that needs to be
 _full_upgrade() {
 
-    # Set ZMB, AK3 and toolchains data
+    # Set ZMB, AK3 and TC data
     declare -A up_data=(
         [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
         [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}€$MSG_UP_AK3"
@@ -86,7 +89,7 @@ _full_upgrade() {
         [t3]="${GCC_ARM64_DIR}€${GCC_ARM64_BRANCH}€$MSG_UP_GCC64"
     )
 
-    # Update ZMB, AK3 and toolchains
+    # Update ZMB, AK3 and TC
     up_list=(zmb ak3 t1 t2 t3)
     for repository in "${up_list[@]}"
     do
@@ -109,8 +112,7 @@ _full_upgrade() {
 ###########################
 
 
-# Show list of kernels
-# List folders in OUT
+# Show list of kernels (display out folders)
 _list_all_kernels() {
     if [[ -d ${DIR}/out ]] && \
         [[ $(ls -d out/*/ 2>/dev/null) ]]
@@ -185,8 +187,7 @@ _send_file_option() {
 ##################
 
 
-# Create Flashable ZIP
-# Sign ZIP with AOSP Keys
+# Create and sign flashable ZIP
 _create_zip_option() {
     if [[ -f $OPTARG ]] && [[ ${OPTARG##*/} == Image* ]]
     then
