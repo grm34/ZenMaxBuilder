@@ -55,7 +55,7 @@ _terminal_colors() {
 }
 
 
-# Get OS timezone
+# Get current OS timezone
 _get_user_timezone() {
     TIMEZONE=$(        # LINUX
         (timedatectl | grep 'Time zone' \
@@ -71,7 +71,7 @@ _get_user_timezone() {
 }
 
 
-# Get build time
+# Define current build time
 _get_build_time() {
     end_time=$(TZ=$TIMEZONE date +%s)
     diff_time=$((end_time - START_TIME))
@@ -81,20 +81,24 @@ _get_build_time() {
 }
 
 
-# Clean logfile
+# Remove ANSI escape sequences
 _cleanlog() {
     if [[ -f $LOG ]]
-    then # Removes color codes from logs
+    then
         sed -ri "s/\x1b\[[0-9;]*[mGKHF]//g" "$LOG"
     fi
 }
 
 
-# Get build logs
+# Get build variables
+# ===================
+# - get user inputs and add them to logfile
+# - removes color codes from logfile
+# - send logfile on Telegram when the build fail
+#
 _get_build_logs() {
     if [[ -f ${DIR}/bashvar ]] && [[ -f $LOG ]]
     then
-        # Get user inputs and add them to logfile
         null=$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")
         (set -o posix; set | grep -v "${null//|/\\|}")> \
             "${DIR}/buildervar"
@@ -103,12 +107,11 @@ _get_build_logs() {
             "^> [A-Z0-9_]{3,32}=" >> "$LOG" || sleep 0.1
         _cleanlog
     fi
-    # Send ERR logs on Telegram
     _send_failed_build_logs
 }
 
 
-# Edit CROSS_COMPILE in Makefile
+# Edit CROSS_COMPILE
 _edit_makefile_cross_compile() {
     cc=${ccompiler/CROSS_COMPILE=/}
     _check sed -i \
@@ -117,7 +120,14 @@ _edit_makefile_cross_compile() {
 }
 
 
-# Get CROSS_COMPILE and edit Makefile
+# Handle Makefile CROSS_COMPILE
+# =============================
+# - grep CROSS_COMPILE variables from Makefile
+# - display them on TERM so user can check before
+# - ask to set CROSS_COMPILE corresponding current TC
+# - edit Makefile CROSS_COMPILE (append compiler)
+# - warn the user when CC seems not correctly set
+#
 _get_cross_compile() {
     _note "$MSG_NOTE_CC"
     grepcc=$(grep CROSS_COMPILE "${KERNEL_DIR}/Makefile")
@@ -150,7 +160,7 @@ _get_cross_compile() {
 # ===================
 #   $1 = location
 #   $2 = error msg
-# ===================
+#
 _cd() {
     cd "$1" || (_error "$2"; _exit)
 }
@@ -160,7 +170,7 @@ _cd() {
 # ====================
 #   $1 = question
 #   $2 = type
-# ====================
+#
 _prompt() {
     lenth=$*
     count=${#lenth}
@@ -179,11 +189,11 @@ _prompt() {
 }
 
 
-# Confirmation prompt
-# ===================
+# Confirmation message
+# ====================
 #   $1 = question
 #   $2 = yes/no
-# ===================
+#
 _confirm_msg() {
     CONFIRM=False
     count=$((${#1} + 6))
@@ -204,7 +214,7 @@ _confirm_msg() {
 #   -------------
 #   $1 = question
 #   $2 = yes/no
-# ======================
+#
 _confirm() {
     _confirm_msg "$@"
     until [[ -z $CONFIRM ]] || \
@@ -219,7 +229,7 @@ _confirm() {
 # Display some notes
 # ==================
 #   $1 = note
-# ==================
+#
 _note() {
     echo -e "${YELL}\n[$(TZ=$TIMEZONE date +%T)]"\
             "${CYAN}${1}$NC"
@@ -230,7 +240,7 @@ _note() {
 # Display error/warning
 # =====================
 #   $* = ERR/WARN
-# =====================
+#
 _error() {
     if [[ $1 == WARN ]]
     then
@@ -243,12 +253,15 @@ _error() {
 
 # Handle command error
 # ====================
+# - run command as child
+# - check its output code
+# - notify function and file on ERR
+# - get failed build logs (+TG feedback)
+# - ask to run again last failed command
+#
 #   $@ = command
-# ====================
+#
 _check() {
-
-    # Run command as child, check
-    # its output and notify on ERR
     "$@" & wait $!
     local status=$?
     until [[ $status -eq 0 ]]
@@ -261,8 +274,6 @@ _check() {
                "${RED}${MSG_ERR_FROM}:"\
                "${NC}${YELLOW}${file##*/}"
         _get_build_logs
-
-        # Run again last failed command
         _ask_for_run_again
         if [[ $RUN_AGAIN == True ]]
         then
@@ -284,16 +295,18 @@ _check() {
 }
 
 
-# Properly EXIT
+# Properly exit ZMB
+# =================
+# - kill make PID child on interrupt
+# - remove user inputs files
+# - exit with 3s timeout
+#
 _exit() {
-
-    # Kill make PID child on interrupt
     if pidof make
     then
         pkill make || sleep 0.1
     fi
 
-    # Remove inputs files
     _cleanlog
     files=(bashvar buildervar linuxver)
     for file in "${files[@]}"
@@ -304,7 +317,6 @@ _exit() {
         fi
     done
 
-    # Exit with 3s timeout
     for ((second=3; second>=1; second--))
     do
         echo -ne "\r\033[K${BLUE}${MSG_EXIT}"\
