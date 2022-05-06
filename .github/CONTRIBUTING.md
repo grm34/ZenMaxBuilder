@@ -21,6 +21,13 @@ If you know another language and are willing to help translate ZMB, here are the
 
 \* ZMB being launched from a terminal, please try to respect the length of the lines (max 70).
 
+| language | flag | translator | progress |
+| :------- | ---: | ---------: | -------: |
+| English  |   🇬🇧 |     @grm34 |     100% |
+| Spanish  |   🇪🇸 |     @grm34 |     100% |
+| French   |   🇫🇷 |     @grm34 |     100% |
+| German   |   🇩🇪 |    @Besix2 |     100% |
+
 ## How to make a clean pull request
 
 - Create a personal fork of the project on Github.
