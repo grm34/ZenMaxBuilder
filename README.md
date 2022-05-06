@@ -101,6 +101,23 @@ ZMB is a tool to facilitate the compilation of the Android kernel, it does not t
 
 Sources are often configured for a specific compilation (vendor, firmware, modules) and little changes are often necessary. For a kernel building support, you can ask for help on [Telegram](https://t.me/ZenMaxBuilder).
 
+## Contributing
+
+If you want to contribute to ZenMaxBuilder project and make it better, your help is very welcome: [Contributing Guidelines](https://github.com/grm34/ZenMaxBuilder/blob/zmb/.github/CONTRIBUTING.md)
+
+## Reporting Issues
+
+Found a problem? Want a new feature? Have a question? First of all see if your issue, question or idea has [already been reported](https://github.com/grm34/ZenMaxBuilder/issues). If don't, just open a [new clear and descriptive issue](https://github.com/grm34/ZenMaxBuilder/issues/new/choose).
+
+## Help us translate ZenMaxBuilder
+
+| language | flag | translator | progress |
+| :------- | ---: | ---------: | -------: |
+| English  |   🇬🇧 |     @grm34 |     100% |
+| Spanish  |   🇪🇸 |     @grm34 |     100% |
+| French   |   🇫🇷 |     @grm34 |     100% |
+| German   |   🇩🇪 |    @Besix2 |     100% |
+
 ## License
 
     MIT License
