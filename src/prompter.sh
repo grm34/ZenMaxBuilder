@@ -86,9 +86,6 @@ _ask_for_menuconfig() {
     case $CONFIRM in
         y|Y|yes|Yes|YES)
             MENUCONFIG=True
-            ;;
-        *)
-            export MENUCONFIG=False
     esac
 }
 
@@ -105,13 +102,7 @@ _ask_for_save_defconfig() {
             case $CONFIRM in
                 n|N|no|No|NO)
                     ORIGINAL_DEFCONFIG=False
-                    ;;
-                *)
-                    export ORIGINAL_DEFCONFIG=True
             esac
-            ;;
-        *)
-            export SAVE_DEFCONFIG=True
     esac
 }
 
@@ -140,9 +131,6 @@ _ask_for_edit_cross_compile() {
     case $CONFIRM in
         y|Y|yes|Yes|YES)
             EDIT_CC=True
-            ;;
-        *)
-            export EDIT_CC=False
     esac
 }
 
@@ -179,9 +167,6 @@ _ask_for_make_clean() {
     case $CONFIRM in
         y|Y|yes|Yes|YES)
             MAKE_CLEAN=True
-            ;;
-        *)
-            export MAKE_CLEAN=False
     esac
 }
 
@@ -195,9 +180,6 @@ _ask_for_new_build() {
     case $CONFIRM in
         n|N|no|No|NO)
             NEW_BUILD=False
-            ;;
-        *)
-            export NEW_BUILD=True
     esac
 }
 
@@ -212,9 +194,6 @@ _ask_for_telegram() {
         case $CONFIRM in
             y|Y|yes|Yes|YES)
                 BUILD_STATUS=True
-                ;;
-            *)
-                export BUILD_STATUS=False
         esac
     fi
 }
@@ -229,9 +208,6 @@ _ask_for_flashable_zip() {
     case $CONFIRM in
         y|Y|yes|Yes|YES)
             FLASH_ZIP=True
-            ;;
-        *)
-            export FLASH_ZIP=False
     esac
 }
 
@@ -261,9 +237,6 @@ _ask_for_run_again() {
     case $CONFIRM in
         y|Y|yes|Yes|YES)
             RUN_AGAIN=True
-            ;;
-        *)
-            export RUN_AGAIN=False
     esac
 }
 
@@ -275,7 +248,6 @@ _ask_for_install_pkg() {
     _confirm "$MSG_ASK_PKG $1 ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
-            INSTALL_PKG=False
             _error WARN "$MSG_ERR_DEP ${RED}${PACKAGE}"\
                    "${YELL}$MSG_ERR_MFAIL"
             ;;
@@ -292,7 +264,6 @@ _ask_for_clone_toolchain() {
     _confirm "$MSG_ASK_CLONE_TC $1 ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
-            CLONE_TC=False
             _error "$MSG_ERR_TCDIR ${RED}$1"\
                    "${YELL}$MSG_ERR_SEE_CONF"
             _exit
@@ -310,7 +281,6 @@ _ask_for_clone_anykernel() {
     _confirm "$MSG_ASK_CLONE_AK3 ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
-            CLONE_AK=False
             _error "$MSG_ERR_PATH ${RED}AnyKernel"\
                    "${YELL}$MSG_ERR_SEE_CONF"
             _exit

@@ -55,7 +55,7 @@ _terminal_colors() {
 }
 
 
-# Get current OS timezone
+# Operating System timezone
 _get_user_timezone() {
     TIMEZONE=$(        # LINUX
         (timedatectl | grep 'Time zone' \
@@ -81,15 +81,6 @@ _get_build_time() {
 }
 
 
-# Remove ANSI escape sequences
-_cleanlog() {
-    if [[ -f $LOG ]]
-    then
-        sed -ri "s/\x1b\[[0-9;]*[mGKHF]//g" "$LOG"
-    fi
-}
-
-
 # Get build variables
 # ===================
 # - get user inputs and add them to logfile
@@ -111,47 +102,11 @@ _get_build_logs() {
 }
 
 
-# Edit Makefile CROSS_COMPILE
-_edit_makefile_cross_compile() {
-    cc=${ccompiler/CROSS_COMPILE=/}
-    _check sed -i \
-        "s/CROSS_COMPILE.*?=.*/CROSS_COMPILE ?= ${cc}/g" \
-        "${KERNEL_DIR}/Makefile"
-}
-
-
-# Handle Makefile CROSS_COMPILE
-# =============================
-# - grep CROSS_COMPILE variables from Makefile
-# - display them on TERM so user can check before
-# - ask to set CROSS_COMPILE corresponding current TC
-# - edit Makefile CROSS_COMPILE (append compiler)
-# - warn the user when CC seems not correctly set
-#
-_get_cross_compile() {
-    _note "$MSG_NOTE_CC"
-    grepcc=$(grep CROSS_COMPILE "${KERNEL_DIR}/Makefile")
-    echo "$grepcc" | grep -v "ifneq\|export\|#"
-    _ask_for_edit_cross_compile
-    case $COMPILER in
-        "$PROTON_CLANG_NAME")
-            ccompiler=${PROTON_CLANG_OPTIONS[2]}
-            ;;
-        "$PROTON_GCC_NAME")
-            ccompiler=${PROTON_GCC_OPTIONS[3]}
-            ;;
-        "$EVA_GCC_NAME")
-            ccompiler=${EVA_GCC_OPTIONS[3]}
-    esac
-    if [[ $EDIT_CC == True ]]
+# Remove ANSI escape sequences
+_cleanlog() {
+    if [[ -f $LOG ]]
     then
-        _edit_makefile_cross_compile
-    else
-        mk=$(grep "CROSS_COMPILE.*?=" "${KERNEL_DIR}/Makefile")
-        if [[ -n ${mk##*"${ccompiler/CROSS_COMPILE=/}"*} ]]
-        then
-            _error WARN "$MSG_WARN_CC"
-        fi
+        sed -ri "s/\x1b\[[0-9;]*[mGKHF]//g" "$LOG"
     fi
 }
 

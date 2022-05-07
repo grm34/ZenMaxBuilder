@@ -22,6 +22,51 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+# Handle Makefile CROSS_COMPILE
+# =============================
+# - grep CROSS_COMPILE variables from Makefile
+# - display them on TERM so user can check before
+# - ask to set CROSS_COMPILE corresponding current TC
+# - edit Makefile CROSS_COMPILE (append compiler)
+# - warn the user when CC seems not correctly set
+#
+_get_cross_compile() {
+    _note "$MSG_NOTE_CC"
+    grepcc=$(grep CROSS_COMPILE "${KERNEL_DIR}/Makefile")
+    echo "$grepcc" | grep -v "ifneq\|export\|#"
+    _ask_for_edit_cross_compile
+    case $COMPILER in
+        "$PROTON_CLANG_NAME")
+            ccompiler=${PROTON_CLANG_OPTIONS[2]}
+            ;;
+        "$PROTON_GCC_NAME")
+            ccompiler=${PROTON_GCC_OPTIONS[3]}
+            ;;
+        "$EVA_GCC_NAME")
+            ccompiler=${EVA_GCC_OPTIONS[3]}
+    esac
+    if [[ $EDIT_CC == True ]]
+    then
+        _edit_makefile_cross_compile
+    else
+        mk=$(grep "CROSS_COMPILE.*?=" "${KERNEL_DIR}/Makefile")
+        if [[ -n ${mk##*"${ccompiler/CROSS_COMPILE=/}"*} ]]
+        then
+            _error WARN "$MSG_WARN_CC"
+        fi
+    fi
+}
+
+
+# Edit Makefile CROSS_COMPILE
+_edit_makefile_cross_compile() {
+    cc=${ccompiler/CROSS_COMPILE=/}
+    _check sed -i \
+        "s/CROSS_COMPILE.*?=.*/CROSS_COMPILE ?= ${cc}/g" \
+        "${KERNEL_DIR}/Makefile"
+}
+
+
 # Get toolchain version
 # =====================
 #  $1 = toolchain lib DIR
@@ -34,12 +79,21 @@ _get_tc_version() {
 
 # Set compiler build options
 # ==========================
+# - export target variables (CFG)
 # - set Link Time Optimization (LTO)
 # - set and export required $PATH
 # - define make flags and options
 # - get current toolchain version
 #
 _export_path_and_options() {
+    if [[ $BUILDER == default ]]; then BUILDER=$(whoami); fi
+    if [[ $HOST == default ]]; then HOST=$(uname -n); fi
+    if [[ $LLVM == True ]]; then export LLVM=1; fi
+    export KBUILD_BUILD_USER=$BUILDER
+    export KBUILD_BUILD_HOST=$HOST
+    export PLATFORM_VERSION=$PLATFORM_VERSION
+    export ANDROID_MAJOR_VERSION=$ANDROID_MAJOR_VERSION
+
     if [[ $LTO == True ]]
     then
         export LD=$LTO_LIBRARY
