@@ -17,6 +17,8 @@ Open an issue: [Bug Report Section](https://github.com/grm34/ZenMaxBuilder/issue
 
 ## Statistics
 
+ZMB has been coded largely on a smartphone, so the length of the lines is greatly reduced for better visibility to ensure the best support and maintenance, which explains such a large number of lines.
+
 | File            |    blank |  comment |     code |
 | :-------------- | -------: | -------: | -------: |
 | prompter.sh     |       36 |       68 |      218 |
