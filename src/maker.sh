@@ -46,13 +46,11 @@ _get_cross_compile() {
             ccompiler=${EVA_GCC_OPTIONS[3]}
     esac
     if [[ $EDIT_CC == True ]]
-    then
-        _edit_makefile_cross_compile
+    then _edit_makefile_cross_compile
     else
         mk=$(grep "CROSS_COMPILE.*?=" "${KERNEL_DIR}/Makefile")
         if [[ -n ${mk##*"${ccompiler/CROSS_COMPILE=/}"*} ]]
-        then
-            _error WARN "$MSG_WARN_CC"
+        then _error WARN "$MSG_WARN_CC"
         fi
     fi
 }
