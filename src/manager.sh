@@ -278,16 +278,18 @@ _check() {
         _ask_for_run_again
         if [[ $RUN_AGAIN == True ]]
         then
-            if [[ $START_TIME ]]
-            then    # Reset start time
-                START_TIME=$(TZ=$TIMEZONE date +%s)
-            fi
             if [[ -f $LOG ]]
-            then    # clear logs
+            then
                 _terminal_banner > "$LOG"
-                _send_make_build_status
             fi
-            "$@" & wait $!
+            if [[ $START_TIME ]]
+            then
+                START_TIME=$(TZ=$TIMEZONE date +%s)
+                _send_make_build_status
+                "$@" | tee -a "$LOG" & wait $!
+            else
+                "$@" & wait $!
+            fi
         else
             _exit
             break
