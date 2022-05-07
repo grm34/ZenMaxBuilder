@@ -94,13 +94,12 @@ _ask_for_menuconfig() {
 # Validation checks are not needed here.
 _ask_for_save_defconfig() {
     _confirm "${MSG_ASK_SAVE_DEF}: $DEFCONFIG ?" "[Y/n]"
-    case $CONFIRM in
-        n|N|no|No|NO)
-            export SAVE_DEFCONFIG=False
-            _confirm "$MSG_ASK_USE_DEF ?"
-            case $CONFIRM in n|N|no|No|NO)
-                export ORIGINAL_DEFCONFIG=False
-            esac
+    case $CONFIRM in n|N|no|No|NO)
+        export SAVE_DEFCONFIG=False
+        _confirm "$MSG_ASK_USE_DEF ?"
+        case $CONFIRM in n|N|no|No|NO)
+            export ORIGINAL_DEFCONFIG=False
+        esac
     esac
 }
 
@@ -151,8 +150,7 @@ _ask_for_cores() {
                 read -r CORES
             done
             ;;
-        *)
-            export CORES=$CPU
+        *) export CORES=$CPU
     esac
 }
 
@@ -244,8 +242,7 @@ _ask_for_install_pkg() {
             _error WARN "$MSG_ERR_DEP ${RED}${PACKAGE}"\
                         "${YELL}$MSG_ERR_MFAIL"
             ;;
-        *)
-            export INSTALL_PKG=True
+        *) export INSTALL_PKG=True
     esac
 }
 
@@ -261,8 +258,7 @@ _ask_for_clone_toolchain() {
                    "${YELL}$MSG_ERR_SEE_CONF"
             _exit
             ;;
-        *)
-            export CLONE_TC=True
+        *) export CLONE_TC=True
     esac
 }
 
@@ -278,8 +274,7 @@ _ask_for_clone_anykernel() {
                    "${YELL}$MSG_ERR_SEE_CONF"
             _exit
             ;;
-        *)
-            export CLONE_AK=True
+        *) export CLONE_AK=True
     esac
 }
 

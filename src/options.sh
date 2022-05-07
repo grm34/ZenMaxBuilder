@@ -120,8 +120,7 @@ _list_all_kernels() {
         _note "${MSG_NOTE_LISTKERNEL}:"
         find out/ -mindepth 1 -maxdepth 1 -type d \
             | cut -f2 -d'/' | cat -n
-    else
-        _error "$MSG_ERR_LISTKERNEL"
+    else _error "$MSG_ERR_LISTKERNEL"
     fi
 }
 
@@ -138,10 +137,8 @@ _get_linux_tag() {
         "$LINUX_STABLE" | grep "$OPTARG" | tail --lines=1 \
         | cut --delimiter='/' --fields=3)
     if [[ $ltag == ${OPTARG}* ]]
-    then
-        _note "${MSG_SUCCESS_LTAG}: ${RED}$ltag"
-    else
-        _error "$MSG_ERR_LTAG ${RED}$OPTARG"
+    then _note "${MSG_SUCCESS_LTAG}: ${RED}$ltag"
+    else _error "$MSG_ERR_LTAG ${RED}$OPTARG"
     fi
 }
 
@@ -158,8 +155,7 @@ _send_msg_option() {
     then
         _note "${MSG_NOTE_SEND}..."
         _send_msg "${OPTARG//_/-}"
-    else
-        _error "$MSG_ERR_API"
+    else _error "$MSG_ERR_API"
     fi
 }
 
@@ -173,11 +169,9 @@ _send_file_option() {
         then
             _note "${MSG_NOTE_UPLOAD}: ${OPTARG##*/}..."
             _send_file "$OPTARG"
-        else
-            _error "$MSG_ERR_API"
+        else _error "$MSG_ERR_API"
         fi
-    else
-        _error "$MSG_ERR_FILE ${RED}$OPTARG"
+    else _error "$MSG_ERR_FILE ${RED}$OPTARG"
     fi
 }
 
@@ -198,8 +192,7 @@ _create_zip_option() {
             "${DIR}/builds/default/${OPTARG##*/}-${DATE}-$TIME"
         _clean_anykernel
         _note "$MSG_NOTE_ZIPPED !"
-    else
-        _error "$MSG_ERR_IMG ${RED}$OPTARG"
+    else _error "$MSG_ERR_IMG ${RED}$OPTARG"
     fi
 }
 

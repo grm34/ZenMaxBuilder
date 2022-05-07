@@ -96,8 +96,7 @@ _set_ak3_conf() {
         "s/build.date=.*/build.date=${DATE}/g"
         "s/device.name1=.*/device.name1=${CODENAME}/g")
     for string in "${strings[@]}"
-    do
-        _check sed -i "$string" anykernel.sh
+    do _check sed -i "$string" anykernel.sh
     done
 }
 
@@ -107,9 +106,8 @@ _clean_anykernel() {
     _note "${MSG_NOTE_CLEAN_AK3}..."
     for file in "${DIR}/${ANYKERNEL_DIR}"/*
     do
-        case $file in
-            (*.zip*|*Image*|*-dtb*|*spectrum.rc*)
-                rm -f "${file}" || sleep 0.1
+        case $file in (*.zip*|*Image*|*-dtb*|*spectrum.rc*)
+            rm -f "${file}" || sleep 0.1
         esac
     done
 }

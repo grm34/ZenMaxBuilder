@@ -67,8 +67,7 @@ _send_file() {
 # New build triggered
 _send_make_build_status() {
     if [[ $BUILD_STATUS == True ]]
-    then
-        _send_msg "${STATUS_MSG//_/-}"
+    then _send_msg "${STATUS_MSG//_/-}"
     fi
 }
 
@@ -86,8 +85,7 @@ _send_success_build_status() {
 # Zipping build
 _send_zip_creation_status() {
     if [[ $BUILD_STATUS == True ]]
-    then
-        _send_msg "${KERNEL_NAME//_/-} | $MSG_NOTE_ZIP"
+    then _send_msg "${KERNEL_NAME//_/-} | $MSG_NOTE_ZIP"
     fi
 }
 
@@ -95,8 +93,7 @@ _send_zip_creation_status() {
 # Signing build
 _send_zip_signing_status() {
     if [[ $BUILD_STATUS == True ]]
-    then
-        _send_msg "${KERNEL_NAME//_/-} | $MSG_NOTE_SIGN"
+    then _send_msg "${KERNEL_NAME//_/-} | $MSG_NOTE_SIGN"
     fi
 }
 

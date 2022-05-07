@@ -36,21 +36,17 @@ set -m -E -o pipefail #-b -v
 # App Language
 LANGUAGE=${DIR}/lang/${LANG:0:2}.cfg
 if [[ -f $LANGUAGE ]]
-then
-    # shellcheck source=/dev/null
+then # shellcheck source=/dev/null
     source "$LANGUAGE"
-else
-    # shellcheck source=/dev/null
+else # shellcheck source=/dev/null
     source "${DIR}/lang/en.cfg"
 fi
 
 # User Configuration
 if [[ -f ${DIR}/etc/user.cfg ]]
-then
-    # shellcheck source=/dev/null
+then # shellcheck source=/dev/null
     source "${DIR}/etc/user.cfg"
-else
-    # shellcheck source=/dev/null
+else # shellcheck source=/dev/null
     source "${DIR}/etc/settings.cfg"
 fi
 
@@ -74,30 +70,30 @@ source "${DIR}/etc/excluded.cfg"
 # Ban all ('n00bz')
 _terminal_colors
 if [[ ! -t 0 ]]
-then    # Terminal mandatory
+then # Terminal mandatory
     _error "$MSG_ERR_TERM"
     _exit
 elif [[ $(tput cols) -lt 76 ]] || [[ $(tput lines) -lt 12 ]]
-then    # Terminal min size
+then # Terminal min size
     _error "$MSG_ERR_SIZE"
     _exit
 elif [[ $(uname) != Linux ]]
-then    # Linux mandatory
+then # Linux mandatory
     _error "$MSG_ERR_LINUX"
     _exit
 elif ! flock -n 201
-then    # Single instance
+then # Single instance
     _error "$MSG_ERR_DUPE"
     _exit
 elif [[ $KERNEL_DIR != default  ]] && \
     [[ ! -f ${KERNEL_DIR}/Makefile ]] && \
     [[ ! -d ${KERNEL_DIR}/arch ]]
-then    # Bad kernel dir
+then # Bad kernel dir
     _error "$MSG_ERR_KDIR"
     _exit
 elif [[ ! $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
     ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}) ]]
-then    # Bad compiler
+then # Bad compiler
     _error "$MSG_ERR_COMPILER"
     _exit
 fi

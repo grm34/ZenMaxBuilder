@@ -105,8 +105,7 @@ _get_build_logs() {
 # Remove ANSI escape sequences
 _cleanlog() {
     if [[ -f $LOG ]]
-    then
-        sed -ri "s/\x1b\[[0-9;]*[mGKHF]//g" "$LOG"
+    then sed -ri "s/\x1b\[[0-9;]*[mGKHF]//g" "$LOG"
     fi
 }
 
@@ -130,14 +129,11 @@ _prompt() {
     echo -ne "\n${YELL}==> ${GREEN}$1"
     echo -ne "${YELL}\n==> "
     for ((char=1; char<=count-2; char++))
-    do
-        echo -ne "─"
+    do echo -ne "─"
     done
     if [[ $2 == 1 ]]
-    then
-        echo -ne "\n==> $NC"
-    else
-        echo -ne "\n$NC"
+    then echo -ne "\n==> $NC"
+    else echo -ne "\n$NC"
     fi
 }
 
@@ -153,8 +149,7 @@ _confirm_msg() {
     echo -ne "${YELL}\n==> ${GREEN}${1}"\
              "${RED}${2}${YELL}\n==> "
     for ((char=1; char<=count; char++))
-    do
-        echo -ne "─"
+    do echo -ne "─"
     done
     echo -ne "\n==> $NC"
     read -r CONFIRM
@@ -197,10 +192,10 @@ _note() {
 #
 _error() {
     if [[ $1 == WARN ]]
-    then
-        echo -e "\n${BLUE}${MSG_WARN}:${NC}${YELLOW}${*/WARN/}$NC"
-    else
-        echo -e "\n${RED}${MSG_ERROR}: ${NC}${YELLOW}${*}$NC"
+    then echo -e \
+        "\n${BLUE}${MSG_WARN}:${NC}${YELLOW}${*/WARN/}$NC"
+    else echo -e \
+        "\n${RED}${MSG_ERROR}: ${NC}${YELLOW}${*}$NC"
     fi
 }
 
@@ -232,16 +227,14 @@ _check() {
         if [[ $RUN_AGAIN == True ]]
         then
             if [[ -f $LOG ]]
-            then
-                _terminal_banner > "$LOG"
+            then _terminal_banner > "$LOG"
             fi
             if [[ $START_TIME ]]
             then
                 START_TIME=$(TZ=$TIMEZONE date +%s)
                 _send_make_build_status
                 "$@" | tee -a "$LOG" & wait $!
-            else
-                "$@" & wait $!
+            else "$@" & wait $!
             fi
         else
             _exit
@@ -259,8 +252,7 @@ _check() {
 #
 _exit() {
     if pidof make
-    then
-        pkill make || sleep 0.1
+    then pkill make || sleep 0.1
     fi
 
     _cleanlog
@@ -268,8 +260,7 @@ _exit() {
     for file in "${files[@]}"
     do
         if [[ -f $file ]]
-        then
-            rm -f "${DIR}/$file" || sleep 0.1
+        then rm -f "${DIR}/$file" || sleep 0.1
         fi
     done
 
