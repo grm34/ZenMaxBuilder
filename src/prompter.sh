@@ -85,7 +85,7 @@ _ask_for_menuconfig() {
     _confirm "$MSG_ASK_CONF ?" "[y/N]"
     case $CONFIRM in
         y|Y|yes|Yes|YES)
-            MENUCONFIG=True
+            export MENUCONFIG=True
     esac
 }
 
@@ -97,11 +97,11 @@ _ask_for_save_defconfig() {
     _confirm "${MSG_ASK_SAVE_DEF}: $DEFCONFIG ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
-            SAVE_DEFCONFIG=False
+            export SAVE_DEFCONFIG=False
             _confirm "$MSG_ASK_USE_DEF ?"
             case $CONFIRM in
                 n|N|no|No|NO)
-                    ORIGINAL_DEFCONFIG=False
+                    export ORIGINAL_DEFCONFIG=False
             esac
     esac
 }
@@ -130,7 +130,7 @@ _ask_for_edit_cross_compile() {
     _confirm "$MSG_ASK_CC $COMPILER ?" "[y/N]"
     case $CONFIRM in
         y|Y|yes|Yes|YES)
-            EDIT_CC=True
+            export EDIT_CC=True
     esac
 }
 
@@ -166,7 +166,7 @@ _ask_for_make_clean() {
     _confirm "${MSG_ASK_MCLEAN}: v$LINUX_VERSION ?" "[y/N]"
     case $CONFIRM in
         y|Y|yes|Yes|YES)
-            MAKE_CLEAN=True
+            export MAKE_CLEAN=True
     esac
 }
 
@@ -179,7 +179,7 @@ _ask_for_new_build() {
         "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
-            NEW_BUILD=False
+            export NEW_BUILD=False
     esac
 }
 
@@ -193,7 +193,7 @@ _ask_for_telegram() {
         _confirm "$MSG_ASK_TG ?" "[y/N]"
         case $CONFIRM in
             y|Y|yes|Yes|YES)
-                BUILD_STATUS=True
+                export BUILD_STATUS=True
         esac
     fi
 }
@@ -207,7 +207,7 @@ _ask_for_flashable_zip() {
         "[y/N]"
     case $CONFIRM in
         y|Y|yes|Yes|YES)
-            FLASH_ZIP=True
+            export FLASH_ZIP=True
     esac
 }
 
@@ -236,7 +236,7 @@ _ask_for_run_again() {
     _confirm "$MSG_RUN_AGAIN ?" "[y/N]"
     case $CONFIRM in
         y|Y|yes|Yes|YES)
-            RUN_AGAIN=True
+            export RUN_AGAIN=True
     esac
 }
 

@@ -104,9 +104,7 @@ fi
 
 # Set Date & Time
 if [[ $TIMEZONE == default ]]
-then
-    _get_user_timezone
-fi
+then _get_user_timezone; fi
 DATE=$(TZ=$TIMEZONE date +%Y-%m-%d)
 TIME=$(TZ=$TIMEZONE date +%Hh%Mm%Ss)
 
@@ -129,10 +127,7 @@ done
 
 # Handle app opts
 if [[ $# -eq 0 ]]
-then
-    _error "$MSG_ERR_EOPT"
-    _exit
-fi
+then _error "$MSG_ERR_EOPT"; _exit; fi
 while getopts ':hsult:m:f:z:' option
 do
     case $option in
@@ -152,12 +147,7 @@ do
     esac
 done
 if [[ $OPTIND -eq 1 ]]
-then
-    _error "$MSG_ERR_IOPT ${RED}$1"
-    _exit
-fi
-
-# Remove opts from positional parameters
+then _error "$MSG_ERR_IOPT ${RED}$1"; _exit; fi
 shift $(( OPTIND - 1 ))
 
 # Trap interrupt signals
@@ -214,8 +204,7 @@ _ask_for_make_clean
 _clean_anykernel
 if [[ $MAKE_CLEAN == True ]]
 then
-    _make_clean
-    _make_mrproper
+    _make_clean; _make_mrproper
     rm -rf "$OUT_DIR"
 fi
 
@@ -226,8 +215,7 @@ then
     _make_menuconfig
     _ask_for_save_defconfig
     if [[ $SAVE_DEFCONFIG != False ]]
-    then
-        _save_defconfig
+    then _save_defconfig
     else
         if [[ $ORIGINAL_DEFCONFIG == False ]]
         then
