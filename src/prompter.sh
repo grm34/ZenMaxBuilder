@@ -233,6 +233,7 @@ _ask_for_kernel_image() {
 # Request to run again failed command.
 # Validation checks are not needed here.
 _ask_for_run_again() {
+    RUN_AGAIN=False
     _confirm "$MSG_RUN_AGAIN ?" "[y/N]"
     case $CONFIRM in
         y|Y|yes|Yes|YES)

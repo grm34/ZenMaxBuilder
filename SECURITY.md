@@ -22,7 +22,7 @@ ZMB has been coded largely on a smartphone, so the length of the lines is greatl
 | File            |    blank |  comment |     code |
 | :-------------- | -------: | -------: | -------: |
 | main.sh         |       27 |       57 |      189 |
-| prompter.sh     |       36 |       68 |      188 |
+| prompter.sh     |       36 |       68 |      189 |
 | manager.sh      |       34 |       79 |      187 |
 | options.sh      |       34 |       56 |      115 |
 | maker.sh        |       23 |       55 |      100 |
@@ -30,4 +30,4 @@ ZMB has been coded largely on a smartphone, so the length of the lines is greatl
 | telegram.sh     |       26 |       42 |       77 |
 | flasher.sh      |       14 |       47 |       55 |
 | --------        | -------- | -------- | -------- |
-| SUM:            |      210 |      439 |      997 |
+| SUM:            |      210 |      439 |      998 |
