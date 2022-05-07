@@ -116,9 +116,7 @@ _cleanlog() {
 #  $1 = location to go
 #  $2 = error message
 #
-_cd() {
-    cd "$1" || (_error "$2"; _exit)
-}
+_cd() { cd "$1" || (_error "$2"; _exit) }
 
 
 # Ask some information

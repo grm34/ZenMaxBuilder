@@ -22,12 +22,12 @@ ZMB has been coded largely on a smartphone, so the length of the lines is greatl
 | File            |    blank |  comment |     code |
 | :-------------- | -------: | -------: | -------: |
 | main.sh         |       27 |       57 |      189 |
-| prompter.sh     |       36 |       68 |      189 |
-| manager.sh      |       34 |       79 |      187 |
+| manager.sh      |       34 |       79 |      185 |
+| prompter.sh     |       36 |       68 |      181 |
 | options.sh      |       34 |       56 |      115 |
 | maker.sh        |       23 |       55 |      100 |
 | requirements.sh |       16 |       35 |       86 |
 | telegram.sh     |       26 |       42 |       77 |
 | flasher.sh      |       14 |       47 |       55 |
 | --------        | -------- | -------- | -------- |
-| SUM:            |      210 |      439 |      998 |
+| SUM:            |      210 |      439 |      988 |

@@ -83,9 +83,8 @@ _ask_for_defconfig() {
 # Validation checks are not needed here.
 _ask_for_menuconfig() {
     _confirm "$MSG_ASK_CONF ?" "[y/N]"
-    case $CONFIRM in
-        y|Y|yes|Yes|YES)
-            export MENUCONFIG=True
+    case $CONFIRM in y|Y|yes|Yes|YES)
+        export MENUCONFIG=True
     esac
 }
 
@@ -99,9 +98,8 @@ _ask_for_save_defconfig() {
         n|N|no|No|NO)
             export SAVE_DEFCONFIG=False
             _confirm "$MSG_ASK_USE_DEF ?"
-            case $CONFIRM in
-                n|N|no|No|NO)
-                    export ORIGINAL_DEFCONFIG=False
+            case $CONFIRM in n|N|no|No|NO)
+                export ORIGINAL_DEFCONFIG=False
             esac
     esac
 }
@@ -128,9 +126,8 @@ _ask_for_toolchain() {
 # Validation checks are not needed here.
 _ask_for_edit_cross_compile() {
     _confirm "$MSG_ASK_CC $COMPILER ?" "[y/N]"
-    case $CONFIRM in
-        y|Y|yes|Yes|YES)
-            export EDIT_CC=True
+    case $CONFIRM in y|Y|yes|Yes|YES)
+        export EDIT_CC=True
     esac
 }
 
@@ -164,9 +161,8 @@ _ask_for_cores() {
 # Validation checks are not needed here.
 _ask_for_make_clean() {
     _confirm "${MSG_ASK_MCLEAN}: v$LINUX_VERSION ?" "[y/N]"
-    case $CONFIRM in
-        y|Y|yes|Yes|YES)
-            export MAKE_CLEAN=True
+    case $CONFIRM in y|Y|yes|Yes|YES)
+        export MAKE_CLEAN=True
     esac
 }
 
@@ -177,9 +173,8 @@ _ask_for_new_build() {
     _confirm \
         "$MSG_START ${TAG}-${CODENAME}-$LINUX_VERSION ?" \
         "[Y/n]"
-    case $CONFIRM in
-        n|N|no|No|NO)
-            export NEW_BUILD=False
+    case $CONFIRM in n|N|no|No|NO)
+        export NEW_BUILD=False
     esac
 }
 
@@ -191,9 +186,8 @@ _ask_for_telegram() {
         [[ $TELEGRAM_BOT_TOKEN ]]
     then
         _confirm "$MSG_ASK_TG ?" "[y/N]"
-        case $CONFIRM in
-            y|Y|yes|Yes|YES)
-                export BUILD_STATUS=True
+        case $CONFIRM in y|Y|yes|Yes|YES)
+            export BUILD_STATUS=True
         esac
     fi
 }
@@ -205,9 +199,8 @@ _ask_for_flashable_zip() {
     _confirm \
         "$MSG_ASK_ZIP ${TAG}-${CODENAME}-$LINUX_VERSION ?" \
         "[y/N]"
-    case $CONFIRM in
-        y|Y|yes|Yes|YES)
-            export FLASH_ZIP=True
+    case $CONFIRM in y|Y|yes|Yes|YES)
+        export FLASH_ZIP=True
     esac
 }
 
@@ -235,9 +228,8 @@ _ask_for_kernel_image() {
 _ask_for_run_again() {
     RUN_AGAIN=False
     _confirm "$MSG_RUN_AGAIN ?" "[y/N]"
-    case $CONFIRM in
-        y|Y|yes|Yes|YES)
-            export RUN_AGAIN=True
+    case $CONFIRM in y|Y|yes|Yes|YES)
+        export RUN_AGAIN=True
     esac
 }
 
@@ -250,7 +242,7 @@ _ask_for_install_pkg() {
     case $CONFIRM in
         n|N|no|No|NO)
             _error WARN "$MSG_ERR_DEP ${RED}${PACKAGE}"\
-                   "${YELL}$MSG_ERR_MFAIL"
+                        "${YELL}$MSG_ERR_MFAIL"
             ;;
         *)
             export INSTALL_PKG=True
