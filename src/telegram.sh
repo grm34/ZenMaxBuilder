@@ -103,8 +103,8 @@ _send_zip_signing_status() {
 
 # Failed build with logfile
 _send_failed_build_logs() {
-    if [[ $START_TIME ]] && [[ ! $BUILD_TIME ]] && \
-        [[ $BUILD_STATUS == True ]]
+    if [[ $START_TIME ]] && [[ $BUILD_STATUS == True ]] && \
+        { [[ ! $BUILD_TIME ]] || [[ $RUN_AGAIN == True ]]; }
     then
         _get_build_time
         _send_file "$LOG" \
