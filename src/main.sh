@@ -168,8 +168,6 @@ trap '_error $MSG_ERR_KBOARD; _exit' INT QUIT TSTP CONT
 ### Start new build ###
 #######################
 _note "$MSG_NOTE_START $DATE"
-
-# Get device codename
 _ask_for_codename
 
 # Create device folders
@@ -198,24 +196,13 @@ _ask_for_toolchain
 _get_cross_compile
 _ask_for_cores
 
-# Install and clone requirements
+# Install requirements
 _install_dependencies
 _clone_toolchains
 _clone_anykernel
 
-# Export target variables
-if [[ $BUILDER == default ]]; then BUILDER=$(whoami); fi
-if [[ $HOST == default ]]; then HOST=$(uname -n); fi
-if [[ $LLVM == True ]]; then export LLVM=1; fi
-export KBUILD_BUILD_USER=$BUILDER
-export KBUILD_BUILD_HOST=$HOST
-export PLATFORM_VERSION=$PLATFORM_VERSION
-export ANDROID_MAJOR_VERSION=$ANDROID_MAJOR_VERSION
-
-# Export TC path and options
-_export_path_and_options
-
 # Make kernel version
+_export_path_and_options
 _note "${MSG_NOTE_LINUXVER}..."
 make -C "$KERNEL_DIR" kernelversion \
     | grep -v make > linuxver & wait $!
@@ -232,15 +219,13 @@ then
     rm -rf "$OUT_DIR"
 fi
 
-# Make defconfig
+# Make configuration
 _make_defconfig
-
-# Make menuconfig
 if [[ $MENUCONFIG == True ]]
 then
     _make_menuconfig
     _ask_for_save_defconfig
-    if [[ $SAVE_DEFCONFIG == True ]]
+    if [[ $SAVE_DEFCONFIG != False ]]
     then
         _save_defconfig
     else
@@ -259,34 +244,24 @@ then
     _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."
     _exit
 else
-    # TG build status
     _ask_for_telegram
     _set_html_status_msg
-
-    # Build logs
     START_TIME=$(TZ=$TIMEZONE date +%s)
     LOG=${DIR}/logs/${CODENAME}/${KERNEL_NAME}_${DATE}_${TIME}.log
     _terminal_banner > "$LOG"
-
-    # Make kernel
     _make_build | tee -a "$LOG"
 fi
 
-# Get build time
-_get_build_time
-
 # Check if make success
+_get_build_time
 BOOT_DIR=${DIR}/out/${CODENAME}/arch/${ARCH}/boot
 most_recent_file=$(find "$BOOT_DIR" -mindepth 1 \
     -maxdepth 1 -type f -mtime -1 2>/dev/null | head -n 1)
 file_time=$(stat -c %Z "$most_recent_file" 2>/dev/null)
 if [[ ! -d $BOOT_DIR ]] || [[ $file_time < $START_TIME ]]
-then
-    _error "$MSG_ERR_MAKE"
-    _exit
-fi
+then _error "$MSG_ERR_MAKE"; _exit; fi
 
-# Display build status
+# Return build status
 _note "$MSG_NOTE_SUCCESS $BUILD_TIME !"
 _send_success_build_status
 

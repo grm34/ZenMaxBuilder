@@ -101,3 +101,16 @@ _set_ak3_conf() {
     done
 }
 
+
+# Clean AnyKernel folder
+_clean_anykernel() {
+    _note "${MSG_NOTE_CLEAN_AK3}..."
+    for file in "${DIR}/${ANYKERNEL_DIR}"/*
+    do
+        case $file in
+            (*.zip*|*Image*|*-dtb*|*spectrum.rc*)
+                rm -f "${file}" || sleep 0.1
+        esac
+    done
+}
+
