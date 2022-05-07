@@ -111,7 +111,7 @@ _get_build_logs() {
 }
 
 
-# Edit CROSS_COMPILE
+# Edit Makefile CROSS_COMPILE
 _edit_makefile_cross_compile() {
     cc=${ccompiler/CROSS_COMPILE=/}
     _check sed -i \
@@ -158,8 +158,8 @@ _get_cross_compile() {
 
 # CD to specified DIR
 # ===================
-#   $1 = location
-#   $2 = error msg
+#  $1 = location to go
+#  $2 = error message
 #
 _cd() {
     cd "$1" || (_error "$2"; _exit)
@@ -168,8 +168,8 @@ _cd() {
 
 # Ask some information
 # ====================
-#   $1 = question
-#   $2 = type
+#  $1 = question to ask
+#  $2 = type (1 for arrow)
 #
 _prompt() {
     lenth=$*
@@ -191,8 +191,8 @@ _prompt() {
 
 # Confirmation message
 # ====================
-#   $1 = question
-#   $2 = yes/no
+#  $1 = question to ask
+#  $2 = yes/no (to set default)
 #
 _confirm_msg() {
     CONFIRM=False
@@ -210,10 +210,10 @@ _confirm_msg() {
 
 # Ask confirmation [y/n]
 # ======================
-#   $@ = $1 + $2
-#   -------------
-#   $1 = question
-#   $2 = yes/no
+#  $@ = $1 + $2
+#  -------------
+#  $1 = question
+#  $2 = yes/no
 #
 _confirm() {
     _confirm_msg "$@"
@@ -228,7 +228,7 @@ _confirm() {
 
 # Display some notes
 # ==================
-#   $1 = note
+#  $1 = note to display
 #
 _note() {
     echo -e "${YELL}\n[$(TZ=$TIMEZONE date +%T)]"\
@@ -239,7 +239,8 @@ _note() {
 
 # Display error/warning
 # =====================
-#   $* = ERR/WARN
+#  $1 = use WARN as $1 to use warning
+#  $* = ERROR or WARNING message
 #
 _error() {
     if [[ $1 == WARN ]]
@@ -258,8 +259,8 @@ _error() {
 # - notify function and file on ERR
 # - get failed build logs (+TG feedback)
 # - ask to run again last failed command
-#
-#   $@ = command
+#   -------------------
+#   $@ = command to run
 #
 _check() {
     "$@" & wait $!
@@ -295,8 +296,8 @@ _check() {
 }
 
 
-# Properly exit ZMB
-# =================
+# Properly exit ZenMaxBuilder
+# ===========================
 # - kill make PID child on interrupt
 # - remove user inputs files
 # - exit with 3s timeout

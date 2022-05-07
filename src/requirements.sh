@@ -72,9 +72,9 @@ _install_dependencies() {
 
 # Github Clone command
 # ====================
-#   $1 = repo branch
-#   $2 = repo url
-#   $3 = repo folder
+#  $1 = repo branch
+#  $2 = repo url
+#  $3 = repo folder
 #
 _clone_tc() {
     if [[ ! -d $3 ]]

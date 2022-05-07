@@ -29,7 +29,7 @@
 # - set AK3 configuration
 # - create Flashable ZIP
 # - move ZIP to builds folder
-#
+#   ----------------
 #   $1 = kernel name
 #   $2 = kernel image
 #   $3 = build folder
@@ -54,7 +54,7 @@ _zip() {
 # ==========================
 # - send signing status on Telegram
 # - sign ZIP with AOSP Keys (JAVA)
-#
+#   ----------------
 #   $1 = kernel name
 #
 _sign_zip() {

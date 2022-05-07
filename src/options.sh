@@ -61,7 +61,7 @@ ${CYAN}https://kernel-builder.com$NC
 # - ZMB: check if settings.cfg was updated
 # - ZMB: warn the user to edit user.cfg if true
 # - reset to origin then pull changes
-#
+#   ----------------
 #   $1 = repo branch
 #
 _update_git() {
