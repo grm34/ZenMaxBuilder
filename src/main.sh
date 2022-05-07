@@ -77,7 +77,7 @@ if [[ ! -t 0 ]]
 then    # Terminal mandatory
     _error "$MSG_ERR_TERM"
     _exit
-elif [[ $(tput cols) < 80 ]] || [[ $(tput lines) < 12 ]]
+elif [[ $(tput cols) -lt 80 ]] || [[ $(tput lines) -lt 12 ]]
 then    # Terminal size
     _error "$MSG_ERR_SIZE"
     _exit
