@@ -92,7 +92,7 @@ _full_upgrade() {
     )
 
     # Update ZMB, AK3 and TC
-    up_list=(zmb ak3 t1 t2 t3 t4)
+    up_list=(zmb ak3 t1 t2 t3 t4 t5)
     for repository in "${up_list[@]}"
     do
         IFS="€"
