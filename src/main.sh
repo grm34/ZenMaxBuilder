@@ -92,7 +92,7 @@ then # Bad kernel dir
     _error "$MSG_ERR_KDIR"
     _exit
 elif [[ ! $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
-    ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}) ]]
+    ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|${LOS_GCC_NAME}) ]]
 then # Bad compiler
     _error "$MSG_ERR_COMPILER"
     _exit
