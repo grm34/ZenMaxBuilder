@@ -99,7 +99,7 @@ _clone_toolchains() {
                 "$PROTON_DIR"
     esac
 
-    # GCC ARM32
+    # Eva-GCC ARM32
     case $COMPILER in
         "$EVA_GCC_NAME"|"$PROTON_GCC_NAME")
             _clone_tc \
@@ -108,7 +108,7 @@ _clone_toolchains() {
                 "$GCC_ARM_DIR"
     esac
 
-    # GCC ARM64
+    # Eva-GCC ARM64
     case $COMPILER in
         "$EVA_GCC_NAME"|"$PROTON_GCC_NAME")
             _clone_tc \
@@ -116,6 +116,20 @@ _clone_toolchains() {
                 "$GCC_ARM64_URL" \
                 "$GCC_ARM64_DIR"
     esac
+
+    # Lineage-GCC
+    case $COMPILER in
+        "$LOS_GCC_NAME")
+            _clone_tc \
+                "$LOS_ARM_BRANCH" \
+                "$LOS_ARM_URL" \
+                "$LOS_ARM_DIR"
+            _clone_tc \
+                "$LOS_ARM64_BRANCH" \
+                "$LOS_ARM64_URL" \
+                "$LOS_ARM64_DIR"
+    esac
+
 }
 
 

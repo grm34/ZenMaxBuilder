@@ -74,6 +74,9 @@ ZMB is a tool to facilitate the compilation of the Android kernel, it does not t
     # Eva-GCC
     CROSS_COMPILE ?= aarch64-elf-
 
+    # Lineage-GCC
+    CROSS_COMPILE ?= aarch64-linux-android-
+
 Kernel sources are often configured for a specific compilation (vendor, firmware, modules, android version) and little changes are often necessary. For a kernel building support, you can ask for help on [Telegram](https://t.me/ZenMaxBuilder).
 
 ## Contributing
@@ -123,5 +126,6 @@ Found a problem? Want a new feature? Have a question? First of all see if your i
 - Neternels Team: [https://neternels.org](https://neternels.org)
 - Proton-Clang: [@kdrag0n](https://github.com/kdrag0n)
 - Eva-GCC: [@mvaisakh](https://github.com/mvaisakh)
+- Lineage-GCC: [@LineageOS](https://github.com/LineageOS)
 - AnyKernel3: [@osm0sis](https://github.com/osm0sis)
 - ZipSigner: [@MrRob0-X](https://github.com/MrRob0-X)

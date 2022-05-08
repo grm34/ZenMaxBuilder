@@ -112,7 +112,7 @@ _ask_for_toolchain() {
     then
         _prompt "$MSG_SELECT_TC :" 2
         select COMPILER in $PROTON_CLANG_NAME \
-            $EVA_GCC_NAME $PROTON_GCC_NAME
+            $EVA_GCC_NAME $PROTON_GCC_NAME $LOS_GCC_NAME
         do
             [[ $COMPILER ]] && break
             _error "$MSG_ERR_SELECT"
