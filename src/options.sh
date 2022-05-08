@@ -69,8 +69,8 @@ _update_git() {
     git fetch origin "$1"
     if [[ $1 == zmb ]] && [[ -f ${DIR}/etc/user.cfg ]]
     then
-        conf=$(git diff --exit-code "${DIR}/etc/settings.cfg")
-        if [[ $conf -eq 1 ]]; then _error WARN "$MSG_CONF"; fi
+        conf=$(git diff origin/zmb "${DIR}/etc/settings.cfg")
+        if [[ -n $conf ]]; then _error WARN "$MSG_CONF"; fi
     fi
     git reset --hard "origin/$1"
     git pull
