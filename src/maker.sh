@@ -150,7 +150,7 @@ _make_defconfig() {
 
 # Run MAKE MENUCONFIG
 _make_menuconfig() {
-    _note "$MSG_NOTE_MENUCONFIG [${LINUX_VERSION}]..."
+    _note "$MSG_NOTE_MENUCONFIG $DEFCONFIG [${LINUX_VERSION}]..."
     make -C "$KERNEL_DIR" O="$OUT_DIR" \
         ARCH="$ARCH" menuconfig "${OUT_DIR}/.config"
 }
@@ -158,14 +158,17 @@ _make_menuconfig() {
 
 # Save DEFCONFIG from MENUCONFIG
 # ==============================
-# When a defconfig file is modified with menuconfig,
-# the original will be saved as "example_defconfig_save"
+# When a existing defconfig file is modified with menuconfig,
+# the original defconfig will be saved as "example_defconfig_old"
 #
 _save_defconfig() {
     _note "$MSG_NOTE_SAVE $DEFCONFIG (arch/${ARCH}/configs)..."
-    _check cp \
-        "${CONF_DIR}/$DEFCONFIG" \
-        "${CONF_DIR}/${DEFCONFIG}_save"
+    if [[ -f "${CONF_DIR}/$DEFCONFIG" ]]
+    then
+        _check cp \
+            "${CONF_DIR}/$DEFCONFIG" \
+            "${CONF_DIR}/${DEFCONFIG}_old"
+    fi
     _check cp "${OUT_DIR}/.config" "${CONF_DIR}/$DEFCONFIG"
 }
 
