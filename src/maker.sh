@@ -37,16 +37,16 @@ _get_cross_compile() {
     _ask_for_edit_cross_compile
     case $COMPILER in
         "$PROTON_CLANG_NAME")
-            ccompiler=${PROTON_CLANG_OPTIONS[0]}
+            ccompiler=${PROTON_CLANG_OPTIONS[1]}
             ;;
         "$PROTON_GCC_NAME")
-            ccompiler=${PROTON_GCC_OPTIONS[0]}
+            ccompiler=${PROTON_GCC_OPTIONS[1]}
             ;;
         "$EVA_GCC_NAME")
-            ccompiler=${EVA_GCC_OPTIONS[0]}
+            ccompiler=${EVA_GCC_OPTIONS[1]}
             ;;
         "$LOS_GCC_NAME")
-            ccompiler=${LOS_GCC_OPTIONS[0]}
+            ccompiler=${LOS_GCC_OPTIONS[1]}
     esac
     if [[ $EDIT_CC == True ]]
     then _edit_makefile_cross_compile
@@ -179,6 +179,6 @@ _make_build() {
     _note "${MSG_NOTE_MAKE}: ${KERNEL_NAME}..."
     _send_make_build_status
     _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
-        O="$OUT_DIR" "${TC_OPTIONS[@]}" 2>&1
+        O="$OUT_DIR" ARCH="$ARCH" "${TC_OPTIONS[@]}" 2>&1
 }
 
