@@ -32,7 +32,7 @@ _ask_for_codename() {
     then
         _prompt "$MSG_ASK_DEV :" 1
         read -r CODENAME
-        regex="^[a-zA-Z0-9][a-zA-Z0-9_-]{2,20}$"
+        regex="^[a-zA-Z0-9][a-zA-Z0-9_-]{2,19}$"
         until [[ $CODENAME =~ $regex ]]
         do
             _error "$MSG_ERR_DEV ${RED}$CODENAME"
@@ -89,17 +89,33 @@ _ask_for_menuconfig() {
 }
 
 
-# Request to save and use the modified defconfig.
-# Otherwise request to continue with original one.
-# Validation checks are not needed here.
+# Request to save MENUCONFIG edited configuration,
+# otherwise request to continue with the original one.
+# Validation checks REGEX to prevent invalid string.
+# Match "letters" and "numbers" and "-" and "_" only.
+# Should be at least "3" characters long and maximum "26".
+# Defcongig file can't start with "_" or "-" characters.
 _ask_for_save_defconfig() {
-    _confirm "${MSG_ASK_SAVE_DEF}: $DEFCONFIG ?" "[Y/n]"
-    case $CONFIRM in n|N|no|No|NO)
-        export SAVE_DEFCONFIG=False
-        _confirm "$MSG_ASK_USE_DEF ?"
-        case $CONFIRM in n|N|no|No|NO)
-            export ORIGINAL_DEFCONFIG=False
-        esac
+    _confirm "${MSG_ASK_SAVE_DEF} ?" "[Y/n]"
+    case $CONFIRM in
+        n|N|no|No|NO)
+            export SAVE_DEFCONFIG=False
+            _confirm "$MSG_ASK_USE_DEF $DEFCONFIG ?" "[Y/n]"
+            case $CONFIRM in n|N|no|No|NO)
+                export ORIGINAL_DEFCONFIG=False
+            esac
+            ;;
+        *)
+            _prompt "$MSG_ASK_DEF_NAME :" 1
+            read -r DEFCONFIG
+            regex="^[a-zA-Z0-9][a-zA-Z0-9_-]{2,25}$"
+            until [[ $DEFCONFIG =~ $regex ]]
+            do
+                _error "$MSG_ERR_DEF_NAME ${RED}$DEFCONFIG"
+                _prompt "$MSG_ASK_DEF_NAME :" 1
+                read -r DEFCONFIG
+            done
+            export DEFCONFIG=${DEFCONFIG}_defconfig
     esac
 }
 
