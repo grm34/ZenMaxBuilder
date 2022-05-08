@@ -87,10 +87,12 @@ _full_upgrade() {
         [t1]="${PROTON_DIR}€${PROTON_BRANCH}€$MSG_UP_CLANG"
         [t2]="${GCC_ARM_DIR}€${GCC_ARM_BRANCH}€$MSG_UP_GCC32"
         [t3]="${GCC_ARM64_DIR}€${GCC_ARM64_BRANCH}€$MSG_UP_GCC64"
+        [t4]="${LOS_ARM_DIR}€${LOS_ARM_BRANCH}€$MSG_UP_LOS32"
+        [t5]="${LOS_ARM64_DIR}€${LOS_ARM64_BRANCH}€$MSG_UP_LOS64"
     )
 
     # Update ZMB, AK3 and TC
-    up_list=(zmb ak3 t1 t2 t3)
+    up_list=(zmb ak3 t1 t2 t3 t4)
     for repository in "${up_list[@]}"
     do
         IFS="€"

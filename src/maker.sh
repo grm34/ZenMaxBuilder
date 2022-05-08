@@ -37,13 +37,16 @@ _get_cross_compile() {
     _ask_for_edit_cross_compile
     case $COMPILER in
         "$PROTON_CLANG_NAME")
-            ccompiler=${PROTON_CLANG_OPTIONS[2]}
+            ccompiler=${PROTON_CLANG_OPTIONS[0]}
             ;;
         "$PROTON_GCC_NAME")
-            ccompiler=${PROTON_GCC_OPTIONS[3]}
+            ccompiler=${PROTON_GCC_OPTIONS[0]}
             ;;
         "$EVA_GCC_NAME")
-            ccompiler=${EVA_GCC_OPTIONS[3]}
+            ccompiler=${EVA_GCC_OPTIONS[0]}
+            ;;
+        "$LOS_GCC_NAME")
+            ccompiler=${LOS_GCC_OPTIONS[0]}
     esac
     if [[ $EDIT_CC == True ]]
     then _edit_makefile_cross_compile
@@ -107,6 +110,11 @@ _export_path_and_options() {
             export PATH=${EVA_GCC_PATH}:$PATH
             TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
             TCVER=$(_get_tc_version "$GCC_ARM64_VERSION")
+            ;;
+        "$LOS_GCC_NAME")
+            export PATH=${LOS_GCC_PATH}:$PATH
+            TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
+            TCVER=$(_get_tc_version "$LOS_ARM64_VERSION")
             ;;
         "$PROTON_GCC_NAME")
             export PATH=${PROTON_GCC_PATH}:$PATH

@@ -31,7 +31,7 @@
 
 ## About
 
-ZenMaxBuilder (ZMB) is an Android Kernel Builder written in bash, which can be runned on any Linux System (feel free to Pull Request for Windows support). By default it uses Proton-Clang, Eva-GCC or Proton-GCC but you can use any toolchains you like. Find all your compilations and working folders in one place, edit and maintain your kernels faster. Full logs with the possibility to restart the build after error. Automatic creation of a flashable signed ZIP (with AK3 and AOSP Keys). Real time status feedback with ZIP sending on any group or Telegram channel. And more. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
+ZenMaxBuilder (ZMB) is an Android Kernel Builder written in bash, which can be runned on any Linux System (feel free to Pull Request for Windows support). By default it uses Proton-Clang, Eva-GCC, Proton-GCC or Lineage-GCC but you can use any toolchains you like. Find all your compilations and working folders in one place, edit and maintain your kernels faster. Full logs with the possibility to restart the build after error. Automatic creation of a flashable signed ZIP (with AK3 and AOSP Keys). Real time status feedback with ZIP sending on any group or Telegram channel. And more. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
 
 ## Requirements
 
@@ -99,6 +99,9 @@ ZMB is a tool to facilitate the compilation of the Android kernel, it does not t
     # Eva-GCC
     CROSS_COMPILE ?= aarch64-elf-
 
+    # Lineage-GCC
+    CROSS_COMPILE ?= aarch64-linux-android-
+
 Kernel sources are often configured for a specific compilation (vendor, firmware, modules, android version) and little changes are often necessary. For a kernel building support, you can ask for help on [Telegram](https://t.me/ZenMaxBuilder).
 
 ## Contributing
@@ -148,5 +151,6 @@ Found a problem? Want a new feature? Have a question? First of all see if your i
 - Neternels Team: [https://neternels.org](https://neternels.org)
 - Proton-Clang: [@kdrag0n](https://github.com/kdrag0n)
 - Eva-GCC: [@mvaisakh](https://github.com/mvaisakh)
+- Lineage-GCC: [@LineageOS](https://github.com/LineageOS)
 - AnyKernel3: [@osm0sis](https://github.com/osm0sis)
 - ZipSigner: [@MrRob0-X](https://github.com/MrRob0-X)
