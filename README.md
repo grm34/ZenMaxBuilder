@@ -85,9 +85,10 @@ Dependencies will be prompted to install or you can manually install them.
     |     |---- DEVICE1/
     |     |---- DEVICE2/
 
-## Screenshot
+## Screenshots
 
 ![screenshot](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/screenshot.png)
+![telegram](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/telegram.jpg)
 
 ## Warning
 

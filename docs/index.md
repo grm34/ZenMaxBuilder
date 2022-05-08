@@ -60,9 +60,10 @@ Dependencies will be prompted to install or you can manually install them.
     |     |---- DEVICE1/
     |     |---- DEVICE2/
 
-## Screenshot
+## Screenshots
 
 ![screenshot](assets/images/screenshot.png)
+![telegram](assets/images/telegram.jpg)
 
 ## Warning
 
