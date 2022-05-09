@@ -91,6 +91,7 @@ _get_build_logs() {
     if [[ -f ${DIR}/bashvar ]] && [[ -f $LOG ]]
     then
         null=$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")
+        unset IFS
         (set -o posix; set | grep -v "${null//|/\\|}")> \
             "${DIR}/buildervar"
         printf "\n\n### ZMB SETTINGS ###\n" >> "$LOG"
