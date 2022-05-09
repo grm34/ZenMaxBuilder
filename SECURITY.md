@@ -32,13 +32,13 @@ ZMB has been coded largely on a smartphone, so the length of the lines is greatl
 
 | File            |    blank |  comment |     code |
 | :-------------- | -------: | -------: | -------: |
-| main.sh         |       27 |       53 |      189 |
-| prompter.sh     |       36 |       68 |      176 |
+| main.sh         |       27 |       53 |      188 |
+| prompter.sh     |       36 |       71 |      188 |
 | manager.sh      |       32 |       78 |      166 |
+| maker.sh        |       25 |       57 |      113 |
 | options.sh      |       34 |       56 |      110 |
-| maker.sh        |       23 |       55 |      106 |
 | requirements.sh |       18 |       36 |       96 |
-| telegram.sh     |       26 |       42 |       74 |
+| telegram.sh     |       26 |       42 |       78 |
 | flasher.sh      |       14 |       47 |       53 |
 | --------        | -------- | -------- | -------- |
-| SUM:            |      210 |      435 |      970 |
+| SUM:            |      212 |      440 |      992 |
