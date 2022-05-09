@@ -28,7 +28,6 @@
 
 api="https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN"
 
-
 # [POST] Send message
 # ===================
 #  $1 = message
@@ -41,7 +40,6 @@ _send_msg() {
         -d "text=$1" \
         | tee /dev/null
 }
-
 
 # [POST] Send file
 # ================
@@ -62,7 +60,6 @@ _send_file() {
 #########################
 ### Make build status ###
 #########################
-
 
 # New build triggered
 _send_make_build_status() {
