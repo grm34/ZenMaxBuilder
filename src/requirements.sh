@@ -59,7 +59,7 @@ _install_dependencies() {
                 _ask_for_install_pkg "$package"
                 if [[ $INSTALL_PKG == True ]]
                 then
-                    eval "${pm[0]/_/}" "${pm[1]}" \
+                    eval "${pm[0]/_}" "${pm[1]}" \
                          "${pm[2]}" "${pm[3]}" "$package"
                 fi
             fi
