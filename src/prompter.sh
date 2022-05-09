@@ -94,7 +94,7 @@ _ask_for_menuconfig() {
 # Validation checks REGEX to prevent invalid string.
 # Match "letters" and "numbers" and "-" and "_" only.
 # Should be at least "3" characters long and maximum "26".
-# Defcongig file can't start with "_" or "-" characters.
+# Defconfig file can't start with "_" or "-" characters.
 _ask_for_save_defconfig() {
     _confirm "${MSG_ASK_SAVE_DEF} ?" "[Y/n]"
     case $CONFIRM in
