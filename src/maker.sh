@@ -36,6 +36,7 @@ _export_path_and_options() {
     if [[ $HOST == default ]]; then HOST=$(uname -n); fi
     export KBUILD_BUILD_USER=$BUILDER
     export KBUILD_BUILD_HOST=$HOST
+    export PLATFORM_VERSION ANDROID_MAJOR_VERSION
 
     if [[ $LTO == True ]]
     then
