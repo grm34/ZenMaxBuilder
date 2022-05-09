@@ -57,10 +57,11 @@ ${CYAN}https://kernel-builder.com$NC
 
 # Github repository
 # =================
-# - checkout and fetch
+# - ALL: checkout and fetch
 # - ZMB: check if settings.cfg was updated
-# - ZMB: warn the user to edit user.cfg if true
-# - reset to origin then pull changes
+# - ZMB: if True warn the user to create new one
+# - ZMB: rename etc/user.cfg to etc/old.cfg
+# - ALL: reset to origin then pull changes
 #   ----------------
 #   $1 = repo branch
 #
@@ -70,7 +71,10 @@ _update_git() {
     if [[ $1 == zmb ]] && [[ -f ${DIR}/etc/user.cfg ]]
     then
         conf=$(git diff origin/zmb "${DIR}/etc/settings.cfg")
-        if [[ -n $conf ]]; then _error WARN "${MSG_CONF}\n"; fi
+        if [[ -n $conf ]] && [[ -f ${DIR}/etc/user.cfg ]]; then
+            _error WARN "${MSG_CONF}"; echo
+            _check mv "${DIR}/etc/user.cfg" "${DIR}/etc/old.cfg"
+        fi
     fi
     git reset --hard "origin/$1"
     git pull

@@ -7,4 +7,5 @@ bashvar
 buildervar
 linuxver
 etc/user.cfg
+etc/old.cfg
 zmb.lock
