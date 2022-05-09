@@ -178,16 +178,18 @@ _save_defconfig() {
 # Run MAKE BUILD
 # ==============
 # - send build status on Telegram
-# - append kernel path: CC -I kernel_path
-# - change CC ARM32 to COMPAT when linux > v4.2
-# - make new kernel build
+# - specify the kernel path to the compiler
+# - change CC ARM32 to COMPAT if linux > v4.2 (for clang only)
+# - make new android kernel build
 #
 _make_build() {
     _note "${MSG_NOTE_MAKE}: ${KERNEL_NAME}..."
     _send_make_build_status
     cc="${TC_OPTIONS[3]} -I$KERNEL_DIR"
     cflags="${TC_OPTIONS[*]/${TC_OPTIONS[3]}}"
-    if [[ $(echo "${LINUX_VERSION:0:3} > 42" | bc) == 1 ]]
+    linuxversion="${LINUX_VERSION//.}"
+    if [[ $(echo "${linuxversion:0:2} > 42" | bc) == 1 ]] && \
+        [[ ${TC_OPTIONS[3]} == clang ]]
     then
         cflags=${cflags/CROSS_COMPILE_ARM32/CROSS_COMPILE_COMPAT}
     fi
