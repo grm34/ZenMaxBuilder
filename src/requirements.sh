@@ -45,6 +45,7 @@ _install_dependencies() {
             IFS=" "
             pm="${pms[$manager]}"
             read -ra pm <<< "$pm"
+            unset IFS
             break
         fi
     done

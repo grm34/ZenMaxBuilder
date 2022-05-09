@@ -102,6 +102,7 @@ _full_upgrade() {
         IFS="€"
         repo="${up_data[$repository]}"
         read -ra repo <<< "$repo"
+        unset IFS
         if [[ -d ${repo[0]} ]]
         then
             _note "${repo[2]}..."
