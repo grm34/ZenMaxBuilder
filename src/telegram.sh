@@ -127,6 +127,10 @@ _upload_signed_build() {
 
 # Starting build message
 _set_html_status_msg() {
+    if [[ -n $PLATFORM_VERSION ]]
+    then android_version="AOSP Unified"
+    else android_version="AOSP $PLATFORM_VERSION"
+    fi
     export STATUS_MSG="
 
 <b>${MSG_TG_HTML[0]} :</b>  <code>${CODENAME}</code>
@@ -137,6 +141,6 @@ _set_html_status_msg() {
 <b>${MSG_TG_HTML[5]} :</b>  <code>${COMPILER} ${TCVER##*/}</code>
 <b>${MSG_TG_HTML[6]} :</b>  <code>${HOST}</code>
 <b>${MSG_TG_HTML[7]} :</b>  <code>${TAG}</code>
-<b>${MSG_TG_HTML[8]} :</b>  <code>${PLATFORM_VERSION}</code>"
+<b>${MSG_TG_HTML[8]} :</b>  <code>${android_version}</code>"
 }
 
