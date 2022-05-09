@@ -140,9 +140,9 @@ _ask_for_toolchain() {
 # Request to edit Makefile CROSS_COMPILE.
 # Validation checks are not needed here.
 _ask_for_edit_cross_compile() {
-    _confirm "$MSG_ASK_CC $COMPILER ?" "[y/N]"
-    case $CONFIRM in y|Y|yes|Yes|YES)
-        export EDIT_CC=True
+    _confirm "$MSG_ASK_CC $COMPILER ?" "[Y/n]"
+    case $CONFIRM in n|N|no|No|NO)
+        export EDIT_CC=False
     esac
 }
 
