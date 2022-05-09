@@ -36,21 +36,23 @@ _export_path_and_options() {
     if [[ $HOST == default ]]; then HOST=$(uname -n); fi
     export KBUILD_BUILD_USER=$BUILDER
     export KBUILD_BUILD_HOST=$HOST
+    export PLATFORM_VERSION ANDROID_MAJOR_VERSION
 
     if [[ $LTO == True ]]
     then
         export LD=$LTO_LIBRARY
-        export LD_LIBRARY_PATH=$LTO_LIBRARY_DIR
+        export LD_LIBRARY_PATH=${PROTON_DIR}/lib
     fi
     case $COMPILER in
         "$PROTON_CLANG_NAME")
-            export PATH=${PROTON_CLANG_PATH}:$PATH
+            export PATH=${PROTON_DIR}/bin:$PATH
             TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
             TCVER=$(_get_tc_version "$PROTON_VERSION")
             cross=${PROTON_CLANG_OPTIONS[1]/CROSS_COMPILE=}
             cc=${PROTON_CLANG_OPTIONS[3]/CC=}
             ;;
         "$EVA_GCC_NAME")
+            export PATH=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin:$PATH
             export PATH=${EVA_GCC_PATH}:$PATH
             TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
             TCVER=$(_get_tc_version "$GCC_ARM64_VERSION")
@@ -58,14 +60,15 @@ _export_path_and_options() {
             cc=${EVA_GCC_OPTIONS[3]/CC=}
             ;;
         "$LOS_GCC_NAME")
-            export PATH=${LOS_GCC_PATH}:$PATH
+            export PATH=${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:$PATH
             TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
             TCVER=$(_get_tc_version "$LOS_ARM64_VERSION")
             cross=${LOS_GCC_OPTIONS[1]/CROSS_COMPILE=}
             cc=${LOS_GCC_OPTIONS[3]/CC=}
             ;;
         "$PROTON_GCC_NAME")
-            export PATH=${PROTON_GCC_PATH}:$PATH
+            eva_path=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin
+            export PATH=${PROTON_DIR}/bin:${eva_path}:$PATH
             TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
             clangver=$(_get_tc_version "$PROTON_VERSION")
             gccver=$(_get_tc_version "$GCC_ARM64_VERSION")
