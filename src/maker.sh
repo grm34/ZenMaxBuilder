@@ -22,62 +22,14 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Handle Makefile CROSS_COMPILE and CC
-# ====================================
-# - display them on TERM so user can check before
-# - ask to add them in Makefile (corresponding current TC)
-# - edit them in the current kernel Makefile
-# - warn the user when they seems not correctly set
-#
-_handle_makefile_cross_compile() {
-    _note "$MSG_NOTE_CC"
-    _display_cross_compile
-    _ask_for_edit_cross_compile
-    if [[ $EDIT_CC != False ]]
-    then _edit_cross_compile
-    else
-        mk=$(grep "^CROSS_COMPILE.*?=" "${KERNEL_DIR}/Makefile")
-        if [[ -n ${mk##*"${cross/CROSS_COMPILE=/}"*} ]]
-        then _error WARN "$MSG_WARN_CC"
-        fi
-    fi
-}
-
-
-# Get CROSS_COMPILE and CC
-_display_cross_compile() {
-    sed -n "/^CROSS_COMPILE.*?=/{p;q;}" "${KERNEL_DIR}/Makefile"
-    sed -n "/^CC.*=/{p;q;}" "${KERNEL_DIR}/Makefile"
-}
-
-
-# Edit CROSS_COMPILE and CC
-_edit_cross_compile() {
-    _check sed -i \
-        "0,/^CROSS_COMPILE.*?=.*/s//CROSS_COMPILE ?= ${cross}/" \
-        "${KERNEL_DIR}/Makefile"
-    _check sed -i "0,/^CC.*=.*/s//CC = ${cc}/" \
-        "${KERNEL_DIR}/Makefile"
-}
-
-
-# Get toolchain version
-# =====================
-#  $1 = toolchain lib DIR
-#
-_get_tc_version() {
-    _check find "$1" -mindepth 1 \
-        -maxdepth 1 -type d | head -n 1
-}
-
-
 # Set compiler build options
 # ==========================
 # - export target variables (CFG)
 # - set Link Time Optimization (LTO)
 # - set and export required $PATH
-# - define make flags and options
+# - set current toolchain options
 # - get current toolchain version
+# - set CROSS_COMPILE and CC (to handle Makefile)
 #
 _export_path_and_options() {
     if [[ $BUILDER == default ]]; then BUILDER=$(whoami); fi
@@ -121,6 +73,55 @@ _export_path_and_options() {
             cross=${PROTON_GCC_OPTIONS[1]/CROSS_COMPILE=}
             cc=${PROTON_GCC_OPTIONS[3]/CC=}
     esac
+}
+
+
+# Get toolchain version
+# =====================
+#  $1 = toolchain lib DIR
+#
+_get_tc_version() {
+    _check find "$1" -mindepth 1 \
+        -maxdepth 1 -type d | head -n 1
+}
+
+
+# Handle Makefile CROSS_COMPILE and CC
+# ====================================
+# - display them on TERM so user can check before
+# - ask to add them in Makefile (corresponding current TC)
+# - edit them in the current kernel Makefile
+# - warn the user when they seems not correctly set
+#
+_handle_makefile_cross_compile() {
+    _note "$MSG_NOTE_CC"
+    _display_cross_compile
+    _ask_for_edit_cross_compile
+    if [[ $EDIT_CC != False ]]
+    then _edit_cross_compile
+    else
+        mk=$(grep "^CROSS_COMPILE.*?=" "${KERNEL_DIR}/Makefile")
+        if [[ -n ${mk##*"${cross/CROSS_COMPILE=/}"*} ]]
+        then _error WARN "$MSG_WARN_CC"
+        fi
+    fi
+}
+
+
+# Get CROSS_COMPILE and CC
+_display_cross_compile() {
+    sed -n "/^CROSS_COMPILE.*?=/{p;q;}" "${KERNEL_DIR}/Makefile"
+    sed -n "/^CC.*=/{p;q;}" "${KERNEL_DIR}/Makefile"
+}
+
+
+# Edit CROSS_COMPILE and CC
+_edit_cross_compile() {
+    _check sed -i \
+        "0,/^CROSS_COMPILE.*?=.*/s//CROSS_COMPILE ?= ${cross}/" \
+        "${KERNEL_DIR}/Makefile"
+    _check sed -i "0,/^CC.*=.*/s//CC = ${cc}/" \
+        "${KERNEL_DIR}/Makefile"
 }
 
 
