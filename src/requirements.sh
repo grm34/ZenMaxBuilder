@@ -22,10 +22,13 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Find out and install requirements
+# Find out missing requirements
+# =============================
+# - set the package manager for each Linux distribution
+# - get the current package manager install command
+# - install missing dependencies
+#
 _install_dependencies() {
-
-    # Set the package manager for each Linux distribution
     declare -A pms=(
         [apt]="sudo apt install -y"
         [pkg]="_ pkg install -y"
@@ -35,8 +38,6 @@ _install_dependencies() {
         [zypper]="sudo zypper install -y"
         [dnf]="sudo dnf install -y"
     )
-
-    # Get the current package manager command
     pm_list=(pacman yum emerge zypper dnf pkg apt)
     for manager in "${pm_list[@]}"
     do
@@ -49,8 +50,6 @@ _install_dependencies() {
             break
         fi
     done
-
-    # Install missing dependencies
     if [[ ${pm[3]} ]]
     then
         for package in "${DEPENDENCIES[@]}"
@@ -71,7 +70,7 @@ _install_dependencies() {
 }
 
 
-# Github Clone command
+# Github Clone process
 # ====================
 #  $1 = repo branch
 #  $2 = repo url
@@ -88,53 +87,34 @@ _clone_tc() {
 }
 
 
-# Clone toolchains repos
+# Get required compiler
 _clone_toolchains() {
-
-    # Proton-Clang
-    case $COMPILER in
+    case $COMPILER in # Proton-Clang
         "$PROTON_CLANG_NAME"|"$PROTON_GCC_NAME")
-            _clone_tc \
-                "$PROTON_BRANCH" \
-                "$PROTON_URL" \
-                "$PROTON_DIR"
+            _clone_tc "$PROTON_BRANCH" \
+                "$PROTON_URL" "$PROTON_DIR"
     esac
-
-    # Eva-GCC ARM32
-    case $COMPILER in
+    case $COMPILER in # Eva-GCC ARM32
         "$EVA_GCC_NAME"|"$PROTON_GCC_NAME")
-            _clone_tc \
-                "$GCC_ARM_BRANCH" \
-                "$GCC_ARM_URL" \
-                "$GCC_ARM_DIR"
+            _clone_tc "$GCC_ARM_BRANCH" \
+                "$GCC_ARM_URL" "$GCC_ARM_DIR"
     esac
-
-    # Eva-GCC ARM64
-    case $COMPILER in
+    case $COMPILER in # Eva-GCC ARM64
         "$EVA_GCC_NAME"|"$PROTON_GCC_NAME")
-            _clone_tc \
-                "$GCC_ARM64_BRANCH" \
-                "$GCC_ARM64_URL" \
-                "$GCC_ARM64_DIR"
+            _clone_tc "$GCC_ARM64_BRANCH" \
+                "$GCC_ARM64_URL" "$GCC_ARM64_DIR"
     esac
-
-    # Lineage-GCC
-    case $COMPILER in
+    case $COMPILER in # Lineage-GCC
         "$LOS_GCC_NAME")
-            _clone_tc \
-                "$LOS_ARM_BRANCH" \
-                "$LOS_ARM_URL" \
-                "$LOS_ARM_DIR"
-            _clone_tc \
-                "$LOS_ARM64_BRANCH" \
-                "$LOS_ARM64_URL" \
-                "$LOS_ARM64_DIR"
+            _clone_tc "$LOS_ARM_BRANCH" \
+                "$LOS_ARM_URL" "$LOS_ARM_DIR"
+            _clone_tc "$LOS_ARM64_BRANCH" \
+                "$LOS_ARM64_URL" "$LOS_ARM64_DIR"
     esac
-
 }
 
 
-# Clone AK3 repo
+# Get AK3
 _clone_anykernel() {
     if [[ ! -d $ANYKERNEL_DIR ]]
     then
