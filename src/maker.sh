@@ -25,11 +25,11 @@
 # Set compiler build options
 # ==========================
 # - export target variables (CFG)
-# - set Link Time Optimization (LTO)
-# - set and export required $PATH
-# - set current toolchain options
+# - define and export required $PATH
+# - define current toolchain options
 # - get current toolchain version
-# - set CROSS_COMPILE and CC (to handle Makefile)
+# - define CROSS_COMPILE and CC (to handle Makefile)
+# - define Link Time Optimization (LTO)
 #
 _export_path_and_options() {
     if [[ $BUILDER == default ]]; then BUILDER=$(whoami); fi
@@ -38,11 +38,6 @@ _export_path_and_options() {
     export KBUILD_BUILD_HOST=$HOST
     export PLATFORM_VERSION ANDROID_MAJOR_VERSION
 
-    if [[ $LTO == True ]]
-    then
-        export LD=$LTO_LIBRARY
-        export LD_LIBRARY_PATH=${PROTON_DIR}/lib
-    fi
     case $COMPILER in
         "$PROTON_CLANG_NAME")
             export PATH=${PROTON_DIR}/bin:$PATH
@@ -76,6 +71,13 @@ _export_path_and_options() {
             cross=${PROTON_GCC_OPTIONS[1]/CROSS_COMPILE=}
             cc=${PROTON_GCC_OPTIONS[3]/CC=}
     esac
+
+    if [[ $LTO == True ]]
+    then
+        export LD_LIBRARY_PATH=${PROTON_DIR}/lib
+        TC_OPTIONS[6]="LD=$LTO_LIBRARY"
+    fi
+
 }
 
 
