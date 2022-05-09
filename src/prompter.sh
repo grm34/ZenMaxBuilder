@@ -196,8 +196,7 @@ _ask_for_new_build() {
 # Request the upload of build status on Telegram.
 # Validation checks are not needed here.
 _ask_for_telegram() {
-    if [[ $TELEGRAM_CHAT_ID ]] && \
-        [[ $TELEGRAM_BOT_TOKEN ]]
+    if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]
     then
         _confirm "$MSG_ASK_TG ?" "[y/N]"
         case $CONFIRM in y|Y|yes|Yes|YES)
