@@ -25,9 +25,6 @@
 ###################
 ### HELP OPTION ###
 ###################
-
-
-# ZMB help and usage
 _usage() {
     echo -e "
 ${BOLD}Usage:$NC ${GREEN}bash zmb \
@@ -71,7 +68,8 @@ _update_git() {
     if [[ $1 == zmb ]] && [[ -f ${DIR}/etc/user.cfg ]]
     then
         conf=$(git diff origin/zmb "${DIR}/etc/settings.cfg")
-        if [[ -n $conf ]] && [[ -f ${DIR}/etc/user.cfg ]]; then
+        if [[ -n $conf ]] && [[ -f ${DIR}/etc/user.cfg ]]
+        then
             _error WARN "${MSG_CONF}"; echo
             _check mv "${DIR}/etc/user.cfg" "${DIR}/etc/old.cfg"
         fi
@@ -82,9 +80,11 @@ _update_git() {
 
 
 # Updates everything that needs to be
-_full_upgrade() {
+# ===================================
+# - set ZMB and AK3 and TC data
+# - upgrade existing stuff...
 
-    # Set ZMB, AK3 and TC data
+_full_upgrade() {
     declare -A up_data=(
         [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
         [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}€$MSG_UP_AK3"
@@ -94,8 +94,6 @@ _full_upgrade() {
         [t4]="${LOS_ARM_DIR}€${LOS_ARM_BRANCH}€$MSG_UP_LOS32"
         [t5]="${LOS_ARM64_DIR}€${LOS_ARM64_BRANCH}€$MSG_UP_LOS64"
     )
-
-    # Update ZMB, AK3 and TC
     up_list=(zmb ak3 t1 t2 t3 t4 t5)
     for repository in "${up_list[@]}"
     do
@@ -117,9 +115,6 @@ _full_upgrade() {
 ###########################
 ### LIST KERNELS OPTION ###
 ###########################
-
-
-# Show list of kernels (display out folders)
 _list_all_kernels() {
     if [[ -d ${DIR}/out ]] && \
         [[ $(ls -d out/*/ 2>/dev/null) ]]
@@ -135,9 +130,6 @@ _list_all_kernels() {
 ########################
 ### LINUX TAG OPTION ###
 ########################
-
-
-# Get latest linux stable tag
 _get_linux_tag() {
     _note "${MSG_NOTE_LTAG}..."
     ltag=$(git ls-remote --refs --sort='v:refname' --tags \
@@ -157,8 +149,7 @@ _get_linux_tag() {
 
 # Send message
 _send_msg_option() {
-    if [[ $TELEGRAM_CHAT_ID ]] && \
-        [[ $TELEGRAM_BOT_TOKEN ]]
+    if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]
     then
         _note "${MSG_NOTE_SEND}..."
         _send_msg "${OPTARG//_/-}"
@@ -171,8 +162,7 @@ _send_msg_option() {
 _send_file_option() {
     if [[ -f $OPTARG ]]
     then
-        if [[ $TELEGRAM_CHAT_ID ]] && \
-            [[ $TELEGRAM_BOT_TOKEN ]]
+        if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]
         then
             _note "${MSG_NOTE_UPLOAD}: ${OPTARG##*/}..."
             _send_file "$OPTARG"
@@ -186,9 +176,6 @@ _send_file_option() {
 ##################
 ### ZIP OPTION ###
 ##################
-
-
-# Create and sign flashable ZIP
 _create_zip_option() {
     if [[ -f $OPTARG ]] && [[ ${OPTARG##*/} == Image* ]]
     then
