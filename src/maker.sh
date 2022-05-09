@@ -27,7 +27,6 @@
 # - display them on TERM so user can check before
 # - ask to add them in Makefile (corresponding current TC)
 # - edit them in the current kernel Makefile
-# - display them on TERM so user can check the edit
 # - warn the user when they seems not correctly set
 #
 _handle_makefile_cross_compile() {
@@ -35,10 +34,7 @@ _handle_makefile_cross_compile() {
     _display_cross_compile
     _ask_for_edit_cross_compile
     if [[ $EDIT_CC != False ]]
-    then
-        _edit_cross_compile
-        _note "$MSG_NOTE_CC"
-        _display_cross_compile
+    then _edit_cross_compile
     else
         mk=$(grep "^CROSS_COMPILE.*?=" "${KERNEL_DIR}/Makefile")
         if [[ -n ${mk##*"${cross/CROSS_COMPILE=/}"*} ]]
