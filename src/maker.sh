@@ -99,22 +99,22 @@ _export_path_and_options() {
             export PATH=${PROTON_CLANG_PATH}:$PATH
             TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
             TCVER=$(_get_tc_version "$PROTON_VERSION")
-            cross=${PROTON_CLANG_OPTIONS[1]/CROSS_COMPILE=/}
-            cc=${PROTON_CLANG_OPTIONS[3]/CC=/}
+            cross=${PROTON_CLANG_OPTIONS[1]/CROSS_COMPILE=}
+            cc=${PROTON_CLANG_OPTIONS[3]/CC=}
             ;;
         "$EVA_GCC_NAME")
             export PATH=${EVA_GCC_PATH}:$PATH
             TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
             TCVER=$(_get_tc_version "$GCC_ARM64_VERSION")
-            cross=${EVA_GCC_OPTIONS[1]/CROSS_COMPILE=/}
-            cc=${EVA_GCC_OPTIONS[3]/CC=/}
+            cross=${EVA_GCC_OPTIONS[1]/CROSS_COMPILE=}
+            cc=${EVA_GCC_OPTIONS[3]/CC=}
             ;;
         "$LOS_GCC_NAME")
             export PATH=${LOS_GCC_PATH}:$PATH
             TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
             TCVER=$(_get_tc_version "$LOS_ARM64_VERSION")
-            cross=${LOS_GCC_OPTIONS[1]/CROSS_COMPILE=/}
-            cc=${LOS_GCC_OPTIONS[3]/CC=/}
+            cross=${LOS_GCC_OPTIONS[1]/CROSS_COMPILE=}
+            cc=${LOS_GCC_OPTIONS[3]/CC=}
             ;;
         "$PROTON_GCC_NAME")
             export PATH=${PROTON_GCC_PATH}:$PATH
@@ -122,8 +122,8 @@ _export_path_and_options() {
             clangver=$(_get_tc_version "$PROTON_VERSION")
             gccver=$(_get_tc_version "$GCC_ARM64_VERSION")
             export TCVER="${clangver##*/}-${gccver##*/}"
-            cross=${PROTON_GCC_OPTIONS[1]/CROSS_COMPILE=/}
-            cc=${PROTON_GCC_OPTIONS[3]/CC=/}
+            cross=${PROTON_GCC_OPTIONS[1]/CROSS_COMPILE=}
+            cc=${PROTON_GCC_OPTIONS[3]/CC=}
     esac
 }
 
@@ -178,14 +178,20 @@ _save_defconfig() {
 # Run MAKE BUILD
 # ==============
 # - send build status on Telegram
+# - append kernel path: CC -I kernel_path
+# - change CC ARM32 to COMPAT when linux > v4.2
 # - make new kernel build
 #
 _make_build() {
     _note "${MSG_NOTE_MAKE}: ${KERNEL_NAME}..."
     _send_make_build_status
-    cc="${TC_OPTIONS[3]} -I$KERNEL_DIR"
     cflags="${TC_OPTIONS[*]/${TC_OPTIONS[3]}}"
+    cflags="${TC_OPTIONS[3]} -I$KERNEL_DIR ${cflags/  / }"
+    if [[ $(echo "${LINUX_VERSION:0:3} > 42" | bc) == 1 ]]
+    then
+        cflags=${cflags/CROSS_COMPILE_ARM32/CROSS_COMPILE_COMPAT}
+    fi
     _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
-        O="$OUT_DIR" "$cc" ARCH="$ARCH" "${cflags/  / }" 2>&1
+        O="$OUT_DIR" ARCH="$ARCH" "${cflags/  / }" 2>&1
 }
 
