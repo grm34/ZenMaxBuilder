@@ -77,7 +77,6 @@ _export_path_and_options() {
         export LD_LIBRARY_PATH=${PROTON_DIR}/lib
         TC_OPTIONS[6]="LD=$LTO_LIBRARY"
     fi
-
 }
 
 
@@ -86,8 +85,7 @@ _export_path_and_options() {
 #  $1 = toolchain lib DIR
 #
 _get_tc_version() {
-    _check find "$1" -mindepth 1 \
-        -maxdepth 1 -type d | head -n 1
+    _check find "$1" -mindepth 1 -maxdepth 1 -type d | head -n 1
 }
 
 
@@ -95,7 +93,7 @@ _get_tc_version() {
 # ====================================
 # - display them on TERM so user can check before
 # - ask to add them in Makefile (corresponding current TC)
-# - edit them in the current kernel Makefile
+# - edit them in the current kernel Makefile (SED)
 # - warn the user when they seems not correctly set
 #
 _handle_makefile_cross_compile() {
