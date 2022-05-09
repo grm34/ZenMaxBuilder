@@ -22,35 +22,9 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-###################
-### HELP OPTION ###
-###################
-_usage() {
-    echo -e "
-${BOLD}Usage:$NC ${GREEN}bash zmb \
-${NC}[${YELLOW}OPTION${NC}] [${YELLOW}ARGUMENT${NC}] \
-(e.g. ${MAGENTA}bash zmb --start${NC})
-
-  ${BOLD}Options$NC
-    -h, --help                      $MSG_HELP_H
-    -s, --start                     $MSG_HELP_S
-    -u, --update                    $MSG_HELP_U
-    -l, --list                      $MSG_HELP_L
-    -t, --tag            [v4.19]    $MSG_HELP_T
-    -m, --msg          [message]    $MSG_HELP_M
-    -f, --file            [file]    $MSG_HELP_F
-    -z, --zip     [Image.gz-dtb]    $MSG_HELP_Z
-
-${BOLD}${MSG_HELP_INFO}: \
-${CYAN}https://kernel-builder.com$NC
-"
-}
-
-
 #####################
 ### UPDATE OPTION ###
 #####################
-
 
 # Github repository
 # =================
@@ -77,7 +51,6 @@ _update_git() {
     git reset --hard "origin/$1"
     git pull
 }
-
 
 # Updates everything that needs to be
 # ===================================
@@ -112,6 +85,35 @@ _full_upgrade() {
 }
 
 
+########################
+### TELEGRAM OPTIONS ###
+########################
+
+# Send message
+_send_msg_option() {
+    if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]
+    then
+        _note "${MSG_NOTE_SEND}..."
+        _send_msg "${OPTARG//_/-}"
+    else _error "$MSG_ERR_API"
+    fi
+}
+
+# Send file
+_send_file_option() {
+    if [[ -f $OPTARG ]]
+    then
+        if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]
+        then
+            _note "${MSG_NOTE_UPLOAD}: ${OPTARG##*/}..."
+            _send_file "$OPTARG"
+        else _error "$MSG_ERR_API"
+        fi
+    else _error "$MSG_ERR_FILE ${RED}$OPTARG"
+    fi
+}
+
+
 ###########################
 ### LIST KERNELS OPTION ###
 ###########################
@@ -142,37 +144,6 @@ _get_linux_tag() {
 }
 
 
-########################
-### TELEGRAM OPTIONS ###
-########################
-
-
-# Send message
-_send_msg_option() {
-    if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]
-    then
-        _note "${MSG_NOTE_SEND}..."
-        _send_msg "${OPTARG//_/-}"
-    else _error "$MSG_ERR_API"
-    fi
-}
-
-
-# Send file
-_send_file_option() {
-    if [[ -f $OPTARG ]]
-    then
-        if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]
-        then
-            _note "${MSG_NOTE_UPLOAD}: ${OPTARG##*/}..."
-            _send_file "$OPTARG"
-        else _error "$MSG_ERR_API"
-        fi
-    else _error "$MSG_ERR_FILE ${RED}$OPTARG"
-    fi
-}
-
-
 ##################
 ### ZIP OPTION ###
 ##################
@@ -188,5 +159,30 @@ _create_zip_option() {
         _note "$MSG_NOTE_ZIPPED !"
     else _error "$MSG_ERR_IMG ${RED}$OPTARG"
     fi
+}
+
+
+###################
+### HELP OPTION ###
+###################
+_usage() {
+    echo -e "
+${BOLD}Usage:$NC ${GREEN}bash zmb \
+${NC}[${YELLOW}OPTION${NC}] [${YELLOW}ARGUMENT${NC}] \
+(e.g. ${MAGENTA}bash zmb --start${NC})
+
+  ${BOLD}Options$NC
+    -h, --help                      $MSG_HELP_H
+    -s, --start                     $MSG_HELP_S
+    -u, --update                    $MSG_HELP_U
+    -l, --list                      $MSG_HELP_L
+    -t, --tag            [v4.19]    $MSG_HELP_T
+    -m, --msg          [message]    $MSG_HELP_M
+    -f, --file            [file]    $MSG_HELP_F
+    -z, --zip     [Image.gz-dtb]    $MSG_HELP_Z
+
+${BOLD}${MSG_HELP_INFO}: \
+${CYAN}https://kernel-builder.com$NC
+"
 }
 
