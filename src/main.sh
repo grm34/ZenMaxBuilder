@@ -197,7 +197,6 @@ KERNEL_NAME=${TAG}-${CODENAME}-$LINUX_VERSION
 
 # Make clean
 _ask_for_make_clean
-_clean_anykernel
 if [[ $MAKE_CLEAN == True ]]
 then
     _make_clean; _make_mrproper
