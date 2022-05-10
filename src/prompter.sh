@@ -57,6 +57,7 @@ _ask_for_kernel_dir() {
             _prompt "$MSG_ASK_KDIR :" 1
             read -r -e KERNEL_DIR
         done
+        KERNEL_DIR=$(realpath "$KERNEL_DIR")
     fi
 }
 
@@ -231,7 +232,7 @@ _ask_for_kernel_image() {
         _prompt "$MSG_ASK_IMG" 1
         read -r -e K_IMG
     done
-    K_IMG=${BOOT_DIR}/$K_IMG
+    K_IMG=$(realpath "$K_IMG")
     _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
 }
 

@@ -123,10 +123,10 @@ _edit_cross_compile() {
     _check sed -i \
         "0,/^CROSS_COMPILE.*?=.*/s//CROSS_COMPILE ?= ${cross}/" \
         "${KERNEL_DIR}/Makefile"
-    _check sed -i "0,/^CC.*=.*/s//CC = ${cc}/" \
+    kpath=${KERNEL_DIR//\//\\/}
+    _check sed -i "0,/^CC.*=.*/s//CC = ${cc} -I${kpath}/" \
         "${KERNEL_DIR}/Makefile"
 }
-
 
 # Run MAKE CLEAN
 _make_clean() {
@@ -178,14 +178,13 @@ _save_defconfig() {
 # Run MAKE BUILD
 # ==============
 # - send build status on Telegram
-# - specify the kernel path to the compiler
+# - delete CC from make command-line arguments
 # - change CC ARM32 to COMPAT if linux > v4.2 (for clang only)
 # - make new android kernel build
 #
 _make_build() {
     _note "${MSG_NOTE_MAKE}: ${KERNEL_NAME}..."
     _send_make_build_status
-    cc="${TC_OPTIONS[3]} -I$KERNEL_DIR"
     cflags="${TC_OPTIONS[*]/${TC_OPTIONS[3]}}"
     linuxversion="${LINUX_VERSION//.}"
     if [[ $(echo "${linuxversion:0:2} > 42" | bc) == 1 ]] && \
@@ -194,6 +193,6 @@ _make_build() {
         cflags=${cflags/CROSS_COMPILE_ARM32/CROSS_COMPILE_COMPAT}
     fi
     _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
-        O="$OUT_DIR" "$cc" ARCH="$ARCH" "${cflags/  / }" 2>&1
+        O="$OUT_DIR" ARCH="$ARCH" "${cflags/  / }" 2>&1
 }
 
