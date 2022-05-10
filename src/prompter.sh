@@ -186,8 +186,7 @@ _ask_for_make_clean() {
 # Validation checks are not needed here.
 _ask_for_new_build() {
     _confirm \
-        "$MSG_START ${TAG}-${CODENAME}-$LINUX_VERSION ?" \
-        "[Y/n]"
+        "$MSG_START ${TAG}-${CODENAME}-$LINUX_VERSION ?" "[Y/n]"
     case $CONFIRM in n|N|no|No|NO)
         export NEW_BUILD=False
     esac
@@ -211,8 +210,7 @@ _ask_for_telegram() {
 # Validation checks are not needed here.
 _ask_for_flashable_zip() {
     _confirm \
-        "$MSG_ASK_ZIP ${TAG}-${CODENAME}-$LINUX_VERSION ?" \
-        "[y/N]"
+        "$MSG_ASK_ZIP ${TAG}-${CODENAME}-$LINUX_VERSION ?" "[y/N]"
     case $CONFIRM in y|Y|yes|Yes|YES)
         export FLASH_ZIP=True
     esac
