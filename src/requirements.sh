@@ -25,7 +25,8 @@
 # Find out missing requirements
 # =============================
 # - set the package manager for each Linux distribution
-# - get the current package manager install command
+# - get the install command of the current OS package manager
+# - replace gcc by libllvm on TERMUX OS
 # - install missing dependencies
 #
 _install_dependencies() {
@@ -54,13 +55,21 @@ _install_dependencies() {
     then
         for package in "${DEPENDENCIES[@]}"
         do
-            if ! which "${package/llvm/llvm-ar}" &>/dev/null
+            package=${package/llvm/llvm-ar}
+            package=${package/binutils/ld}
+            if ! which "${package}" &>/dev/null
             then
+                package=${package/llvm-ar/llvm}
+                package=${package/ld/binutils}
                 _ask_for_install_pkg "$package"
                 if [[ $INSTALL_PKG == True ]]
                 then
-                    eval "${pm[0]/_}" "${pm[1]}" \
-                         "${pm[2]}" "${pm[3]}" "$package"
+                    if [[ ${pm[1]} == pkg ]] && \
+                        [[ $package == gcc ]]
+                    then package=libllvm
+                    fi
+                    eval "${pm[0]/_}" "${pm[1]}" "${pm[2]}" \
+                         "${pm[3]}" "$package"
                 fi
             fi
         done

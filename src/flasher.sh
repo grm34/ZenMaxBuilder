@@ -58,11 +58,15 @@ _zip() {
 #   $1 = kernel name
 #
 _sign_zip() {
-    _note "${MSG_NOTE_SIGN}..."
-    _send_zip_signing_status
-    _check unbuffer java -jar \
-        "${DIR}/bin/zipsigner-3.0.jar" \
-        "${1}.zip" "${1}-signed.zip" 2>&1
+    if which java &>/dev/null
+    then
+        _note "${MSG_NOTE_SIGN}..."
+        _send_zip_signing_status
+        _check unbuffer java -jar \
+            "${DIR}/bin/zipsigner-3.0.jar" \
+            "${1}.zip" "${1}-signed.zip" 2>&1
+    else _error WARN "$MSG_WARN_JAVA"
+    fi
 }
 
 

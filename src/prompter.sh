@@ -224,7 +224,7 @@ _ask_for_kernel_image() {
     _cd "$BOOT_DIR" "$MSG_ERR_DIR ${RED}$BOOT_DIR"
     _prompt "$MSG_ASK_IMG :" 1
     read -r -e K_IMG
-    until [[ -f $K_IMG ]] && [[ $K_IMG == Image* ]]
+    until [[ -f $K_IMG ]] && [[ $K_IMG == *Image* ]]
     do
         _error "$MSG_ERR_IMG ${RED}$K_IMG"
         _prompt "$MSG_ASK_IMG" 1
@@ -250,7 +250,7 @@ _ask_for_run_again() {
 # Warn the user that when false the script may crash.
 # Validation checks are not needed here.
 _ask_for_install_pkg() {
-    _confirm "$MSG_ASK_PKG $1 ?" "[Y/n]"
+    _confirm "${MSG_ASK_PKG}: $1 ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
             _error WARN "$MSG_ERR_DEP ${RED}${PACKAGE}"\
@@ -265,7 +265,7 @@ _ask_for_install_pkg() {
 # Warn the user and exit the script when false.
 # Validation checks are not needed here.
 _ask_for_clone_toolchain() {
-    _confirm "$MSG_ASK_CLONE_TC $1 ?" "[Y/n]"
+    _confirm "${MSG_ASK_CLONE_TC}: $1 ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
             _error "$MSG_ERR_TCDIR ${RED}$1"\
@@ -281,7 +281,7 @@ _ask_for_clone_toolchain() {
 # Warn the user and exit the script when false.
 # Validation checks are not needed here.
 _ask_for_clone_anykernel() {
-    _confirm "$MSG_ASK_CLONE_AK3 ?" "[Y/n]"
+    _confirm "${MSG_ASK_CLONE_AK3}: AK3 ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
             _error "$MSG_ERR_PATH ${RED}AnyKernel"\

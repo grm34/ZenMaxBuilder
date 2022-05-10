@@ -93,6 +93,7 @@ _full_upgrade() {
 _send_msg_option() {
     if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]
     then
+        _install_dependencies
         _note "${MSG_NOTE_SEND}..."
         _send_msg "${OPTARG//_/-}"
     else _error "$MSG_ERR_API"
@@ -105,6 +106,7 @@ _send_file_option() {
     then
         if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]
         then
+            _install_dependencies
             _note "${MSG_NOTE_UPLOAD}: ${OPTARG##*/}..."
             _send_file "$OPTARG"
         else _error "$MSG_ERR_API"
@@ -148,8 +150,9 @@ _get_linux_tag() {
 ### ZIP OPTION ###
 ##################
 _create_zip_option() {
-    if [[ -f $OPTARG ]] && [[ ${OPTARG##*/} == Image* ]]
+    if [[ -f $OPTARG ]] && [[ ${OPTARG##*/} == *Image* ]]
     then
+        _install_dependencies
         _clean_anykernel
         _zip "${OPTARG##*/}-${DATE}-$TIME" "$OPTARG" \
             "${DIR}/builds/default"
