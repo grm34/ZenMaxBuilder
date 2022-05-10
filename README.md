@@ -1,4 +1,7 @@
-# Android Kernel Builder
+<a href="https://kernel-builder.com" target="blank_">
+    <img height="100" alt="ZenMaxBuilder" src="https://raw.githubusercontent.com/grm34/ZenMaxBuilder/dev/docs/assets/images/zmb.png" />
+</a>
+<br>
 
 <a href="https://app.codiga.io/public/project/23638/ZenMaxBuilder/dashboard">
 <img src="https://api.codiga.io/project/23638/score/svg" alt="Codescore">
@@ -11,6 +14,14 @@
 <a href="https://www.codefactor.io/repository/github/grm34/zenmaxbuilder">
 <img src="https://www.codefactor.io/repository/github/grm34/zenmaxbuilder/badge" alt="Codefactor">
 </a>
+
+<a href="https://github.com/grm34/ZenMaxBuilder/fork">
+<img src="https://img.shields.io/github/forks/grm34/ZenMaxBuilder.svg?logo=github" alt="Forks">
+</a>
+
+<a href="https://github.com/grm34/ZenMaxBuilder/stargazers">
+<img src="https://img.shields.io/github/stars/grm34/ZenMaxBuilder.svg?logo=github-sponsors" alt="Stars">
+</a>
 <br>
 
 <a href="https://mit-license.org/">
@@ -21,12 +32,12 @@
 <img src="https://img.shields.io/github/issues/grm34/ZenMaxBuilder.svg?logo=git" alt="Issues">
 </a>
 
-<a href="https://github.com/grm34/ZenMaxBuilder/fork">
-<img src="https://img.shields.io/github/forks/grm34/ZenMaxBuilder.svg?logo=github" alt="Forks">
+<a href="https://github.com/grm34/ZenMaxBuilder/commits">
+<img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/y/grm34/zenmaxbuilder?label=commits&logo=github">
 </a>
 
-<a href="https://github.com/grm34/ZenMaxBuilder/stargazers">
-<img src="https://img.shields.io/github/stars/grm34/ZenMaxBuilder.svg?logo=github-sponsors" alt="Stars">
+<a href="">
+<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/grm34/ZenMaxBuilder?style=flat-square&logo=Github">
 </a>
 
 ## About
