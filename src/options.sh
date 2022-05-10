@@ -106,7 +106,7 @@ _send_file_option() {
     then
         if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]
         then
-            _install_dependencies/
+            _install_dependencies
             _note "${MSG_NOTE_UPLOAD}: ${OPTARG##*/}..."
             _send_file "$OPTARG"
         else _error "$MSG_ERR_API"

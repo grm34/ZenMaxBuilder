@@ -59,6 +59,7 @@ _zip() {
 #
 _sign_zip() {
     if which java &>/dev/null
+    then
         _note "${MSG_NOTE_SIGN}..."
         _send_zip_signing_status
         _check unbuffer java -jar \
