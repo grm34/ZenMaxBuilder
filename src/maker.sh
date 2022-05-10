@@ -37,6 +37,9 @@ _export_path_and_options() {
     export KBUILD_BUILD_USER=$BUILDER
     export KBUILD_BUILD_HOST=$HOST
     export PLATFORM_VERSION ANDROID_MAJOR_VERSION
+    tcdirs=($PROTON_DIR $GCC_ARM64_DIR $GCC_ARM_DIR
+            $LOS_ARM64_DIR $LOS_ARM_DIR)
+    for tcdir in "${tcdirs[@]}"; do tcdir=${DIR}/$tcdir; done
 
     case $COMPILER in
         "$PROTON_CLANG_NAME")
