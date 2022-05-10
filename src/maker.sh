@@ -25,6 +25,7 @@
 # Set compiler build options
 # ==========================
 # - export target variables (CFG)
+# - define the realpaths of toolchains
 # - define and export required $PATH
 # - define current toolchain options
 # - get current toolchain version
@@ -37,9 +38,9 @@ _export_path_and_options() {
     export KBUILD_BUILD_USER=$BUILDER
     export KBUILD_BUILD_HOST=$HOST
     export PLATFORM_VERSION ANDROID_MAJOR_VERSION
-    tcdirs=($PROTON_DIR $GCC_ARM64_DIR $GCC_ARM_DIR
-            $LOS_ARM64_DIR $LOS_ARM_DIR)
-    for tcdir in "${tcdirs[@]}"; do tcdir=${DIR}/$tcdir; done
+    tcdir=($PROTON_DIR $GCC_ARM64_DIR $GCC_ARM_DIR
+           $LOS_ARM64_DIR $LOS_ARM_DIR)
+    for tc in "${tcdir[@]}"; do tc=${DIR}/toolchains/$tc; done
 
     case $COMPILER in
         "$PROTON_CLANG_NAME")
