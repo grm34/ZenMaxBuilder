@@ -123,12 +123,11 @@ _edit_cross_compile() {
     _check sed -i \
         "0,/^CROSS_COMPILE.*?=.*/s//CROSS_COMPILE ?= ${cross}/" \
         "${KERNEL_DIR}/Makefile"
-    _check sed -i \
-        "0,/^CC.*=.*/s//CC = ${cc} -I${KERNEL_DIR//\//\\/}/" \
+    kpath=${KERNEL_DIR//\//\\/}
+    _check sed -i "0,/^CC.*=.*/s//CC = ${cc} -I${kpath}/" \
         "${KERNEL_DIR}/Makefile"
 }
 
-{test//\//\\/}
 # Run MAKE CLEAN
 _make_clean() {
     _note "$MSG_NOTE_MAKE_CLEAN [${LINUX_VERSION}]..."
