@@ -8,7 +8,7 @@
 
 ## Requirements
 
-The installation of the missing dependencies will be offered by ZenMaxBuilder but you can also install them manually:
+The installation of the missing dependencies will be offered by ZenMaxBuilder but you can also install them manually with your favorite package manager:
 
     bash git curl zip expect make llvm lld clang gcc binutils bison perl bc openssl
 
@@ -67,7 +67,7 @@ The optional flashable zip signature with AOSP Keys requires java which is not p
 
 ## Warning
 
-ZMB is a tool to facilitate the compilation of the Android kernel, it does not touch at your kernel source and does not adds possible modifications that must be made to Makefile, except the setting of CROSS_COMPILE (all others toolchain options from ZMB settings will be passed directly to make as command-line argument):
+ZMB is a tool to facilitate the compilation of the Android kernel, it does not touch at your kernel source and does not adds possible modifications that must be made, except the setting of CROSS_COMPILE in the main Makefile (all others toolchain options from ZMB settings will be passed directly to make as command-line argument):
 
     # Proton-Clang / Proton-GCC
     CROSS_COMPILE ?= aarch64-linux-gnu-
@@ -81,7 +81,7 @@ ZMB is a tool to facilitate the compilation of the Android kernel, it does not t
     CROSS_COMPILE ?= aarch64-linux-android-
     CC             = aarch64-linux-android-gcc
 
-Kernel sources are often configured for a specific compilation (vendor, firmware, modules, android version) and little changes are often necessary. For a kernel building support, you can ask for help on [Telegram](https://t.me/ZenMaxBuilder).
+Kernel sources are often configured for a specific compilation (vendor, firmware, modules, android version, compiler) and little changes are often necessary. For a kernel building support, you can ask for help on [Telegram](https://t.me/ZenMaxBuilder).
 
 ## Contributing
 
