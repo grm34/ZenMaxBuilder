@@ -49,7 +49,6 @@ _export_path_and_options() {
             ;;
         "$EVA_GCC_NAME")
             export PATH=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin:$PATH
-            export PATH=${EVA_GCC_PATH}:$PATH
             TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
             TCVER=$(_get_tc_version "$GCC_ARM64_VERSION")
             cross=${EVA_GCC_OPTIONS[1]/CROSS_COMPILE=}
