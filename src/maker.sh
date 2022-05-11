@@ -38,9 +38,6 @@ _export_path_and_options() {
     export KBUILD_BUILD_USER=$BUILDER
     export KBUILD_BUILD_HOST=$HOST
     export PLATFORM_VERSION ANDROID_MAJOR_VERSION
-    tcdir=("$PROTON_DIR" "$GCC_ARM64_DIR" "$GCC_ARM_DIR"
-           "$LOS_ARM64_DIR" "$LOS_ARM_DIR")
-    for tc in "${tcdir[@]}"; do tc="${DIR}/toolchains/$tc"; done
 
     case $COMPILER in
         "$PROTON_CLANG_NAME")
@@ -52,7 +49,6 @@ _export_path_and_options() {
             ;;
         "$EVA_GCC_NAME")
             export PATH=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin:$PATH
-            export PATH=${EVA_GCC_PATH}:$PATH
             TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
             TCVER=$(_get_tc_version "$GCC_ARM64_VERSION")
             cross=${EVA_GCC_OPTIONS[1]/CROSS_COMPILE=}
@@ -89,7 +85,8 @@ _export_path_and_options() {
 #  $1 = toolchain lib DIR
 #
 _get_tc_version() {
-    _check find "$1" -mindepth 1 -maxdepth 1 -type d | head -n 1
+    _check find "${DIR}/toolchains/$1" \
+        -mindepth 1 -maxdepth 1 -type d | head -n 1
 }
 
 
@@ -106,11 +103,10 @@ _handle_makefile_cross_compile() {
     _ask_for_edit_cross_compile
     if [[ $EDIT_CC != False ]]
     then _edit_cross_compile
-    else
-        mk=$(grep "^CROSS_COMPILE.*?=" "${KERNEL_DIR}/Makefile")
-        if [[ -n ${mk##*"${cross/CROSS_COMPILE=/}"*} ]]
-        then _error WARN "$MSG_WARN_CC"
-        fi
+    fi
+    mk=$(grep "^CROSS_COMPILE.*?=" "${KERNEL_DIR}/Makefile")
+    if [[ -n ${mk##*"${cross/CROSS_COMPILE=/}"*} ]]
+    then _error WARN "$MSG_WARN_CC"
     fi
 }
 
@@ -127,8 +123,9 @@ _edit_cross_compile() {
     _check sed -i \
         "0,/^CROSS_COMPILE.*?=.*/s//CROSS_COMPILE ?= ${cross}/" \
         "${KERNEL_DIR}/Makefile"
-    kpath=${KERNEL_DIR//\//\\/}
-    _check sed -i "0,/^CC.*=.*/s//CC = ${cc} -I${kpath}/" \
+    kernel_path=${KERNEL_DIR//\//\\/}
+    _check sed -i \
+        "0,/^CC.*=.*/{s/CC.*=.*/CC = ${cc} -I${kernel_path}/}" \
         "${KERNEL_DIR}/Makefile"
 }
 
