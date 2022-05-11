@@ -42,6 +42,7 @@ _export_path_and_options() {
     case $COMPILER in
         "$PROTON_CLANG_NAME")
             export PATH=${PROTON_DIR}/bin:$PATH
+            _check_toolchain_path "$PROTON_DIR"
             TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
             TCVER=$(_get_tc_version "$PROTON_VERSION")
             cross=${PROTON_CLANG_OPTIONS[1]/CROSS_COMPILE=}
@@ -49,6 +50,7 @@ _export_path_and_options() {
             ;;
         "$EVA_GCC_NAME")
             export PATH=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin:$PATH
+            _check_toolchain_path "$GCC_ARM64_DIR"
             TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
             TCVER=$(_get_tc_version "$GCC_ARM64_VERSION")
             cross=${EVA_GCC_OPTIONS[1]/CROSS_COMPILE=}
@@ -56,6 +58,7 @@ _export_path_and_options() {
             ;;
         "$LOS_GCC_NAME")
             export PATH=${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:$PATH
+            _check_toolchain_path "$LOS_ARM64_DIR"
             TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
             TCVER=$(_get_tc_version "$LOS_ARM64_VERSION")
             cross=${LOS_GCC_OPTIONS[1]/CROSS_COMPILE=}
@@ -64,6 +67,7 @@ _export_path_and_options() {
         "$PROTON_GCC_NAME")
             eva_path=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin
             export PATH=${PROTON_DIR}/bin:${eva_path}:$PATH
+            _check_toolchain_path "$PROTON_DIR" "$eva_path"
             TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
             clangver=$(_get_tc_version "$PROTON_VERSION")
             gccver=$(_get_tc_version "$GCC_ARM64_VERSION")
@@ -77,6 +81,20 @@ _export_path_and_options() {
         export LD_LIBRARY_PATH=${PROTON_DIR}/lib
         TC_OPTIONS[6]="LD=$LTO_LIBRARY"
     fi
+}
+
+
+# Ensure $PATH has been correctly set
+# ===================================
+#  $? = toolchain DIR
+#
+_check_toolchain_path() {
+    for toolchain_path in "$@"
+    do
+        if [[ $PATH != *${toolchain_path}/bin* ]]
+        then _error "$MSG_ERR_PATH"; echo "$PATH"; _exit
+        fi
+    done
 }
 
 
