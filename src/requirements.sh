@@ -30,50 +30,53 @@
 # - install missing dependencies
 #
 _install_dependencies() {
-    declare -A pms=(
-        [apt]="sudo apt install -y"
-        [pkg]="_ pkg install -y"
-        [pacman]="sudo pacman -S --noconfirm"
-        [yum]="sudo yum install -y"
-        [emerge]="sudo emerge -1 -y"
-        [zypper]="sudo zypper install -y"
-        [dnf]="sudo dnf install -y"
-    )
-    pm_list=(pacman yum emerge zypper dnf pkg apt)
-    for manager in "${pm_list[@]}"
-    do
-        if which "$manager" &>/dev/null
-        then
-            IFS=" "
-            pm="${pms[$manager]}"
-            read -ra pm <<< "$pm"
-            unset IFS
-            break
-        fi
-    done
-    if [[ ${pm[3]} ]]
+    if [[ $AUTO_DEPENDENCIES == True ]]
     then
-        for package in "${DEPENDENCIES[@]}"
+        declare -A pms=(
+            [apt]="sudo apt install -y"
+            [pkg]="_ pkg install -y"
+            [pacman]="sudo pacman -S --noconfirm"
+            [yum]="sudo yum install -y"
+            [emerge]="sudo emerge -1 -y"
+            [zypper]="sudo zypper install -y"
+            [dnf]="sudo dnf install -y"
+        )
+        pm_list=(pacman yum emerge zypper dnf pkg apt)
+        for manager in "${pm_list[@]}"
         do
-            package=${package/llvm/llvm-ar}
-            package=${package/binutils/ld}
-            if ! which "${package}" &>/dev/null
+            if which "$manager" &>/dev/null
             then
-                package=${package/llvm-ar/llvm}
-                package=${package/ld/binutils}
-                _ask_for_install_pkg "$package"
-                if [[ $INSTALL_PKG == True ]]
-                then
-                    if [[ ${pm[1]} == pkg ]] && \
-                        [[ $package == gcc ]]
-                    then package=libllvm
-                    fi
-                    eval "${pm[0]/_}" "${pm[1]}" "${pm[2]}" \
-                         "${pm[3]}" "$package"
-                fi
+                IFS=" "
+                pm="${pms[$manager]}"
+                read -ra pm <<< "$pm"
+                unset IFS
+                break
             fi
         done
-    else _error "$MSG_ERR_OS"
+        if [[ ${pm[3]} ]]
+        then
+            for package in "${DEPENDENCIES[@]}"
+            do
+                package=${package/llvm/llvm-ar}
+                package=${package/binutils/ld}
+                if ! which "${package}" &>/dev/null
+                then
+                    package=${package/llvm-ar/llvm}
+                    package=${package/ld/binutils}
+                    _ask_for_install_pkg "$package"
+                    if [[ $INSTALL_PKG == True ]]
+                    then
+                        if [[ ${pm[1]} == pkg ]] && \
+                            [[ $package == gcc ]]
+                        then package=libllvm
+                        fi
+                        eval "${pm[0]/_}" "${pm[1]}" "${pm[2]}" \
+                             "${pm[3]}" "$package"
+                    fi
+                fi
+            done
+        else _error "$MSG_ERR_OS"
+        fi
     fi
 }
 
