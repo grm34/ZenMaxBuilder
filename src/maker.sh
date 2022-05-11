@@ -103,11 +103,10 @@ _handle_makefile_cross_compile() {
     _ask_for_edit_cross_compile
     if [[ $EDIT_CC != False ]]
     then _edit_cross_compile
-    else
-        mk=$(grep "^CROSS_COMPILE.*?=" "${KERNEL_DIR}/Makefile")
-        if [[ -n ${mk##*"${cross/CROSS_COMPILE=/}"*} ]]
-        then _error WARN "$MSG_WARN_CC"
-        fi
+    fi
+    mk=$(grep "^CROSS_COMPILE.*?=" "${KERNEL_DIR}/Makefile")
+    if [[ -n ${mk##*"${cross/CROSS_COMPILE=/}"*} ]]
+    then _error WARN "$MSG_WARN_CC"
     fi
 }
 
@@ -128,8 +127,6 @@ _edit_cross_compile() {
     _check sed -i \
         "0,/^CC.*=.*/{s/CC.*=.*/CC = ${cc} -I${kernel_path}/}" \
         "${KERNEL_DIR}/Makefile"
-    # test
-    _display_cross_compile
 }
 
 # Run MAKE CLEAN
