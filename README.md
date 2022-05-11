@@ -50,7 +50,7 @@ The installation of the missing dependencies will be offered by ZenMaxBuilder bu
 
     bash git curl zip expect make llvm lld clang gcc binutils bison perl bc openssl
 
-The optional flashable zip signature with AOSP Keys requires java which is not proposed to install by ZenMaxBuilder (openjdk recommended).
+The optional flashable zip signature with AOSP Keys requires java (JDK) which is not proposed to install by ZenMaxBuilder (openjdk recommended).
 
 ## Usage
 
