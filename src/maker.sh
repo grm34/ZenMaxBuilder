@@ -131,6 +131,8 @@ _edit_cross_compile() {
     _check sed -i \
         "0,/^CC.*=.*/{s/CC.*=.*/CC = ${cc} -I${kernel_path}/}" \
         "${KERNEL_DIR}/Makefile"
+    # test
+    _display_cross_compile
 }
 
 # Run MAKE CLEAN
