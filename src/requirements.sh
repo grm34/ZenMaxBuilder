@@ -103,13 +103,10 @@ _clone_toolchains() {
             _clone_tc "$PROTON_BRANCH" \
                 "$PROTON_URL" "$PROTON_DIR"
     esac
-    case $COMPILER in # Eva-GCC ARM32
+    case $COMPILER in # Eva-GCC
         "$EVA_GCC_NAME"|"$PROTON_GCC_NAME")
             _clone_tc "$GCC_ARM_BRANCH" \
                 "$GCC_ARM_URL" "$GCC_ARM_DIR"
-    esac
-    case $COMPILER in # Eva-GCC ARM64
-        "$EVA_GCC_NAME"|"$PROTON_GCC_NAME")
             _clone_tc "$GCC_ARM64_BRANCH" \
                 "$GCC_ARM64_URL" "$GCC_ARM64_DIR"
     esac
