@@ -36,10 +36,12 @@ ZMB has been coded largely on a smartphone, so the length of the lines is greatl
 | main.sh         |       27 |       53 |      193 |
 | questioner.sh   |       36 |       71 |      187 |
 | manager.sh      |       32 |       78 |      167 |
+| maker.sh        |       27 |       63 |      127 |
 | options.sh      |       21 |       54 |      116 |
-| maker.sh        |       25 |       59 |      115 |
 | requirements.sh |       11 |       38 |       89 |
 | telegram.sh     |       23 |       42 |       78 |
 | zip.sh          |       14 |       47 |       57 |
 | --------        | -------- | -------- | -------- |
-| SUM:            |      189 |      442 |     1002 |
+| SUM:            |      191 |      446 |     1014 |
+
+❯ vi src/main.sh
