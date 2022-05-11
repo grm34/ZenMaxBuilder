@@ -173,6 +173,11 @@ done
 # Export working folders
 export OUT_DIR=${DIR}/out/$CODENAME
 export BUILD_DIR=${DIR}/builds/$CODENAME
+export PROTON_DIR=${DIR}/toolchains/$PROTON_DIR
+export GCC_ARM64_DIR=${DIR}/toolchains/$GCC_ARM64_DIR
+export GCC_ARM_DIR=${DIR}/toolchains/$GCC_ARM_DIR
+export LOS_ARM64_DIR=${DIR}/toolchains/$LOS_ARM64_DIR
+export LOS_ARM_DIR=${DIR}/toolchains/$LOS_ARM_DIR
 
 # Get user configuration
 _ask_for_kernel_dir

@@ -38,9 +38,6 @@ _export_path_and_options() {
     export KBUILD_BUILD_USER=$BUILDER
     export KBUILD_BUILD_HOST=$HOST
     export PLATFORM_VERSION ANDROID_MAJOR_VERSION
-    tcdir=("$PROTON_DIR" "$GCC_ARM64_DIR" "$GCC_ARM_DIR"
-           "$LOS_ARM64_DIR" "$LOS_ARM_DIR")
-    for tc in "${tcdir[@]}"; do tc="${DIR}/toolchains/$tc"; done
 
     case $COMPILER in
         "$PROTON_CLANG_NAME")
@@ -89,7 +86,8 @@ _export_path_and_options() {
 #  $1 = toolchain lib DIR
 #
 _get_tc_version() {
-    _check find "$1" -mindepth 1 -maxdepth 1 -type d | head -n 1
+    _check find "${DIR}/toolchains/$1" \
+        -mindepth 1 -maxdepth 1 -type d | head -n 1
 }
 
 
