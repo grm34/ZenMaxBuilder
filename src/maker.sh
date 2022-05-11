@@ -127,8 +127,9 @@ _edit_cross_compile() {
     _check sed -i \
         "0,/^CROSS_COMPILE.*?=.*/s//CROSS_COMPILE ?= ${cross}/" \
         "${KERNEL_DIR}/Makefile"
-    kpath=${KERNEL_DIR//\//\\/}
-    _check sed -i "0,/^CC.*=.*/s//CC = ${cc} -I${kpath}/" \
+    kernel_path=${KERNEL_DIR//\//\\/}
+    _check sed -i \
+        "0,/^CC.*=.*/{s/CC.*=.*/CC = ${cc} -I${kernel_path}/}" \
         "${KERNEL_DIR}/Makefile"
 }
 

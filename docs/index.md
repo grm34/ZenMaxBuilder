@@ -10,7 +10,7 @@
 
 The installation of the missing dependencies will be offered by ZenMaxBuilder but you can also install them manually with your favorite package manager:
 
-    bash git curl zip expect make llvm lld clang gcc binutils bison perl bc openssl
+    bash sed git curl zip expect make llvm lld clang gcc binutils bison perl bc openssl
 
 The optional flashable zip signature with AOSP Keys requires java (JDK) which is not proposed to install by ZenMaxBuilder (openjdk recommended).
 
