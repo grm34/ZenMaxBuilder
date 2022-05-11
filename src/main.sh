@@ -56,12 +56,12 @@ source "${DIR}/src/manager.sh"
 source "${DIR}/src/requirements.sh"
 # shellcheck source=src/telegram.sh
 source "${DIR}/src/telegram.sh"
-# shellcheck source=src/flasher.sh
-source "${DIR}/src/flasher.sh"
+# shellcheck source=src/zip.sh
+source "${DIR}/src/zip.sh"
 # shellcheck source=src/maker.sh
 source "${DIR}/src/maker.sh"
-# shellcheck source=src/prompter.sh
-source "${DIR}/src/prompter.sh"
+# shellcheck source=src/questioner.sh
+source "${DIR}/src/questioner.sh"
 # shellcheck source=src/options.sh
 source "${DIR}/src/options.sh"
 # shellcheck source=/dev/null
