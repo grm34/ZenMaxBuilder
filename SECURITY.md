@@ -25,20 +25,20 @@ ZMB has been coded largely on a smartphone, so the length of the lines is greatl
 | manager.sh      | src  |   bash   |      global functions |
 | options.sh      | src  |   bash   |  command line options |
 | requirements.sh | src  |   bash   |  install requirements |
-| prompter.sh     | src  |   bash   | questions to the user |
+| questioner.sh   | src  |   bash   | questions to the user |
 | maker.sh        | src  |   bash   |     make kernel build |
-| flasher.sh      | src  |   bash   |  create flashable zip |
+| zip.sh          | src  |   bash   |  create flashable zip |
 | telegram.sh     | src  |   bash   |     Telegram feedback |
 
 | File            |    blank |  comment |     code |
 | :-------------- | -------: | -------: | -------: |
 | main.sh         |       27 |       53 |      188 |
-| prompter.sh     |       36 |       71 |      187 |
+| questioner.sh   |       36 |       71 |      187 |
 | manager.sh      |       32 |       78 |      167 |
 | maker.sh        |       25 |       59 |      118 |
 | options.sh      |       21 |       54 |      116 |
 | requirements.sh |       11 |       38 |       89 |
 | telegram.sh     |       23 |       42 |       78 |
-| flasher.sh      |       14 |       47 |       57 |
+| zip.sh          |       14 |       47 |       57 |
 | --------        | -------- | -------- | -------- |
 | SUM:            |      189 |      442 |     1000 |
