@@ -70,8 +70,8 @@ _install_dependencies() {
                             [[ $package == gcc ]]
                         then package=libllvm
                         fi
-                        eval "${pm[0]/_}" "${pm[1]}" "${pm[2]}" \
-                             "${pm[3]}" "$package"
+                        eval "${pm[0]/_}" "${pm[1]}" \
+                             "${pm[2]}" "${pm[3]}" "$package"
                     fi
                 fi
             done
