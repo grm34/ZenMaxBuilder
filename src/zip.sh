@@ -63,7 +63,7 @@ _sign_zip() {
         _note "${MSG_NOTE_SIGN}..."
         _send_zip_signing_status
         _check unbuffer java -jar \
-            "${DIR}/bin/zipsigner-3.0.jar" \
+            "${DIR}/bin/zipsigner-3.0-dexed.jar" \
             "${1}.zip" "${1}-signed.zip" 2>&1
     else _error WARN "$MSG_WARN_JAVA"
     fi

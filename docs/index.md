@@ -132,4 +132,4 @@ Found a problem? Want a new feature? Have a question? First of all see if your i
 - Eva-GCC: [@mvaisakh](https://github.com/mvaisakh)
 - Lineage-GCC: [@LineageOS](https://github.com/LineageOS)
 - AnyKernel3: [@osm0sis](https://github.com/osm0sis)
-- ZipSigner: [@MrRob0-X](https://github.com/MrRob0-X)
+- ZipSigner: [@osm0sis](https://github.com/osm0sis) [@topjohnwu](https://github.com/topjohnwu)
