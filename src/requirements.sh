@@ -73,8 +73,7 @@ _install_dependencies() {
                 fi
             fi
         done
-    else
-        _error "$MSG_ERR_OS"
+    else _error "$MSG_ERR_OS"
     fi
 }
 
@@ -96,21 +95,23 @@ _clone_tc() {
 }
 
 
-# Get required compiler
+# Install selected compiler
 _clone_toolchains() {
-    case $COMPILER in # Proton-Clang
+    case $COMPILER in
+
+        # Proton-Clang or Proton-GCC
         "$PROTON_CLANG_NAME"|"$PROTON_GCC_NAME")
             _clone_tc "$PROTON_BRANCH" \
                 "$PROTON_URL" "$PROTON_DIR"
-    esac
-    case $COMPILER in # Eva-GCC
+            ;;
+        # Eva-GCC or Proton-GCC
         "$EVA_GCC_NAME"|"$PROTON_GCC_NAME")
             _clone_tc "$GCC_ARM_BRANCH" \
                 "$GCC_ARM_URL" "$GCC_ARM_DIR"
             _clone_tc "$GCC_ARM64_BRANCH" \
                 "$GCC_ARM64_URL" "$GCC_ARM64_DIR"
-    esac
-    case $COMPILER in # Lineage-GCC
+            ;;
+        # Lineage-GCC
         "$LOS_GCC_NAME")
             _clone_tc "$LOS_ARM_BRANCH" \
                 "$LOS_ARM_URL" "$LOS_ARM_DIR"
@@ -120,17 +121,15 @@ _clone_toolchains() {
 }
 
 
-# Get AK3
+# Install AK3
 _clone_anykernel() {
     if [[ ! -d $ANYKERNEL_DIR ]]
     then
         _ask_for_clone_anykernel
         if [[ $CLONE_AK == True ]]
         then
-            git clone -b \
-                "$ANYKERNEL_BRANCH" \
-                "$ANYKERNEL_URL" \
-                "$ANYKERNEL_DIR"
+            git clone -b "$ANYKERNEL_BRANCH" \
+                "$ANYKERNEL_URL" "$ANYKERNEL_DIR"
         fi
     fi
 }
