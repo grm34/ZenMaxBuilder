@@ -7,7 +7,7 @@
 <img src="https://img.shields.io/badge/license-MIT-blue.svg?logo=keepassxc" alt="License: MIT"><img src="https://img.shields.io/github/issues/grm34/ZenMaxBuilder.svg?logo=git" alt="Issues"><img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/y/grm34/zenmaxbuilder?label=commits&logo=github"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/grm34/ZenMaxBuilder?style=flat-square&logo=Github">
 
 <br>
-# Table of contents
+# Table of Contents
 
 - [About](https://github.com/grm34/ZenMaxBuilder#about)
 - [Requirements](https://github.com/grm34/ZenMaxBuilder#requirements)

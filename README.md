@@ -40,7 +40,7 @@
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/grm34/ZenMaxBuilder?style=flat-square&logo=Github">
 </a>
 
-# Table of contents
+# Table of Contents
 
 - [About](https://github.com/grm34/ZenMaxBuilder#about)
 - [Requirements](https://github.com/grm34/ZenMaxBuilder#requirements)
