@@ -21,19 +21,19 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# Get absolute path
+# ZMB ABSOLUTE PATH
 DIRNAME=$(dirname "$0")
 DIR=${PWD}/$DIRNAME
 cd "$DIR" || exit $?
 
-# Create ZMB lock
+# ZMB LOCKFILE
 exec 201> "$(basename "$0").lock"
 
-# Bash job control
+# ZMB JOB CONTROL
 (set -o posix; set)> "${DIR}/bashvar"
 set -m -E -o pipefail #-b -v
 
-# App Language
+# USER LANGUAGE
 LANGUAGE=${DIR}/lang/${LANG:0:2}.cfg
 if [[ -f $LANGUAGE ]]
 then # shellcheck source=/dev/null
@@ -42,7 +42,7 @@ else # shellcheck source=/dev/null
     source "${DIR}/lang/en.cfg"
 fi
 
-# User Configuration
+# USER CONFIGURATION
 if [[ -f ${DIR}/etc/user.cfg ]]
 then # shellcheck source=/dev/null
     source "${DIR}/etc/user.cfg"
@@ -50,6 +50,7 @@ else # shellcheck source=/dev/null
     source "${DIR}/etc/settings.cfg"
 fi
 
+# SOURCE ALL FUNCTIONS
 # shellcheck source=src/manager.sh
 source "${DIR}/src/manager.sh"
 # shellcheck source=src/requirements.sh
@@ -67,7 +68,7 @@ source "${DIR}/src/options.sh"
 # shellcheck source=/dev/null
 source "${DIR}/etc/excluded.cfg"
 
-# Ban all ('n00bz')
+# BAN ALL ('n00bz')
 _terminal_colors
 if [[ ! -t 0 ]]
 then # Terminal mandatory
@@ -98,13 +99,16 @@ then # Bad compiler
     _exit
 fi
 
-# Set Date & Time
+# TRAP INTERRUPT SIGNALS
+trap '_error $MSG_ERR_KBOARD; _exit' INT QUIT TSTP CONT
+
+# DATE AND TIME
 if [[ $TIMEZONE == default ]]
 then _get_user_timezone; fi
 DATE=$(TZ=$TIMEZONE date +%Y-%m-%d)
 TIME=$(TZ=$TIMEZONE date +%Hh%Mm%Ss)
 
-# Transform long opts to short
+# TRANSFROM LONG OPTIONS TO SHORT
 for opt in "$@"
 do
     shift
@@ -121,7 +125,7 @@ do
     esac
 done
 
-# Handle app opts
+# ZMB OPTIONS ARGUMENTS
 if [[ $# -eq 0 ]]
 then _error "$MSG_ERR_EOPT"; _exit; fi
 while getopts ':hsult:m:f:z:' option
@@ -129,13 +133,13 @@ do
     case $option in
         h)  clear; _terminal_banner; _usage
             rm -f "./bashvar"; exit 0;;
-        u)  _full_upgrade; _exit;;
-        m)  _send_msg_option; _exit;;
-        f)  _send_file_option; _exit;;
-        z)  _create_zip_option; _exit;;
-        l)  _list_all_kernels; _exit;;
-        t)  _get_linux_tag; _exit;;
-        s)  clear; _terminal_banner;;
+        u)  _install_dependencies; _full_upgrade; _exit;;
+        m)  _install_dependencies; _send_msg_option; _exit;;
+        f)  _install_dependencies; _send_file_option; _exit;;
+        z)  _install_dependencies; _create_zip_option; _exit;;
+        l)  _install_dependencies; _list_all_kernels; _exit;;
+        t)  _install_dependencies; _get_linux_tag; _exit;;
+        s)  clear; _terminal_banner; _install_dependencies;;
         :)  _error "$MSG_ERR_MARG ${RED}-$OPTARG"
             _exit;;
         \?) _error "$MSG_ERR_IOPT ${RED}-$OPTARG"
@@ -146,17 +150,14 @@ if [[ $OPTIND -eq 1 ]]
 then _error "$MSG_ERR_IOPT ${RED}$1"; _exit; fi
 shift $(( OPTIND - 1 ))
 
-# Trap interrupt signals
-trap '_error $MSG_ERR_KBOARD; _exit' INT QUIT TSTP CONT
-
 
 #######################
-### Start new build ###
+### START NEW BUILD ###
 #######################
 _note "$MSG_NOTE_START $DATE"
 _ask_for_codename
 
-# Create device folders
+# CREATE DEVICE FOLDERS
 folders=(builds logs toolchains out)
 for folder in "${folders[@]}"
 do
@@ -170,7 +171,7 @@ do
     fi
 done
 
-# Export working folders
+# EXPORT WORKING FOLDERS
 export OUT_DIR=${DIR}/out/$CODENAME
 export BUILD_DIR=${DIR}/builds/$CODENAME
 export PROTON_DIR=${DIR}/toolchains/$PROTON_DIR
@@ -179,19 +180,18 @@ export GCC_ARM_DIR=${DIR}/toolchains/$GCC_ARM_DIR
 export LOS_ARM64_DIR=${DIR}/toolchains/$LOS_ARM64_DIR
 export LOS_ARM_DIR=${DIR}/toolchains/$LOS_ARM_DIR
 
-# Get user configuration
+# ASK QUESTIONS TO THE USER
 _ask_for_kernel_dir
 _ask_for_defconfig
 _ask_for_menuconfig
 _ask_for_toolchain
 _ask_for_cores
 
-# Install requirements
-_install_dependencies
+# CLONE AK3 AND REQUIRED TOOLCHAINS
 _clone_toolchains
 _clone_anykernel
 
-# Make kernel version
+# MAKE KERNEL VERSION
 _export_path_and_options
 _handle_makefile_cross_compile
 _note "${MSG_NOTE_LINUXVER}..."
@@ -200,7 +200,7 @@ make -C "$KERNEL_DIR" kernelversion \
 LINUX_VERSION=$(cat linuxver)
 KERNEL_NAME=${TAG}-${CODENAME}-$LINUX_VERSION
 
-# Make clean
+# MAKE CLEAN
 _ask_for_make_clean
 if [[ $MAKE_CLEAN == True ]]
 then
@@ -208,7 +208,7 @@ then
     rm -rf "$OUT_DIR"
 fi
 
-# Make configuration
+# MAKE DEFCONFIG
 _make_defconfig
 if [[ $MENUCONFIG == True ]]
 then
@@ -225,7 +225,7 @@ then
     fi
 fi
 
-# Make new build
+# MAKE KERNEL
 _ask_for_new_build
 if [[ $NEW_BUILD == False ]]
 then
@@ -240,7 +240,7 @@ else
     _make_build | tee -a "$LOG"
 fi
 
-# Check if make success
+# CHECK FOR SUCCESSFUL BUILD
 _get_build_time
 BOOT_DIR=${DIR}/out/${CODENAME}/arch/${ARCH}/boot
 most_recent_file=$(find "$BOOT_DIR" -mindepth 1 \
@@ -249,11 +249,11 @@ file_time=$(stat -c %Z "$most_recent_file" 2>/dev/null)
 if [[ ! -d $BOOT_DIR ]] || [[ $file_time < $START_TIME ]]
 then _error "$MSG_ERR_MAKE"; _exit; fi
 
-# Return build status
+# RETURN BUILD STATUS
 _note "$MSG_NOTE_SUCCESS $BUILD_TIME !"
 _send_success_build_status
 
-# Create flashable zip
+# CREATE FLASHABLE SIGNED ZIP
 _ask_for_flashable_zip
 if [[ $FLASH_ZIP == True ]]
 then
@@ -265,7 +265,7 @@ then
     _note "$MSG_NOTE_ZIPPED !"
 fi
 
-# Upload build and exit
+# UPLOAD THE BUILD AND EXIT
 _upload_signed_build
 _clean_anykernel
 _get_build_logs

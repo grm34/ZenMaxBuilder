@@ -57,8 +57,9 @@ _install_dependencies() {
         then
             for package in "${DEPENDENCIES[@]}"
             do
-                if [[ ${pm[1]} != pkg ]] && [[ $package != gcc ]]
-                then
+                if [[ ${pm[0]} == _ ]] && [[ $package == gcc ]]
+                then continue
+                else
                     package=${package/llvm/llvm-ar}
                     package=${package/binutils/ld}
                     if ! which "${package}" &>/dev/null
