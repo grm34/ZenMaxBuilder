@@ -40,11 +40,26 @@
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/grm34/ZenMaxBuilder?style=flat-square&logo=Github">
 </a>
 
-## About
+# Table of contents
+
+- [About](https://github.com/grm34/ZenMaxBuilder#about)
+- [Requirements](https://github.com/grm34/ZenMaxBuilder#requirements)
+- [Usage](https://github.com/grm34/ZenMaxBuilder#usage)
+- [Options](https://github.com/grm34/ZenMaxBuilder#options)
+- [Working structure](https://github.com/grm34/ZenMaxBuilder#working-structure)
+- [Screenshots](https://github.com/grm34/ZenMaxBuilder#screenshots)
+- [Warning](https://github.com/grm34/ZenMaxBuilder#warning)
+- [Contributing](https://github.com/grm34/ZenMaxBuilder#contributing)
+- [Reporting issues](https://github.com/grm34/ZenMaxBuilder#reporting-issues)
+- [Help us translate ZenMaxBuilder](https://github.com/grm34/ZenMaxBuilder#help-us-translate-zenmaxbuilder)
+- [License](https://github.com/grm34/ZenMaxBuilder#license)
+- [Credits](https://github.com/grm34/ZenMaxBuilder#credits)
+
+# About
 
 ZenMaxBuilder (ZMB) is an Android Kernel Builder written in bash, which can be runned on any Linux System (feel free to Pull Request for Windows support). By default it uses Proton-Clang, Eva-GCC, Proton-GCC or Lineage-GCC but you can use any toolchains you like. Find all your compilations and working folders in one place, edit and maintain your kernels faster. Full logs with the possibility to restart the build after error. Automatic creation of a flashable signed ZIP (with AK3 and AOSP Keys). Real time status feedback with ZIP sending on any group or Telegram channel. And more. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
 
-## Requirements
+# Requirements
 
 The installation of the missing dependencies will be offered by ZenMaxBuilder but you can also install them manually with your favorite package manager:
 
@@ -68,7 +83,7 @@ The optional flashable zip signature with AOSP Keys requires java (JDK) which is
 
     bash zmb --start
 
-## Options
+# Options
 
     Usage: bash zmb [OPTION] [ARGUMENT] (e.g. bash zmb --start)
 
@@ -83,7 +98,7 @@ The optional flashable zip signature with AOSP Keys requires java (JDK) which is
         -z, --zip     [Image.gz-dtb]    create flashable zip
         -d, --debug                     start compilation in debug mode
 
-## Working structure
+# Working structure
 
     ZenMaxBuilder/
     |
@@ -99,12 +114,12 @@ The optional flashable zip signature with AOSP Keys requires java (JDK) which is
     |     |---- DEVICE1/
     |     |---- DEVICE2/
 
-## Screenshots
+# Screenshots
 
 ![screenshot](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/screenshot.png)
 ![telegram](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/telegram.jpg)
 
-## Warning
+# Warning
 
 ZMB is a tool to facilitate the compilation of the Android kernel, it does not touch at your kernel source and does not adds possible modifications that must be made, except the setting of CROSS_COMPILE in the main Makefile (all others toolchain options from ZMB settings will be passed directly to make as command-line argument):
 
@@ -122,15 +137,15 @@ ZMB is a tool to facilitate the compilation of the Android kernel, it does not t
 
 Kernel sources are often configured for a specific compilation (vendor, firmware, modules, android version, compiler) and little changes are often necessary. For a kernel building support, you can ask for help on [Telegram](https://t.me/ZenMaxBuilder).
 
-## Contributing
+# Contributing
 
 If you want to contribute to ZenMaxBuilder project and make it better, your help is very welcome: [Contributing Guidelines](https://github.com/grm34/ZenMaxBuilder/blob/zmb/.github/CONTRIBUTING.md).
 
-## Reporting Issues
+# Reporting Issues
 
 Found a problem? Want a new feature? Have a question? First of all see if your issue, question or idea has [already been reported](https://github.com/grm34/ZenMaxBuilder/issues). If don't, just open a [new clear and descriptive issue](https://github.com/grm34/ZenMaxBuilder/issues/new/choose).
 
-## Help us translate ZenMaxBuilder
+# Help us translate ZenMaxBuilder
 
 | language | flag | translator | progress |
 | :------- | ---: | ---------: | -------: |
@@ -139,7 +154,7 @@ Found a problem? Want a new feature? Have a question? First of all see if your i
 | French   |   🇫🇷 |     @grm34 |     100% |
 | German   |   🇩🇪 |    @Besix2 |     100% |
 
-## License
+# License
 
     MIT License
 
@@ -164,7 +179,7 @@ Found a problem? Want a new feature? Have a question? First of all see if your i
     TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## Credits
+# Credits
 
 - Neternels Team: [https://neternels.org](https://neternels.org)
 - Proton-Clang: [@kdrag0n](https://github.com/kdrag0n)
