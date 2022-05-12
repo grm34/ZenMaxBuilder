@@ -67,7 +67,7 @@ The installation of the missing dependencies will be offered by ZenMaxBuilder bu
 
 The optional flashable zip signature with AOSP Keys requires java (JDK) which is not proposed to install by ZenMaxBuilder (openjdk recommended).
 
-## Usage
+# Usage
 
 :arrow_right: Clone and enter ZMB repository
 
