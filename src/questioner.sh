@@ -253,8 +253,7 @@ _ask_for_install_pkg() {
     _confirm "${MSG_ASK_PKG}: $1 ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
-            _error WARN "$MSG_ERR_DEP ${RED}${PACKAGE}"\
-                        "${YELL}$MSG_ERR_MFAIL"
+            _error WARN "${MSG_WARN_DEP}: ${RED}${DEP}"
             ;;
         *) export INSTALL_PKG=True
     esac
@@ -269,7 +268,7 @@ _ask_for_clone_toolchain() {
     case $CONFIRM in
         n|N|no|No|NO)
             _error "$MSG_ERR_TCDIR ${RED}$1"\
-                   "${YELL}$MSG_ERR_SEE_CONF"
+                   "${NC}${YELLOW}$MSG_ERR_SEE_CONF"
             _exit
             ;;
         *) export CLONE_TC=True
@@ -285,7 +284,7 @@ _ask_for_clone_anykernel() {
     case $CONFIRM in
         n|N|no|No|NO)
             _error "$MSG_ERR_PATH ${RED}AnyKernel"\
-                   "${YELL}$MSG_ERR_SEE_CONF"
+                   "${NC}${YELLOW}$MSG_ERR_SEE_CONF"
             _exit
             ;;
         *) export CLONE_AK=True
