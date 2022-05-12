@@ -253,7 +253,7 @@ _ask_for_install_pkg() {
     _confirm "${MSG_ASK_PKG}: $1 ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
-            _error WARN "${MSG_WARN_DEP}: ${RED}${package}"
+            _error WARN "${MSG_WARN_DEP}: ${RED}${DEP}"
             ;;
         *) export INSTALL_PKG=True
     esac

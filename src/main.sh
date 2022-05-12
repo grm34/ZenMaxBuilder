@@ -139,7 +139,7 @@ do
         z)  _install_dependencies; _create_zip_option; _exit;;
         l)  _install_dependencies; _list_all_kernels; _exit;;
         t)  _install_dependencies; _get_linux_tag; _exit;;
-        s)  clear; _terminal_banner; _install_dependencies;;
+        s)  _install_dependencies; clear; _terminal_banner;;
         :)  _error "$MSG_ERR_MARG ${RED}-$OPTARG"
             _exit;;
         \?) _error "$MSG_ERR_IOPT ${RED}-$OPTARG"

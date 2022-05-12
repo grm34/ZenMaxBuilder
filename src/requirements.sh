@@ -24,8 +24,8 @@
 
 # Find out missing requirements
 # =============================
-# - set the package manager for each Linux distribution
-# - get the install command of the current OS package manager
+# - set the DEP manager for each Linux distribution
+# - get the install command of the current OS DEP manager
 # - GCC will not be installed on TERMUX (not fully supported)
 # - install missing dependencies
 #
@@ -55,22 +55,22 @@ _install_dependencies() {
         done
         if [[ ${pm[3]} ]]
         then
-            for package in "${DEPENDENCIES[@]}"
+            for DEP in "${DEPENDENCIES[@]}"
             do
-                if [[ ${pm[0]} == _ ]] && [[ $package == gcc ]]
+                if [[ ${pm[0]} == _ ]] && [[ $DEP == gcc ]]
                 then continue
                 else
-                    package=${package/llvm/llvm-ar}
-                    package=${package/binutils/ld}
-                    if ! which "${package}" &>/dev/null
+                    DEP=${DEP/llvm/llvm-ar}
+                    DEP=${DEP/binutils/ld}
+                    if ! which "${DEP}" &>/dev/null
                     then
-                        package=${package/llvm-ar/llvm}
-                        package=${package/ld/binutils}
-                        _ask_for_install_pkg "$package"
+                        DEP=${DEP/llvm-ar/llvm}
+                        DEP=${DEP/ld/binutils}
+                        _ask_for_install_pkg "$DEP"
                         if [[ $INSTALL_PKG == True ]]
                         then
                             eval "${pm[0]/_}" "${pm[1]}" \
-                                 "${pm[2]}" "${pm[3]}" "$package"
+                                 "${pm[2]}" "${pm[3]}" "$DEP"
                         fi
                     fi
                 fi
