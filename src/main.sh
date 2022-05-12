@@ -142,7 +142,7 @@ do
         t)  _install_dependencies; _get_linux_tag; _exit;;
         s)  _install_dependencies; clear; _terminal_banner;;
         d)  _install_dependencies; clear; _terminal_banner
-            DEBUG_MODE=True;;
+            export DEBUG_MODE=True;;
         :)  _error "$MSG_ERR_MARG ${RED}-$OPTARG"
             _exit;;
         \?) _error "$MSG_ERR_IOPT ${RED}-$OPTARG"
