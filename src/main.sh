@@ -22,8 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # ABSOLUTE PATH
-DIRNAME=$(dirname "$0")
-DIR=${PWD}/$DIRNAME
+DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 cd "$DIR" || exit $?
 
 # LOCKFILE
