@@ -22,7 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Set compiler build options
+# SET COMPILER BUILD OPTIONS
 # ==========================
 # - export target variables (CFG)
 # - define the realpaths of toolchains
@@ -31,6 +31,7 @@
 # - get current toolchain version
 # - define CROSS_COMPILE and CC (to handle Makefile)
 # - define Link Time Optimization (LTO)
+# - DEBUG MODE: display $PATH
 #
 _export_path_and_options() {
     if [[ $BUILDER == default ]]; then BUILDER=$(whoami); fi
@@ -86,7 +87,7 @@ _export_path_and_options() {
 }
 
 
-# Ensure $PATH has been correctly set
+# ENSURE $PATH HAS BEEN CORRECTLY SET
 # ===================================
 #  $? = toolchain DIR
 #
@@ -100,7 +101,7 @@ _check_toolchain_path() {
 }
 
 
-# Get toolchain version
+# GET TOOLCHAIN VERSION
 # =====================
 #  $1 = toolchain lib DIR
 #
@@ -110,12 +111,13 @@ _get_tc_version() {
 }
 
 
-# Handle Makefile CROSS_COMPILE and CC
-# ====================================
+# HANDLES Makefile CROSS_COMPILE and CC
+# =====================================
 # - display them on TERM so user can check before
 # - ask to add them in Makefile (corresponding current TC)
 # - edit them in the current kernel Makefile (SED)
 # - warn the user when they seems not correctly set
+# - DEBUG MODE: display edited Makefile CROSS_COMPILE
 #
 _handle_makefile_cross_compile() {
     _note "$MSG_NOTE_CC"
@@ -136,14 +138,14 @@ _handle_makefile_cross_compile() {
 }
 
 
-# Get CROSS_COMPILE and CC
+# GET CROSS_COMPILE and CC
 _display_cross_compile() {
     sed -n "/^CROSS_COMPILE.*?=/{p;q;}" "${KERNEL_DIR}/Makefile"
     sed -n "/^CC.*=/{p;q;}" "${KERNEL_DIR}/Makefile"
 }
 
 
-# Edit CROSS_COMPILE and CC
+# EDIT CROSS_COMPILE and CC
 _edit_cross_compile() {
     _check sed -i \
         "0,/^CROSS_COMPILE.*?=.*/s//CROSS_COMPILE ?= ${cross}/" \
@@ -154,21 +156,21 @@ _edit_cross_compile() {
         "${KERNEL_DIR}/Makefile"
 }
 
-# Run MAKE CLEAN
+# RUN MAKE CLEAN
 _make_clean() {
     _note "$MSG_NOTE_MAKE_CLEAN [${LINUX_VERSION}]..."
     _check unbuffer make -C "$KERNEL_DIR" clean 2>&1
 }
 
 
-# Run MAKE MRPROPER
+# RUN MAKE MRPROPER
 _make_mrproper() {
     _note "$MSG_NOTE_MRPROPER [${LINUX_VERSION}]..."
     _check unbuffer make -C "$KERNEL_DIR" mrproper 2>&1
 }
 
 
-# Run MAKE DEFCONFIG
+# RUN MAKE DEFCONFIG
 _make_defconfig() {
     _note "$MSG_NOTE_DEFCONFIG $DEFCONFIG [${LINUX_VERSION}]..."
     _check unbuffer make -C "$KERNEL_DIR" \
@@ -176,7 +178,7 @@ _make_defconfig() {
 }
 
 
-# Run MAKE MENUCONFIG
+# RUN MAKE MENUCONFIG
 _make_menuconfig() {
     _note "$MSG_NOTE_MENUCONFIG $DEFCONFIG [${LINUX_VERSION}]..."
     make -C "$KERNEL_DIR" O="$OUT_DIR" \
@@ -184,7 +186,7 @@ _make_menuconfig() {
 }
 
 
-# Save DEFCONFIG from MENUCONFIG
+# SAVE DEFCONFIG from MENUCONFIG
 # ==============================
 # When a existing defconfig file is modified with menuconfig,
 # the original defconfig will be saved as "example_defconfig_old"
@@ -201,7 +203,7 @@ _save_defconfig() {
 }
 
 
-# Run MAKE BUILD
+# RUN MAKE BUILD
 # ==============
 # - send build status on Telegram
 # - delete CC from make command-line arguments
@@ -210,7 +212,8 @@ _save_defconfig() {
 #
 _make_build() {
     _note "${MSG_NOTE_MAKE}: ${KERNEL_NAME}..."
-    _send_make_build_status
+    _set_html_status_msg
+    _send_start_build_status
     cflags="${TC_OPTIONS[*]/${TC_OPTIONS[3]}}"
     linuxversion="${LINUX_VERSION//.}"
     if [[ $(echo "${linuxversion:0:2} > 42" | bc) == 1 ]] && \

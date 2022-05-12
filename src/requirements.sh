@@ -22,8 +22,8 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Find out missing requirements
-# =============================
+# HANDLES DEPENDENCIES INSTALLATION
+# =================================
 # - set the package manager for each Linux distribution
 # - get the install command of the current OS package manager
 # - GCC will not be installed on TERMUX (not fully supported)
@@ -81,8 +81,8 @@ _install_dependencies() {
 }
 
 
-# Github Clone process
-# ====================
+# GIT CLONE TOOLCHAIN
+# ===================
 #  $1 = repo branch
 #  $2 = repo url
 #  $3 = repo folder
@@ -98,7 +98,7 @@ _clone_tc() {
 }
 
 
-# Install selected compiler
+# CLONE SELECTED TOOLCHAIN COMPILER
 _clone_toolchains() {
     case $COMPILER in
 
@@ -124,7 +124,7 @@ _clone_toolchains() {
 }
 
 
-# Install AK3
+# CLONE ANYKERNEL REPOSITORY
 _clone_anykernel() {
     if [[ ! -d $ANYKERNEL_DIR ]]
     then

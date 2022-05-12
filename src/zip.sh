@@ -22,7 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Flashable ZIP Creation
+# FLASHABLE ZIP CREATION
 # ======================
 # - send status on Telegram
 # - move image to AK3 folder
@@ -50,7 +50,7 @@ _zip() {
 }
 
 
-# Signing ZIP with AOSP Keys
+# ZIP SIGNING with AOSP Keys
 # ==========================
 # - send signing status on Telegram
 # - sign ZIP with AOSP Keys (JAVA)
@@ -70,7 +70,7 @@ _sign_zip() {
 }
 
 
-# AnyKernel Configuration
+# ANYKERNEL CONFIGURATION
 # =======================
 # - edit anykernel.sh (SED)
 # - edit init.spectrum.rc (SED)
@@ -105,7 +105,7 @@ _set_ak3_conf() {
 }
 
 
-# Clean AnyKernel folder
+# CLEAN ANYKERNEL REPOSITORY
 _clean_anykernel() {
     _note "${MSG_NOTE_CLEAN_AK3}..."
     for file in "${DIR}/${ANYKERNEL_DIR}"/*
