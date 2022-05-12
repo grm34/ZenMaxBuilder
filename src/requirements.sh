@@ -24,8 +24,8 @@
 
 # Find out missing requirements
 # =============================
-# - set the DEP manager for each Linux distribution
-# - get the install command of the current OS DEP manager
+# - set the package manager for each Linux distribution
+# - get the install command of the current OS package manager
 # - GCC will not be installed on TERMUX (not fully supported)
 # - install missing dependencies
 #
