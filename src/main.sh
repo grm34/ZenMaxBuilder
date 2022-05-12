@@ -21,15 +21,15 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# ZMB ABSOLUTE PATH
+# ABSOLUTE PATH
 DIRNAME=$(dirname "$0")
 DIR=${PWD}/$DIRNAME
 cd "$DIR" || exit $?
 
-# ZMB LOCKFILE
+# LOCKFILE
 exec 201> "$(basename "$0").lock"
 
-# ZMB JOB CONTROL
+# JOB CONTROL
 (set -o posix; set)> "${DIR}/bashvar"
 set -m -E -o pipefail #-b -v
 
@@ -126,7 +126,7 @@ do
     esac
 done
 
-# ZMB OPTIONS ARGUMENTS
+# HANDLES OPTIONS ARGUMENTS
 if [[ $# -eq 0 ]]
 then _error "$MSG_ERR_EOPT"; _exit; fi
 while getopts ':hsuldt:m:f:z:' option
@@ -206,9 +206,7 @@ KERNEL_NAME=${TAG}-${CODENAME}-$LINUX_VERSION
 # MAKE CLEAN
 _ask_for_make_clean
 if [[ $MAKE_CLEAN == True ]]
-then
-    _make_clean; _make_mrproper
-    rm -rf "$OUT_DIR"
+then _make_clean; _make_mrproper; rm -rf "$OUT_DIR"
 fi
 
 # MAKE DEFCONFIG
@@ -231,12 +229,9 @@ fi
 # MAKE KERNEL
 _ask_for_new_build
 if [[ $NEW_BUILD == False ]]
-then
-    _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."
-    _exit
+then _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."; _exit
 else
     _ask_for_telegram
-    _set_html_status_msg
     START_TIME=$(TZ=$TIMEZONE date +%s)
     LOG=${DIR}/logs/${CODENAME}/${KERNEL_NAME}_${DATE}_${TIME}.log
     _terminal_banner > "$LOG"

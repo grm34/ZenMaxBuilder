@@ -22,7 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Question to get the device codename.
+# QUESTION TO GET THE DEVICE CODENAME
 # Validation checks REGEX to prevent invalid string.
 # Match "letters" and "numbers" and "-" and "_" only.
 # Should be at least "3" characters long and maximum "20".
@@ -43,7 +43,7 @@ _ask_for_codename() {
 }
 
 
-# Question to get the kernel location.
+# QUESTION TO GET THE KERNEL LOCATION
 # Validation checks the presence of the "configs"
 # folder corresponding to the current architecture.
 _ask_for_kernel_dir() {
@@ -62,7 +62,7 @@ _ask_for_kernel_dir() {
 }
 
 
-# Prompt to select the defconfig file to use.
+# PROMPT TO SELECT THE DEFCONFIG FILE TO USE
 # Choices: all defconfig files located in "configs"
 # folder corresponding to the current architecture.
 # Validation checks are not needed here.
@@ -80,7 +80,7 @@ _ask_for_defconfig() {
 }
 
 
-# Request a "make menuconfig" command.
+# CONFIRMATION TO RUN <make menuconfig> COMMAND
 # Validation checks are not needed here.
 _ask_for_menuconfig() {
     _confirm "$MSG_ASK_CONF ?" "[y/N]"
@@ -90,7 +90,7 @@ _ask_for_menuconfig() {
 }
 
 
-# Request to save MENUCONFIG edited configuration,
+# CONFIRMATION TO SAVE NEW DEFCONFIG
 # otherwise request to continue with the original one.
 # Validation checks REGEX to prevent invalid string.
 # Match "letters" and "numbers" and "-" and "_" only.
@@ -121,7 +121,7 @@ _ask_for_save_defconfig() {
 }
 
 
-# Question to get the toolchain to use.
+# QUESTION TO GET THE TOOLCHAIN TO USE
 # Choices: Proton-Clang Eva-GCC Proton-GCC
 # Validation checks are not needed here.
 _ask_for_toolchain() {
@@ -138,7 +138,7 @@ _ask_for_toolchain() {
 }
 
 
-# Request to edit Makefile CROSS_COMPILE.
+# CONFIRMATION TO EDIT Makefile CROSS_COMPILE
 # Validation checks are not needed here.
 _ask_for_edit_cross_compile() {
     _confirm "$MSG_ASK_CC $COMPILER ?" "[Y/n]"
@@ -148,7 +148,7 @@ _ask_for_edit_cross_compile() {
 }
 
 
-# Question to get the number of CPU cores to use.
+# QUESTION TO GET THE NUMBER OF CPU CORES TO USE
 # Validation checks for a valid number corresponding
 # to the amount of available CPU cores (no limits here).
 # Otherwise all available CPU cores will be used.
@@ -172,7 +172,7 @@ _ask_for_cores() {
 }
 
 
-# Request "make clean" and "make mrproper" commands.
+# CONFIRMATION TO RUN  <make clean> AND <make mrproprer> COMMANDS
 # Validation checks are not needed here.
 _ask_for_make_clean() {
     _confirm "${MSG_ASK_MCLEAN}: v$LINUX_VERSION ?" "[y/N]"
@@ -182,7 +182,7 @@ _ask_for_make_clean() {
 }
 
 
-# Request "make" command for kernel build.
+# CONFIRMATION TO MAKE A NEW BUILD
 # Validation checks are not needed here.
 _ask_for_new_build() {
     _confirm \
@@ -193,7 +193,7 @@ _ask_for_new_build() {
 }
 
 
-# Request the upload of build status on Telegram.
+# CONFIRMATION TO SEND BUILD STATUS ON TELEGRAM
 # Validation checks are not needed here.
 _ask_for_telegram() {
     if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]
@@ -206,7 +206,7 @@ _ask_for_telegram() {
 }
 
 
-# Request the creation of flashable zip.
+# CONFIRMATION TO CREATE FLASHABLE ZIP
 # Validation checks are not needed here.
 _ask_for_flashable_zip() {
     _confirm \
@@ -217,7 +217,7 @@ _ask_for_flashable_zip() {
 }
 
 
-# Question to get the kernel image to zip.
+# QUESTION TO GET THE KERNEL IMAGE TO ZIP
 # Validation checks the presence of this file in
 # "boot" folder and verify it starts with "Image".
 _ask_for_kernel_image() {
@@ -235,7 +235,7 @@ _ask_for_kernel_image() {
 }
 
 
-# Request to run again failed command.
+# CONFIRMATION TO RUN AGAIN LAST FAILED COMMAND
 # Validation checks are not needed here.
 _ask_for_run_again() {
     RUN_AGAIN=False
@@ -246,7 +246,7 @@ _ask_for_run_again() {
 }
 
 
-# Request the installation of missing packages.
+# CONFIRMATION TO INSTALL MISSING PACKAGE
 # Warn the user that when false the script may crash.
 # Validation checks are not needed here.
 _ask_for_install_pkg() {
@@ -260,7 +260,7 @@ _ask_for_install_pkg() {
 }
 
 
-# Request to clone missing tookchains.
+# CONFIRMATION TO CLONE MISSING TOOLCHAIN
 # Warn the user and exit the script when false.
 # Validation checks are not needed here.
 _ask_for_clone_toolchain() {
@@ -275,7 +275,7 @@ _ask_for_clone_toolchain() {
 }
 
 
-# Request to clone missing AnyKernel repo.
+# CONFIRMATION TO CLONE MISSING ANYKERNEL
 # Warn the user and exit the script when false.
 # Validation checks are not needed here.
 _ask_for_clone_anykernel() {

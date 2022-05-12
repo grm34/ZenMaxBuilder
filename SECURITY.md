@@ -33,13 +33,13 @@ ZMB has been coded largely on a smartphone, so the length of the lines is greatl
 
 | File            |    blank |  comment |     code |
 | :-------------- | -------: | -------: | -------: |
-| main.sh         |       27 |       54 |      195 |
+| main.sh         |       27 |       54 |      190 |
 | questioner.sh   |       36 |       71 |      184 |
 | manager.sh      |       32 |       79 |      170 |
-| maker.sh        |       26 |       63 |      135 |
+| maker.sh        |       26 |       65 |      136 |
 | options.sh      |       21 |       54 |      117 |
 | requirements.sh |       11 |       38 |       90 |
 | telegram.sh     |       23 |       42 |       78 |
 | zip.sh          |       14 |       47 |       57 |
 | --------        | -------- | -------- | -------- |
-| SUM:            |      190 |      448 |     1026 |
+| SUM:            |      190 |      450 |     1022 |

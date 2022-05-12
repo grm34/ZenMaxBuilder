@@ -23,12 +23,12 @@
 
 
 ####################
-### Telegram API ###
+### TELEGRAM API ###
 ####################
 
 api="https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN"
 
-# [POST] Send message
+# SEND MESSAGE (POST)
 # ===================
 #  $1 = message
 #
@@ -41,7 +41,7 @@ _send_msg() {
         | tee /dev/null
 }
 
-# [POST] Send file
+# SEND FILE (POST)
 # ================
 #  $1 = file
 #  $2 = caption
@@ -57,19 +57,19 @@ _send_file() {
 }
 
 
-#########################
-### Make build status ###
-#########################
+###########################
+### KERNEL BUILD STATUS ###
+###########################
 
-# New build triggered
-_send_make_build_status() {
+# START BUILD STATUS
+_send_start_build_status() {
     if [[ $BUILD_STATUS == True ]]
     then _send_msg "${STATUS_MSG//_/-}"
     fi
 }
 
 
-# Success build
+# SUCCESS BUILD STATUS
 _send_success_build_status() {
     if [[ $BUILD_STATUS == True ]]
     then
@@ -79,7 +79,7 @@ _send_success_build_status() {
 }
 
 
-# Zipping build
+# ZIP CREATION STATUS
 _send_zip_creation_status() {
     if [[ $BUILD_STATUS == True ]]
     then _send_msg "${KERNEL_NAME//_/-} | $MSG_NOTE_ZIP"
@@ -87,7 +87,7 @@ _send_zip_creation_status() {
 }
 
 
-# Signing build
+# ZIP SIGNING STATUS
 _send_zip_signing_status() {
     if [[ $BUILD_STATUS == True ]]
     then _send_msg "${KERNEL_NAME//_/-} | $MSG_NOTE_SIGN"
@@ -95,7 +95,7 @@ _send_zip_signing_status() {
 }
 
 
-# Failed build with logfile
+# FAIL BUILD STATUS WITH LOGFILE
 _send_failed_build_logs() {
     if [[ $START_TIME ]] && [[ $BUILD_STATUS == True ]] && \
         { [[ ! $BUILD_TIME ]] || [[ $RUN_AGAIN == True ]]; }
@@ -107,7 +107,7 @@ _send_failed_build_logs() {
 }
 
 
-# Upload build
+# UPLOAD THE KERNEL
 _upload_signed_build() {
     if [[ $BUILD_STATUS == True ]] && \
         [[ $FLASH_ZIP == True ]]
@@ -122,7 +122,7 @@ _upload_signed_build() {
 }
 
 
-# Starting build message
+# HTML START BUILD STATUS MESSAGE
 _set_html_status_msg() {
     if [[ -n $PLATFORM_VERSION ]]
     then android_version="AOSP Unified"

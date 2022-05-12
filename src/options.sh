@@ -26,8 +26,8 @@
 ### UPDATE OPTION ###
 #####################
 
-# Github repository
-# =================
+# UPDATE GIT REPOSITORY
+# =====================
 # - ALL: checkout and fetch
 # - ZMB: check if settings.cfg was updated
 # - ZMB: if True warn the user to create new one
@@ -52,7 +52,7 @@ _update_git() {
     git pull
 }
 
-# Updates everything that needs to be
+# UPDATES EVERYTHING THAT NEEDS TO BE
 # ===================================
 # - set ZMB and AK3 and TC data
 # - upgrade existing stuff...
@@ -89,7 +89,7 @@ _full_upgrade() {
 ### TELEGRAM OPTIONS ###
 ########################
 
-# Send message
+# SEND MESSAGE
 _send_msg_option() {
     if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]
     then
@@ -100,7 +100,7 @@ _send_msg_option() {
     fi
 }
 
-# Send file
+# SEND FILE
 _send_file_option() {
     if [[ -f $OPTARG ]]
     then

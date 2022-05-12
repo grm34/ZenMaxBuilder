@@ -22,7 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# ZMB banner
+# BANNER
 _terminal_banner() {
     echo -e "$BOLD
    ┌──────────────────────────────────────────────┐
@@ -34,7 +34,7 @@ _terminal_banner() {
 }
 
 
-# Shell color codes
+# SHELL COLORS
 _terminal_colors() {
     if [[ -t 1 ]]
     then
@@ -55,15 +55,15 @@ _terminal_colors() {
 }
 
 
-# Operating System timezone
+# OPERATING SYSTEM TIMEZONE
 _get_user_timezone() {
-    TIMEZONE=$(        # LINUX
+    TIMEZONE=$(        # Linux
         (timedatectl | grep 'Time zone' \
             | xargs | cut -d' ' -f3) 2>/dev/null
     )
     if [[ ! $TIMEZONE ]]
     then
-        TIMEZONE=$(    # TERMUX
+        TIMEZONE=$(    # Termux
             (getprop | grep timezone | cut -d' ' -f2 \
                 | sed 's/\[//g' | sed 's/\]//g') 2>/dev/null
         )
@@ -71,7 +71,7 @@ _get_user_timezone() {
 }
 
 
-# Define current build time
+# GET CURRENT BUILD TIME
 _get_build_time() {
     end_time=$(TZ=$TIMEZONE date +%s)
     diff_time=$((end_time - START_TIME))
@@ -81,7 +81,7 @@ _get_build_time() {
 }
 
 
-# Get build variables
+# GET BUILD VARIABLES
 # ===================
 # - get user inputs and add them to logfile
 # - removes color codes from logfile
@@ -103,7 +103,7 @@ _get_build_logs() {
 }
 
 
-# Remove ANSI escape sequences
+# REMOVE ANSI ESCAPE SEQUENCES
 _cleanlog() {
     if [[ -f $LOG ]]
     then sed -ri "s/\x1b\[[0-9;]*[mGKHF]//g" "$LOG"
@@ -111,15 +111,15 @@ _cleanlog() {
 }
 
 
-# CD to specified DIR
-# ===================
+# MOVE to specified DIRECTORY
+# ===========================
 #  $1 = location to go
 #  $2 = error message
 #
 _cd() { cd "$1" || (_error "$2"; _exit) }
 
 
-# Ask some information
+# ASK SOME INFORMATION
 # ====================
 #  $1 = question to ask
 #  $2 = type (1 for arrow)
@@ -139,7 +139,7 @@ _prompt() {
 }
 
 
-# Confirmation message
+# CONFIRMATION MESSAGE
 # ====================
 #  $1 = question to ask
 #  $2 = yes/no (to set default)
@@ -157,7 +157,7 @@ _confirm_msg() {
 }
 
 
-# Ask confirmation [y/n]
+# ASK CONFIRMATION [y/n]
 # ======================
 #  $@ = $1 + $2
 #  -------------
@@ -175,7 +175,7 @@ _confirm() {
 }
 
 
-# Display some notes
+# DISPLAY SOME NOTES
 # ==================
 #  $1 = note to display
 #
@@ -186,8 +186,8 @@ _note() {
 }
 
 
-# Display error/warning
-# =====================
+# DISPLAY WARNING or ERROR
+# ========================
 #  $1 = use WARN as $1 to use warning
 #  $* = ERROR or WARNING message
 #
@@ -201,8 +201,8 @@ _error() {
 }
 
 
-# Handle command error
-# ====================
+# HANDLES SHELL COMMANDS
+# ======================
 # - DEBUG MODE: display command
 # - run command as child
 # - check its output code
@@ -237,7 +237,7 @@ _check() {
             if [[ $START_TIME ]]
             then
                 START_TIME=$(TZ=$TIMEZONE date +%s)
-                _send_make_build_status
+                _send_start_build_status
                 "$@" | tee -a "$LOG" & wait $!
             else "$@" & wait $!
             fi
@@ -249,8 +249,8 @@ _check() {
 }
 
 
-# Properly exit ZenMaxBuilder
-# ===========================
+# PROPERLY EXIT THE SCRIPT
+# ========================
 # - kill make PID child on interrupt
 # - remove user inputs files
 # - exit with 3s timeout
