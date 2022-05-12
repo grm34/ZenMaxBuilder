@@ -7,14 +7,15 @@
 | 1.x     | :x:                |
 | 2.x     | :white_check_mark: |
 
-| Branch | Supported          |
-| ------ | ------------------ |
-| zmb    | :white_check_mark: |
-| dev    | :x:                |
+| Branch  | Supported             |
+| ------- | --------------------- |
+| zmb     | :white_check_mark:    |
+| testing | :construction_worker: |
+| dev     | :x:                   |
 
 ## Reporting a Vulnerability
 
-Open an issue: [Bug Report Section](https://github.com/grm34/ZenMaxBuilder/issues/new/choose)
+Please open an issue: [Bug Report Section](https://github.com/grm34/ZenMaxBuilder/issues/new/choose)
 
 ## Statistics
 
