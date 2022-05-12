@@ -267,7 +267,7 @@ _ask_for_clone_toolchain() {
     _confirm "${MSG_ASK_CLONE_TC}: $1 ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
-            _error "${MSG_ERR_CLONE}: toolchain ${RED}$1"
+            _error "${MSG_ERR_CLONE}: ${RED}$1"
             _exit
             ;;
         *) export CLONE_TC=True
