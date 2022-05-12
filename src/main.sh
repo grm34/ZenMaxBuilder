@@ -113,22 +113,23 @@ for opt in "$@"
 do
     shift
     case $opt in
-        "--help") set -- "$@" "-h"; break;;
-        "--start") set -- "$@" "-s";;
+        "--help")   set -- "$@" "-h"; break;;
+        "--start")  set -- "$@" "-s";;
         "--update") set -- "$@" "-u";;
-        "--msg") set -- "$@" "-m";;
-        "--file") set -- "$@" "-f";;
-        "--zip") set -- "$@" "-z";;
-        "--list") set -- "$@" "-l";;
-        "--tag") set -- "$@" "-t";;
-        *) set -- "$@" "$opt"
+        "--msg")    set -- "$@" "-m";;
+        "--file")   set -- "$@" "-f";;
+        "--zip")    set -- "$@" "-z";;
+        "--list")   set -- "$@" "-l";;
+        "--tag")    set -- "$@" "-t";;
+        "--debug")  set -- "$@" "-d";;
+        *)          set -- "$@" "$opt"
     esac
 done
 
 # ZMB OPTIONS ARGUMENTS
 if [[ $# -eq 0 ]]
 then _error "$MSG_ERR_EOPT"; _exit; fi
-while getopts ':hsult:m:f:z:' option
+while getopts ':hsuldt:m:f:z:' option
 do
     case $option in
         h)  clear; _terminal_banner; _usage
@@ -140,6 +141,8 @@ do
         l)  _install_dependencies; _list_all_kernels; _exit;;
         t)  _install_dependencies; _get_linux_tag; _exit;;
         s)  _install_dependencies; clear; _terminal_banner;;
+        d)  _install_dependencies; clear; _terminal_banner
+            DEBUG_MODE=True;;
         :)  _error "$MSG_ERR_MARG ${RED}-$OPTARG"
             _exit;;
         \?) _error "$MSG_ERR_IOPT ${RED}-$OPTARG"

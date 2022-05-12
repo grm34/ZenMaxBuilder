@@ -183,6 +183,7 @@ ${NC}[${YELLOW}OPTION${NC}] [${YELLOW}ARGUMENT${NC}] \
     -m, --msg          [message]    $MSG_HELP_M
     -f, --file            [file]    $MSG_HELP_F
     -z, --zip     [Image.gz-dtb]    $MSG_HELP_Z
+    -d, --debug                     $MSG_HELP_D
 
 ${BOLD}${MSG_HELP_INFO}: \
 ${CYAN}https://kernel-builder.com$NC

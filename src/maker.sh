@@ -38,7 +38,6 @@ _export_path_and_options() {
     export KBUILD_BUILD_USER=$BUILDER
     export KBUILD_BUILD_HOST=$HOST
     export PLATFORM_VERSION ANDROID_MAJOR_VERSION
-
     case $COMPILER in
         "$PROTON_CLANG_NAME")
             export PATH=${PROTON_DIR}/bin:$PATH
@@ -75,12 +74,15 @@ _export_path_and_options() {
             cross=${PROTON_GCC_OPTIONS[1]/CROSS_COMPILE=}
             cc=${PROTON_GCC_OPTIONS[3]/CC=}
     esac
-
     if [[ $LTO == True ]]
     then
         export LD_LIBRARY_PATH=${PROTON_DIR}/lib
         TC_OPTIONS[6]="LD=$LTO_LIBRARY"
     fi
+    if [[ $DEBUG_MODE == True ]]
+    then echo -e "\n${BLUE}PATH: ${NC}${YELLOW}${PATH}$NC"
+    fi
+
 }
 
 
@@ -125,6 +127,11 @@ _handle_makefile_cross_compile() {
     mk=$(grep "^CROSS_COMPILE.*?=" "${KERNEL_DIR}/Makefile")
     if [[ -n ${mk##*"${cross/CROSS_COMPILE=/}"*} ]]
     then _error WARN "$MSG_WARN_CC"
+    fi
+    if [[ $DEBUG_MODE == True ]]
+    then
+        echo -e "\n${BLUE}${MSG_DEBUG_CC}:$NC"
+        _display_cross_compile
     fi
 }
 

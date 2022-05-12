@@ -203,6 +203,7 @@ _error() {
 
 # Handle command error
 # ====================
+# - DEBUG MODE: display command
 # - run command as child
 # - check its output code
 # - notify function and file on ERR
@@ -212,6 +213,9 @@ _error() {
 #   $@ = command to run
 #
 _check() {
+    if [[ $DEBUG_MODE == True ]]
+    then echo -e "\n${BLUE}Command: ${NC}${YELLOW}${*}$NC"
+    fi
     "$@" & wait $!
     local status=$?
     until [[ $status -eq 0 ]]

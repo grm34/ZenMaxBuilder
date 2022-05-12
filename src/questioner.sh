@@ -267,8 +267,7 @@ _ask_for_clone_toolchain() {
     _confirm "${MSG_ASK_CLONE_TC}: $1 ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
-            _error "$MSG_ERR_TCDIR ${RED}$1"\
-                   "${NC}${YELLOW}$MSG_ERR_SEE_CONF"
+            _error "${MSG_ERR_CLONE}: toolchain ${RED}$1"
             _exit
             ;;
         *) export CLONE_TC=True
@@ -283,8 +282,7 @@ _ask_for_clone_anykernel() {
     _confirm "${MSG_ASK_CLONE_AK3}: AK3 ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
-            _error "$MSG_ERR_PATH ${RED}AnyKernel"\
-                   "${NC}${YELLOW}$MSG_ERR_SEE_CONF"
+            _error "${MSG_ERR_CLONE}: ${RED}AnyKernel"
             _exit
             ;;
         *) export CLONE_AK=True
