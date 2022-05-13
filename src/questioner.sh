@@ -100,7 +100,7 @@ _ask_for_save_defconfig() {
     case $CONFIRM in
         n|N|no|No|NO)
             export SAVE_DEFCONFIG=False
-            _confirm "$MSG_ASK_USE_DEF $DEFCONFIG ?" "[Y/n]"
+            _confirm "${MSG_ASK_USE_DEF}: $DEFCONFIG ?" "[Y/n]"
             case $CONFIRM in n|N|no|No|NO)
                 export ORIGINAL_DEFCONFIG=False
             esac
