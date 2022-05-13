@@ -124,7 +124,7 @@ _upload_signed_build() {
 
 # HTML START BUILD STATUS MESSAGE
 _set_html_status_msg() {
-    if [[ -n $PLATFORM_VERSION ]]
+    if [[ -z $PLATFORM_VERSION ]]
     then android_version="AOSP Unified"
     else android_version="AOSP $PLATFORM_VERSION"
     fi
