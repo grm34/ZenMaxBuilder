@@ -88,7 +88,7 @@ _get_build_time() {
 # - send logfile on Telegram when the build fail
 #
 _get_build_logs() {
-    if [[ -f ${DIR}/bashvar ]] && [[ -f $LOG ]]
+    if [[ -f $LOG ]]
     then
         null=$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")
         unset IFS
@@ -98,8 +98,8 @@ _get_build_logs() {
         diff bashvar buildervar | grep -E \
             "^> [A-Z0-9_]{3,32}=" >> "$LOG" || sleep 0.1
         _cleanlog
+        _send_failed_build_logs
     fi
-    _send_failed_build_logs
 }
 
 

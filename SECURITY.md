@@ -41,11 +41,11 @@ ZMB has been coded largely on a smartphone, so the length of the lines is greatl
 | :-------------- | -------: | -------: | -------: |
 | main.sh         |       27 |       54 |      189 |
 | questioner.sh   |       36 |       71 |      183 |
-| manager.sh      |       32 |       79 |      170 |
-| maker.sh        |       26 |       65 |      137 |
+| manager.sh      |       32 |       80 |      178 |
+| maker.sh        |       26 |       63 |      137 |
 | options.sh      |       21 |       54 |      118 |
 | requirements.sh |       11 |       38 |       90 |
-| telegram.sh     |       23 |       42 |       78 |
+| telegram.sh     |       23 |       42 |       77 |
 | zip.sh          |       14 |       47 |       57 |
 | --------        | -------- | -------- | -------- |
-| SUM:            |      190 |      450 |     1022 |
+| SUM:            |      190 |      449 |     1029 |
