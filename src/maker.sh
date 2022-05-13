@@ -25,12 +25,10 @@
 # SET COMPILER BUILD OPTIONS
 # ==========================
 # - export target variables (CFG)
-# - define the realpaths of toolchains
-# - define and export required $PATH
-# - define current toolchain options
-# - get current toolchain version
-# - define CROSS_COMPILE and CC (to handle Makefile)
-# - define Link Time Optimization (LTO)
+# - append toolchains to the $PATH, export and verify
+# - get current toolchain options + compiler version
+# - get CROSS_COMPILE and CC (to handle Makefile)
+# - set Link Time Optimization (LTO)
 # - DEBUG MODE: display $PATH
 #
 _export_path_and_options() {
@@ -115,10 +113,10 @@ _get_tc_version() {
 # HANDLES Makefile CROSS_COMPILE and CC
 # =====================================
 # - display them on TERM so user can check before
-# - ask to add them in Makefile (corresponding current TC)
-# - edit them in the current kernel Makefile (SED)
+# - ask to modify them in the kernel Makefile
+# - edit the kernel Makefile (SED) while True
 # - warn the user when they seems not correctly set
-# - DEBUG MODE: display edited Makefile CROSS_COMPILE
+# - DEBUG MODE: display edited Makefile values
 #
 _handle_makefile_cross_compile() {
     _note "$MSG_NOTE_CC"
