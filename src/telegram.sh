@@ -109,8 +109,7 @@ _send_failed_build_logs() {
 
 # UPLOAD THE KERNEL
 _upload_signed_build() {
-    if [[ $BUILD_STATUS == True ]] && \
-        [[ $FLASH_ZIP == True ]]
+    if [[ $BUILD_STATUS == True ]] && [[ $FLASH_ZIP == True ]]
     then
         file=${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip
         _note "${MSG_NOTE_UPLOAD}: ${file##*/}..."
