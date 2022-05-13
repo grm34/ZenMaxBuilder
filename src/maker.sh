@@ -130,7 +130,7 @@ _handle_makefile_cross_compile() {
     if [[ -n ${mk##*"${cross/CROSS_COMPILE=/}"*} ]]
     then _error WARN "$MSG_WARN_CC"
     fi
-    if [[ $DEBUG_MODE == True ]]
+    if [[ $DEBUG_MODE == True ]] && [[ $EDIT_CC != False ]]
     then
         echo -e "\n${BLUE}${MSG_DEBUG_CC}:$NC"
         _display_cross_compile
