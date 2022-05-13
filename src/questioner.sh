@@ -67,8 +67,7 @@ _ask_for_kernel_dir() {
 # folder corresponding to the current architecture.
 # Validation checks are not needed here.
 _ask_for_defconfig() {
-    folder=${KERNEL_DIR}/arch/${ARCH}/configs
-    CONF_DIR=${folder//\/\//\/}
+    CONF_DIR="${KERNEL_DIR}/arch/${ARCH}/configs"
     _cd "$CONF_DIR" "$MSG_ERR_DIR ${RED}$CONF_DIR"
     _prompt "$MSG_ASK_DEF :" 2
     select DEFCONFIG in *_defconfig
