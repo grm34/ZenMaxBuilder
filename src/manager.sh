@@ -252,7 +252,8 @@ _check() {
 # PROPERLY EXIT THE SCRIPT
 # ========================
 # - kill make PID child on interrupt
-# - remove user inputs files
+# - remove user input files
+# - remove empty device folders
 # - exit with 3s timeout
 #
 _exit() {
@@ -261,11 +262,19 @@ _exit() {
     fi
 
     _cleanlog
-    files=(bashvar buildervar linuxver)
-    for file in "${files[@]}"
+    input_files=(bashvar buildervar linuxver)
+    for file in "${input_files[@]}"
     do
         if [[ -f $file ]]
-        then rm -f "${DIR}/$file" || sleep 0.1
+        then _check rm -f "${DIR}/$file"
+        fi
+    done
+    device_folders=(out builds logs)
+    for folder in "${device_folders[@]}"
+    do
+        if [[ -d ${DIR}/${folder}/$CODENAME ]] && \
+            [[ -z $(ls -A "${DIR}/${folder}/$CODENAME") ]]
+        then _check rm -rf "${DIR}/${folder}/$CODENAME"
         fi
     done
 
