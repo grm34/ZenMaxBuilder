@@ -67,7 +67,8 @@ _export_path_and_options() {
         "$PROTON_GCC_NAME")
             eva_path=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin
             export PATH=${PROTON_DIR}/bin:${eva_path}:$PATH
-            _check_toolchain_path "$PROTON_DIR" "$GCC_ARM_DIR" "$GCC_ARM64_DIR"
+            _check_toolchain_path "$PROTON_DIR" "$GCC_ARM_DIR" \
+                "$GCC_ARM64_DIR"
             TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
             clangver=$(_get_tc_version "$PROTON_VERSION")
             gccver=$(_get_tc_version "$GCC_ARM64_VERSION")
