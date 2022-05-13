@@ -187,7 +187,7 @@ _make_menuconfig() {
 
 # SAVE DEFCONFIG from MENUCONFIG
 # ==============================
-# When a existing defconfig file is modified with menuconfig,
+# When an existing defconfig file is modified with menuconfig,
 # the original defconfig will be saved as "example_defconfig_old"
 #
 _save_defconfig() {
