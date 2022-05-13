@@ -153,7 +153,7 @@ _edit_cross_compile() {
         "${KERNEL_DIR}/Makefile"
     kernel_path=${KERNEL_DIR//\//\\/}
     _check sed -i \
-        "0,/^CC.*=.*/{s/CC.*=.*/CC = ${cc} -I${kernel_path}/}" \
+        "0,/^CC.*=.*/s//CC    = ${cc} -I${kernel_path}/" \
         "${KERNEL_DIR}/Makefile"
 }
 
