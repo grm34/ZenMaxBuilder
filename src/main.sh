@@ -265,6 +265,5 @@ fi
 # UPLOAD THE BUILD AND EXIT
 _upload_signed_build
 _clean_anykernel
-_get_build_logs
 _exit
 

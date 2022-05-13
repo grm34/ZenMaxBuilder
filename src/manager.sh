@@ -81,10 +81,11 @@ _get_build_time() {
 }
 
 
-# GET BUILD VARIABLES
-# ===================
+# HANDLES BUILD LOGS
+# ==================
 # - get user inputs and add them to logfile
-# - removes color codes from logfile
+# - remove color codes from logfile
+# - remove ANSI sequences from logfile
 # - send logfile on Telegram when the build fail
 #
 _get_build_logs() {
@@ -97,16 +98,8 @@ _get_build_logs() {
         printf "\n\n### ZMB SETTINGS ###\n" >> "$LOG"
         diff bashvar buildervar | grep -E \
             "^> [A-Z0-9_]{3,32}=" >> "$LOG" || sleep 0.1
-        _cleanlog
+        sed -ri "s/\x1b\[[0-9;]*[mGKHF]//g" "$LOG"
         _send_failed_build_logs
-    fi
-}
-
-
-# REMOVE ANSI ESCAPE SEQUENCES
-_cleanlog() {
-    if [[ -f $LOG ]]
-    then sed -ri "s/\x1b\[[0-9;]*[mGKHF]//g" "$LOG"
     fi
 }
 
@@ -180,8 +173,7 @@ _confirm() {
 #  $1 = note to display
 #
 _note() {
-    echo -e "${YELL}\n[$(TZ=$TIMEZONE date +%T)]"\
-            "${CYAN}${1}$NC"
+    echo -e "${YELL}\n[$(TZ=$TIMEZONE date +%T)] ${CYAN}${1}$NC"
     sleep 1
 }
 
@@ -193,10 +185,8 @@ _note() {
 #
 _error() {
     if [[ $1 == WARN ]]
-    then echo -e \
-        "\n${BLUE}${MSG_WARN}:${NC}${YELLOW}${*/WARN/}$NC"
-    else echo -e \
-        "\n${RED}${MSG_ERROR}: ${NC}${YELLOW}${*}$NC"
+    then echo -e "\n${BLUE}${MSG_WARN}:${NC}${YELLOW}${*/WARN/}$NC"
+    else echo -e "\n${RED}${MSG_ERROR}: ${NC}${YELLOW}${*}$NC"
     fi
 }
 
@@ -252,6 +242,7 @@ _check() {
 # PROPERLY EXIT THE SCRIPT
 # ========================
 # - kill make PID child on interrupt
+# - get current build logs
 # - remove user input files
 # - remove empty device folders
 # - exit with 3s timeout
@@ -261,7 +252,7 @@ _exit() {
     then pkill make || sleep 0.1
     fi
 
-    _cleanlog
+    _get_build_logs
     input_files=(bashvar buildervar linuxver)
     for file in "${input_files[@]}"
     do
