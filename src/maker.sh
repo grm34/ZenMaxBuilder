@@ -125,7 +125,7 @@ _handle_makefile_cross_compile() {
     if [[ $EDIT_CC != False ]]
     then _edit_cross_compile
     fi
-    mk=$(grep "^CROSS_COMPILE.*?=" "${KERNEL_DIR}/Makefile")
+    mk=$(grep "^CROSS_COMPILE\s.*?=" "${KERNEL_DIR}/Makefile")
     if [[ -n ${mk##*"${cross/CROSS_COMPILE=/}"*} ]]
     then _error WARN "$MSG_WARN_CC"
     fi
@@ -139,19 +139,19 @@ _handle_makefile_cross_compile() {
 
 # GET CROSS_COMPILE and CC
 _display_cross_compile() {
-    sed -n "/^CROSS_COMPILE.*?=/{p;q;}" "${KERNEL_DIR}/Makefile"
-    sed -n "/^CC.*=/{p;q;}" "${KERNEL_DIR}/Makefile"
+    sed -n "/^CROSS_COMPILE\s.*?=/{p;}" "${KERNEL_DIR}/Makefile"
+    sed -n "/^CC\s.*=/{p;}" "${KERNEL_DIR}/Makefile"
 }
 
 
 # EDIT CROSS_COMPILE and CC
 _edit_cross_compile() {
     _check sed -i \
-        "0,/^CROSS_COMPILE.*?=.*/s//CROSS_COMPILE ?= ${cross}/" \
+        "s/^CROSS_COMPILE\s.*?=.*/CROSS_COMPILE ?= ${cross}/g" \
         "${KERNEL_DIR}/Makefile"
     kernel_path=${KERNEL_DIR//\//\\/}
     _check sed -i \
-        "0,/^CC.*=.*/s//CC    = ${cc} -I${kernel_path}/" \
+        "s/^CC\s.*=.*/CC    = ${cc} -I${kernel_path}/g" \
         "${KERNEL_DIR}/Makefile"
 }
 
