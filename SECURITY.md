@@ -15,8 +15,8 @@
 | Branch  | Supported             |
 | ------- | --------------------- |
 | zmb     | :white_check_mark:    |
-| testing | :construction_worker: |
 | dev     | :x:                   |
+| testing | :construction_worker: |
 
 ## Reporting a Vulnerability
 
@@ -42,10 +42,10 @@ ZMB has been coded largely on a smartphone, so the length of the lines is greatl
 | main.sh         |       27 |       54 |      189 |
 | questioner.sh   |       36 |       71 |      183 |
 | manager.sh      |       32 |       79 |      170 |
-| maker.sh        |       26 |       65 |      136 |
-| options.sh      |       21 |       54 |      117 |
+| maker.sh        |       26 |       65 |      137 |
+| options.sh      |       21 |       54 |      118 |
 | requirements.sh |       11 |       38 |       90 |
 | telegram.sh     |       23 |       42 |       78 |
 | zip.sh          |       14 |       47 |       57 |
 | --------        | -------- | -------- | -------- |
-| SUM:            |      190 |      450 |     1020 |
+| SUM:            |      190 |      450 |     1022 |
