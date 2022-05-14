@@ -9,6 +9,22 @@
 
 If you want to contribute to ZenMaxBuilder project and make it better, your help is very welcome. Contributing is also a great way to learn more about social coding on Github, new technologies and their ecosystems and how to make constructive, helpful bug reports, feature requests and the noblest of all contributions: a good, clean pull request.
 
+ZMB has been coded largely on a smartphone, so the length of the lines is greatly reduced for better visibility to ensure the best support and maintenance.
+
+| File            | path | language |                 about |
+| :-------------- | :--: | :------: | --------------------: |
+| main.sh         | src  |   bash   |          main process |
+| manager.sh      | src  |   bash   |      global functions |
+| options.sh      | src  |   bash   |  command line options |
+| requirements.sh | src  |   bash   |  install requirements |
+| questioner.sh   | src  |   bash   | questions to the user |
+| maker.sh        | src  |   bash   |     make kernel build |
+| zip.sh          | src  |   bash   |  create flashable zip |
+| telegram.sh     | src  |   bash   |     Telegram feedback |
+| settings.cfg    | etc  |   text   |         user settings |
+| excluded.cfg    | etc  |   text   | vars to exclude (LOG) |
+| zipsigner.jar   | bin  |   java   |  AOSP Keys Zip Signer |
+
 ## Reporting Issues
 
 Found a problem? Want a new feature? Have a question? First of all see if your issue, question or idea has [already been reported](https://github.com/grm34/ZenMaxBuilder/issues). If don't, just open a [new clear and descriptive issue](https://github.com/grm34/ZenMaxBuilder/issues/new/choose).
