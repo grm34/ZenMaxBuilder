@@ -118,7 +118,7 @@ _get_tc_version() {
 # - display them on TERM so user can check before
 # - ask to modify them in the kernel Makefile
 # - edit the kernel Makefile (SED) while True
-# - warn the user when they seems not correctly set
+# - warn the user when they not seems correctly set
 # - DEBUG MODE: display edited Makefile values
 #
 _handle_makefile_cross_compile() {
@@ -142,7 +142,9 @@ _handle_makefile_cross_compile() {
 
 # GET CROSS_COMPILE and CC
 _display_cross_compile() {
-    sed -n "/^CROSS_COMPILE\s.*?=/{p;}" "${KERNEL_DIR}/Makefile"
+    if ! sed -n "/^CROSS_COMPILE\s.*?=/{p;}" "${KERNEL_DIR}/Makefile"
+    then _error "$MSG_ERR_CC"; _exit
+    fi
     sed -n "/^CC\s.*=/{p;}" "${KERNEL_DIR}/Makefile"
 }
 
