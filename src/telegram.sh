@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 # Copyright (c) 2021-2022 @grm34 Neternels Team
 #
