@@ -9,18 +9,23 @@
 <br>
 # Table of Contents
 
-- [About](https://github.com/grm34/ZenMaxBuilder#about)
-- [Requirements](https://github.com/grm34/ZenMaxBuilder#requirements)
-- [Usage](https://github.com/grm34/ZenMaxBuilder#usage)
-- [Options](https://github.com/grm34/ZenMaxBuilder#options)
-- [Working structure](https://github.com/grm34/ZenMaxBuilder#working-structure)
-- [Screenshots](https://github.com/grm34/ZenMaxBuilder#screenshots)
-- [Warning](https://github.com/grm34/ZenMaxBuilder#warning)
-- [Contributing](https://github.com/grm34/ZenMaxBuilder#contributing)
-- [Reporting issues](https://github.com/grm34/ZenMaxBuilder#reporting-issues)
-- [Help us translate ZenMaxBuilder](https://github.com/grm34/ZenMaxBuilder#help-us-translate-zenmaxbuilder)
-- [License](https://github.com/grm34/ZenMaxBuilder#license)
-- [Credits](https://github.com/grm34/ZenMaxBuilder#credits)
+- [Overview](https://kernel-builder.com#overview)
+- [Requirements](https://kernel-builder.com#requirements)
+- [Usage](https://kernel-builder.com#usage)
+- [Options](https://kernel-builder.com#options)
+- [Working structure](https://kernel-builder.com#working-structure)
+- [Screenshots](https://kernel-builder.com#screenshots)
+- [Warning](https://kernel-builder.com#warning)
+- [Contributing](https://kernel-builder.com#contributing)
+- [Reporting issues](https://kernel-builder.com#reporting-issues)
+- [Help us translate ZenMaxBuilder](https://kernel-builder.com#help-us-translate-zenmaxbuilder)
+- [License](https://kernel-builder.com#license)
+- [Credits](https://kernel-builder.com#credits)
+
+<br>
+# Overview
+
+ZenMaxBuilder (ZMB) is an Android Kernel Builder written in bash, which can be runned on any compatible Linux System (feel free to Pull Request for Windows support). By default it uses Proton-Clang, Eva-GCC, Proton-GCC or Lineage-GCC but you can use any Clang or GCC toolchains you like (with LLVM and binutils included). Find all your compilations and working folders in one place, edit and maintain your kernels faster. Full logs with the possibility to restart the build after error. Automatic creation of a flashable signed ZIP (with AK3 and AOSP Keys). Real time status feedback with ZIP sending on any group or Telegram channel. And more. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
 
 <br>
 # Requirements
