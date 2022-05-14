@@ -1,6 +1,4 @@
-#!/bin/bash
-##!/usr/bin/bash
-###!/usr/bin/env bash
+#!/usr/bin/env bash
 
 # Copyright (c) 2021-2022 @grm34 Neternels Team
 #
