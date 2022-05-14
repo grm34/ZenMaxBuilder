@@ -13,12 +13,12 @@
 - [Requirements](https://kernel-builder.com#requirements)
 - [Usage](https://kernel-builder.com#usage)
 - [Options](https://kernel-builder.com#options)
-- [Working structure](https://kernel-builder.com#working-structure)
+- [Working Structure](https://kernel-builder.com#working-structure)
 - [Screenshots](https://kernel-builder.com#screenshots)
 - [Warning](https://kernel-builder.com#warning)
 - [Contributing](https://kernel-builder.com#contributing)
-- [Reporting issues](https://kernel-builder.com#reporting-issues)
-- [Help us translate ZenMaxBuilder](https://kernel-builder.com#help-us-translate-zenmaxbuilder)
+- [Reporting Issues](https://kernel-builder.com#reporting-issues)
+- [Help us Translate ZenMaxBuilder](https://kernel-builder.com#help-us-translate-zenmaxbuilder)
 - [License](https://kernel-builder.com#license)
 - [Credits](https://kernel-builder.com#credits)
 
@@ -70,7 +70,7 @@ The optional flashable zip signature with AOSP Keys requires java (JDK) which is
         -d, --debug                     start compilation in debug mode
 
 <br>
-# Working structure
+# Working Structure
 
     ZenMaxBuilder/
     |
@@ -122,7 +122,7 @@ If you want to contribute to ZenMaxBuilder project and make it better, your help
 Found a problem? Want a new feature? Have a question? First of all see if your issue, question or idea has [already been reported](https://github.com/grm34/ZenMaxBuilder/issues). If don't, just open a [new clear and descriptive issue](https://github.com/grm34/ZenMaxBuilder/issues/new/choose).
 
 <br>
-# Help us translate ZenMaxBuilder
+# Help us Translate ZenMaxBuilder
 
 | language | flag | translator | progress |
 | :------- | ---: | ---------: | -------: |

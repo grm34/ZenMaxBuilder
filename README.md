@@ -46,12 +46,12 @@
 - [Requirements](https://github.com/grm34/ZenMaxBuilder#requirements)
 - [Usage](https://github.com/grm34/ZenMaxBuilder#usage)
 - [Options](https://github.com/grm34/ZenMaxBuilder#options)
-- [Working structure](https://github.com/grm34/ZenMaxBuilder#working-structure)
+- [Working Structure](https://github.com/grm34/ZenMaxBuilder#working-structure)
 - [Screenshots](https://github.com/grm34/ZenMaxBuilder#screenshots)
 - [Warning](https://github.com/grm34/ZenMaxBuilder#warning)
 - [Contributing](https://github.com/grm34/ZenMaxBuilder#contributing)
-- [Reporting issues](https://github.com/grm34/ZenMaxBuilder#reporting-issues)
-- [Help us translate ZenMaxBuilder](https://github.com/grm34/ZenMaxBuilder#help-us-translate-zenmaxbuilder)
+- [Reporting Issues](https://github.com/grm34/ZenMaxBuilder#reporting-issues)
+- [Help us Translate ZenMaxBuilder](https://github.com/grm34/ZenMaxBuilder#help-us-translate-zenmaxbuilder)
 - [License](https://github.com/grm34/ZenMaxBuilder#license)
 - [Credits](https://github.com/grm34/ZenMaxBuilder#credits)
 
@@ -98,7 +98,7 @@ The optional flashable zip signature with AOSP Keys requires java (JDK) which is
         -z, --zip     [Image.gz-dtb]    create flashable zip
         -d, --debug                     start compilation in debug mode
 
-# Working structure
+# Working Structure
 
     ZenMaxBuilder/
     |
@@ -145,7 +145,7 @@ If you want to contribute to ZenMaxBuilder project and make it better, your help
 
 Found a problem? Want a new feature? Have a question? First of all see if your issue, question or idea has [already been reported](https://github.com/grm34/ZenMaxBuilder/issues). If don't, just open a [new clear and descriptive issue](https://github.com/grm34/ZenMaxBuilder/issues/new/choose).
 
-# Help us translate ZenMaxBuilder
+# Help us Translate ZenMaxBuilder
 
 | language | flag | translator | progress |
 | :------- | ---: | ---------: | -------: |
