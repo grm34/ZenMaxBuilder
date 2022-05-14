@@ -44,7 +44,7 @@ _export_path_and_options() {
             TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
             TCVER=$(_get_tc_version "$PROTON_VERSION")
             cross=${PROTON_CLANG_OPTIONS[1]/CROSS_COMPILE=}
-            cc=${PROTON_CLANG_OPTIONS[3]/CC=}
+            ccross=${PROTON_CLANG_OPTIONS[3]/CC=}
             ;;
         "$EVA_GCC_NAME")
             export PATH=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin:$PATH
@@ -52,7 +52,7 @@ _export_path_and_options() {
             TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
             TCVER=$(_get_tc_version "$GCC_ARM64_VERSION")
             cross=${EVA_GCC_OPTIONS[1]/CROSS_COMPILE=}
-            cc=${EVA_GCC_OPTIONS[3]/CC=}
+            ccross=${EVA_GCC_OPTIONS[3]/CC=}
             ;;
         "$LOS_GCC_NAME")
             export PATH=${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:$PATH
@@ -60,7 +60,7 @@ _export_path_and_options() {
             TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
             TCVER=$(_get_tc_version "$LOS_ARM64_VERSION")
             cross=${LOS_GCC_OPTIONS[1]/CROSS_COMPILE=}
-            cc=${LOS_GCC_OPTIONS[3]/CC=}
+            ccross=${LOS_GCC_OPTIONS[3]/CC=}
             ;;
         "$PROTON_GCC_NAME")
             eva_path=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin
@@ -72,7 +72,7 @@ _export_path_and_options() {
             gccver=$(_get_tc_version "$GCC_ARM64_VERSION")
             export TCVER="${clangver##*/}-${gccver##*/}"
             cross=${PROTON_GCC_OPTIONS[1]/CROSS_COMPILE=}
-            cc=${PROTON_GCC_OPTIONS[3]/CC=}
+            ccross=${PROTON_GCC_OPTIONS[3]/CC=}
     esac
     if [[ $LTO == True ]]
     then
@@ -150,7 +150,7 @@ _edit_cross_compile() {
         "s|^CROSS_COMPILE\s.*?=.*|CROSS_COMPILE\ ?=\ ${cross}|g" \
         "${KERNEL_DIR}/Makefile"
     _check sed -i \
-        "s|^CC\s.*=.*|CC\ =\ ${cc}\ -I${KERNEL_DIR}|g" \
+        "s|^CC\s.*=.*|CC\ =\ ${ccross}\ -I${KERNEL_DIR}|g" \
         "${KERNEL_DIR}/Makefile"
 }
 
