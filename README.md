@@ -98,7 +98,7 @@ The optional flashable zip signature with AOSP Keys requires java (JDK) which is
         -z, --zip     [Image.gz-dtb]    create flashable zip
         -d, --debug                     start compilation in debug mode
 
-# Working structure
+# Working Structure
 
     ZenMaxBuilder/
     |
@@ -145,7 +145,7 @@ If you want to contribute to ZenMaxBuilder project and make it better, your help
 
 Found a problem? Want a new feature? Have a question? First of all see if your issue, question or idea has [already been reported](https://github.com/grm34/ZenMaxBuilder/issues). If don't, just open a [new clear and descriptive issue](https://github.com/grm34/ZenMaxBuilder/issues/new/choose).
 
-# Help us translate ZenMaxBuilder
+# Help us Translate ZenMaxBuilder
 
 | language | flag | translator | progress |
 | :------- | ---: | ---------: | -------: |
