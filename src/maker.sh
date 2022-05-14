@@ -113,6 +113,20 @@ _get_tc_version() {
 }
 
 
+# GET CROSS_COMPILE and CC FROM MAKEFILE
+_get_and_display_cross_compile() {
+    r1=("^CROSS_COMPILE\s.*?=.*" "CROSS_COMPILE\ ?=\ ${cross}")
+    r2=("^CC\s.*=.*" "CC\ =\ ${ccross}\ -I${KERNEL_DIR}")
+    c1=$(sed -n "/${r1[0]}/{p;}" "${KERNEL_DIR}/Makefile")
+    c2=$(sed -n "/${r2[0]}/{p;}" "${KERNEL_DIR}/Makefile")
+    if [[ -z $c1 ]]
+    then _error "$MSG_ERR_CC"; _exit
+    else echo "$c1"; echo "$c2"
+    fi
+
+}
+
+
 # HANDLES Makefile CROSS_COMPILE and CC
 # =====================================
 # - display them on TERM so user can check before
@@ -123,41 +137,24 @@ _get_tc_version() {
 #
 _handle_makefile_cross_compile() {
     _note "$MSG_NOTE_CC"
-    _display_cross_compile
+    _get_and_display_cross_compile
     _ask_for_edit_cross_compile
     if [[ $EDIT_CC != False ]]
-    then _edit_cross_compile
+    then
+        _check sed -i "s|${r1[0]}|${r1[1]}|g" "${KERNEL_DIR}/Makefile"
+        _check sed -i "s|${r2[0]}|${r2[1]}|g" "${KERNEL_DIR}/Makefile"
     fi
-    mk=$(grep "^CROSS_COMPILE\s.*?=" "${KERNEL_DIR}/Makefile")
+    mk=$(grep "${r1[0]}" "${KERNEL_DIR}/Makefile")
     if [[ -n ${mk##*"${cross/CROSS_COMPILE=/}"*} ]]
     then _error WARN "$MSG_WARN_CC"
     fi
     if [[ $DEBUG_MODE == True ]] && [[ $EDIT_CC != False ]]
     then
         echo -e "\n${BLUE}${MSG_DEBUG_CC}:$NC"
-        _display_cross_compile
+        _get_and_display_cross_compile
     fi
 }
 
-
-# GET CROSS_COMPILE and CC
-_display_cross_compile() {
-    if ! sed -n "/^CROSS_COMPILE\s.*?=/{p;}" "${KERNEL_DIR}/Makefile"
-    then _error "$MSG_ERR_CC"; _exit
-    fi
-    sed -n "/^CC\s.*=/{p;}" "${KERNEL_DIR}/Makefile"
-}
-
-
-# EDIT CROSS_COMPILE and CC
-_edit_cross_compile() {
-    _check sed -i \
-        "s|^CROSS_COMPILE\s.*?=.*|CROSS_COMPILE\ ?=\ ${cross}|g" \
-        "${KERNEL_DIR}/Makefile"
-    _check sed -i \
-        "s|^CC\s.*=.*|CC\ =\ ${ccross}\ -I${KERNEL_DIR}|g" \
-        "${KERNEL_DIR}/Makefile"
-}
 
 # RUN MAKE CLEAN
 _make_clean() {
