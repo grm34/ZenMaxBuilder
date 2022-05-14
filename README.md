@@ -42,7 +42,7 @@
 
 # Table of Contents
 
-- [About](https://github.com/grm34/ZenMaxBuilder#about)
+- [Overview](https://github.com/grm34/ZenMaxBuilder#overview)
 - [Requirements](https://github.com/grm34/ZenMaxBuilder#requirements)
 - [Usage](https://github.com/grm34/ZenMaxBuilder#usage)
 - [Options](https://github.com/grm34/ZenMaxBuilder#options)
@@ -55,7 +55,7 @@
 - [License](https://github.com/grm34/ZenMaxBuilder#license)
 - [Credits](https://github.com/grm34/ZenMaxBuilder#credits)
 
-# About
+# Overview
 
 ZenMaxBuilder (ZMB) is an Android Kernel Builder written in bash, which can be runned on any compatible Linux System (feel free to Pull Request for Windows support). By default it uses Proton-Clang, Eva-GCC, Proton-GCC or Lineage-GCC but you can use any Clang or GCC toolchains you like (with LLVM and binutils included). Find all your compilations and working folders in one place, edit and maintain your kernels faster. Full logs with the possibility to restart the build after error. Automatic creation of a flashable signed ZIP (with AK3 and AOSP Keys). Real time status feedback with ZIP sending on any group or Telegram channel. And more. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
 
