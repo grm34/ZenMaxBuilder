@@ -147,11 +147,10 @@ _display_cross_compile() {
 # EDIT CROSS_COMPILE and CC
 _edit_cross_compile() {
     _check sed -i \
-        "s/^CROSS_COMPILE\s.*?=.*/CROSS_COMPILE ?= ${cross}/g" \
+        "s|^CROSS_COMPILE\s.*?=.*|CROSS_COMPILE\ ?=\ ${cross}|g" \
         "${KERNEL_DIR}/Makefile"
-    kernel_path=${KERNEL_DIR//\//\\/}
     _check sed -i \
-        "s/^CC\s.*=.*/CC    = ${cc} -I${kernel_path}/g" \
+        "s|^CC\s.*=.*|CC\ =\ ${cc}\ -I${KERNEL_DIR}|g" \
         "${KERNEL_DIR}/Makefile"
 }
 
