@@ -9,18 +9,18 @@
 <br>
 # Table of Contents
 
-- [Overview](#overview)
-- [Requirements](#requirements)
-- [Usage](#usage)
-- [Options](#options)
-- [Working structure](#working-structure)
-- [Screenshots](#screenshots)
-- [Warning](#warning)
-- [Contributing](#contributing)
-- [Reporting issues](#reporting-issues)
-- [Help us translate ZenMaxBuilder](#help-us-translate-zenmaxbuilder)
-- [License](#license)
-- [Credits](#credits)
+- [Overview](https://kernel-builder.com#overview)
+- [Requirements](https://kernel-builder.com#requirements)
+- [Usage](https://kernel-builder.com#usage)
+- [Options](https://kernel-builder.com#options)
+- [Working structure](https://kernel-builder.com#working-structure)
+- [Screenshots](https://kernel-builder.com#screenshots)
+- [Warning](https://kernel-builder.com#warning)
+- [Contributing](https://kernel-builder.com#contributing)
+- [Reporting issues](https://kernel-builder.com#reporting-issues)
+- [Help us translate ZenMaxBuilder](https://kernel-builder.com#help-us-translate-zenmaxbuilder)
+- [License](https://kernel-builder.com#license)
+- [Credits](https://kernel-builder.com#credits)
 
 <br>
 # Overview
