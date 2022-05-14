@@ -134,7 +134,7 @@ _set_html_status_msg() {
 <b>${MSG_TG_HTML[2]} :</b>  <code>${KERNEL_VARIANT}</code>
 <b>${MSG_TG_HTML[3]} :</b>  <code>${BUILDER}</code>
 <b>${MSG_TG_HTML[4]} :</b>  <code>${CORES} Core(s)</code>
-<b>${MSG_TG_HTML[5]} :</b>  <code>${COMPILER} ${TCVER##*/}</code>
+<b>${MSG_TG_HTML[5]} :</b>  <code>${COMPILER} ${TCVER}</code>
 <b>${MSG_TG_HTML[6]} :</b>  <code>${HOST}</code>
 <b>${MSG_TG_HTML[7]} :</b>  <code>${TAG}</code>
 <b>${MSG_TG_HTML[8]} :</b>  <code>${android_version}</code>"

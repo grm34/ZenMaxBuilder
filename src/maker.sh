@@ -26,7 +26,8 @@
 # ==========================
 # - export target variables (CFG)
 # - append toolchains to the $PATH, export and verify
-# - get current toolchain options + compiler version
+# - get current toolchain compiler options
+# - get and export toolchain compiler version
 # - get CROSS_COMPILE and CC (to handle Makefile)
 # - set Link Time Optimization (LTO)
 # - DEBUG MODE: display $PATH
@@ -42,25 +43,28 @@ _export_path_and_options() {
             export PATH=${PROTON_DIR}/bin:$PATH
             _check_toolchain_path "$PROTON_DIR"
             TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
-            TCVER=$(_get_tc_version "$PROTON_VERSION")
+            _get_tc_version "$PROTON_VERSION"
+            export TCVER=${tc_version##*/}
             cross=${PROTON_CLANG_OPTIONS[1]/CROSS_COMPILE=}
-            cc=${PROTON_CLANG_OPTIONS[3]/CC=}
+            ccross=${PROTON_CLANG_OPTIONS[3]/CC=}
             ;;
         "$EVA_GCC_NAME")
             export PATH=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin:$PATH
             _check_toolchain_path "$GCC_ARM64_DIR" "$GCC_ARM_DIR"
             TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
-            TCVER=$(_get_tc_version "$GCC_ARM64_VERSION")
+            _get_tc_version "$GCC_ARM64_VERSION"
+            export TCVER=${tc_version##*/}
             cross=${EVA_GCC_OPTIONS[1]/CROSS_COMPILE=}
-            cc=${EVA_GCC_OPTIONS[3]/CC=}
+            ccross=${EVA_GCC_OPTIONS[3]/CC=}
             ;;
         "$LOS_GCC_NAME")
             export PATH=${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:$PATH
             _check_toolchain_path "$LOS_ARM64_DIR" "$LOS_ARM_DIR"
             TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
-            TCVER=$(_get_tc_version "$LOS_ARM64_VERSION")
+            _get_tc_version "$LOS_ARM64_VERSION"
+            export TCVER=${tc_version##*/}
             cross=${LOS_GCC_OPTIONS[1]/CROSS_COMPILE=}
-            cc=${LOS_GCC_OPTIONS[3]/CC=}
+            ccross=${LOS_GCC_OPTIONS[3]/CC=}
             ;;
         "$PROTON_GCC_NAME")
             eva_path=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin
@@ -68,11 +72,11 @@ _export_path_and_options() {
             _check_toolchain_path "$PROTON_DIR" "$GCC_ARM_DIR" \
                 "$GCC_ARM64_DIR"
             TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
-            clangver=$(_get_tc_version "$PROTON_VERSION")
-            gccver=$(_get_tc_version "$GCC_ARM64_VERSION")
-            export TCVER="${clangver##*/}-${gccver##*/}"
+            _get_tc_version "$PROTON_VERSION"; v1=$tc_version
+            _get_tc_version "$GCC_ARM64_VERSION"; v2=$tc_version
+            export TCVER="${v1##*/} ${v2##*/}"
             cross=${PROTON_GCC_OPTIONS[1]/CROSS_COMPILE=}
-            cc=${PROTON_GCC_OPTIONS[3]/CC=}
+            ccross=${PROTON_GCC_OPTIONS[3]/CC=}
     esac
     if [[ $LTO == True ]]
     then
@@ -82,7 +86,6 @@ _export_path_and_options() {
     if [[ $DEBUG_MODE == True ]]
     then echo -e "\n${BLUE}PATH: ${NC}${YELLOW}${PATH}$NC"
     fi
-
 }
 
 
@@ -105,8 +108,8 @@ _check_toolchain_path() {
 #  $1 = toolchain lib DIR
 #
 _get_tc_version() {
-    _check find "${DIR}/toolchains/$1" \
-        -mindepth 1 -maxdepth 1 -type d | head -n 1
+    tc_version=$(find "${DIR}/toolchains/$1" \
+        -mindepth 1 -maxdepth 1 -type d | head -n 1)
 }
 
 
@@ -147,11 +150,10 @@ _display_cross_compile() {
 # EDIT CROSS_COMPILE and CC
 _edit_cross_compile() {
     _check sed -i \
-        "s/^CROSS_COMPILE\s.*?=.*/CROSS_COMPILE ?= ${cross}/g" \
+        "s|^CROSS_COMPILE\s.*?=.*|CROSS_COMPILE\ ?=\ ${cross}|g" \
         "${KERNEL_DIR}/Makefile"
-    kernel_path=${KERNEL_DIR//\//\\/}
     _check sed -i \
-        "s/^CC\s.*=.*/CC    = ${cc} -I${kernel_path}/g" \
+        "s|^CC\s.*=.*|CC\ =\ ${ccross}\ -I${KERNEL_DIR}|g" \
         "${KERNEL_DIR}/Makefile"
 }
 
