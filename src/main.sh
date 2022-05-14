@@ -239,11 +239,12 @@ fi
 
 # CHECK FOR SUCCESSFUL BUILD
 _get_build_time
-BOOT_DIR=${DIR}/out/${CODENAME}/arch/${ARCH}/boot
+BOOT_DIR="${DIR}/out/${CODENAME}/arch/${ARCH}/boot"
 # shellcheck disable=SC2012
 most_recent_file=$(ls -Art "$BOOT_DIR" 2>/dev/null | tail -n 1)
-file_time=$(stat -c %Z "${BOOT_DIR}/${most_recent_file}" 2>/dev/null)
-if [[ ! -d $BOOT_DIR ]] || [[ $file_time < $START_TIME ]]
+ftime=$(stat -c %Z "${BOOT_DIR}/${most_recent_file}" 2>/dev/null)
+if [[ ! -d $BOOT_DIR ]] || [[ -z $(ls -A "$BOOT_DIR") ]] || \
+    [[ $ftime < $START_TIME ]]
 then _error "$MSG_ERR_MAKE"; _exit; fi
 
 # RETURN BUILD STATUS
