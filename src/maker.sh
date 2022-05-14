@@ -123,7 +123,6 @@ _get_and_display_cross_compile() {
     then _error "$MSG_ERR_CC"; _exit
     else echo "$c1"; echo "$c2"
     fi
-
 }
 
 
