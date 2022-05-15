@@ -2,7 +2,7 @@
 { % seo % }
 ---
 
-<img height="100" alt="ZenMaxBuilder" src="assets/images/zmb.png" />
+<img alt="ZenMaxBuilder" src="assets/images/zmb.png" />
 <br>
 <img src="https://api.codiga.io/project/23638/score/svg" alt="Codescore"><img src="https://api.codiga.io/project/23638/status/svg" alt="Codequality"><img src="https://www.codefactor.io/repository/github/grm34/zenmaxbuilder/badge" alt="Codefactor"><img src="https://img.shields.io/github/forks/grm34/ZenMaxBuilder.svg?logo=github" alt="Forks"><img src="https://img.shields.io/github/stars/grm34/ZenMaxBuilder.svg?logo=github-sponsors" alt="Stars">
 <br>
