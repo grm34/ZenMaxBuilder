@@ -221,6 +221,6 @@ _make_build() {
         cflags=${cflags/CROSS_COMPILE_ARM32/CROSS_COMPILE_COMPAT}
     fi
     _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
-        O="$OUT_DIR" ARCH="$ARCH" "${cflags/  / }" 2>&1
+        O="$OUT_DIR" ARCH="$ARCH" "${cflags/\ \ /\ }" 2>&1
 }
 
