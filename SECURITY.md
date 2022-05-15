@@ -26,26 +26,6 @@ Please open an issue: [Bug Report Section](https://github.com/grm34/ZenMaxBuilde
 
 ZMB has been coded largely on a smartphone, so the length of the lines is greatly reduced for better visibility to ensure the best support and maintenance, which explains such a large number of lines.
 
-| File            | path | language |                 about |
-| :-------------- | :--: | :------: | --------------------: |
-| main.sh         | src  |   bash   |          main process |
-| manager.sh      | src  |   bash   |      global functions |
-| options.sh      | src  |   bash   |  command line options |
-| requirements.sh | src  |   bash   |  install requirements |
-| questioner.sh   | src  |   bash   | questions to the user |
-| maker.sh        | src  |   bash   |     make kernel build |
-| zip.sh          | src  |   bash   |  create flashable zip |
-| telegram.sh     | src  |   bash   |     Telegram feedback |
-
-| File            |    blank |  comment |     code |
-| :-------------- | -------: | -------: | -------: |
-| main.sh         |       27 |       55 |      188 |
-| questioner.sh   |       36 |       71 |      183 |
-| manager.sh      |       30 |       81 |      170 |
-| maker.sh        |       24 |       63 |      139 |
-| options.sh      |       21 |       54 |      118 |
-| requirements.sh |       11 |       38 |       90 |
-| telegram.sh     |       23 |       42 |       77 |
-| zip.sh          |       14 |       47 |       57 |
-| --------        | -------- | -------- | -------- |
-| SUM:            |      186 |      451 |     1022 |
+| File   | blank | comment | code |
+| :----- | ----: | ------: | ---: |
+| zmb.sh |   127 |     332 | 1006 |
