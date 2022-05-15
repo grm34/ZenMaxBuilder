@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright (c) 2021-2022 @grm34 Neternels Team
+# Copyright (c) 2021-2022 darkmaster @grm34 Neternels Team
 #
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation
@@ -24,15 +24,15 @@
 ### ZMB STRUCTURE ###
 # ==================
 #
-# - MANAGER: all the functions for the global management.    (96)
-# - REQUIREMENTS: the missing dependencies installation.    (348)
-# - OPTIONS: all the functions for command-line options.    (465)
-# - QUESTIONER: all the asked questions to the user.        (628)
-# - MAKER: all the functions related to the make process.   (883)
-# - ZIP: all the functions for the signed ZIP creation.    (1079)
-# - TELEGRAM: all the functions for Telegram feedback.     (1175)
-# - MAIN: run the ZenMaxBuilder (ZMB) main process.        (1289)
-# - START OPTION: start new android kernel compilation.    (1351)
+# - MANAGER: all the functions for the global management.    (92)
+# - REQUIREMENTS: the missing dependencies installation.    (335)
+# - OPTIONS: all the functions for command-line options.    (443)
+# - QUESTIONER: all the asked questions to the user.        (603)
+# - MAKER: all the functions related to the make process.   (847)
+# - ZIP: all the functions for the signed ZIP creation.    (1039)
+# - TELEGRAM: all the functions for Telegram feedback.     (1133)
+# - MAIN: run the ZenMaxBuilder (ZMB) main process.        (1245)
+# - START OPTION: start new android kernel compilation.    (1304)
 
 
 # BAN ALL ('n00bz')
@@ -174,7 +174,7 @@ _get_build_logs() {
 #
 _cd() { cd "$1" || (_error "$2"; _exit) }
 
-# ASK SOME INFORMATION
+# ASK some INFORMATION
 # ====================
 #  $1 = question to ask
 #  $2 = type (1 for arrow)
@@ -253,7 +253,6 @@ _error() {
 # ======================
 # - DEBUG MODE: display command
 # - run command as child
-# - check its output code
 # - notify function and file on ERR
 # - get failed build logs (+TG feedback)
 # - ask to run again last failed command
