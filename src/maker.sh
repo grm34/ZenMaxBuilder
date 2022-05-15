@@ -204,23 +204,21 @@ _save_defconfig() {
 
 # RUN MAKE BUILD
 # ==============
+# - set Telegram HTML message
 # - send build status on Telegram
-# - delete CC from make command-line arguments
-# - change CC ARM32 to COMPAT if linux > v4.2 (for clang only)
+# - CLANG: CROSS_COMPILE_ARM32 -> CROSS_COMPILE_COMPAT (linux > v4.2)
 # - make new android kernel build
 #
 _make_build() {
     _note "${MSG_NOTE_MAKE}: ${KERNEL_NAME}..."
     _set_html_status_msg
     _send_start_build_status
-    cflags="${TC_OPTIONS[*]/${TC_OPTIONS[3]}}"
     linuxversion="${LINUX_VERSION//.}"
     if [[ $(echo "${linuxversion:0:2} > 42" | bc) == 1 ]] && \
         [[ ${TC_OPTIONS[3]} == clang ]]
-    then
-        cflags=${cflags/CROSS_COMPILE_ARM32/CROSS_COMPILE_COMPAT}
+    then cflags=${cflags/CROSS_COMPILE_ARM32/CROSS_COMPILE_COMPAT}
     fi
     _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
-        O="$OUT_DIR" ARCH="$ARCH" "${cflags/\ \ /\ }" 2>&1
+        O="$OUT_DIR" ARCH="$ARCH" "${TC_OPTIONS[*]}" 2>&1
 }
 
