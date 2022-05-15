@@ -60,12 +60,12 @@ _install_dependencies() {
                 if [[ ${pm[0]} == _ ]] && [[ $DEP == gcc ]]
                 then continue
                 else
-                    DEP=${DEP/llvm/llvm-ar}
-                    DEP=${DEP/binutils/ld}
+                    if [[ $DEP == llvm ]]; then DEP=llvm-ar; fi
+                    if [[ $DEP == binutils ]]; then DEP=ld; fi
                     if ! which "${DEP}" &>/dev/null
                     then
-                        DEP=${DEP/llvm-ar/llvm}
-                        DEP=${DEP/ld/binutils}
+                        if [[ $DEP == llvm-ar ]]; then DEP=llvm; fi
+                        if [[ $DEP == ld ]]; then DEP=binutils; fi
                         _ask_for_install_pkg "$DEP"
                         if [[ $INSTALL_PKG == True ]]
                         then
