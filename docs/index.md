@@ -34,7 +34,7 @@ ZenMaxBuilder (ZMB) is an Android Kernel Builder written in bash, which can be r
 
 The installation of the missing dependencies will be offered by ZenMaxBuilder but you can also install them manually with your favorite package manager:
 
-    bash sed git curl zip expect make llvm lld clang gcc binutils bison perl bc openssl
+    bash sed wget git curl zip tar expect make cmake automake autoconf llvm lld lldb clang gcc binutils bison perl libtool gperf gawk flex bc python zstd ninja openssl
 
 The optional flashable zip signature with AOSP Keys requires java (JDK) which is not proposed to install by ZenMaxBuilder (openjdk recommended).
 
