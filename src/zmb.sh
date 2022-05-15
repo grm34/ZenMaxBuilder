@@ -31,7 +31,7 @@
 # - MAKER: all the functions related to the make process.   (883)
 # - ZIP: all the functions for the signed ZIP creation.    (1079)
 # - TELEGRAM: all the functions for Telegram feedback.     (1175)
-# - MAIN: run the ZENMAXBUILDER (ZMB) main process.        (1289)
+# - MAIN: run the ZenMaxBuilder (ZMB) main process.        (1289)
 # - START OPTION: start new android kernel compilation.    (1351)
 
 
@@ -56,7 +56,7 @@ fi
 
 # ABSOLUTE PATH
 DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-if ! cd "$DIR/hhhjjj"
+if ! cd "$DIR"
 then
     echo >&2 "ERROR: ZenMaxBuilder directory not found"
     return 1
