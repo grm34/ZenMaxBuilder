@@ -18,10 +18,6 @@
 | dev     | :x:                   |
 | testing | :construction_worker: |
 
-## Reporting a Vulnerability
-
-Please open an issue: [Bug Report Section](https://github.com/grm34/ZenMaxBuilder/issues/new/choose)
-
 ## Statistics
 
 | File   | blank | comment | code |
