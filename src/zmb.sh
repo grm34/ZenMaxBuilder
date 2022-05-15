@@ -24,22 +24,51 @@
 ### ZMB STRUCTURE ###
 # ==================
 #
-# - MANAGER: all the functions for the global management...
-# - REQUIREMENTS: the missing dependencies installation...
-# - OPTIONS: all the functions for command-line options...
-# - QUESTIONER: all the asked questions to the user...
-# - MAKER: all the functions related to the make process...
-# - ZIP: all the functions for the signed ZIP creation...
-# - TELEGRAM: all the functions for Telegram feedback...
-# - MAIN: run the ZENMAXBUILDER (ZMB) main process...
-#
+# - MANAGER: all the functions for the global management.    (96)
+# - REQUIREMENTS: the missing dependencies installation.    (348)
+# - OPTIONS: all the functions for command-line options.    (465)
+# - QUESTIONER: all the asked questions to the user.        (628)
+# - MAKER: all the functions related to the make process.   (883)
+# - ZIP: all the functions for the signed ZIP creation.    (1079)
+# - TELEGRAM: all the functions for Telegram feedback.     (1175)
+# - MAIN: run the ZENMAXBUILDER (ZMB) main process.        (1289)
+# - START OPTION: start new android kernel compilation.    (1351)
+
+
+# BAN ALL ('n00bz')
+if [[ ${BASH_SOURCE[0]} != "$0" ]]
+then
+    echo >&2 "ERROR: ZenMaxBuilder cannot be sourced"
+    return 1
+elif [[ ! -t 0 ]]
+then
+    echo >&2 "ERROR: run ZenMaxBuilder from a terminal"
+    return 1
+elif [[ $(tput cols) -lt 76 ]] || [[ $(tput lines) -lt 12 ]]
+then
+    echo >&2 "ERROR: terminal window is too small (min 76x12)"
+    return 1
+elif [[ $(uname) != Linux ]]
+then
+    echo >&2 "ERROR: run ZenMaxBuilder on Linux"
+    return 1
+fi
 
 # ABSOLUTE PATH
 DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-cd "$DIR" || exit $?
+if ! cd "$DIR/hhhjjj"
+then
+    echo >&2 "ERROR: ZenMaxBuilder directory not found"
+    return 1
+fi
 
 # LOCKFILE
 exec 201> "$(basename "$0").lock"
+if ! flock -n 201
+then
+    echo >&2 "ERROR: ZenMaxBuilder is already running"
+    return 1
+fi
 
 # JOB CONTROL
 (set -o posix; set)> "${DIR}/bashvar"
@@ -1260,36 +1289,8 @@ _set_html_status_msg() {
 ### MAIN - RUN THE ZENMAXBUILDER (ZMB) MAIN PROCESS...
 #################################################################
 
-# BAN ALL ('n00bz')
+# TERMINAL COLORS
 _terminal_colors
-if [[ ! -t 0 ]]
-then # Terminal mandatory
-    _error "$MSG_ERR_TERM"
-    _exit
-elif [[ $(tput cols) -lt 76 ]] || [[ $(tput lines) -lt 12 ]]
-then # Terminal min size
-    _error "$MSG_ERR_SIZE"
-    _exit
-elif [[ $(uname) != Linux ]]
-then # Linux mandatory
-    _error "$MSG_ERR_LINUX"
-    _exit
-elif ! flock -n 201
-then # Single instance
-    _error "$MSG_ERR_DUPE"
-    _exit
-elif [[ $KERNEL_DIR != default  ]] && \
-    [[ ! -f ${KERNEL_DIR}/Makefile ]] && \
-    [[ ! -d ${KERNEL_DIR}/arch ]]
-then # Bad kernel dir
-    _error "$MSG_ERR_KDIR"
-    _exit
-elif [[ ! $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
-    ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|${LOS_GCC_NAME}) ]]
-then # Bad compiler
-    _error "$MSG_ERR_COMPILER"
-    _exit
-fi
 
 # TRAP INTERRUPT SIGNALS
 trap '_error $MSG_ERR_KBOARD; _exit' INT QUIT TSTP CONT
@@ -1345,8 +1346,26 @@ if [[ $OPTIND -eq 1 ]]
 then _error "$MSG_ERR_IOPT ${RED}$1"; _exit; fi
 shift $(( OPTIND - 1 ))
 
-### START NEW BUILD ###
-#######################
+
+#################################################################
+### START OPTION - START NEW ANDROID KERNEL COMPILATION...
+#################################################################
+
+# PREVENT ERRORS IN USER SETTINGS
+if [[ $KERNEL_DIR != default  ]] &&
+    [[ ! -f ${KERNEL_DIR}/Makefile ]] && \
+    [[ ! -d ${KERNEL_DIR}/arch ]]
+then # Bad kernel dir
+    _error "$MSG_ERR_KDIR"
+    _exit
+elif [[ ! $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
+    ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|${LOS_GCC_NAME}) ]]
+then # Bad compiler
+    _error "$MSG_ERR_COMPILER"
+    _exit
+fi
+
+# DEVICE CODENAME
 _note "$MSG_NOTE_START $DATE"
 _ask_for_codename
 
