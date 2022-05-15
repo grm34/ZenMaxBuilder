@@ -42,18 +42,18 @@
 
 # Table of Contents
 
-- [Overview](https://github.com/grm34/ZenMaxBuilder#overview)
-- [Requirements](https://github.com/grm34/ZenMaxBuilder#requirements)
-- [Usage](https://github.com/grm34/ZenMaxBuilder#usage)
-- [Options](https://github.com/grm34/ZenMaxBuilder#options)
-- [Working Structure](https://github.com/grm34/ZenMaxBuilder#working-structure)
-- [Screenshots](https://github.com/grm34/ZenMaxBuilder#screenshots)
-- [Warning](https://github.com/grm34/ZenMaxBuilder#warning)
-- [Contributing](https://github.com/grm34/ZenMaxBuilder#contributing)
-- [Reporting Issues](https://github.com/grm34/ZenMaxBuilder#reporting-issues)
-- [Help us Translate ZenMaxBuilder](https://github.com/grm34/ZenMaxBuilder#help-us-translate-zenmaxbuilder)
-- [License](https://github.com/grm34/ZenMaxBuilder#license)
-- [Credits](https://github.com/grm34/ZenMaxBuilder#credits)
+- [Overview](#overview)
+- [Requirements](#requirements)
+- [Usage](#usage)
+- [Options](#options)
+- [Working Structure](#working-structure)
+- [Screenshots](#screenshots)
+- [Warning](#warning)
+- [Contributing](#contributing)
+- [Reporting Issues](#reporting-issues)
+- [Help us Translate ZenMaxBuilder](#help-us-translate-zenmaxbuilder)
+- [License](#license)
+- [Credits](#credits)
 
 # Overview
 
