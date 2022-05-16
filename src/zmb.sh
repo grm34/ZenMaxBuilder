@@ -1062,10 +1062,6 @@ _clean_anykernel() {
             rm -rf "${file}" || sleep 0.1
         esac
     done
-    _cd "$ANYKERNEL_DIR" "$MSG_ERR_DIR ${RED}AnyKernel"
-    git checkout "$ANYKERNEL_BRANCH"
-    git reset --hard "origin/$ANYKERNEL_BRANCH"
-    _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
 }
 
 # SIGN ZIP with AOSP Keys
@@ -1373,7 +1369,6 @@ fi
 
 # UPLOAD THE BUILD AND EXIT
 _upload_signed_build
-_clean_anykernel
 _exit
 
 
