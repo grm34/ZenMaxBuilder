@@ -23,16 +23,17 @@
 
 # ZENMAXBUILDER PROJECT
 # =====================
-# - Starting blocks...
-# - MANAGER: global management functions of the script.      (92)
-# - REQUIREMENTS: dependency install management functions.  (315)
-# - OPTIONS: command line option management functions.      (418)
-# - QUESTIONER: functions of questions asked to the user.   (573)
-# - MAKER: all the functions related to the make process.   (817)
-# - ZIP: all the functions related to the ZIP creation.     (997)
-# - TELEGRAM: all the functions for Telegram feedback.     (1090)
-# - MAIN: run the ZenMaxBuilder (ZMB) main process.        (1198)
-# - START: start new android kernel compilation.           (1257)
+# 0. Starting blocks...                                       (RUN)
+# 1. MANAGER: global management functions of the script.     (FUNC)
+# 2. REQUIREMENTS: dependency install management functions.  (FUNC)
+# 3. OPTIONS: command line option management functions.      (FUNC)
+# 4. QUESTIONER: functions of questions asked to the user.   (FUNC)
+# 5. MAKER: all the functions related to the make process.   (FUNC)
+# 6. ZIP: all the functions related to the ZIP creation.     (FUNC)
+# 7. TELEGRAM: all the functions for Telegram feedback.      (FUNC)
+# 8. MAIN: run the ZenMaxBuilder (ZMB) main process.          (RUN)
+# 9. START: start new android kernel compilation.             (RUN)
+# -----------------------------------------------------------------
 
 
 # BAN ALL ('n00bz')
@@ -88,9 +89,9 @@ else
 fi
 
 
-#################################################################
-### MANAGER => global management functions of the script.     ###
-#################################################################
+###--------------------------------------------------------------###
+###  1. MANAGER => global management functions of the script     ###
+###--------------------------------------------------------------###
 
 # BANNER
 _terminal_banner() {
@@ -311,9 +312,9 @@ _exit() {
 }
 
 
-#################################################################
-### REQUIREMENTS => dependency install management functions.  ###
-#################################################################
+###--------------------------------------------------------------###
+###  2. REQUIREMENTS => dependency install management functions  ###
+###--------------------------------------------------------------###
 
 # HANDLE DEPENDENCY INSTALLATION
 _install_dependencies() {
@@ -414,12 +415,12 @@ _clone_anykernel() {
 }
 
 
-#################################################################
-### OPTIONS => command line option management functions.      ###
-#################################################################
+###--------------------------------------------------------------###
+###  3. OPTIONS => command line option management functions      ###
+###--------------------------------------------------------------###
 
-### UPDATE OPTION ###
-#####################
+## UPDATE OPTION ##
+##---------------##
 
 # UPDATE GIT REPOSITORY
 _update_git() {
@@ -471,8 +472,8 @@ _full_upgrade() {
     done
 }
 
-### TELEGRAM OPTIONS ###
-########################
+## TELEGRAM OPTIONS ##
+##------------------##
 
 # SEND MESSAGE
 _send_msg_option() {
@@ -498,8 +499,8 @@ _send_file_option() {
     fi
 }
 
-### LIST KERNELS OPTION ###
-###########################
+## LIST KERNELS OPTION ##
+##---------------------##
 _list_all_kernels() {
     if [[ -d ${DIR}/out ]] && \
     [[ $(ls -d out/*/ 2>/dev/null) ]]; then
@@ -511,8 +512,8 @@ _list_all_kernels() {
     fi
 }
 
-### LINUX TAG OPTION ###
-########################
+## LINUX TAG OPTION ##
+##------------------##
 _get_linux_tag() {
     _note "${MSG_NOTE_LTAG}..."
     ltag=$(git ls-remote --refs --sort='v:refname' --tags \
@@ -525,8 +526,8 @@ _get_linux_tag() {
     fi
 }
 
-### ZIP OPTION ###
-##################
+## ZIP OPTION ##
+##------------##
 _create_zip_option() {
     if [[ -f $OPTARG ]] && [[ ${OPTARG##*/} == *Image* ]]; then
         _zip "${OPTARG##*/}-${DATE}-$TIME" "$OPTARG" \
@@ -539,8 +540,8 @@ _create_zip_option() {
     fi
 }
 
-### HELP OPTION ###
-###################
+## HELP OPTION ##
+##-------------##
 _usage() {
     echo -e "
 ${BOLD}Usage:$NC ${GREEN}bash zmb \
@@ -564,9 +565,9 @@ ${CYAN}https://kernel-builder.com$NC
 }
 
 
-#################################################################
-### QUESTIONER => functions of questions asked to the user.   ###
-#################################################################
+###--------------------------------------------------------------###
+###  4. QUESTIONER => functions of questions asked to the user   ###
+###--------------------------------------------------------------###
 
 # QUESTION: GET THE DEVICE CODENAME
 _ask_for_codename() {
@@ -808,9 +809,9 @@ _ask_for_clone_anykernel() {
 }
 
 
-#################################################################
-### MAKER => all the functions related to the make process.   ###
-#################################################################
+###--------------------------------------------------------------###
+###  5. MAKER => all the functions related to the make process   ###
+###--------------------------------------------------------------###
 
 # SET COMPILER BUILD OPTIONS
 _export_path_and_options() {
@@ -988,9 +989,9 @@ _make_build() {
 }
 
 
-#################################################################
-### ZIP => all the functions related to the ZIP creation.     ###
-#################################################################
+###--------------------------------------------------------------###
+###  6. ZIP => all the functions related to the ZIP creation     ###
+###--------------------------------------------------------------###
 
 # FLASHABLE ZIP CREATION
 _zip() {
@@ -1083,13 +1084,12 @@ _sign_zip() {
     fi
 }
 
-#################################################################
-### TELEGRAM => all the functions for Telegram feedback.      ###
-#################################################################
+###--------------------------------------------------------------###
+###  7. TELEGRAM => all the functions for Telegram feedback      ###
+###--------------------------------------------------------------###
 
-### TELEGRAM API ###
-####################
-
+## TELEGRAM API ##
+##--------------##
 api="https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN"
 
 # SEND MESSAGE (POST)
@@ -1116,8 +1116,8 @@ _send_file() {
         | tee /dev/null
 }
 
-### KERNEL BUILD STATUS ###
-###########################
+## KERNEL BUILD STATUS ##
+##---------------------##
 
 # START BUILD STATUS
 _send_start_build_status() {
@@ -1191,9 +1191,9 @@ _set_html_status_msg() {
 }
 
 
-#################################################################
-### MAIN => run the ZenMaxBuilder (ZMB) main process.         ###
-#################################################################
+###--------------------------------------------------------------###
+###  8. MAIN => run the ZenMaxBuilder (ZMB) main process         ###
+###--------------------------------------------------------------###
 
 # TERMINAL COLORS
 _terminal_colors
@@ -1250,9 +1250,9 @@ if [[ $OPTIND -eq 1 ]]; then
 shift $(( OPTIND - 1 ))
 
 
-#################################################################
-### START => start new android kernel compilation.            ###
-#################################################################
+###--------------------------------------------------------------###
+###  9. START => start new android kernel compilation            ###
+###--------------------------------------------------------------###
 
 # PREVENT ERRORS IN USER SETTINGS
 if [[ $KERNEL_DIR != default  ]] &&
