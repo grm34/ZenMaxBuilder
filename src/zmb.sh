@@ -23,7 +23,7 @@
 
 # ZENMAXBUILDER PROJECT
 # =====================
-#
+# - Starting blocks...
 # - MANAGER: global management functions of the script.      (92)
 # - REQUIREMENTS: dependency install management functions.  (316)
 # - OPTIONS: command line option management functions.      (419)
@@ -236,7 +236,7 @@ _error() {
 # HANDLE SHELL COMMANDS
 _check() {
     # $@ = the command to run
-    #
+    # -----------------------
     # - DEBUG MODE: display command
     # - run command as child and wait
     # - notify function and file on ERR
@@ -425,7 +425,7 @@ _clone_anykernel() {
 # UPDATE GIT REPOSITORY
 _update_git() {
     # $1 = repo branch
-    #
+    # ----------------
     # - ALL: checkout and fetch
     # - ZMB: check if settings.cfg was updated
     # - ZMB: if True warn the user to create new one
@@ -1004,12 +1004,13 @@ _zip() {
     # $1 = kernel name
     # $2 = kernel image
     # $3 = build folder
-    #
+    # -----------------
     # - send status on Telegram
-    # - move image to AK3 folder
+    # - copy image to AK3 folder
+    # - CD into AK3 folder
     # - set AK3 configuration
     # - create flashable ZIP
-    # - move ZIP to builds folder
+    # - move the ZIP into builds folder
     _note "$MSG_NOTE_ZIP ${1}.zip..."
     _send_zip_creation_status
     _check cp "$2" "$ANYKERNEL_DIR"
@@ -1024,36 +1025,25 @@ _zip() {
     _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
 }
 
-# ZIP SIGNING with AOSP Keys
-_sign_zip() {
-    # $1 = kernel name
-    #
-    # - send signing status on Telegram
-    # - sign ZIP with AOSP Keys (JAVA)
-    if which java &>/dev/null; then
-        _note "${MSG_NOTE_SIGN}..."
-        _send_zip_signing_status
-        _check unbuffer java -jar \
-            "${DIR}/bin/zipsigner-3.0-dexed.jar" \
-            "${1}.zip" "${1}-signed.zip" 2>&1
-    else
-        _error WARN "$MSG_WARN_JAVA"
-    fi
-}
-
 # ANYKERNEL CONFIGURATION
 _set_ak3_conf() {
-    # - edit anykernel.sh (SED)
-    # - edit init.spectrum.rc (SED)
-    if [[ -f ${KERNEL_DIR}/$SPECTRUM ]]; then
-        _check cp -af \
-            "${KERNEL_DIR}/$SPECTRUM" \
-            init.spectrum.rc
-        kn=$KERNEL_NAME
-        _check sed -i \
-            "s/*.spectrum.kernel.*/*.spectrum.kernel ${kn}/g" \
-            init.spectrum.rc
-    fi
+    # NOTE: we are working here from AK3 folder
+    # - copy included files into AK3 (in their dedicated folder)
+    # - edit anykernel.sh to append device infos (SED)
+    for file in "${INCLUDED[@]}"; do
+        if [[ -f ${BOOT_DIR}/$file ]]; then
+            if [[ ${file##*/} == *erofs.dtb ]]; then
+                _check mkdir erofs; inc_dir=erofs/
+            elif [[ ${file##*/} != *erofs.dtb ]] && \
+            [[ ${file##*/} == *.dtb ]]; then
+                _check mkdir dtb; inc_dir=dtb/;
+            else
+                inc_dir=""
+            fi
+            file=$(realpath "${BOOT_DIR}/$file")
+            _check cp -af "$file" "${inc_dir}${file##*/}"
+        fi
+    done
     strings=(
         "s/kernel.string=.*/kernel.string=${TAG}-${CODENAME}/g"
         "s/kernel.for=.*/kernel.for=${KERNEL_VARIANT}/g"
@@ -1072,12 +1062,28 @@ _set_ak3_conf() {
 _clean_anykernel() {
     _note "${MSG_NOTE_CLEAN_AK3}..."
     for file in "${DIR}/${ANYKERNEL_DIR}"/*; do
-        case $file in (*.zip*|*Image*|*-dtb*|*spectrum.rc*)
-            rm -f "${file}" || sleep 0.1
+        case $file in (*.zip*|*Image*|*erofs*|*dtb*|*spectrum.rc*)
+            rm -rf "${file}" || sleep 0.1
         esac
     done
 }
 
+# SIGN ZIP with AOSP Keys
+_sign_zip() {
+    # $1 = kernel name
+    # ----------------
+    # - send signing status on Telegram
+    # - sign ZIP with AOSP Keys (JAVA)
+    if which java &>/dev/null; then
+        _note "${MSG_NOTE_SIGN}..."
+        _send_zip_signing_status
+        _check unbuffer java -jar \
+            "${DIR}/bin/zipsigner-3.0-dexed.jar" \
+            "${1}.zip" "${1}-signed.zip" 2>&1
+    else
+        _error WARN "$MSG_WARN_JAVA"
+    fi
+}
 
 #################################################################
 ### TELEGRAM => all the functions for Telegram feedback.      ###
