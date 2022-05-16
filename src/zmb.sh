@@ -21,18 +21,18 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-### ZMB STRUCTURE ###
-# ==================
+# ZENMAXBUILDER PROJECT
+# =====================
 #
-# - MANAGER: all the functions for the global management.    (92)
-# - REQUIREMENTS: the missing dependencies installation.    (335)
-# - OPTIONS: all the functions for command-line options.    (443)
-# - QUESTIONER: all the asked questions to the user.        (603)
+# - MANAGER: global management functions of the script.      (92)
+# - REQUIREMENTS: dependency install management functions.  (335)
+# - OPTIONS: command line option management functions.      (443)
+# - QUESTIONER: functions of questions asked to the user.   (603)
 # - MAKER: all the functions related to the make process.   (847)
-# - ZIP: all the functions for the signed ZIP creation.    (1039)
+# - ZIP: all the functions related to the ZIP creation.    (1039)
 # - TELEGRAM: all the functions for Telegram feedback.     (1133)
 # - MAIN: run the ZenMaxBuilder (ZMB) main process.        (1245)
-# - START OPTION: start new android kernel compilation.    (1304)
+# - START: start new android kernel compilation.           (1304)
 
 
 # BAN ALL ('n00bz')
@@ -89,7 +89,7 @@ fi
 
 
 #################################################################
-### MANAGER | ALL THE FUNCTIONS FOR THE GLOBAL MANAGEMENT...
+### MANAGER => global management functions of the script.     ###
 #################################################################
 
 # BANNER
@@ -135,7 +135,7 @@ _get_user_timezone() {
     fi
 }
 
-# GET CURRENT BUILD TIME
+# CURRENT BUILD TIME
 _get_build_time() {
     end_time=$(TZ=$TIMEZONE date +%s)
     diff_time=$((end_time - START_TIME))
@@ -144,8 +144,8 @@ _get_build_time() {
     export BUILD_TIME=${min}m${sec}s
 }
 
-# HANDLES BUILD LOGS
-# ==================
+# HANDLE BUILD LOGS
+# =================
 # - get user inputs and add them to logfile
 # - remove color codes from logfile
 # - remove ANSI sequences from logfile
@@ -227,7 +227,7 @@ _confirm() {
     done
 }
 
-# DISPLAY SOME NOTES
+# DISPLAY some NOTES
 # ==================
 #  $1 = note to display
 #
@@ -249,8 +249,8 @@ _error() {
     fi
 }
 
-# HANDLES SHELL COMMANDS
-# ======================
+# HANDLE SHELL COMMANDS
+# =====================
 # - DEBUG MODE: display command
 # - run command as child
 # - notify function and file on ERR
@@ -332,11 +332,11 @@ _exit() {
 
 
 #################################################################
-### REQUIREMENTS | THE MISSING DEPENDENCIES INSTALLATION...
+### REQUIREMENTS => dependency install management functions.  ###
 #################################################################
 
-# HANDLES DEPENDENCIES INSTALLATION
-# =================================
+# HANDLE DEPENDENCY INSTALLATION
+# ==============================
 # - set the package manager for each Linux distribution
 # - get the install command of the current OS package manager
 # - GCC will not be installed on TERMUX (not fully supported)
@@ -387,8 +387,8 @@ _install_dependencies() {
     fi
 }
 
-# GIT CLONE TOOLCHAIN
-# ===================
+# GIT CLONE some TOOLCHAINS
+# =========================
 #  $1 = repo branch
 #  $2 = repo url
 #  $3 = repo folder
@@ -402,7 +402,7 @@ _clone_tc() {
     fi
 }
 
-# CLONE SELECTED TOOLCHAIN COMPILER
+# CLONE THE SELECTED TOOLCHAIN COMPILER
 _clone_toolchains() {
     case $COMPILER in
 
@@ -440,7 +440,7 @@ _clone_anykernel() {
 
 
 #################################################################
-### OPTIONS - ALL THE FUNCTIONS FOR COMMAND-LINE OPTIONS...
+### OPTIONS => command line option management functions.      ###
 #################################################################
 
 ### UPDATE OPTION ###
@@ -470,8 +470,8 @@ _update_git() {
     git pull
 }
 
-# UPDATES EVERYTHING THAT NEEDS TO BE
-# ===================================
+# UPDATE EVERYTHING THAT NEEDS TO BE
+# ==================================
 # - set ZMB and AK3 and TC data
 # - upgrade existing stuff...
 
@@ -600,10 +600,10 @@ ${CYAN}https://kernel-builder.com$NC
 
 
 #################################################################
-### QUESTIONER - ALL THE ASKED QUESTIONS TO THE USER...
+### QUESTIONER => functions of questions asked to the user.   ###
 #################################################################
 
-# QUESTION TO GET THE DEVICE CODENAME
+# QUESTION: GET THE DEVICE CODENAME
 # Validation checks REGEX to prevent invalid string.
 # Match "letters" and "numbers" and "-" and "_" only.
 # Should be at least "3" characters long and maximum "20".
@@ -621,7 +621,7 @@ _ask_for_codename() {
     fi
 }
 
-# QUESTION TO GET THE KERNEL LOCATION
+# QUESTION: GET THE KERNEL LOCATION
 # Validation checks the presence of the "configs"
 # folder corresponding to the current architecture.
 _ask_for_kernel_dir() {
@@ -637,7 +637,7 @@ _ask_for_kernel_dir() {
     fi
 }
 
-# PROMPT TO SELECT THE DEFCONFIG FILE TO USE
+# SELECTION: GET THE DEFCONFIG FILE TO USE
 # Choices: all defconfig files located in "configs"
 # folder corresponding to the current architecture.
 # Validation checks are not needed here.
@@ -652,7 +652,7 @@ _ask_for_defconfig() {
     _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
 }
 
-# CONFIRMATION TO RUN <make menuconfig> COMMAND
+# CONFIRMATION: RUN <make menuconfig>
 # Validation checks are not needed here.
 _ask_for_menuconfig() {
     _confirm "$MSG_ASK_CONF ?" "[y/N]"
@@ -661,7 +661,7 @@ _ask_for_menuconfig() {
     esac
 }
 
-# CONFIRMATION TO SAVE NEW DEFCONFIG
+# CONFIRMATION: SAVE NEW DEFCONFIG
 # otherwise request to continue with the original one.
 # Validation checks REGEX to prevent invalid string.
 # Match "letters" and "numbers" and "-" and "_" only.
@@ -690,7 +690,7 @@ _ask_for_save_defconfig() {
     esac
 }
 
-# QUESTION TO GET THE TOOLCHAIN TO USE
+# QUESTION: GET THE TOOLCHAIN TO USE
 # Choices: Proton-Clang Eva-GCC Proton-GCC
 # Validation checks are not needed here.
 _ask_for_toolchain() {
@@ -704,7 +704,7 @@ _ask_for_toolchain() {
     fi
 }
 
-# CONFIRMATION TO EDIT Makefile CROSS_COMPILE
+# CONFIRMATION: EDIT Makefile CROSS_COMPILE
 # Validation checks are not needed here.
 _ask_for_edit_cross_compile() {
     _confirm "$MSG_ASK_CC $COMPILER ?" "[Y/n]"
@@ -713,7 +713,7 @@ _ask_for_edit_cross_compile() {
     esac
 }
 
-# QUESTION TO GET THE NUMBER OF CPU CORES TO USE
+# QUESTION: GET THE NUMBER OF CPU CORES TO USE
 # Validation checks for a valid number corresponding
 # to the amount of available CPU cores (no limits here).
 # Otherwise all available CPU cores will be used.
@@ -735,7 +735,7 @@ _ask_for_cores() {
     esac
 }
 
-# CONFIRMATION TO RUN  <make clean> AND <make mrproprer> COMMANDS
+# CONFIRMATION: RUN <make clean> AND <make mrproprer>
 # Validation checks are not needed here.
 _ask_for_make_clean() {
     _confirm "${MSG_ASK_MCLEAN}: v$LINUX_VERSION ?" "[y/N]"
@@ -744,7 +744,7 @@ _ask_for_make_clean() {
     esac
 }
 
-# CONFIRMATION TO MAKE A NEW BUILD
+# CONFIRMATION: MAKE A NEW BUILD
 # Validation checks are not needed here.
 _ask_for_new_build() {
     _confirm \
@@ -754,7 +754,7 @@ _ask_for_new_build() {
     esac
 }
 
-# CONFIRMATION TO SEND BUILD STATUS ON TELEGRAM
+# CONFIRMATION: SEND BUILD STATUS ON TELEGRAM
 # Validation checks are not needed here.
 _ask_for_telegram() {
     if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
@@ -765,7 +765,7 @@ _ask_for_telegram() {
     fi
 }
 
-# CONFIRMATION TO CREATE FLASHABLE ZIP
+# CONFIRMATION: CREATE FLASHABLE ZIP
 # Validation checks are not needed here.
 _ask_for_flashable_zip() {
     _confirm \
@@ -775,7 +775,7 @@ _ask_for_flashable_zip() {
     esac
 }
 
-# QUESTION TO GET THE KERNEL IMAGE TO ZIP
+# QUESTION: GET THE KERNEL IMAGE TO ZIP
 # Validation checks the presence of this file in
 # "boot" folder and verify it starts with "Image".
 _ask_for_kernel_image() {
@@ -791,7 +791,7 @@ _ask_for_kernel_image() {
     _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
 }
 
-# CONFIRMATION TO RUN AGAIN LAST FAILED COMMAND
+# CONFIRMATION: RUN AGAIN LAST FAILED COMMAND
 # Validation checks are not needed here.
 _ask_for_run_again() {
     RUN_AGAIN=False
@@ -801,7 +801,7 @@ _ask_for_run_again() {
     esac
 }
 
-# CONFIRMATION TO INSTALL MISSING PACKAGE
+# CONFIRMATION: INSTALL MISSING PACKAGE
 # Warn the user that when false the script may crash.
 # Validation checks are not needed here.
 _ask_for_install_pkg() {
@@ -814,7 +814,7 @@ _ask_for_install_pkg() {
     esac
 }
 
-# CONFIRMATION TO CLONE MISSING TOOLCHAIN
+# CONFIRMATION: CLONE MISSING TOOLCHAIN
 # Warn the user and exit the script when false.
 # Validation checks are not needed here.
 _ask_for_clone_toolchain() {
@@ -828,7 +828,7 @@ _ask_for_clone_toolchain() {
     esac
 }
 
-# CONFIRMATION TO CLONE MISSING ANYKERNEL
+# CONFIRMATION: CLONE MISSING ANYKERNEL
 # Warn the user and exit the script when false.
 # Validation checks are not needed here.
 _ask_for_clone_anykernel() {
@@ -844,7 +844,7 @@ _ask_for_clone_anykernel() {
 
 
 #################################################################
-### MAKER - ALL THE FUNCTIONS RELATED TO THE MAKE PROCESS...
+### MAKER => all the functions related to the make process.   ###
 #################################################################
 
 # SET COMPILER BUILD OPTIONS
@@ -946,8 +946,8 @@ _get_and_display_cross_compile() {
     fi
 }
 
-# HANDLES Makefile CROSS_COMPILE and CC
-# =====================================
+# HANDLE Makefile CROSS_COMPILE and CC
+# ====================================
 # - display them on TERM so user can check before
 # - ask to modify them in the kernel Makefile
 # - edit the kernel Makefile (SED) while True
@@ -972,27 +972,27 @@ _handle_makefile_cross_compile() {
     fi
 }
 
-# RUN MAKE CLEAN
+# RUN: MAKE CLEAN
 _make_clean() {
     _note "$MSG_NOTE_MAKE_CLEAN [${LINUX_VERSION}]..."
     _check unbuffer make -C "$KERNEL_DIR" clean 2>&1
 }
 
-# RUN MAKE MRPROPER
+# RUN: MAKE MRPROPER
 _make_mrproper() {
     _note "$MSG_NOTE_MRPROPER [${LINUX_VERSION}]..."
     _check unbuffer make -C "$KERNEL_DIR" mrproper 2>&1
 }
 
 
-# RUN MAKE DEFCONFIG
+# RUN: MAKE DEFCONFIG
 _make_defconfig() {
     _note "$MSG_NOTE_DEFCONFIG $DEFCONFIG [${LINUX_VERSION}]..."
     _check unbuffer make -C "$KERNEL_DIR" \
         O="$OUT_DIR" ARCH="$ARCH" "$DEFCONFIG" 2>&1
 }
 
-# RUN MAKE MENUCONFIG
+# RUN: MAKE MENUCONFIG
 _make_menuconfig() {
     _note "$MSG_NOTE_MENUCONFIG $DEFCONFIG [${LINUX_VERSION}]..."
     make -C "$KERNEL_DIR" O="$OUT_DIR" \
@@ -1014,8 +1014,8 @@ _save_defconfig() {
     _check cp "${OUT_DIR}/.config" "${CONF_DIR}/$DEFCONFIG"
 }
 
-# RUN MAKE BUILD
-# ==============
+# RUN: MAKE NEW BUILD
+# ===================
 # - set Telegram HTML message
 # - send build status on Telegram
 # - CLANG: CROSS_COMPILE_ARM32 -> CROSS_COMPILE_COMPAT (linux > v4.2)
@@ -1036,7 +1036,7 @@ _make_build() {
 
 
 #################################################################
-### ZIP - ALL THE FUNCTIONS FOR THE SIGNED ZIP CREATION...
+### ZIP => all the functions related to the ZIP creation.     ###
 #################################################################
 
 # FLASHABLE ZIP CREATION
@@ -1130,7 +1130,7 @@ _clean_anykernel() {
 
 
 #################################################################
-### TELEGRAM - ALL THE FUNCTIONS FOR TELEGRAM FEEDBACK...
+### TELEGRAM => all the functions for Telegram feedback.      ###
 #################################################################
 
 ### TELEGRAM API ###
@@ -1198,7 +1198,7 @@ _send_zip_signing_status() {
     fi
 }
 
-# FAIL BUILD STATUS WITH LOGFILE
+# FAIL BUILD STATUS (+ LOGFILE)
 _send_failed_build_logs() {
     if [[ $START_TIME ]] && [[ $BUILD_STATUS == True ]] && \
     { [[ ! $BUILD_TIME ]] || [[ $RUN_AGAIN == True ]]; }; then
@@ -1242,7 +1242,7 @@ _set_html_status_msg() {
 
 
 #################################################################
-### MAIN - RUN THE ZENMAXBUILDER (ZMB) MAIN PROCESS...
+### MAIN => run the ZenMaxBuilder (ZMB) main process.         ###
 #################################################################
 
 # TERMINAL COLORS
@@ -1273,7 +1273,7 @@ for opt in "$@"; do
     esac
 done
 
-# HANDLES OPTIONS ARGUMENTS
+# HANDLE OPTIONS ARGUMENTS
 if [[ $# -eq 0 ]]; then
     _error "$MSG_ERR_EOPT"; _exit; fi
 while getopts ':hsuldt:m:f:z:' option; do
@@ -1301,7 +1301,7 @@ shift $(( OPTIND - 1 ))
 
 
 #################################################################
-### START OPTION - START NEW ANDROID KERNEL COMPILATION...
+### START => start new android kernel compilation.            ###
 #################################################################
 
 # PREVENT ERRORS IN USER SETTINGS
@@ -1349,7 +1349,7 @@ _ask_for_menuconfig
 _ask_for_toolchain
 _ask_for_cores
 
-# CLONE AK3 AND REQUIRED TOOLCHAINS
+# CLONE AK3 AND SELECTED TOOLCHAINS
 _clone_toolchains
 _clone_anykernel
 
