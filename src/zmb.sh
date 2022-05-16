@@ -1059,13 +1059,9 @@ _clean_anykernel() {
     _note "${MSG_NOTE_CLEAN_AK3}..."
     for file in "${DIR}/${ANYKERNEL_DIR}"/*; do
         case $file in (*.zip*|*Image*|*erofs*|*dtb*|*spectrum.rc*)
-            rm -rf "${file}" || sleep 0.1
+            _check rm -rf "${file}"
         esac
     done
-    _cd "$ANYKERNEL_DIR" "$MSG_ERR_DIR ${RED}AnyKernel"
-    git checkout "$ANYKERNEL_BRANCH"
-    git reset --hard "origin/$ANYKERNEL_BRANCH"
-    _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
 }
 
 # SIGN ZIP with AOSP Keys
@@ -1373,7 +1369,6 @@ fi
 
 # UPLOAD THE BUILD AND EXIT
 _upload_signed_build
-_clean_anykernel
 _exit
 
 
