@@ -1006,7 +1006,7 @@ _zip() {
     # 4. set AK3 configuration
     # 5. create flashable ZIP
     # 6. move the ZIP into builds folder
-    if [[ $START_TIME ]]; then clean_anykernel; fi
+    if [[ $START_TIME ]]; then _clean_anykernel; fi
     _note "$MSG_NOTE_ZIP ${1}.zip..."
     _send_zip_creation_status
     _check cp "$2" "$ANYKERNEL_DIR"
