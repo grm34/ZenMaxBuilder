@@ -25,14 +25,14 @@
 # =====================
 #
 # - MANAGER: global management functions of the script.      (92)
-# - REQUIREMENTS: dependency install management functions.  (335)
-# - OPTIONS: command line option management functions.      (443)
-# - QUESTIONER: functions of questions asked to the user.   (603)
-# - MAKER: all the functions related to the make process.   (847)
-# - ZIP: all the functions related to the ZIP creation.    (1039)
-# - TELEGRAM: all the functions for Telegram feedback.     (1133)
-# - MAIN: run the ZenMaxBuilder (ZMB) main process.        (1245)
-# - START: start new android kernel compilation.           (1304)
+# - REQUIREMENTS: dependency install management functions.  (329)
+# - OPTIONS: command line option management functions.      (437)
+# - QUESTIONER: functions of questions asked to the user.   (597)
+# - MAKER: all the functions related to the make process.   (841)
+# - ZIP: all the functions related to the ZIP creation.    (1033)
+# - TELEGRAM: all the functions for Telegram feedback.     (1127)
+# - MAIN: run the ZenMaxBuilder (ZMB) main process.        (1239)
+# - START: start new android kernel compilation.           (1298)
 
 
 # BAN ALL ('n00bz')
@@ -167,17 +167,10 @@ _get_build_logs() {
     fi
 }
 
-# MOVE to specified DIRECTORY
-# ===========================
-#  $1 = location to go
-#  $2 = error message
-#
-_cd() { cd "$1" || (_error "$2"; _exit) }
-
 # ASK some INFORMATION
 # ====================
-#  $1 = question to ask
-#  $2 = type (1 for arrow)
+#  $1 = the question to ask
+#  $2 = prompt type (1 for question / 2 for selection)
 #
 _prompt() {
     lenth=$*
@@ -194,11 +187,14 @@ _prompt() {
     fi
 }
 
-# CONFIRMATION MESSAGE
-# ====================
-#  $1 = question to ask
-#  $2 = yes/no (to set default)
+# MOVE to specified DIRECTORY
+# ===========================
+#  $1 = the location to go
+#  $2 = the error message
 #
+_cd() { cd "$1" || (_error "$2"; _exit) }
+
+# CONFIRMATION PROMPT
 _confirm_msg() {
     CONFIRM=False
     count=$((${#1} + 6))
@@ -211,12 +207,10 @@ _confirm_msg() {
     read -r CONFIRM
 }
 
-# ASK CONFIRMATION [y/n]
-# ======================
-#  $@ = $1 + $2
-#  -------------
-#  $1 = question
-#  $2 = yes/no
+# ASK CONFIRMATION yes/no
+# =======================
+#  $1 = the question to ask
+#  $2 = [Y/n] (to set default <ENTER> behavior)
 #
 _confirm() {
     _confirm_msg "$@"
@@ -227,9 +221,9 @@ _confirm() {
     done
 }
 
-# DISPLAY some NOTES
-# ==================
-#  $1 = note to display
+# DISPLAY some NOTES with TIMESTAMP
+# =================================
+#  $1 = the note to display
 #
 _note() {
     echo -e "${YELL}\n[$(TZ=$TIMEZONE date +%T)] ${CYAN}${1}$NC"
@@ -238,7 +232,7 @@ _note() {
 
 # DISPLAY WARNING or ERROR
 # ========================
-#  $1 = use WARN as $1 to use warning
+#  $1 = <WARN> for warning (leave empty for error)
 #  $* = ERROR or WARNING message
 #
 _error() {
@@ -252,12 +246,12 @@ _error() {
 # HANDLE SHELL COMMANDS
 # =====================
 # - DEBUG MODE: display command
-# - run command as child
+# - run command as child and wait
 # - notify function and file on ERR
 # - get failed build logs (+TG feedback)
 # - ask to run again last failed command
-#   -------------------
-#   $@ = command to run
+#   -----------------------
+#   $@ = the command to run
 #
 _check() {
     cmd_err=${*}
@@ -340,7 +334,7 @@ _exit() {
 # - set the package manager for each Linux distribution
 # - get the install command of the current OS package manager
 # - GCC will not be installed on TERMUX (not fully supported)
-# - install missing dependencies
+# - install the missing dependencies...
 #
 _install_dependencies() {
     if [[ $AUTO_DEPENDENCIES == True ]]; then
@@ -690,7 +684,7 @@ _ask_for_save_defconfig() {
     esac
 }
 
-# QUESTION: GET THE TOOLCHAIN TO USE
+# SELECTION: GET THE TOOLCHAIN TO USE
 # Choices: Proton-Clang Eva-GCC Proton-GCC
 # Validation checks are not needed here.
 _ask_for_toolchain() {
@@ -1044,9 +1038,9 @@ _make_build() {
 # - send status on Telegram
 # - move image to AK3 folder
 # - set AK3 configuration
-# - create Flashable ZIP
+# - create flashable ZIP
 # - move ZIP to builds folder
-#   ----------------
+#   -----------------
 #   $1 = kernel name
 #   $2 = kernel image
 #   $3 = build folder
