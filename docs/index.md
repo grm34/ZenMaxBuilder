@@ -171,6 +171,7 @@ Found a problem? Want a new feature? Have a question? First of all see if your i
 - AnyKernel3: [@osm0sis](https://github.com/osm0sis)
 - ZipSigner: [@osm0sis](https://github.com/osm0sis) [@topjohnwu](https://github.com/topjohnwu)
 
+<br>
 ## Buy me a beer ?
 
 If you feel like buying me a beer donations are welcome :
