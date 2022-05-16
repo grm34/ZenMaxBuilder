@@ -25,14 +25,14 @@
 # =====================
 # - Starting blocks...
 # - MANAGER: global management functions of the script.      (92)
-# - REQUIREMENTS: dependency install management functions.  (316)
-# - OPTIONS: command line option management functions.      (419)
-# - QUESTIONER: functions of questions asked to the user.   (575)
-# - MAKER: all the functions related to the make process.   (819)
-# - ZIP: all the functions related to the ZIP creation.     (999)
-# - TELEGRAM: all the functions for Telegram feedback.     (1083)
-# - MAIN: run the ZenMaxBuilder (ZMB) main process.        (1191)
-# - START: start new android kernel compilation.           (1250)
+# - REQUIREMENTS: dependency install management functions.  (315)
+# - OPTIONS: command line option management functions.      (418)
+# - QUESTIONER: functions of questions asked to the user.   (573)
+# - MAKER: all the functions related to the make process.   (817)
+# - ZIP: all the functions related to the ZIP creation.     (997)
+# - TELEGRAM: all the functions for Telegram feedback.     (1090)
+# - MAIN: run the ZenMaxBuilder (ZMB) main process.        (1198)
+# - START: start new android kernel compilation.           (1257)
 
 
 # BAN ALL ('n00bz')
@@ -146,10 +146,10 @@ _get_build_time() {
 
 # HANDLE BUILD LOGS
 _get_build_logs() {
-    # - get user inputs and add them to logfile
-    # - remove color codes from logfile
-    # - remove ANSI sequences from logfile
-    # - send logfile on Telegram when the build fail
+    # 1. get user inputs without excluded from CFG
+    # 2. diff bash/user inputs and add them to logfile
+    # 3. remove ANSI sequences (colors) from logfile
+    # 4. send logfile on Telegram when the build fail
     if [[ -f $LOG ]]; then
         # shellcheck source=/dev/null
         source "${DIR}/etc/excluded.cfg"
@@ -167,8 +167,8 @@ _get_build_logs() {
 
 # MOVE to specified DIRECTORY
 _cd() {
-    # $1 = the location to go
-    # $2 = the error message
+    # ARG $1 = the location to go
+    # ARG $2 = the error message
     cd "$1" || (_error "$2"; _exit)
 }
 
@@ -205,8 +205,8 @@ _confirm_msg() {
 
 # ASK CONFIRMATION yes/no
 _confirm() {
-    # $1 = the question to ask
-    # $2 = [Y/n] (to set default <ENTER> behavior)
+    # ARG $1 = the question to ask
+    # ARG $2 = [Y/n] (to set default <ENTER> behavior)
     _confirm_msg "$@"
     until [[ -z $CONFIRM ]] || \
     [[ $CONFIRM =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]]; do
@@ -217,15 +217,15 @@ _confirm() {
 
 # DISPLAY some NOTES with TIMESTAMP
 _note() {
-    # $1 = the note to display
+    # ARG $1 = the note to display
     echo -e "${YELL}\n[$(TZ=$TIMEZONE date +%T)] ${CYAN}${1}$NC"
     sleep 1
 }
 
 # DISPLAY WARNING or ERROR
 _error() {
-    # $1 = <WARN> for warning (leave empty for error)
-    # $* = ERROR or WARNING message
+    # ARG $1 = <WARN> for warning (leave empty for error)
+    # ARG $* = ERROR or WARNING message
     if [[ $1 == WARN ]]; then
         echo -e "\n${BLUE}${MSG_WARN}:${NC}${YELLOW}${*/WARN/}$NC"
     else
@@ -235,13 +235,12 @@ _error() {
 
 # HANDLE SHELL COMMANDS
 _check() {
-    # $@ = the command to run
-    # -----------------------
+    # ARG $@ = the command to run
     # - DEBUG MODE: display command
-    # - run command as child and wait
-    # - notify function and file on ERR
-    # - get failed build logs (+TG feedback)
-    # - ask to run again last failed command
+    # 1. run command as child and wait
+    # 2. notify function and file on ERR
+    # 3. get failed build logs (+TG feedback)
+    # 4. ask to run again last failed command
     cmd_err=${*}
     if [[ $DEBUG_MODE == True ]]; then
         echo -e "\n${BLUE}Command:"\
@@ -278,11 +277,11 @@ _check() {
 
 # PROPERLY EXIT THE SCRIPT
 _exit() {
-    # - kill make PID child on interrupt
-    # - get current build logs
-    # - remove user input files
-    # - remove empty device folders
-    # - exit with 3s timeout
+    # 1. kill make PID child on interrupt
+    # 2. get current build logs
+    # 3. remove user input files
+    # 4. remove empty device folders
+    # 5. exit with 3s timeout
     if pidof make; then
         pkill make || sleep 0.1
     fi
@@ -318,10 +317,10 @@ _exit() {
 
 # HANDLE DEPENDENCY INSTALLATION
 _install_dependencies() {
-    # - set the package manager for each Linux distribution
-    # - get the install command of the current OS package manager
-    # - GCC will not be installed on TERMUX (not fully supported)
-    # - install the missing dependencies...
+    # 1. set the package manager for each Linux distribution
+    # 2. get the install command of the current OS package manager
+    # 3. GCC will not be installed on TERMUX (not fully supported)
+    # 4. install the missing dependencies...
     if [[ $AUTO_DEPENDENCIES == True ]]; then
         declare -A pm_install_cmd=(
             [apt]="sudo apt install -y"
@@ -368,9 +367,9 @@ _install_dependencies() {
 
 # GIT CLONE some TOOLCHAINS
 _clone_tc() {
-    # $1 = repo branch
-    # $2 = repo url
-    # $3 = repo folder
+    # ARG $1 = repo branch
+    # ARG $2 = repo url
+    # ARG $3 = repo folder
     if [[ ! -d $3 ]]; then
         _ask_for_clone_toolchain "${3##*/}"
         if [[ $CLONE_TC == True ]]; then
@@ -424,13 +423,12 @@ _clone_anykernel() {
 
 # UPDATE GIT REPOSITORY
 _update_git() {
-    # $1 = repo branch
-    # ----------------
-    # - ALL: checkout and fetch
-    # - ZMB: check if settings.cfg was updated
-    # - ZMB: if True warn the user to create new one
-    # - ZMB: rename etc/user.cfg to etc/old.cfg
-    # - ALL: reset to origin then pull changes
+    # ARG $1 = repo branch
+    # 1. ALL: checkout and fetch
+    # 2. ZMB: check if settings.cfg was updated
+    # 3. ZMB: if True warn the user to create new one
+    # 4. ZMB: rename etc/user.cfg to etc/old.cfg
+    # 5. ALL: reset to origin then pull changes
     git checkout "$1"
     git fetch origin "$1"
     if [[ $1 == zmb ]] && [[ -f ${DIR}/etc/user.cfg ]]; then
@@ -446,8 +444,8 @@ _update_git() {
 
 # UPDATE EVERYTHING THAT NEEDS TO BE
 _full_upgrade() {
-    # - set ZMB and AK3 and TC data
-    # - upgrade existing stuff...
+    # 1. set ZMB and AK3 and TC data
+    # 2. upgrade existing stuff...
     tcp=${DIR}/toolchains
     declare -A up_data=(
         [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
@@ -479,7 +477,6 @@ _full_upgrade() {
 # SEND MESSAGE
 _send_msg_option() {
     if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
-        _install_dependencies
         _note "${MSG_NOTE_SEND}..."
         _send_msg "${OPTARG//_/-}"
     else
@@ -491,7 +488,6 @@ _send_msg_option() {
 _send_file_option() {
     if [[ -f $OPTARG ]]; then
         if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
-            _install_dependencies
             _note "${MSG_NOTE_UPLOAD}: ${OPTARG##*/}..."
             _send_file "$OPTARG"
         else
@@ -533,13 +529,10 @@ _get_linux_tag() {
 ##################
 _create_zip_option() {
     if [[ -f $OPTARG ]] && [[ ${OPTARG##*/} == *Image* ]]; then
-        _install_dependencies
-        _clean_anykernel
         _zip "${OPTARG##*/}-${DATE}-$TIME" "$OPTARG" \
             "${DIR}/builds/default"
         _sign_zip \
             "${DIR}/builds/default/${OPTARG##*/}-${DATE}-$TIME"
-        _clean_anykernel
         _note "$MSG_NOTE_ZIPPED !"
     else
         _error "$MSG_ERR_IMG ${RED}$OPTARG"
@@ -821,13 +814,13 @@ _ask_for_clone_anykernel() {
 
 # SET COMPILER BUILD OPTIONS
 _export_path_and_options() {
-    # - export target variables (CFG)
-    # - append toolchains to the $PATH, export and verify
-    # - get current toolchain compiler options
-    # - get and export toolchain compiler version
-    # - get CROSS_COMPILE and CC (to handle Makefile)
-    # - set Link Time Optimization (LTO)
-    # - DEBUG MODE: display $PATH
+    # 1. export target variables (CFG)
+    # 2. append toolchains to the $PATH, export and verify
+    # 3. get current toolchain compiler options
+    # 4. get and export toolchain compiler version
+    # 5. get CROSS_COMPILE and CC (to handle Makefile)
+    # 6. set Link Time Optimization (LTO)
+    # 7. DEBUG MODE: display $PATH
     if [[ $BUILDER == default ]]; then BUILDER=$(whoami); fi
     if [[ $HOST == default ]]; then HOST=$(uname -n); fi
     export KBUILD_BUILD_USER=$BUILDER
@@ -914,11 +907,11 @@ _get_and_display_cross_compile() {
 
 # HANDLE Makefile CROSS_COMPILE and CC
 _handle_makefile_cross_compile() {
-    # - display them on TERM so user can check before
-    # - ask to modify them in the kernel Makefile
-    # - edit the kernel Makefile (SED) while True
-    # - warn the user when they not seems correctly set
-    # - DEBUG MODE: display edited Makefile values
+    # 1. display them on TERM so user can check before
+    # 2. ask to modify them in the kernel Makefile
+    # 3. edit the kernel Makefile (SED) while True
+    # 4. warn the user when they not seems correctly set
+    # 5. DEBUG MODE: display edited Makefile values
     _note "$MSG_NOTE_CC"
     _get_and_display_cross_compile
     _ask_for_edit_cross_compile
@@ -978,10 +971,10 @@ _save_defconfig() {
 
 # RUN: MAKE NEW BUILD
 _make_build() {
-    # - set Telegram HTML message
-    # - send build status on Telegram
-    # - CLANG: CROSS_COMPILE_ARM32 -> CROSS_COMPILE_COMPAT (> v4.2)
-    # - make new android kernel build
+    # 1. set Telegram HTML message
+    # 2. send build status on Telegram
+    # 3. CLANG: CROSS_COMPILE_ARM32 -> CROSS_COMPILE_COMPAT (> v4.2)
+    # 4. make new android kernel build
     _note "${MSG_NOTE_MAKE}: ${KERNEL_NAME}..."
     _set_html_status_msg
     _send_start_build_status
@@ -1001,16 +994,16 @@ _make_build() {
 
 # FLASHABLE ZIP CREATION
 _zip() {
-    # $1 = kernel name
-    # $2 = kernel image
-    # $3 = build folder
-    # -----------------
-    # - send status on Telegram
-    # - copy image to AK3 folder
-    # - CD into AK3 folder
-    # - set AK3 configuration
-    # - create flashable ZIP
-    # - move the ZIP into builds folder
+    # ARG $1 = kernel name
+    # ARG $2 = kernel image
+    # ARG $3 = build folder
+    # 1. send status on Telegram
+    # 2. copy image to AK3 folder
+    # 3. CD into AK3 folder
+    # 4. set AK3 configuration
+    # 5. create flashable ZIP
+    # 6. move the ZIP into builds folder
+    _clean_anykernel
     _note "$MSG_NOTE_ZIP ${1}.zip..."
     _send_zip_creation_status
     _check cp "$2" "$ANYKERNEL_DIR"
@@ -1023,13 +1016,14 @@ _zip() {
     if [[ ! -d $3 ]]; then _check mkdir "$3"; fi
     _check mv "${1}.zip" "$3"
     _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
+    _clean_anykernel
 }
 
 # ANYKERNEL CONFIGURATION
 _set_ak3_conf() {
     # NOTE: we are working here from AK3 folder
-    # - copy included files into AK3 (in their dedicated folder)
-    # - edit anykernel.sh to append device infos (SED)
+    # 1. copy included files into AK3 (in their dedicated folder)
+    # 2. edit anykernel.sh to append device infos (SED)
     for file in "${INCLUDED[@]}"; do
         if [[ -f ${BOOT_DIR}/$file ]]; then
             if [[ ${file##*/} == *erofs.dtb ]]; then
@@ -1067,14 +1061,17 @@ _clean_anykernel() {
             rm -rf "${file}" || sleep 0.1
         esac
     done
+    _cd "$ANYKERNEL_DIR" "$MSG_ERR_DIR ${RED}AnyKernel"
+    git checkout "$ANYKERNEL_BRANCH"
+    git reset --hard "origin/$ANYKERNEL_BRANCH"
+    _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
 }
 
 # SIGN ZIP with AOSP Keys
 _sign_zip() {
-    # $1 = kernel name
-    # ----------------
-    # - send signing status on Telegram
-    # - sign ZIP with AOSP Keys (JAVA)
+    # ARG $1 = kernel name
+    # 1. send signing status on Telegram
+    # 2. sign ZIP with AOSP Keys (JAVA)
     if which java &>/dev/null; then
         _note "${MSG_NOTE_SIGN}..."
         _send_zip_signing_status
@@ -1097,7 +1094,7 @@ api="https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN"
 
 # SEND MESSAGE (POST)
 _send_msg() {
-    # $1 = message
+    # ARG $1 = message
     curl --progress-bar -o /dev/null -fL \
         -X POST "${api}/sendMessage" \
         -d "parse_mode=html" \
@@ -1108,8 +1105,8 @@ _send_msg() {
 
 # SEND FILE (POST)
 _send_file() {
-    # $1 = file
-    # $2 = caption
+    # ARG $1 = file
+    # ARG $2 = caption
     curl --progress-bar -o /dev/null -fL \
         -X POST "${api}/sendDocument" \
         -F "document=@$1" \
