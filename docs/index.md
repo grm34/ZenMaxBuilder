@@ -168,3 +168,14 @@ Found a problem? Want a new feature? Have a question? First of all see if your i
 - Lineage-GCC: [@LineageOS](https://github.com/LineageOS)
 - AnyKernel3: [@osm0sis](https://github.com/osm0sis)
 - ZipSigner: [@osm0sis](https://github.com/osm0sis) [@topjohnwu](https://github.com/topjohnwu)
+
+## Buy me a beer ?
+
+If you feel like buying me a beer donations are welcome :
+
+    LTC: MHjiEKDw7SAtx6HzSeFEWTfEUiVUak2wUD
+    BTC: 356URzmeVn8AF8WxMtqipP2qQ3gwZQHdRi
+    BCH: 1MrG2pNek2v1nM2JShjW6gnxvS9sdxaytw
+    DOGE: DEMJp1QLze6n76h2f4KH6a55UBETuZHdMp
+    GTC: 0x349319b09D93EE3576F99622fDEE1388f42a82B0
+    ETH: 0x445bd5EF7f36CF09135F23dd9E85B8De9fab2199
