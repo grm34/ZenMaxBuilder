@@ -1059,7 +1059,7 @@ _clean_anykernel() {
     _note "${MSG_NOTE_CLEAN_AK3}..."
     for file in "${DIR}/${ANYKERNEL_DIR}"/*; do
         case $file in (*.zip*|*Image*|*erofs*|*dtb*|*spectrum.rc*)
-            rm -rf "${file}" || sleep 0.1
+            _check rm -rf "${file}"
         esac
     done
 }
