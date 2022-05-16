@@ -35,7 +35,6 @@
 # .9. START: start new android kernel compilation.             (RUN)
 # ------------------------------------------------------------------
 
-
 # Ban all 'n00bz'
 if [[ ${BASH_SOURCE[0]} != "$0" ]]; then
     echo >&2 "ERROR: ZenMaxBuilder cannot be sourced"
@@ -420,19 +419,19 @@ _clone_anykernel() {
 ### .3. OPTIONS => command line option management functions      ###
 ###--------------------------------------------------------------###
 
+##---------------##
 ## Update option ##
 ##---------------##
 
 # Update git repository
 _update_git() {
     # ARG $1 = repo branch
-    # 1. ALL: checkout and fetch
+    # 1. ALL: checkout to main branch
     # 2. ZMB: check if settings.cfg was updated
-    # 3. ZMB: if True warn the user to create new one
+    # 3. ZMB: warn the user while settings changed
     # 4. ZMB: rename etc/user.cfg to etc/old.cfg
     # 5. ALL: reset to origin then pull changes
     git checkout "$1"
-    git fetch origin "$1"
     if [[ $1 == zmb ]] && [[ -f ${DIR}/etc/user.cfg ]]; then
         conf=$(git diff origin/zmb "${DIR}/etc/settings.cfg")
         if [[ -n $conf ]] && [[ -f ${DIR}/etc/user.cfg ]]; then
@@ -473,6 +472,7 @@ _full_upgrade() {
     done
 }
 
+##------------------##
 ## Telegram options ##
 ##------------------##
 
@@ -500,8 +500,10 @@ _send_file_option() {
     fi
 }
 
+##---------------------##
 ## List kernels option ##
 ##---------------------##
+
 _list_all_kernels() {
     if [[ -d ${DIR}/out ]] && \
     [[ $(ls -d out/*/ 2>/dev/null) ]]; then
@@ -513,8 +515,10 @@ _list_all_kernels() {
     fi
 }
 
+##------------------##
 ## Linux tag option ##
 ##------------------##
+
 _get_linux_tag() {
     _note "${MSG_NOTE_LTAG}..."
     ltag=$(git ls-remote --refs --sort='v:refname' --tags \
@@ -527,8 +531,10 @@ _get_linux_tag() {
     fi
 }
 
+##------------##
 ## Zip option ##
 ##------------##
+
 _create_zip_option() {
     if [[ -f $OPTARG ]] && [[ ${OPTARG##*/} == *Image* ]]; then
         _zip "${OPTARG##*/}-${DATE}-$TIME" "$OPTARG" \
@@ -541,8 +547,10 @@ _create_zip_option() {
     fi
 }
 
+##-------------##
 ## Help option ##
 ##-------------##
+
 _usage() {
     echo -e "
 ${BOLD}Usage:$NC ${GREEN}bash zmb \
@@ -1084,15 +1092,15 @@ _sign_zip() {
 ### .7. TELEGRAM => all the functions for Telegram feedback      ###
 ###--------------------------------------------------------------###
 
+##--------------##
 ## Telegram API ##
 ##--------------##
-api="https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN"
 
 # Send message (POST)
 _send_msg() {
     # ARG $1 = message
-    curl --progress-bar -o /dev/null -fL \
-        -X POST "${api}/sendMessage" \
+    curl --progress-bar -o /dev/null -fL -X POST \
+        "${TELEGRAM_API}/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
         -d "parse_mode=html" \
         -d "chat_id=$TELEGRAM_CHAT_ID" \
         -d "text=$1" \
@@ -1103,8 +1111,8 @@ _send_msg() {
 _send_file() {
     # ARG $1 = file
     # ARG $2 = caption
-    curl --progress-bar -o /dev/null -fL \
-        -X POST "${api}/sendDocument" \
+    curl --progress-bar -o /dev/null -fL -X POST \
+        "${TELEGRAM_API}/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
         -F "document=@$1" \
         -F "caption=$2" \
         -F "chat_id=$TELEGRAM_CHAT_ID" \
@@ -1112,6 +1120,7 @@ _send_file() {
         | tee /dev/null
 }
 
+##---------------------##
 ## Kernel build status ##
 ##---------------------##
 
