@@ -236,7 +236,7 @@ _error() {
 # Handle shell commands
 _check() {
     # ARG $@ = the command to run
-    # - DEBUG MODE: display command
+    # ? DEBUG MODE: display command
     # 1. run command as child and wait
     # 2. notify function and file on ERR
     # 3. get failed build logs (+TG feedback)
@@ -323,7 +323,7 @@ _install_dependencies() {
     # 3. GCC will not be installed on TERMUX (not fully supported)
     # 4. install the missing dependencies...
     if [[ $AUTO_DEPENDENCIES == True ]]; then
-        declare -A pm_install_cmd=(
+        declare -A pm_install_cmd=(\
             [apt]="sudo apt install -y"
             [pkg]="_ pkg install -y"
             [pacman]="sudo pacman -S --noconfirm"
@@ -419,9 +419,8 @@ _clone_anykernel() {
 ### .3. OPTIONS => command line option management functions      ###
 ###--------------------------------------------------------------###
 
-##---------------##
-## Update option ##
-##---------------##
+# Update option
+#---------------
 
 # Update git repository
 _update_git() {
@@ -448,7 +447,7 @@ _full_upgrade() {
     # 1. set ZMB and AK3 and TC data
     # 2. upgrade existing stuff...
     tcp=${DIR}/toolchains
-    declare -A up_data=(
+    declare -A up_data=(\
         [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
         [ak3]="${DIR}/${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}€$MSG_UP_AK3"
         [t1]="${tcp}/${PROTON_DIR}€${PROTON_BRANCH}€$MSG_UP_CLANG"
@@ -472,9 +471,8 @@ _full_upgrade() {
     done
 }
 
-##------------------##
-## Telegram options ##
-##------------------##
+# Telegram options
+#------------------
 
 # Send message
 _send_msg_option() {
@@ -500,9 +498,8 @@ _send_file_option() {
     fi
 }
 
-##---------------------##
-## List kernels option ##
-##---------------------##
+# List kernels option
+#---------------------
 
 _list_all_kernels() {
     if [[ -d ${DIR}/out ]] && \
@@ -515,9 +512,8 @@ _list_all_kernels() {
     fi
 }
 
-##------------------##
-## Linux tag option ##
-##------------------##
+# Linux tag option
+#------------------
 
 _get_linux_tag() {
     _note "${MSG_NOTE_LTAG}..."
@@ -531,9 +527,8 @@ _get_linux_tag() {
     fi
 }
 
-##------------##
-## Zip option ##
-##------------##
+# Zip option
+#------------
 
 _create_zip_option() {
     if [[ -f $OPTARG ]] && [[ ${OPTARG##*/} == *Image* ]]; then
@@ -547,9 +542,8 @@ _create_zip_option() {
     fi
 }
 
-##-------------##
-## Help option ##
-##-------------##
+# Help option
+#-------------
 
 _usage() {
     echo -e "
@@ -1092,9 +1086,8 @@ _sign_zip() {
 ### .7. TELEGRAM => all the functions for Telegram feedback      ###
 ###--------------------------------------------------------------###
 
-##--------------##
-## Telegram API ##
-##--------------##
+# Telegram API
+#--------------
 
 # Send message (POST)
 _send_msg() {
@@ -1120,9 +1113,8 @@ _send_file() {
         | tee /dev/null
 }
 
-##---------------------##
-## Kernel build status ##
-##---------------------##
+# Kernel build status
+#--------------------
 
 # Start build status
 _send_start_build_status() {
@@ -1383,4 +1375,5 @@ _exit
 
 # THANKS FOR READING !
 # ZMB by darkmaster @grm34
+# -------------------------
 
