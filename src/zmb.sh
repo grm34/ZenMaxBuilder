@@ -1034,7 +1034,8 @@ _set_ak3_conf() {
         if [[ -f ${BOOT_DIR}/$file ]]; then
             if [[ ${file##*/} == *erofs.dtb ]]; then
                 _check mkdir erofs; inc_dir=erofs/
-            elif [[ ${file##*/} != *erofs.dtb ]] && \
+            elif [[ ${file##*/} != *Image* ]] && \
+            [[ ${file##*/} != *erofs.dtb ]] && \
             [[ ${file##*/} == *.dtb ]]; then
                 _check mkdir dtb; inc_dir=dtb/;
             else
