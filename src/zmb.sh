@@ -256,7 +256,6 @@ _check() {
                "${RED}${MSG_ERR_FROM}:"\
                "${NC}${YELLOW}${file##*/}"
         _get_build_logs
-
         _ask_for_run_again
         if [[ $RUN_AGAIN == True ]]; then
             if [[ -f $LOG ]]; then
@@ -286,7 +285,6 @@ _exit() {
     if pidof make; then
         pkill make || sleep 0.5
     fi
-
     _get_build_logs
     input_files=(bashvar buildervar linuxver)
     for file in "${input_files[@]}"; do
@@ -301,7 +299,6 @@ _exit() {
             _check rm -rf "${DIR}/${folder}/$CODENAME"
         fi
     done
-
     for (( second=3; second>=1; second-- )); do
         echo -ne "\r\033[K${BLUE}${MSG_EXIT}"\
                  "in ${MAGENTA}${second}${BLUE}"\
@@ -996,10 +993,8 @@ _zip() {
     _check cp "$2" "$ANYKERNEL_DIR"
     _cd "$ANYKERNEL_DIR" "$MSG_ERR_DIR ${RED}AnyKernel"
     if [[ $START_TIME ]]; then _set_ak3_conf; fi
-
     _check unbuffer zip -r9 "${1}.zip" \
         ./* -x .git README.md ./*placeholder 2>&1
-
     if [[ ! -d $3 ]]; then _check mkdir "$3"; fi
     _check mv "${1}.zip" "$3"
     _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
