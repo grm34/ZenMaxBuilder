@@ -180,7 +180,7 @@ _prompt() {
     count=${#lenth}
     echo -ne "\n${YELL}==> ${GREEN}$1"
     echo -ne "${YELL}\n==> "
-    for ((char=1; char<=count-2; char++)); do
+    for (( char=1; char<=count-2; char++ )); do
         echo -ne "─"
     done
     if [[ $2 == 1 ]]; then
@@ -196,7 +196,7 @@ _confirm_msg() {
     count=$((${#1} + 6))
     echo -ne "${YELL}\n==> ${GREEN}${1}"\
              "${RED}${2}${YELL}\n==> "
-    for ((char=1; char<=count; char++)); do
+    for (( char=1; char<=count; char++ )); do
         echo -ne "─"
     done
     echo -ne "\n==> $NC"
@@ -302,7 +302,7 @@ _exit() {
         fi
     done
 
-    for ((second=3; second>=1; second--)); do
+    for (( second=3; second>=1; second-- )); do
         echo -ne "\r\033[K${BLUE}${MSG_EXIT}"\
                  "in ${MAGENTA}${second}${BLUE}"\
                  "second(s)...$NC"
