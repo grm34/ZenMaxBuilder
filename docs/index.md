@@ -27,12 +27,17 @@
 <br>
 # Overview
 
-ZenMaxBuilder (ZMB) is an Android Kernel Builder written in bash, which can be runned on any compatible Linux System (feel free to Pull Request for Windows support). By default it uses Proton-Clang, Eva-GCC, Proton-GCC or Lineage-GCC but you can use any Clang or GCC toolchains you like (with LLVM and binutils included). Find all your compilations and working folders in one place, edit and maintain your kernels faster. Full logs with the possibility to restart the build after error. Automatic creation of a flashable signed ZIP (with AK3 and AOSP Keys). Real time status feedback with ZIP sending on any group or Telegram channel. And more. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
+ZenMaxBuilder (ZMB) is an Android Kernel Builder written in Bash, which can be launched on any compatible Linux system (feel free to Pull Request for Windows support). By default it uses Proton-Clang, Eva-GCC, Proton-GCC or Lineage-GCC but you can use any Clang or GCC toolchain you like (with LLVM and binutils included).
+
+Find all your compilations and working folders in one place, update and maintain your kernels faster. Full logs with the possibility to restart the build after error. Automatic creation of a flashable signed ZIP (with AK3 and AOSP Keys). Real time status feedback with build sending on any group or Telegram channel. And more. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
 
 <br>
 # Requirements
 
-A computer running Linux, the source code of the phone kernel, a minimum of knowledge in kernel compilation and a lot of patience.
+- A compatible Linux system
+- The kernel source code of your device
+- A minimum of knowledge in kernel compilation
+- Patience
 
 The installation of the missing dependencies will be offered by ZenMaxBuilder but you can also install them manually with your favorite package manager:
 
@@ -99,7 +104,9 @@ The optional flashable zip signature with AOSP Keys requires java (JDK) which is
 <br>
 # Warning
 
-ZMB is a tool to facilitate the compilation of the Android kernel, it does not touch at your kernel source and does not adds possible modifications that must be made, except the setting of CROSS_COMPILE in the main Makefile (all others toolchain options from ZMB settings will be passed directly to make as command-line argument):
+ZMB is a tool to facilitate the compilation of an Android kernel, it does not modify the source, does not adds possible patchset and does not fixes specific drivers or compilation warnings.
+
+The only change made is the addition of the selected toolchain compiler in the main Makefile, all others options from ZMB settings will be passed directly to make as command-line argument:
 
     # Proton-Clang / Proton-GCC
     CROSS_COMPILE ?= aarch64-linux-gnu-
@@ -112,8 +119,6 @@ ZMB is a tool to facilitate the compilation of the Android kernel, it does not t
     # Lineage-GCC
     CROSS_COMPILE ?= aarch64-linux-android-
     CC             = aarch64-linux-android-gcc
-
-Kernel sources are often configured for a specific compilation (vendor, firmware, modules, android version, compiler) and little changes are often necessary.
 
 <br>
 # Contributing
