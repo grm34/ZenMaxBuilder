@@ -802,18 +802,18 @@ _export_path_and_options() {
     # 1. export target variables (CFG)
     # 2. append toolchains to the $PATH, export and verify
     # 3. get current toolchain compiler options
-    # 4. get and export toolchain compiler version
+    # 4. get toolchain compiler version
     # 5. get CROSS_COMPILE and CC (to handle Makefile)
     # 6. set Link Time Optimization (LTO)
     # 7. DEBUG MODE: display $PATH
     if [[ $BUILDER == default ]]; then BUILDER=$(whoami); fi
     if [[ $HOST == default ]]; then HOST=$(uname -n); fi
-    export KBUILD_BUILD_USER=$BUILDER
-    export KBUILD_BUILD_HOST=$HOST
+    export KBUILD_BUILD_USER=${BUILDER}
+    export KBUILD_BUILD_HOST=${HOST}
     export PLATFORM_VERSION ANDROID_MAJOR_VERSION
     case $COMPILER in
         "$PROTON_CLANG_NAME")
-            export PATH=${PROTON_DIR}/bin:$PATH
+            export PATH=${PROTON_DIR}/bin:${PATH}
             _check_toolchain_path "$PROTON_DIR"
             TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
             _get_tc_version "$PROTON_VERSION"
@@ -822,7 +822,7 @@ _export_path_and_options() {
             ccross=${PROTON_CLANG_OPTIONS[3]/CC=}
             ;;
         "$EVA_GCC_NAME")
-            export PATH=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin:$PATH
+            export PATH=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin:${PATH}
             _check_toolchain_path "$GCC_ARM64_DIR" "$GCC_ARM_DIR"
             TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
             _get_tc_version "$GCC_ARM64_VERSION"
@@ -831,7 +831,7 @@ _export_path_and_options() {
             ccross=${EVA_GCC_OPTIONS[3]/CC=}
             ;;
         "$LOS_GCC_NAME")
-            export PATH=${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:$PATH
+            export PATH=${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:${PATH}
             _check_toolchain_path "$LOS_ARM64_DIR" "$LOS_ARM_DIR"
             TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
             _get_tc_version "$LOS_ARM64_VERSION"
@@ -841,7 +841,7 @@ _export_path_and_options() {
             ;;
         "$PROTON_GCC_NAME")
             eva_path=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin
-            export PATH=${PROTON_DIR}/bin:${eva_path}:$PATH
+            export PATH=${PROTON_DIR}/bin:${eva_path}:${PATH}
             _check_toolchain_path "$PROTON_DIR" "$GCC_ARM_DIR" \
                 "$GCC_ARM64_DIR"
             TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
