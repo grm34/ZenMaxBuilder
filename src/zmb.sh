@@ -141,7 +141,7 @@ _get_build_time() {
     diff_time=$((end_time - START_TIME))
     min=$((diff_time / 60))
     sec=$((diff_time % 60))
-    export BUILD_TIME=${min}m${sec}s
+    BUILD_TIME=${min}m${sec}s
 }
 
 # Handle build logs
@@ -449,7 +449,7 @@ _full_upgrade() {
     tcp=${DIR}/toolchains
     declare -A up_data=(\
         [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
-        [ak3]="${DIR}/${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}€$MSG_UP_AK3"
+        [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}€$MSG_UP_AK3"
         [t1]="${tcp}/${PROTON_DIR}€${PROTON_BRANCH}€$MSG_UP_CLANG"
         [t2]="${tcp}/${GCC_ARM_DIR}€${GCC_ARM_BRANCH}€$MSG_UP_GCC32"
         [t3]="${tcp}/${GCC_ARM64_DIR}€${GCC_ARM64_BRANCH}€$MSG_UP_GCC64"
@@ -625,9 +625,7 @@ _ask_for_defconfig() {
 _ask_for_menuconfig() {
     # Validation checks are not needed here.
     _confirm "$MSG_ASK_CONF ?" "[y/N]"
-    case $CONFIRM in y|Y|yes|Yes|YES)
-        export MENUCONFIG=True
-    esac
+    case $CONFIRM in y|Y|yes|Yes|YES) MENUCONFIG=True; esac
 }
 
 # Confirmation: save new defconfig
@@ -640,10 +638,10 @@ _ask_for_save_defconfig() {
     _confirm "${MSG_ASK_SAVE_DEF} ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
-            export SAVE_DEFCONFIG=False
+            SAVE_DEFCONFIG=False
             _confirm "${MSG_ASK_USE_DEF}: $DEFCONFIG ?" "[Y/n]"
             case $CONFIRM in n|N|no|No|NO)
-                export ORIGINAL_DEFCONFIG=False
+                ORIGINAL_DEFCONFIG=False
             esac
             ;;
         *)
@@ -655,7 +653,7 @@ _ask_for_save_defconfig() {
                 _prompt "$MSG_ASK_DEF_NAME :" 1
                 read -r DEFCONFIG
             done
-            export DEFCONFIG=${DEFCONFIG}_defconfig
+            DEFCONFIG=${DEFCONFIG}_defconfig
     esac
 }
 
@@ -677,9 +675,7 @@ _ask_for_toolchain() {
 _ask_for_edit_cross_compile() {
     # Validation checks are not needed here.
     _confirm "$MSG_ASK_CC $COMPILER ?" "[Y/n]"
-    case $CONFIRM in n|N|no|No|NO)
-        export EDIT_CC=False
-    esac
+    case $CONFIRM in n|N|no|No|NO) EDIT_CC=False; esac
 }
 
 # Question: get the number of cpu cores to use
@@ -700,7 +696,7 @@ _ask_for_cores() {
                 read -r CORES
             done
             ;;
-        *) export CORES=$CPU
+        *) CORES=$CPU
     esac
 }
 
@@ -708,9 +704,7 @@ _ask_for_cores() {
 _ask_for_make_clean() {
     # Validation checks are not needed here.
     _confirm "${MSG_ASK_MCLEAN}: v$LINUX_VERSION ?" "[y/N]"
-    case $CONFIRM in y|Y|yes|Yes|YES)
-        export MAKE_CLEAN=True
-    esac
+    case $CONFIRM in y|Y|yes|Yes|YES) MAKE_CLEAN=True; esac
 }
 
 # Confirmation: make new build
@@ -718,9 +712,7 @@ _ask_for_new_build() {
    # Validation checks are not needed here.
     _confirm \
         "$MSG_START ${TAG}-${CODENAME}-$LINUX_VERSION ?" "[Y/n]"
-    case $CONFIRM in n|N|no|No|NO)
-        export NEW_BUILD=False
-    esac
+    case $CONFIRM in n|N|no|No|NO) NEW_BUILD=False; esac
 }
 
 # Confirmation: send build status on telegram
@@ -728,9 +720,7 @@ _ask_for_telegram() {
     # Validation checks are not needed here.
     if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
         _confirm "$MSG_ASK_TG ?" "[y/N]"
-        case $CONFIRM in y|Y|yes|Yes|YES)
-            export BUILD_STATUS=True
-        esac
+        case $CONFIRM in y|Y|yes|Yes|YES) BUILD_STATUS=True; esac
     fi
 }
 
@@ -739,9 +729,7 @@ _ask_for_flashable_zip() {
     # Validation checks are not needed here.
     _confirm \
         "$MSG_ASK_ZIP ${TAG}-${CODENAME}-$LINUX_VERSION ?" "[y/N]"
-    case $CONFIRM in y|Y|yes|Yes|YES)
-        export FLASH_ZIP=True
-    esac
+    case $CONFIRM in y|Y|yes|Yes|YES) FLASH_ZIP=True; esac
 }
 
 # Question: get the kernel image to zip
@@ -765,9 +753,7 @@ _ask_for_run_again() {
     # Validation checks are not needed here.
     RUN_AGAIN=False
     _confirm "$MSG_RUN_AGAIN ?" "[y/N]"
-    case $CONFIRM in y|Y|yes|Yes|YES)
-        export RUN_AGAIN=True
-    esac
+    case $CONFIRM in y|Y|yes|Yes|YES) RUN_AGAIN=True; esac
 }
 
 # Confirmation: install missing packages
@@ -779,7 +765,7 @@ _ask_for_install_pkg() {
         n|N|no|No|NO)
             _error WARN "${MSG_WARN_DEP}: ${RED}${DEP}"; sleep 2
             ;;
-        *) export INSTALL_PKG=True
+        *) INSTALL_PKG=True
     esac
 }
 
@@ -790,10 +776,9 @@ _ask_for_clone_toolchain() {
     _confirm "${MSG_ASK_CLONE_TC}: $1 ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
-            _error "${MSG_ERR_CLONE}: ${RED}$1"
-            _exit
+            _error "${MSG_ERR_CLONE}: ${RED}$1"; _exit
             ;;
-        *) export CLONE_TC=True
+        *) CLONE_TC=True
     esac
 }
 
@@ -804,10 +789,9 @@ _ask_for_clone_anykernel() {
     _confirm "${MSG_ASK_CLONE_AK3}: AK3 ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
-            _error "${MSG_ERR_CLONE}: ${RED}AnyKernel"
-            _exit
+            _error "${MSG_ERR_CLONE}: ${RED}AnyKernel"; _exit
             ;;
-        *) export CLONE_AK=True
+        *) CLONE_AK=True
     esac
 }
 
@@ -836,7 +820,7 @@ _export_path_and_options() {
             _check_toolchain_path "$PROTON_DIR"
             TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
             _get_tc_version "$PROTON_VERSION"
-            export TCVER=${tc_version##*/}
+            TCVER=${tc_version##*/}
             cross=${PROTON_CLANG_OPTIONS[1]/CROSS_COMPILE=}
             ccross=${PROTON_CLANG_OPTIONS[3]/CC=}
             ;;
@@ -845,7 +829,7 @@ _export_path_and_options() {
             _check_toolchain_path "$GCC_ARM64_DIR" "$GCC_ARM_DIR"
             TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
             _get_tc_version "$GCC_ARM64_VERSION"
-            export TCVER=${tc_version##*/}
+            TCVER=${tc_version##*/}
             cross=${EVA_GCC_OPTIONS[1]/CROSS_COMPILE=}
             ccross=${EVA_GCC_OPTIONS[3]/CC=}
             ;;
@@ -854,7 +838,7 @@ _export_path_and_options() {
             _check_toolchain_path "$LOS_ARM64_DIR" "$LOS_ARM_DIR"
             TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
             _get_tc_version "$LOS_ARM64_VERSION"
-            export TCVER=${tc_version##*/}
+            TCVER=${tc_version##*/}
             cross=${LOS_GCC_OPTIONS[1]/CROSS_COMPILE=}
             ccross=${LOS_GCC_OPTIONS[3]/CC=}
             ;;
@@ -866,7 +850,7 @@ _export_path_and_options() {
             TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
             _get_tc_version "$PROTON_VERSION"; v1=$tc_version
             _get_tc_version "$GCC_ARM64_VERSION"; v2=$tc_version
-            export TCVER="${v1##*/} ${v2##*/}"
+            TCVER="${v1##*/} ${v2##*/}"
             cross=${PROTON_GCC_OPTIONS[1]/CROSS_COMPILE=}
             ccross=${PROTON_GCC_OPTIONS[3]/CC=}
     esac
@@ -1059,7 +1043,10 @@ _set_ak3_conf() {
 # Clean anykernel repository
 _clean_anykernel() {
     _note "${MSG_NOTE_CLEAN_AK3}..."
-    for file in "${DIR}/${ANYKERNEL_DIR}"/*; do
+    for file in "${INCLUDED[@]}"; do
+        _check rm -rf "${ANYKERNEL_DIR}/${file}"
+    done
+    for file in "${ANYKERNEL_DIR}"/*; do
         case $file in (*.zip*|*Image*|*erofs*|*dtb*|*spectrum.rc*)
             _check rm -rf "${file}"
         esac
@@ -1174,7 +1161,7 @@ _set_html_status_msg() {
     else
         android_version="AOSP $PLATFORM_VERSION"
     fi
-    export STATUS_MSG="
+    STATUS_MSG="
 
 <b>${MSG_TG_HTML[0]} :</b>  <code>${CODENAME}</code>
 <b>${MSG_TG_HTML[1]} :</b>  <code>v${LINUX_VERSION}</code>
@@ -1235,7 +1222,7 @@ while getopts ':hsuldt:m:f:z:' option; do
         t)  _install_dependencies; _get_linux_tag; _exit;;
         s)  _install_dependencies; clear; _terminal_banner;;
         d)  _install_dependencies; clear; _terminal_banner
-            export DEBUG_MODE=True;;
+            DEBUG_MODE=True;;
         :)  _error "$MSG_ERR_MARG ${RED}-$OPTARG"
             _exit;;
         \?) _error "$MSG_ERR_IOPT ${RED}-$OPTARG"
@@ -1255,12 +1242,10 @@ shift $(( OPTIND - 1 ))
 if [[ $KERNEL_DIR != default  ]] &&
 [[ ! -f ${KERNEL_DIR}/Makefile ]] && \
 [[ ! -d ${KERNEL_DIR}/arch ]]; then
-    _error "$MSG_ERR_KDIR"
-    _exit
+    _error "$MSG_ERR_KDIR"; _exit
 elif [[ ! $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
 ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|${LOS_GCC_NAME}) ]]; then
-    _error "$MSG_ERR_COMPILER"
-    _exit
+    _error "$MSG_ERR_COMPILER"; _exit
 fi
 
 # Device codename
@@ -1280,14 +1265,15 @@ for folder in "${folders[@]}"; do
     fi
 done
 
-# Export working folders
-export OUT_DIR=${DIR}/out/$CODENAME
-export BUILD_DIR=${DIR}/builds/$CODENAME
-export PROTON_DIR=${DIR}/toolchains/$PROTON_DIR
-export GCC_ARM64_DIR=${DIR}/toolchains/$GCC_ARM64_DIR
-export GCC_ARM_DIR=${DIR}/toolchains/$GCC_ARM_DIR
-export LOS_ARM64_DIR=${DIR}/toolchains/$LOS_ARM64_DIR
-export LOS_ARM_DIR=${DIR}/toolchains/$LOS_ARM_DIR
+# Get realpath working folders
+OUT_DIR=${DIR}/out/$CODENAME
+BUILD_DIR=${DIR}/builds/$CODENAME
+PROTON_DIR=${DIR}/toolchains/$PROTON_DIR
+GCC_ARM64_DIR=${DIR}/toolchains/$GCC_ARM64_DIR
+GCC_ARM_DIR=${DIR}/toolchains/$GCC_ARM_DIR
+LOS_ARM64_DIR=${DIR}/toolchains/$LOS_ARM64_DIR
+LOS_ARM_DIR=${DIR}/toolchains/$LOS_ARM_DIR
+ANYKERNEL_DIR=${DIR}/$ANYKERNEL_DIR
 
 # Ask questions to the user
 _ask_for_kernel_dir
