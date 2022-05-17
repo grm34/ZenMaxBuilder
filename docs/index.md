@@ -113,7 +113,7 @@ ZMB is a tool to facilitate the compilation of the Android kernel, it does not t
     CROSS_COMPILE ?= aarch64-linux-android-
     CC             = aarch64-linux-android-gcc
 
-Kernel sources are often configured for a specific compilation (vendor, firmware, modules, android version, compiler) and little changes are often necessary. For a kernel building support, you can ask for help on [Telegram](https://t.me/ZenMaxBuilder).
+Kernel sources are often configured for a specific compilation (vendor, firmware, modules, android version, compiler) and little changes are often necessary.
 
 <br>
 # Contributing
