@@ -320,8 +320,8 @@ _exit() {
 _install_dependencies() {
     # 1. set the package manager for each Linux distribution
     # 2. get the install command of the current OS package manager
-    # 3. GCC will not be installed on TERMUX (not fully supported)
-    # 4. install the missing dependencies...
+    # 3. install the missing dependencies...
+    # NOTE: GCC will not be installed on TERMUX (not fully supported)
     if [[ $AUTO_DEPENDENCIES == True ]]; then
         declare -A pm_install_cmd=(\
             [apt]="sudo apt install -y"
@@ -881,7 +881,7 @@ _export_path_and_options() {
 
 # Ensure $PATH has been correctly set
 _check_toolchain_path() {
-    # $@ = toolchains DIR
+    # ARG: $@ = toolchains DIR
     for toolchain_path in "$@"; do
         if [[ $PATH != *${toolchain_path}/bin* ]]; then
             _error "$MSG_ERR_PATH"; echo "$PATH"; _exit
@@ -891,7 +891,7 @@ _check_toolchain_path() {
 
 # Get toolchain version
 _get_tc_version() {
-    # $1 = toolchain lib DIR
+    # ARG: $1 = toolchain lib DIR
     tc_version=$(find "${DIR}/toolchains/$1" \
         -mindepth 1 -maxdepth 1 -type d | head -n 1)
 }
