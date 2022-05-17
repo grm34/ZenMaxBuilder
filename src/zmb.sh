@@ -1044,7 +1044,9 @@ _set_ak3_conf() {
 _clean_anykernel() {
     _note "${MSG_NOTE_CLEAN_AK3}..."
     for file in "${INCLUDED[@]}"; do
-        _check rm -rf "${ANYKERNEL_DIR}/${file}"
+        if [[ -f ${ANYKERNEL_DIR}/$file ]]; then
+            _check rm -rf "${ANYKERNEL_DIR}/${file}"
+        fi
     done
     for file in "${ANYKERNEL_DIR}"/*; do
         case $file in (*.zip*|*Image*|*erofs*|*dtb*|*spectrum.rc*)
