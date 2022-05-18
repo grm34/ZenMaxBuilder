@@ -142,7 +142,7 @@ _zenmaxbuilder() {
             l)  _install_dependencies; _list_all_kernels; _exit;;
             t)  _install_dependencies; _get_linux_tag; _exit;;
             s)  _install_dependencies; _start;;
-            d)  _install_dependencies; _start; DEBUG_MODE=True;;
+            d)  DEBUG_MODE=True; _install_dependencies; _start;;
             :)  _error "$MSG_ERR_MARG ${RED}-$OPTARG"; _exit;;
             \?) _error "$MSG_ERR_IOPT ${RED}-$OPTARG"; _exit
         esac
