@@ -129,8 +129,7 @@ _zenmaxbuilder() {
     done
 
     # Handle options arguments
-    if [[ $# -eq 0 ]]; then
-        _error "$MSG_ERR_EOPT"; _exit; fi
+    if [[ $# -eq 0 ]]; then _error "$MSG_ERR_EOPT"; _exit; fi
     while getopts ':hsuldt:m:f:z:' option; do
         case $option in
             h)  clear; _terminal_banner; _usage
@@ -148,7 +147,8 @@ _zenmaxbuilder() {
         esac
     done
     if [[ $OPTIND -eq 1 ]]; then
-        _error "$MSG_ERR_IOPT ${RED}$1"; _exit; fi
+        _error "$MSG_ERR_IOPT ${RED}$1"; _exit
+    fi
     shift $(( OPTIND - 1 ))
 }
 
@@ -243,8 +243,7 @@ _prompt() {
     # ARG $2 = prompt type (1 for question / 2 for selection)
     lenth=$*
     count=${#lenth}
-    echo -ne "\n${YELL}==> ${GREEN}$1"
-    echo -ne "${YELL}\n==> "
+    echo -ne "\n${YELL}==> ${GREEN}$1 ${YELL}\n==> "
     for (( char=1; char<=count-2; char++ )); do
         echo -ne "─"
     done
@@ -259,8 +258,7 @@ _prompt() {
 _confirm_msg() {
     CONFIRM=False
     count=$((${#1} + 6))
-    echo -ne "${YELL}\n==> ${GREEN}${1}"\
-             "${RED}${2}${YELL}\n==> "
+    echo -ne "${YELL}\n==> ${GREEN}${1} ${RED}${2}${YELL}\n==> "
     for (( char=1; char<=count; char++ )); do
         echo -ne "─"
     done
@@ -323,9 +321,7 @@ _check() {
         _get_build_logs
         _ask_for_run_again
         if [[ $RUN_AGAIN == True ]]; then
-            if [[ -f $LOG ]]; then
-                _terminal_banner > "$LOG"
-            fi
+            if [[ -f $LOG ]]; then _terminal_banner > "$LOG"; fi
             if [[ $START_TIME ]]; then
                 START_TIME=$(TZ=$TIMEZONE date +%s)
                 _send_start_build_status
@@ -347,15 +343,11 @@ _exit() {
     # 3. remove user input files
     # 4. remove empty device folders
     # 5. exit with 3s timeout
-    if pidof make; then
-        pkill make || sleep 0.5
-    fi
+    if pidof make; then pkill make || sleep 0.5; fi
     _get_build_logs
     input_files=(bashvar buildervar linuxver)
     for file in "${input_files[@]}"; do
-        if [[ -f $file ]]; then
-            _check rm -f "${DIR}/$file"
-        fi
+        if [[ -f $file ]]; then _check rm -f "${DIR}/$file"; fi
     done
     device_folders=(out builds logs)
     for folder in "${device_folders[@]}"; do
@@ -1141,8 +1133,7 @@ _save_defconfig() {
     # the original defconfig will be saved as "example_defconfig_old"
     _note "$MSG_NOTE_SAVE $DEFCONFIG (arch/${ARCH}/configs)..."
     if [[ -f "${CONF_DIR}/$DEFCONFIG" ]]; then
-        _check cp \
-            "${CONF_DIR}/$DEFCONFIG" \
+        _check cp "${CONF_DIR}/$DEFCONFIG" \
             "${CONF_DIR}/${DEFCONFIG}_old"
     fi
     _check cp "${OUT_DIR}/.config" "${CONF_DIR}/$DEFCONFIG"
