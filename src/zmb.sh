@@ -68,6 +68,10 @@ fi
 (set -o posix; set)> "${DIR}/bashvar"
 set -m -E -o pipefail #-b -v
 
+# Shell settings
+shopt -s checkwinsize progcomp
+shopt -u cdspell dirspell progcomp_alias
+
 # User language
 LANGUAGE=${DIR}/lang/${LANG:0:2}.cfg
 if [[ -f $LANGUAGE ]]; then
