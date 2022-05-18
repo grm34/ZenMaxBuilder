@@ -24,15 +24,16 @@
 # ZMB: ZenMaxBuilder
 # ===================
 # .0. Starting blocks...                                       (RUN)
-# .1. MANAGER: global management functions of the script.     (FUNC)
-# .2. REQUIREMENTS: dependency install management functions.  (FUNC)
-# .3. OPTIONS: command line option management functions.      (FUNC)
-# .4. QUESTIONER: functions of questions asked to the user.   (FUNC)
-# .5. MAKER: all the functions related to the make process.   (FUNC)
-# .6. ZIP: all the functions related to the ZIP creation.     (FUNC)
-# .7. TELEGRAM: all the functions for Telegram feedback.      (FUNC)
-# .8. MAIN: run the ZenMaxBuilder (ZMB) main process.          (RUN)
-# .9. START: start new android kernel compilation.             (RUN)
+# .1. MAIN: the ZenMaxBuilder (ZMB) main process function.    (FUNC)
+# .2. MANAGER: global management functions of the script.     (FUNC)
+# .3. REQUIREMENTS: dependency install management functions.  (FUNC)
+# .4. OPTIONS: command line option management functions.      (FUNC)
+# .5. START: start new android kernel compilation function.   (FUNC)
+# .6. QUESTIONER: functions of questions asked to the user.   (FUNC)
+# .7. MAKER: all the functions related to the make process.   (FUNC)
+# .8. ZIP: all the functions related to the ZIP creation.     (FUNC)
+# .9. TELEGRAM: all the functions for Telegram feedback.      (FUNC)
+# 10. ==> run the ZenMaxBuilder (ZMB) main process.            (RUN)
 # ------------------------------------------------------------------
 
 # Ban all 'n00bz'
@@ -93,7 +94,69 @@ fi
 
 
 ###--------------------------------------------------------------###
-### .1. MANAGER => global management functions of the script     ###
+### .1. MAIN => the ZenMaxBuilder (ZMB) main process function    ###
+###--------------------------------------------------------------###
+
+# Main process
+_zenmaxbuilder() {
+
+    # Terminal colors
+    _terminal_colors
+
+    # Trap interrupt signals
+    trap '_error $MSG_ERR_KBOARD; _exit' INT QUIT TSTP CONT
+
+    # Date and time
+    if [[ $TIMEZONE == default ]]; then _get_user_timezone; fi
+    DATE=$(TZ=$TIMEZONE date +%Y-%m-%d)
+    TIME=$(TZ=$TIMEZONE date +%Hh%Mm%Ss)
+
+    # Transfrom long options to short
+    for opt in "$@"; do
+        shift
+        case $opt in
+            "--help")   set -- "$@" "-h"; break;;
+            "--start")  set -- "$@" "-s";;
+            "--update") set -- "$@" "-u";;
+            "--msg")    set -- "$@" "-m";;
+            "--file")   set -- "$@" "-f";;
+            "--zip")    set -- "$@" "-z";;
+            "--list")   set -- "$@" "-l";;
+            "--tag")    set -- "$@" "-t";;
+            "--debug")  set -- "$@" "-d";;
+            *)          set -- "$@" "$opt"
+        esac
+    done
+
+    # Handle options arguments
+    if [[ $# -eq 0 ]]; then
+        _error "$MSG_ERR_EOPT"; _exit; fi
+    while getopts ':hsuldt:m:f:z:' option; do
+        case $option in
+            h)  clear; _terminal_banner; _usage
+                rm -f "./bashvar"; exit 0;;
+            u)  _install_dependencies; _full_upgrade; _exit;;
+            m)  _install_dependencies; _send_msg_option; _exit;;
+            f)  _install_dependencies; _send_file_option; _exit;;
+            z)  _install_dependencies; _create_zip_option; _exit;;
+            l)  _install_dependencies; _list_all_kernels; _exit;;
+            t)  _install_dependencies; _get_linux_tag; _exit;;
+            s)  _install_dependencies; clear; _start;;
+            d)  _install_dependencies; clear; _start; DEBUG_MODE=True;;
+            :)  _error "$MSG_ERR_MARG ${RED}-$OPTARG"
+                _exit;;
+            \?) _error "$MSG_ERR_IOPT ${RED}-$OPTARG"
+                _exit
+        esac
+    done
+    if [[ $OPTIND -eq 1 ]]; then
+        _error "$MSG_ERR_IOPT ${RED}$1"; _exit; fi
+    shift $(( OPTIND - 1 ))
+}
+
+
+###--------------------------------------------------------------###
+### .2. MANAGER => global management functions of the script     ###
 ###--------------------------------------------------------------###
 
 # Banner
@@ -314,7 +377,7 @@ _exit() {
 
 
 ###--------------------------------------------------------------###
-### .2. REQUIREMENTS => dependency install management functions  ###
+### .3. REQUIREMENTS => dependency install management functions  ###
 ###--------------------------------------------------------------###
 
 # Handle dependency installation
@@ -417,7 +480,7 @@ _clone_anykernel() {
 
 
 ###--------------------------------------------------------------###
-### .3. OPTIONS => command line option management functions      ###
+### .4. OPTIONS => command line option management functions      ###
 ###--------------------------------------------------------------###
 
 # Update option
@@ -570,7 +633,136 @@ ${CYAN}https://kernel-builder.com$NC
 
 
 ###--------------------------------------------------------------###
-### .4. QUESTIONER => functions of questions asked to the user   ###
+### .5. START => start new android kernel compilation            ###
+###--------------------------------------------------------------###
+
+_start() {
+    _terminal_banner
+
+    # Prevent errors in user settings
+    if [[ $KERNEL_DIR != default  ]] &&
+    [[ ! -f ${KERNEL_DIR}/Makefile ]] && \
+    [[ ! -d ${KERNEL_DIR}/arch ]]; then
+        _error "$MSG_ERR_KDIR"; _exit
+    elif [[ ! $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
+    ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|${LOS_GCC_NAME}) ]]; then
+        _error "$MSG_ERR_COMPILER"; _exit
+    fi
+
+    # Device codename
+    _note "$MSG_NOTE_START $DATE"
+    _ask_for_codename
+
+    # Create device folders
+    folders=(builds logs toolchains out)
+    for folder in "${folders[@]}"; do
+        if [[ ! -d ${DIR}/${folder}/$CODENAME ]] && \
+        [[ $folder != toolchains ]]; then
+            _check mkdir -p "${DIR}/${folder}/$CODENAME"
+        elif
+            [[ ! -d ${DIR}/$folder ]]
+        then
+            _check mkdir "${DIR}/$folder"
+        fi
+    done
+
+    # Get realpath working folders
+    OUT_DIR=${DIR}/out/$CODENAME
+    BUILD_DIR=${DIR}/builds/$CODENAME
+    PROTON_DIR=${DIR}/toolchains/$PROTON_DIR
+    GCC_ARM64_DIR=${DIR}/toolchains/$GCC_ARM64_DIR
+    GCC_ARM_DIR=${DIR}/toolchains/$GCC_ARM_DIR
+    LOS_ARM64_DIR=${DIR}/toolchains/$LOS_ARM64_DIR
+    LOS_ARM_DIR=${DIR}/toolchains/$LOS_ARM_DIR
+    ANYKERNEL_DIR=${DIR}/$ANYKERNEL_DIR
+
+    # Ask questions to the user
+    _ask_for_kernel_dir
+    _ask_for_defconfig
+    _ask_for_menuconfig
+    _ask_for_toolchain
+    _ask_for_cores
+
+    # Clone AK3 and selected toolchains
+    _clone_toolchains
+    _clone_anykernel
+
+    # Make kernel version
+    _export_path_and_options
+    _handle_makefile_cross_compile
+    _note "${MSG_NOTE_LINUXVER}..."
+    make -C "$KERNEL_DIR" kernelversion \
+        | grep -v make > linuxver & wait $!
+    LINUX_VERSION=$(cat linuxver)
+    KERNEL_NAME=${TAG}-${CODENAME}-$LINUX_VERSION
+
+    # Make clean
+    _ask_for_make_clean
+    if [[ $MAKE_CLEAN == True ]]; then
+        _make_clean; _make_mrproper; rm -rf "$OUT_DIR"
+    fi
+
+    # Make defconfig
+    _make_defconfig
+    if [[ $MENUCONFIG == True ]]; then
+        _make_menuconfig
+        _ask_for_save_defconfig
+        if [[ $SAVE_DEFCONFIG != False ]]; then
+            _save_defconfig
+        else
+            if [[ $ORIGINAL_DEFCONFIG == False ]]; then
+                _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."
+                _exit
+            fi
+        fi
+    fi
+
+    # Make kernel
+    _ask_for_new_build
+    if [[ $NEW_BUILD == False ]]; then
+        _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."; _exit
+    else
+        _ask_for_telegram
+        START_TIME=$(TZ=$TIMEZONE date +%s)
+        LOG=${DIR}/logs/${CODENAME}/${KERNEL_NAME}_${DATE}_${TIME}.log
+        _terminal_banner > "$LOG"
+        _make_build | tee -a "$LOG"
+    fi
+
+    # Check for successful build
+    _get_build_time
+    BOOT_DIR="${DIR}/out/${CODENAME}/arch/${ARCH}/boot"
+    # shellcheck disable=SC2012
+    most_recent_file=$(ls -Art "$BOOT_DIR" 2>/dev/null | tail -n 1)
+    ftime=$(stat -c %Z "${BOOT_DIR}/${most_recent_file}" 2>/dev/null)
+    if [[ ! -d $BOOT_DIR ]] || [[ -z $(ls -A "$BOOT_DIR") ]] || \
+    [[ $ftime < $START_TIME ]]; then
+        _error "$MSG_ERR_MAKE"; _exit
+    fi
+
+    # Return build status
+    _note "$MSG_NOTE_SUCCESS $BUILD_TIME !"
+    _send_success_build_status
+
+    # Create flashable signed zip
+    _ask_for_flashable_zip
+    if [[ $FLASH_ZIP == True ]]; then
+        _ask_for_kernel_image
+        _zip "${KERNEL_NAME}-$DATE" "$K_IMG" \
+            "$BUILD_DIR" | tee -a "$LOG"
+        _sign_zip "${BUILD_DIR}/${KERNEL_NAME}-$DATE" \
+            | tee -a "$LOG"
+        _note "$MSG_NOTE_ZIPPED !"
+    fi
+
+    # Upload the build and exit
+    _upload_signed_build
+    _exit
+}
+
+
+###--------------------------------------------------------------###
+### .6. QUESTIONER => functions of questions asked to the user   ###
 ###--------------------------------------------------------------###
 
 # Question: get the device codename
@@ -798,7 +990,7 @@ _ask_for_clone_anykernel() {
 
 
 ###--------------------------------------------------------------###
-### .5. MAKER => all the functions related to the make process   ###
+### .7. MAKER => all the functions related to the make process   ###
 ###--------------------------------------------------------------###
 
 # Set compiler build options
@@ -977,7 +1169,7 @@ _make_build() {
 
 
 ###--------------------------------------------------------------###
-### .6. ZIP => all the functions related to the ZIP creation     ###
+### .8. ZIP => all the functions related to the ZIP creation     ###
 ###--------------------------------------------------------------###
 
 # Flashable zip creation
@@ -1070,8 +1262,9 @@ _sign_zip() {
     fi
 }
 
+
 ###--------------------------------------------------------------###
-### .7. TELEGRAM => all the functions for Telegram feedback      ###
+### .9. TELEGRAM => all the functions for Telegram feedback      ###
 ###--------------------------------------------------------------###
 
 # Telegram API
@@ -1176,188 +1369,8 @@ _set_html_status_msg() {
 }
 
 
-###--------------------------------------------------------------###
-### .8. MAIN => run the ZenMaxBuilder (ZMB) main process         ###
-###--------------------------------------------------------------###
-
-# Terminal colors
-_terminal_colors
-
-# Trap interrupt signals
-trap '_error $MSG_ERR_KBOARD; _exit' INT QUIT TSTP CONT
-
-# Date and time
-if [[ $TIMEZONE == default ]]; then _get_user_timezone; fi
-DATE=$(TZ=$TIMEZONE date +%Y-%m-%d)
-TIME=$(TZ=$TIMEZONE date +%Hh%Mm%Ss)
-
-# Transfrom long options to short
-for opt in "$@"; do
-    shift
-    case $opt in
-        "--help")   set -- "$@" "-h"; break;;
-        "--start")  set -- "$@" "-s";;
-        "--update") set -- "$@" "-u";;
-        "--msg")    set -- "$@" "-m";;
-        "--file")   set -- "$@" "-f";;
-        "--zip")    set -- "$@" "-z";;
-        "--list")   set -- "$@" "-l";;
-        "--tag")    set -- "$@" "-t";;
-        "--debug")  set -- "$@" "-d";;
-        *)          set -- "$@" "$opt"
-    esac
-done
-
-# Handle options arguments
-if [[ $# -eq 0 ]]; then
-    _error "$MSG_ERR_EOPT"; _exit; fi
-while getopts ':hsuldt:m:f:z:' option; do
-    case $option in
-        h)  clear; _terminal_banner; _usage
-            rm -f "./bashvar"; exit 0;;
-        u)  _install_dependencies; _full_upgrade; _exit;;
-        m)  _install_dependencies; _send_msg_option; _exit;;
-        f)  _install_dependencies; _send_file_option; _exit;;
-        z)  _install_dependencies; _create_zip_option; _exit;;
-        l)  _install_dependencies; _list_all_kernels; _exit;;
-        t)  _install_dependencies; _get_linux_tag; _exit;;
-        s)  _install_dependencies; clear; _terminal_banner;;
-        d)  _install_dependencies; clear; _terminal_banner
-            DEBUG_MODE=True;;
-        :)  _error "$MSG_ERR_MARG ${RED}-$OPTARG"
-            _exit;;
-        \?) _error "$MSG_ERR_IOPT ${RED}-$OPTARG"
-            _exit
-    esac
-done
-if [[ $OPTIND -eq 1 ]]; then
-    _error "$MSG_ERR_IOPT ${RED}$1"; _exit; fi
-shift $(( OPTIND - 1 ))
-
-
-###--------------------------------------------------------------###
-### .9. START => start new android kernel compilation            ###
-###--------------------------------------------------------------###
-
-# Prevent errors in user settings
-if [[ $KERNEL_DIR != default  ]] &&
-[[ ! -f ${KERNEL_DIR}/Makefile ]] && \
-[[ ! -d ${KERNEL_DIR}/arch ]]; then
-    _error "$MSG_ERR_KDIR"; _exit
-elif [[ ! $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
-${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|${LOS_GCC_NAME}) ]]; then
-    _error "$MSG_ERR_COMPILER"; _exit
-fi
-
-# Device codename
-_note "$MSG_NOTE_START $DATE"
-_ask_for_codename
-
-# Create device folders
-folders=(builds logs toolchains out)
-for folder in "${folders[@]}"; do
-    if [[ ! -d ${DIR}/${folder}/$CODENAME ]] && \
-    [[ $folder != toolchains ]]; then
-        _check mkdir -p "${DIR}/${folder}/$CODENAME"
-    elif
-        [[ ! -d ${DIR}/$folder ]]
-    then
-        _check mkdir "${DIR}/$folder"
-    fi
-done
-
-# Get realpath working folders
-OUT_DIR=${DIR}/out/$CODENAME
-BUILD_DIR=${DIR}/builds/$CODENAME
-PROTON_DIR=${DIR}/toolchains/$PROTON_DIR
-GCC_ARM64_DIR=${DIR}/toolchains/$GCC_ARM64_DIR
-GCC_ARM_DIR=${DIR}/toolchains/$GCC_ARM_DIR
-LOS_ARM64_DIR=${DIR}/toolchains/$LOS_ARM64_DIR
-LOS_ARM_DIR=${DIR}/toolchains/$LOS_ARM_DIR
-ANYKERNEL_DIR=${DIR}/$ANYKERNEL_DIR
-
-# Ask questions to the user
-_ask_for_kernel_dir
-_ask_for_defconfig
-_ask_for_menuconfig
-_ask_for_toolchain
-_ask_for_cores
-
-# Clone AK3 and selected toolchains
-_clone_toolchains
-_clone_anykernel
-
-# Make kernel version
-_export_path_and_options
-_handle_makefile_cross_compile
-_note "${MSG_NOTE_LINUXVER}..."
-make -C "$KERNEL_DIR" kernelversion \
-    | grep -v make > linuxver & wait $!
-LINUX_VERSION=$(cat linuxver)
-KERNEL_NAME=${TAG}-${CODENAME}-$LINUX_VERSION
-
-# Make clean
-_ask_for_make_clean
-if [[ $MAKE_CLEAN == True ]]; then
-    _make_clean; _make_mrproper; rm -rf "$OUT_DIR"
-fi
-
-# Make defconfig
-_make_defconfig
-if [[ $MENUCONFIG == True ]]; then
-    _make_menuconfig
-    _ask_for_save_defconfig
-    if [[ $SAVE_DEFCONFIG != False ]]; then
-        _save_defconfig
-    else
-        if [[ $ORIGINAL_DEFCONFIG == False ]]; then
-            _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."
-            _exit
-        fi
-    fi
-fi
-
-# Make kernel
-_ask_for_new_build
-if [[ $NEW_BUILD == False ]]; then
-    _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."; _exit
-else
-    _ask_for_telegram
-    START_TIME=$(TZ=$TIMEZONE date +%s)
-    LOG=${DIR}/logs/${CODENAME}/${KERNEL_NAME}_${DATE}_${TIME}.log
-    _terminal_banner > "$LOG"
-    _make_build | tee -a "$LOG"
-fi
-
-# Check for successful build
-_get_build_time
-BOOT_DIR="${DIR}/out/${CODENAME}/arch/${ARCH}/boot"
-# shellcheck disable=SC2012
-most_recent_file=$(ls -Art "$BOOT_DIR" 2>/dev/null | tail -n 1)
-ftime=$(stat -c %Z "${BOOT_DIR}/${most_recent_file}" 2>/dev/null)
-if [[ ! -d $BOOT_DIR ]] || [[ -z $(ls -A "$BOOT_DIR") ]] || \
-[[ $ftime < $START_TIME ]]; then
-    _error "$MSG_ERR_MAKE"; _exit
-fi
-
-# Return build status
-_note "$MSG_NOTE_SUCCESS $BUILD_TIME !"
-_send_success_build_status
-
-# Create flashable signed zip
-_ask_for_flashable_zip
-if [[ $FLASH_ZIP == True ]]; then
-    _ask_for_kernel_image
-    _zip "${KERNEL_NAME}-$DATE" "$K_IMG" \
-        "$BUILD_DIR" | tee -a "$LOG"
-    _sign_zip "${BUILD_DIR}/${KERNEL_NAME}-$DATE" \
-        | tee -a "$LOG"
-    _note "$MSG_NOTE_ZIPPED !"
-fi
-
-# Upload the build and exit
-_upload_signed_build
-_exit
+# 10. Run the ZMB main process...
+_zenmaxbuilder "$@"
 
 
 # THANKS FOR READING !
