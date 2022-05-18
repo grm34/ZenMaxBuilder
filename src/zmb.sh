@@ -500,15 +500,15 @@ _update_git() {
 _full_upgrade() {
     # 1. set ZMB and AK3 and TC data
     # 2. upgrade existing stuff...
-    tcp=${DIR}/toolchains
+    tp=${DIR}/toolchains
     declare -A up_data=(\
         [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
         [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}€$MSG_UP_AK3"
-        [t1]="${tcp}/${PROTON_DIR}€${PROTON_BRANCH}€$MSG_UP_CLANG"
-        [t2]="${tcp}/${GCC_ARM_DIR}€${GCC_ARM_BRANCH}€$MSG_UP_GCC32"
-        [t3]="${tcp}/${GCC_ARM64_DIR}€${GCC_ARM64_BRANCH}€$MSG_UP_GCC64"
-        [t4]="${tcp}/${LOS_ARM_DIR}€${LOS_ARM_BRANCH}€$MSG_UP_LOS32"
-        [t5]="${tcp}/${LOS_ARM64_DIR}€${LOS_ARM64_BRANCH}€$MSG_UP_LOS64"
+        [t1]="${tp}/${PROTON_DIR}€${PROTON_BRANCH}€$MSG_UP_CLANG"
+        [t2]="${tp}/${GCC_ARM_DIR}€${GCC_ARM_BRANCH}€$MSG_UP_GCC32"
+        [t3]="${tp}/${GCC_ARM64_DIR}€${GCC_ARM64_BRANCH}€$MSG_UP_GCC64"
+        [t4]="${tp}/${LOS_ARM_DIR}€${LOS_ARM_BRANCH}€$MSG_UP_LOS32"
+        [t5]="${tp}/${LOS_ARM64_DIR}€${LOS_ARM64_BRANCH}€$MSG_UP_LOS64"
     )
     up_list=(zmb ak3 t1 t2 t3 t4 t5)
     for repository in "${up_list[@]}"; do
