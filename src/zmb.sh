@@ -141,12 +141,10 @@ _zenmaxbuilder() {
             z)  _install_dependencies; _create_zip_option; _exit;;
             l)  _install_dependencies; _list_all_kernels; _exit;;
             t)  _install_dependencies; _get_linux_tag; _exit;;
-            s)  _install_dependencies; clear; _start;;
-            d)  _install_dependencies; clear; _start; DEBUG_MODE=True;;
-            :)  _error "$MSG_ERR_MARG ${RED}-$OPTARG"
-                _exit;;
-            \?) _error "$MSG_ERR_IOPT ${RED}-$OPTARG"
-                _exit
+            s)  _install_dependencies; _start;;
+            d)  _install_dependencies; _start; DEBUG_MODE=True;;
+            :)  _error "$MSG_ERR_MARG ${RED}-$OPTARG"; _exit;;
+            \?) _error "$MSG_ERR_IOPT ${RED}-$OPTARG"; _exit
         esac
     done
     if [[ $OPTIND -eq 1 ]]; then
@@ -636,8 +634,9 @@ ${CYAN}https://kernel-builder.com$NC
 ### .5. START => start new android kernel compilation            ###
 ###--------------------------------------------------------------###
 
+# Display banner then start
 _start() {
-    _terminal_banner
+    clear; _terminal_banner
 
     # Prevent errors in user settings
     if [[ $KERNEL_DIR != default  ]] &&
