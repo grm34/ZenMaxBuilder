@@ -228,8 +228,8 @@ _note() {
 
 # Display warning or error
 _error() {
-    # ARG $1 = <WARN> for warning (leave empty for error)
-    # ARG $* = ERROR or WARNING message
+    # ARG $1 = <WARN> for warning (ignore $1 for error)
+    # ARG $* = the error or warning message
     if [[ $1 == WARN ]]; then
         echo -e "\n${BLUE}${MSG_WARN}:${NC}${YELLOW}${*/WARN/}$NC"
     else
