@@ -758,10 +758,10 @@ _start() {
 
 # Question: get the device codename
 _ask_for_codename() {
-    # Validation checks REGEX to prevent invalid string.
-    # Match "letters" and "numbers" and "-" and "_" only.
-    # Should be at least "3" characters long and maximum "20".
-    # Device codename can't start with "_" or "-" characters.
+    # Validation checks REGEX to prevent invalid string
+    # Match "letters" and "numbers" and "-" and "_" only
+    # Should be at least "3" characters long and maximum "20"
+    # Device codename can't start with "_" or "-" characters
     if [[ $CODENAME == default ]]; then
         _prompt "$MSG_ASK_DEV :" 1
         read -r CODENAME
@@ -776,9 +776,11 @@ _ask_for_codename() {
 
 # Question: get the kernel location
 _ask_for_kernel_dir() {
-    # Validation checks the presence of the "configs"
-    # folder corresponding to the current architecture.
+    # NOTE: we are working here from HOME folder (auto completion)
+    # Validation checks the presence of the <configs>
+    # folder corresponding to the current architecture
     if [[ $KERNEL_DIR == default ]]; then
+        _cd "$HOME" "$MSG_ERR_DIR ${RED}HOME"
         _prompt "$MSG_ASK_KDIR :" 1
         read -r -e KERNEL_DIR
         until [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]; do
@@ -787,14 +789,15 @@ _ask_for_kernel_dir() {
             read -r -e KERNEL_DIR
         done
         KERNEL_DIR=$(realpath "$KERNEL_DIR")
+        _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
     fi
 }
 
 # Selection: get the defconfig file to use
 _ask_for_defconfig() {
-    # Choices: all defconfig files located in "configs"
-    # folder corresponding to the current architecture.
-    # Validation checks are not needed here.
+    # Choices: all defconfig files located in <configs>,
+    # folder corresponding to the current architecture
+    # Validation checks are not needed here
     CONF_DIR="${KERNEL_DIR}/arch/${ARCH}/configs"
     _cd "$CONF_DIR" "$MSG_ERR_DIR ${RED}$CONF_DIR"
     _prompt "$MSG_ASK_DEF :" 2
@@ -807,18 +810,18 @@ _ask_for_defconfig() {
 
 # Confirmation: <make menuconfig>
 _ask_for_menuconfig() {
-    # Validation checks are not needed here.
+    # Validation checks are not needed here
     _confirm "$MSG_ASK_CONF ?" "[y/N]"
     case $CONFIRM in y|Y|yes|Yes|YES) MENUCONFIG=True; esac
 }
 
 # Confirmation: save new defconfig
 _ask_for_save_defconfig() {
-    # Otherwise request to continue with the original one.
-    # Validation checks REGEX to prevent invalid string.
-    # Match "letters" and "numbers" and "-" and "_" only.
-    # Should be at least "3" characters long and maximum "26".
-    # Defconfig file can't start with "_" or "-" characters.
+    # Otherwise request to continue with the original one
+    # Validation checks REGEX to prevent invalid string
+    # Match "letters" and "numbers" and "-" and "_" only
+    # Should be at least "3" characters long and maximum "26"
+    # Defconfig file can't start with "_" or "-" characters
     _confirm "${MSG_ASK_SAVE_DEF} ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
@@ -844,7 +847,7 @@ _ask_for_save_defconfig() {
 # Selection: get the toolchain to use
 _ask_for_toolchain() {
     # Choices: Proton-Clang Eva-GCC Proton-GCC
-    # Validation checks are not needed here.
+    # Validation checks are not needed here
     if [[ $COMPILER == default ]]; then
         _prompt "$MSG_SELECT_TC :" 2
         select COMPILER in $PROTON_CLANG_NAME \
@@ -857,15 +860,15 @@ _ask_for_toolchain() {
 
 # Confirmation: edit makefile cross_compile
 _ask_for_edit_cross_compile() {
-    # Validation checks are not needed here.
+    # Validation checks are not needed here
     _confirm "$MSG_ASK_CC $COMPILER ?" "[Y/n]"
     case $CONFIRM in n|N|no|No|NO) EDIT_CC=False; esac
 }
 
 # Question: get the number of cpu cores to use
 _ask_for_cores() {
-    # Validation checks for a valid number corresponding
-    # to the amount of available CPU cores (no limits here).
+    # Validation checks for a valid number corresponding,
+    # to the amount of available CPU cores (no limits here)
     # Otherwise all available CPU cores will be used.
     CPU=$(nproc --all)
     _confirm "$MSG_ASK_CPU ?" "[Y/n]"
@@ -886,14 +889,14 @@ _ask_for_cores() {
 
 # Confirmation: <make clean> and <make mrproprer>
 _ask_for_make_clean() {
-    # Validation checks are not needed here.
+    # Validation checks are not needed here
     _confirm "${MSG_ASK_MCLEAN}: v$LINUX_VERSION ?" "[y/N]"
     case $CONFIRM in y|Y|yes|Yes|YES) MAKE_CLEAN=True; esac
 }
 
 # Confirmation: make new build
 _ask_for_new_build() {
-   # Validation checks are not needed here.
+   # Validation checks are not needed here
     _confirm \
         "$MSG_START ${TAG}-${CODENAME}-$LINUX_VERSION ?" "[Y/n]"
     case $CONFIRM in n|N|no|No|NO) NEW_BUILD=False; esac
@@ -901,7 +904,7 @@ _ask_for_new_build() {
 
 # Confirmation: send build status on telegram
 _ask_for_telegram() {
-    # Validation checks are not needed here.
+    # Validation checks are not needed here
     if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
         _confirm "$MSG_ASK_TG ?" "[y/N]"
         case $CONFIRM in y|Y|yes|Yes|YES) BUILD_STATUS=True; esac
@@ -910,7 +913,7 @@ _ask_for_telegram() {
 
 # Confirmation: create flashable zip
 _ask_for_flashable_zip() {
-    # Validation checks are not needed here.
+    # Validation checks are not needed here
     _confirm \
         "$MSG_ASK_ZIP ${TAG}-${CODENAME}-$LINUX_VERSION ?" "[y/N]"
     case $CONFIRM in y|Y|yes|Yes|YES) FLASH_ZIP=True; esac
@@ -918,12 +921,12 @@ _ask_for_flashable_zip() {
 
 # Question: get the kernel image to zip
 _ask_for_kernel_image() {
-    # Validation checks the presence of this file in
-    # "boot" folder and verify it starts with "Image".
+    # NOTE: we are working here from <boot> folder (auto completion)
+    # Validation checks the presence of this file
     _cd "$BOOT_DIR" "$MSG_ERR_DIR ${RED}$BOOT_DIR"
     _prompt "$MSG_ASK_IMG :" 1
     read -r -e K_IMG
-    until [[ -f $K_IMG ]] && [[ $K_IMG == *Image* ]]; do
+    until [[ -f $K_IMG ]]; do
         _error "$MSG_ERR_IMG ${RED}$K_IMG"
         _prompt "$MSG_ASK_IMG" 1
         read -r -e K_IMG
@@ -934,7 +937,7 @@ _ask_for_kernel_image() {
 
 # Confirmation: run again last failed command
 _ask_for_run_again() {
-    # Validation checks are not needed here.
+    # Validation checks are not needed here
     RUN_AGAIN=False
     _confirm "$MSG_RUN_AGAIN ?" "[y/N]"
     case $CONFIRM in y|Y|yes|Yes|YES) RUN_AGAIN=True; esac
@@ -942,8 +945,8 @@ _ask_for_run_again() {
 
 # Confirmation: install missing packages
 _ask_for_install_pkg() {
-    # Warn the user that when false the script may crash.
-    # Validation checks are not needed here.
+    # Warn the user that the script may crash while NO
+    # Validation checks are not needed here
     _confirm "${MSG_ASK_PKG}: $1 ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
@@ -955,8 +958,8 @@ _ask_for_install_pkg() {
 
 # Confirmation: clone missing toolchains
 _ask_for_clone_toolchain() {
-    # Warn the user and exit the script when false.
-    # Validation checks are not needed here.
+    # Warn the user and exit the script while NO
+    # Validation checks are not needed here
     _confirm "${MSG_ASK_CLONE_TC}: $1 ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
@@ -968,8 +971,8 @@ _ask_for_clone_toolchain() {
 
 # Confirmation: clone AK3
 _ask_for_clone_anykernel() {
-    # Warn the user and exit the script when false.
-    # Validation checks are not needed here.
+    # Warn the user and exit the script while NO
+    # Validation checks are not needed here
     _confirm "${MSG_ASK_CLONE_AK3}: AK3 ?" "[Y/n]"
     case $CONFIRM in
         n|N|no|No|NO)
@@ -988,11 +991,10 @@ _ask_for_clone_anykernel() {
 _export_path_and_options() {
     # 1. export target variables (CFG)
     # 2. append toolchains to the $PATH, export and verify
-    # 3. get current toolchain compiler options
-    # 4. get toolchain compiler version
-    # 5. get CROSS_COMPILE and CC (to handle Makefile)
-    # 6. set Link Time Optimization (LTO)
-    # 7. DEBUG MODE: display $PATH
+    # 3. get current toolchain compiler options and version
+    # 4. get CROSS_COMPILE and CC (to handle Makefile)
+    # 5. set Link Time Optimization (LTO)
+    # 6. DEBUG MODE: display $PATH
     if [[ $BUILDER == default ]]; then BUILDER=$(whoami); fi
     if [[ $HOST == default ]]; then HOST=$(uname -n); fi
     export KBUILD_BUILD_USER=${BUILDER}
