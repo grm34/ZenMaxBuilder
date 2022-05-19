@@ -104,7 +104,7 @@ _zenmaxbuilder() {
   _terminal_colors
 
   # Trap interrupt signals
-  trap '_error $MSG_ERR_KBOARD; _exit' INT QUIT TSTP CONT HUP KILL
+  trap '_error $MSG_ERR_KBOARD; _exit' INT QUIT TSTP CONT HUP
 
   # Date and time
   if [[ $TIMEZONE == default ]]; then _get_user_timezone; fi
