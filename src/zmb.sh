@@ -616,8 +616,7 @@ ${NC}[${YELLOW}OPTION${NC}] [${YELLOW}ARGUMENT${NC}] \
     -d, --debug                     $MSG_HELP_D
 
 ${BOLD}${MSG_HELP_INFO}: \
-${CYAN}https://kernel-builder.com$NC
-"
+${CYAN}https://kernel-builder.com$NC\n"
 }
 
 
@@ -1264,25 +1263,27 @@ _sign_zip() {
 # Send message (POST)
 _send_msg() {
   # ARG $1 = message
-  curl --progress-bar -o /dev/null -fL -X POST \
-    "${TELEGRAM_API}/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-    -d "parse_mode=html" \
-    -d "chat_id=$TELEGRAM_CHAT_ID" \
-    -d "text=$1" \
-    | tee /dev/null
+  curl --progress-bar -o /dev/null -fL -X POST -d text="$1" \
+    -d parse_mode=html -d chat_id="$TELEGRAM_CHAT_ID" \
+    "${TELEGRAM_API}/bot${TELEGRAM_BOT_TOKEN}/sendMessage"
 }
 
 # Send file (POST)
 _send_file() {
   # ARG $1 = file
   # ARG $2 = caption
+  case $1 in
+    *.png|*.jpg|*.jpeg|*.gif|*.bmp) tg=sendPhoto;;
+    *.mp3|*.flac|*.wav|*.aac|*.m4a|*.ogg) tg=sendAudio;;
+    *.mp4|*.mkv|*.avi|*.webm|*.m4v|*.3gp|*.mpeg) tg=sendVideo;;
+    *) tg=sendDocument
+  esac
+  type=${tg/send}
   curl --progress-bar -o /dev/null -fL -X POST \
-    "${TELEGRAM_API}/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-    -F "document=@$1" \
-    -F "caption=$2" \
-    -F "chat_id=$TELEGRAM_CHAT_ID" \
-    -F "disable_web_page_preview=true" \
-    | tee /dev/null
+    -F "${type,}"=@"$1" -F caption="$2" \
+    -F chat_id="$TELEGRAM_CHAT_ID" \
+    -F disable_web_page_preview=true \
+    "${TELEGRAM_API}/bot${TELEGRAM_BOT_TOKEN}/$tg"
 }
 
 # Kernel build status
