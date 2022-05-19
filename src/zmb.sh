@@ -38,31 +38,31 @@
 
 # Ban all 'n00bz'
 if [[ ${BASH_SOURCE[0]} != "$0" ]]; then
-  echo >&2 "ERROR: ZenMaxBuilder cannot be sourced"
-  return 1
+  echo "ERROR: ZenMaxBuilder cannot be sourced"
+  exit 1
 elif ! [[ -t 0 ]]; then
-  echo >&2 "ERROR: run ZenMaxBuilder from a terminal"
-  return 1
+  echo "ERROR: run ZenMaxBuilder from a terminal"
+  exit 1
 elif [[ $(tput cols) -lt 76 ]] || [[ $(tput lines) -lt 12 ]]; then
-  echo >&2 "ERROR: terminal window is too small (min 76x12)"
-  return 1
+  echo "ERROR: terminal window is too small (min 76x12)"
+  exit 1
 elif [[ $(uname) != Linux ]]; then
-  echo >&2 "ERROR: run ZenMaxBuilder on Linux"
-  return 1
+  echo "ERROR: run ZenMaxBuilder on Linux"
+  exit 1
 fi
 
 # Absolute path
 DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 if ! cd "$DIR"; then
-  echo >&2 "ERROR: ZenMaxBuilder directory not found"
-  return 1
+  echo "ERROR: ZenMaxBuilder directory not found"
+  exit 1
 fi
 
 # Lockfile
 exec 201> "$(basename "$0").lock"
 if ! flock -n 201; then
-  echo >&2 "ERROR: ZenMaxBuilder is already running"
-  return 1
+  echo "ERROR: ZenMaxBuilder is already running"
+  exit 1
 fi
 
 # Job control
@@ -104,7 +104,7 @@ _zenmaxbuilder() {
   _terminal_colors
 
   # Trap interrupt signals
-  trap '_error $MSG_ERR_KBOARD; _exit' INT QUIT TSTP CONT
+  trap '_error $MSG_ERR_KBOARD; _exit' INT QUIT TSTP CONT HUP KILL
 
   # Date and time
   if [[ $TIMEZONE == default ]]; then _get_user_timezone; fi
@@ -717,7 +717,7 @@ _start() {
     _make_build | tee -a "$LOG"
   fi
 
-  # Check for successful build
+  # Status -> zip -> upload the build
   _get_build_time
   BOOT_DIR="${DIR}/out/${CODENAME}/arch/${ARCH}/boot"
   # shellcheck disable=SC2012
@@ -726,26 +726,25 @@ _start() {
   if ! [[ -d $BOOT_DIR ]] || [[ -z $(ls -A "$BOOT_DIR") ]] || \
   [[ $ft < $START_TIME ]]; then
     _error "$MSG_ERR_MAKE"; _exit
+  else
+    _note "$MSG_NOTE_SUCCESS $BUILD_TIME !"
+    _send_success_build_status
+
+    # Create flashable signed zip
+    _ask_for_flashable_zip
+    if [[ $FLASH_ZIP == True ]]; then
+      _ask_for_kernel_image
+      _zip "${KERNEL_NAME}-$DATE" "$K_IMG" \
+           "$BUILD_DIR" | tee -a "$LOG"
+      _sign_zip "${BUILD_DIR}/${KERNEL_NAME}-$DATE" \
+        | tee -a "$LOG"
+      _note "$MSG_NOTE_ZIPPED !"
+    fi
+
+    # Upload the build and exit
+    _upload_kernel_build
+    _exit
   fi
-
-  # Return build status
-  _note "$MSG_NOTE_SUCCESS $BUILD_TIME !"
-  _send_success_build_status
-
-  # Create flashable signed zip
-  _ask_for_flashable_zip
-  if [[ $FLASH_ZIP == True ]]; then
-    _ask_for_kernel_image
-    _zip "${KERNEL_NAME}-$DATE" "$K_IMG" \
-         "$BUILD_DIR" | tee -a "$LOG"
-    _sign_zip "${BUILD_DIR}/${KERNEL_NAME}-$DATE" \
-      | tee -a "$LOG"
-    _note "$MSG_NOTE_ZIPPED !"
-  fi
-
-  # Upload the build and exit
-  _upload_kernel_build
-  _exit
 }
 
 
