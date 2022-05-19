@@ -40,7 +40,7 @@
 if [[ ${BASH_SOURCE[0]} != "$0" ]]; then
     echo >&2 "ERROR: ZenMaxBuilder cannot be sourced"
     return 1
-elif [[ ! -t 0 ]]; then
+elif ! [[ -t 0 ]]; then
     echo >&2 "ERROR: run ZenMaxBuilder from a terminal"
     return 1
 elif [[ $(tput cols) -lt 76 ]] || [[ $(tput lines) -lt 12 ]]; then
@@ -192,7 +192,7 @@ _get_user_timezone() {
         (timedatectl | grep 'Time zone' \
             | xargs | cut -d' ' -f3) 2>/dev/null
     )
-    if [[ ! $TIMEZONE ]]; then
+    if ! [[ $TIMEZONE ]]; then
         TIMEZONE=$(    # Termux
             (getprop | grep timezone | cut -d' ' -f2 \
                 | sed 's/\[//g' | sed 's/\]//g') 2>/dev/null
@@ -425,7 +425,7 @@ _clone_tc() {
     # ARG $1 = repo branch
     # ARG $2 = repo url
     # ARG $3 = repo folder
-    if [[ ! -d $3 ]]; then
+    if ! [[ -d $3 ]]; then
         _ask_for_clone_toolchain "${3##*/}"
         if [[ $CLONE_TC == True ]]; then
             git clone --depth=1 -b "$1" "$2" "$3"
@@ -459,7 +459,7 @@ _clone_toolchains() {
 
 # Clone anykernel repository
 _clone_anykernel() {
-    if [[ ! -d $ANYKERNEL_DIR ]]; then
+    if ! [[ -d $ANYKERNEL_DIR ]]; then
         _ask_for_clone_anykernel
         if [[ $CLONE_AK == True ]]; then
             git clone -b "$ANYKERNEL_BRANCH" \
@@ -632,10 +632,10 @@ _start() {
 
     # Prevent errors in user settings
     if [[ $KERNEL_DIR != default  ]] &&
-    [[ ! -f ${KERNEL_DIR}/Makefile ]] && \
-    [[ ! -d ${KERNEL_DIR}/arch ]]; then
+    ! [[ -f ${KERNEL_DIR}/Makefile ]] && \
+    ! [[ -d ${KERNEL_DIR}/arch ]]; then
         _error "$MSG_ERR_KDIR"; _exit
-    elif [[ ! $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
+    elif ! [[ $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
     ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|${LOS_GCC_NAME}) ]]; then
         _error "$MSG_ERR_COMPILER"; _exit
     fi
@@ -647,11 +647,11 @@ _start() {
     # Create device folders
     folders=(builds logs toolchains out)
     for folder in "${folders[@]}"; do
-        if [[ ! -d ${DIR}/${folder}/$CODENAME ]] && \
+        if ! [[ -d ${DIR}/${folder}/$CODENAME ]] && \
         [[ $folder != toolchains ]]; then
             _check mkdir -p "${DIR}/${folder}/$CODENAME"
         elif
-            [[ ! -d ${DIR}/$folder ]]
+            ! [[ -d ${DIR}/$folder ]]
         then
             _check mkdir "${DIR}/$folder"
         fi
@@ -726,7 +726,7 @@ _start() {
     # shellcheck disable=SC2012
     most_recent_file=$(ls -Art "$BOOT_DIR" 2>/dev/null | tail -n 1)
     ftime=$(stat -c %Z "${BOOT_DIR}/${most_recent_file}" 2>/dev/null)
-    if [[ ! -d $BOOT_DIR ]] || [[ -z $(ls -A "$BOOT_DIR") ]] || \
+    if ! [[ -d $BOOT_DIR ]] || [[ -z $(ls -A "$BOOT_DIR") ]] || \
     [[ $ftime < $START_TIME ]]; then
         _error "$MSG_ERR_MAKE"; _exit
     fi
@@ -747,7 +747,7 @@ _start() {
     fi
 
     # Upload the build and exit
-    _upload_signed_build
+    _upload_kernel_build
     _exit
 }
 
@@ -1181,7 +1181,7 @@ _zip() {
     if [[ $START_TIME ]]; then _set_ak3_conf; fi
     _check unbuffer zip -r9 "${1}.zip" \
         ./* -x .git README.md ./*placeholder 2>&1
-    if [[ ! -d $3 ]]; then _check mkdir "$3"; fi
+    if ! [[ -d $3 ]]; then _check mkdir "$3"; fi
     _check mv "${1}.zip" "$3"
     _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
     _clean_anykernel
@@ -1319,7 +1319,7 @@ _send_zip_signing_status() {
 # Fail build status (+ logfile)
 _send_failed_build_logs() {
     if [[ $START_TIME ]] && [[ $BUILD_STATUS == True ]] && \
-    { [[ ! $BUILD_TIME ]] || [[ $RUN_AGAIN == True ]]; }; then
+    { ! [[ $BUILD_TIME ]] || [[ $RUN_AGAIN == True ]]; }; then
         _get_build_time
         _send_file "$LOG" \
             "v${LINUX_VERSION//_/-} | $MSG_TG_FAILED $BUILD_TIME"
@@ -1327,9 +1327,10 @@ _send_failed_build_logs() {
 }
 
 # Upload the kernel
-_upload_signed_build() {
+_upload_kernel_build() {
     if [[ $BUILD_STATUS == True ]] && [[ $FLASH_ZIP == True ]]; then
         file=${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip
+        if ! [[ -f $file ]]; then file=${file/-signed}; fi
         _note "${MSG_NOTE_UPLOAD}: ${file##*/}..."
         MD5=$(md5sum "$file" | cut -d' ' -f1)
         caption="${MSG_TG_CAPTION}: $BUILD_TIME"
@@ -1340,10 +1341,9 @@ _upload_signed_build() {
 
 # HTML start build status message
 _set_html_status_msg() {
-    if [[ -z $PLATFORM_VERSION ]]; then
-        android_version="AOSP Unified"
-    else
-        android_version="AOSP $PLATFORM_VERSION"
+    android_version="AOSP Unified"
+    if [[ -n $PLATFORM_VERSION ]]; then
+        android_version=${android_version/Unified/$PLATFORM_VERSION}
     fi
     STATUS_MSG="
 
