@@ -3,15 +3,9 @@
 </a>
 <br>
 
-# Thank you for taking the time to contribute to ZMB ♥
+# Contributing
 
-## Contributing
-
-If you want to contribute to ZenMaxBuilder project and make it better, your help is very welcome. Contributing is also a great way to learn more about social coding on Github, new technologies and their ecosystems and how to make constructive, helpful bug reports, feature requests and the noblest of all contributions: a good, clean pull request.
-
-## Reporting Issues
-
-Found a problem? Want a new feature? Have a question? First of all see if your issue, question or idea has [already been reported](https://github.com/grm34/ZenMaxBuilder/issues). If don't, just open a [new clear and descriptive issue](https://github.com/grm34/ZenMaxBuilder/issues/new/choose).
+If you want to contribute to ZenMaxBuilder (ZMB) project and make it better, your help is very welcome.
 
 ## Help us translate ZenMaxBuilder
 
@@ -24,7 +18,7 @@ If you know another language and are willing to help translate ZMB, here are the
 - Implement your translations\*
 - Create a new pull request to submit your language.
 
-\* ZMB being launched from a terminal, please try to respect the length of the lines (max 70).
+\* ZMB being launched from a terminal, please respect line length (max 70).
 
 | language | flag | translator | progress |
 | :------- | ---: | ---------: | -------: |
