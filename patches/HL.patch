@@ -1,0 +1,523 @@
+From 3ee8df49120b82529c3d8835d44ecd52094d1495 Mon Sep 17 00:00:00 2001
+From: Hong Shi <hongsh@codeaurora.org>
+Date: Tue, 15 Nov 2016 16:04:31 +0800
+Subject: qcacld-2.0: Add monitor mode support for HL path
+
+Add monitor mode support for HL path. It follows the design of
+LL path monitor mode which is already exist. Some other changes:
+1. add IEEE80211_RADIOTAP_DBM_ANTNOISE
+2. add channel info
+3. For HL path, rx desc size is variable and will be used later
+   in ol_rx_deliver function to reset adf_nbuf to payload. So,
+   to avoid overwriting the rx desc, radiotap header is added to the
+   tail of adf_nbuf at first and move to head before indicating to OS.
+
+How to use:
+insmod /system/lib/modules/wlan.ko con_mode=4
+ifconfig wlan0 up
+iwpriv wlan0 setMonChan 36 2
+tcpdump -i wlan0 -w <tcpdump.pcap>
+
+CRs-fixed: 1090059
+Change-Id: I73c0a571720db5cb44beb562a51066ff5e5195cd
+---
+ CORE/CLD_TXRX/HTT/htt_rx.c             | 123 +++++++++++++++++++++++++++++++++
+ CORE/CLD_TXRX/HTT/htt_t2h.c            |  11 ++-
+ CORE/CLD_TXRX/TXRX/ol_cfg.c            |   7 +-
+ CORE/CLD_TXRX/TXRX/ol_rx.c             |  73 +++++++++++++++++++
+ CORE/CLD_TXRX/TXRX/ol_txrx.c           |   9 ++-
+ CORE/HDD/src/wlan_hdd_tx_rx.c          |  36 ++++++++++
+ CORE/SERVICES/COMMON/adf/adf_nbuf.c    |  27 ++++++--
+ CORE/SERVICES/COMMON/ol_txrx_htt_api.h |  38 ++++++++++
+ CORE/SERVICES/WMA/wma.c                |   5 +-
+ 9 files changed, 316 insertions(+), 13 deletions(-)
+
+diff --git a/CORE/CLD_TXRX/HTT/htt_rx.c b/CORE/CLD_TXRX/HTT/htt_rx.c
+index 9745718..448190b 100644
+--- a/CORE/CLD_TXRX/HTT/htt_rx.c
++++ b/CORE/CLD_TXRX/HTT/htt_rx.c
+@@ -1744,6 +1744,127 @@ htt_rx_mon_amsdu_rx_in_order_pop_ll(htt_pdev_handle pdev, adf_nbuf_t rx_ind_msg,
+ 
+ 	return 1;
+ }
++
++/**
++ * get_num_antenna_hl() - get number of antenna
++ * @rx_desc: pointer to htt_host_rx_desc_base.
++ *
++ * Return: number of antenna.
++ */
++static uint8_t get_num_antenna_hl(struct htt_rx_ppdu_desc_t *rx_desc)
++{
++	uint8_t preamble_type =
++		(uint8_t)rx_desc->preamble_type;
++	uint8_t mcs, nss = 1;
++
++	switch (preamble_type) {
++	case 8:
++	case 9:
++		mcs = (uint8_t)(rx_desc->vht_sig_a1 & 0x7f);
++		nss = mcs >> 3;
++		break;
++	case 0x0c: /* VHT w/o TxBF */
++	case 0x0d: /* VHT w/ TxBF */
++		mcs = (uint8_t)((rx_desc->vht_sig_a2
++					>> 4) & 0xf);
++		nss = (uint8_t)((rx_desc->vht_sig_a1
++					>> 10) & 0x7);
++		break;
++	default:
++		break;
++	}
++	return nss;
++}
++
++/**
++ * htt_get_radiotap_rx_status_hl() - Update information about the
++ * rx status, which is used later for radiotap update.
++ * @rx_desc: Pointer to struct htt_rx_ppdu_desc_t
++ * @rx_status: Return variable updated with rx_status
++ *
++ * Return: None
++ */
++void htt_get_radiotap_rx_status_hl(struct htt_rx_ppdu_desc_t *rx_desc,
++	struct mon_rx_status *rx_status)
++{
++	uint16_t channel_flags = 0;
++
++	rx_status->tsft = (u_int64_t)rx_desc->tsf32;
++	/* IEEE80211_RADIOTAP_F_FCS */
++	rx_status->flags |= 0x10;
++	rx_status->rate = get_rate(rx_desc->legacy_rate_sel,
++				   rx_desc->legacy_rate);
++	channel_flags |= rx_desc->legacy_rate_sel ?
++		IEEE80211_CHAN_CCK : IEEE80211_CHAN_OFDM;
++	rx_status->chan_flags = channel_flags;
++	rx_status->ant_signal_db = rx_desc->rssi_cmb;
++	rx_status->nr_ant = get_num_antenna_hl(rx_desc);
++}
++
++/**
++ * htt_rx_mon_amsdu_pop_hl() - pop amsdu in HL monitor mode
++ * @pdev: Pointer to struct htt_pdev_handle
++ * @rx_ind_msg: htt rx indication message
++ * @head_msdu: head msdu
++ * @tail_msdu: tail msdu
++ *
++ * Return: 0 - success, others - failure
++ */
++int
++htt_rx_mon_amsdu_pop_hl(
++		htt_pdev_handle pdev,
++		adf_nbuf_t rx_ind_msg,
++		adf_nbuf_t *head_msdu,
++		adf_nbuf_t *tail_msdu)
++{
++	struct htt_rx_ppdu_desc_t *rx_ppdu_desc;
++	void *rx_desc, *rx_mpdu_desc;
++	struct mon_rx_status rx_status = {0};
++	int rtap_len = 0;
++	uint16_t center_freq;
++	uint16_t chan1;
++	uint16_t chan2;
++	uint8_t phymode;
++	a_bool_t ret;
++
++	pdev->rx_desc_size_hl =
++		(adf_nbuf_data(rx_ind_msg))
++		[HTT_ENDIAN_BYTE_IDX_SWAP(
++				HTT_RX_IND_HL_RX_DESC_LEN_OFFSET)];
++
++	adf_nbuf_pull_head(rx_ind_msg,
++			sizeof(struct hl_htt_rx_ind_base));
++
++	*head_msdu = *tail_msdu = rx_ind_msg;
++
++	rx_desc = htt_rx_msdu_desc_retrieve(pdev, *head_msdu);
++	rx_ppdu_desc = (struct htt_rx_ppdu_desc_t *)((uint8_t *)(rx_desc) -
++			HTT_RX_IND_HL_BYTES + HTT_RX_IND_HDR_PREFIX_BYTES);
++	htt_get_radiotap_rx_status_hl(rx_ppdu_desc, &rx_status);
++
++	rx_mpdu_desc =
++		htt_rx_mpdu_desc_list_next(pdev, rx_ind_msg);
++	ret = htt_rx_msdu_center_freq(pdev, NULL, rx_mpdu_desc,
++				      &center_freq, &chan1, &chan2, &phymode);
++
++	if (ret == A_TRUE)
++		rx_status.chan = center_freq;
++	else
++		rx_status.chan = 0;
++
++	/*
++	 * set headroom size to 0 to append to tail of skb. For HL path,
++	 * rx desc size is variable and will be used later in ol_rx_deliver
++	 * function to reset adf_nbuf to payload. So, to avoid overwriting
++	 * the rx desc, radiotap header is added to the tail of adf_nbuf
++	 * at first and move to head before indicating to OS.
++	 */
++	rtap_len = adf_nbuf_update_radiotap(&rx_status, *head_msdu, 0);
++
++	adf_nbuf_set_next(*tail_msdu, NULL);
++	return 0;
++}
++
+ /* Return values: 1 - success, 0 - failure */
+ int
+ htt_rx_offload_msdu_pop_hl(
+@@ -3256,6 +3377,8 @@ htt_rx_attach(struct htt_pdev_t *pdev)
+         /* host can force ring base address if it wish to do so */
+         pdev->rx_ring.base_paddr = 0;
+         htt_rx_amsdu_pop = htt_rx_amsdu_pop_hl;
++        if (VOS_MONITOR_MODE == vos_get_conparam())
++            htt_rx_amsdu_pop = htt_rx_mon_amsdu_pop_hl;
+         htt_rx_frag_pop = htt_rx_frag_pop_hl;
+         htt_rx_offload_msdu_pop = htt_rx_offload_msdu_pop_hl;
+         htt_rx_mpdu_desc_list_next = htt_rx_mpdu_desc_list_next_hl;
+diff --git a/CORE/CLD_TXRX/HTT/htt_t2h.c b/CORE/CLD_TXRX/HTT/htt_t2h.c
+index 7d161a3..9f8ba8f 100644
+--- a/CORE/CLD_TXRX/HTT/htt_t2h.c
++++ b/CORE/CLD_TXRX/HTT/htt_t2h.c
+@@ -618,9 +618,14 @@ if (adf_os_unlikely(pdev->rx_ring.rx_reset)) {
+                  * TODO: remove copy after stopping reuse skb on HIF layer
+                  * because SDIO HIF may reuse skb before upper layer release it
+                  */
+-                ol_rx_indication_handler(
+-                    pdev->txrx_pdev, htt_t2h_msg, peer_id, tid,
+-                    num_mpdu_ranges);
++                if (VOS_MONITOR_MODE == vos_get_conparam())
++                    ol_rx_mon_indication_handler(
++                            pdev->txrx_pdev, htt_t2h_msg, peer_id, tid,
++                            num_mpdu_ranges);
++                else
++                    ol_rx_indication_handler(
++                            pdev->txrx_pdev, htt_t2h_msg, peer_id, tid,
++                            num_mpdu_ranges);
+ 
+                 return;
+             } else {
+diff --git a/CORE/CLD_TXRX/TXRX/ol_cfg.c b/CORE/CLD_TXRX/TXRX/ol_cfg.c
+index 84466ce..7b4ea34 100644
+--- a/CORE/CLD_TXRX/TXRX/ol_cfg.c
++++ b/CORE/CLD_TXRX/TXRX/ol_cfg.c
+@@ -27,6 +27,8 @@
+ 
+ #include <ol_cfg.h>
+ #include <ol_if_athvar.h>
++#include <vos_types.h>
++#include <vos_getBin.h>
+ 
+ unsigned int vow_config = 0;
+ module_param(vow_config, uint, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+@@ -94,7 +96,10 @@ ol_pdev_handle ol_pdev_cfg_attach(adf_os_device_t osdev,
+ 	cfg_ctx->max_peer_id = 511;
+ 	cfg_ctx->max_vdev = CFG_TGT_NUM_VDEV;
+ 	cfg_ctx->pn_rx_fwd_check = 1;
+-	cfg_ctx->frame_type = wlan_frm_fmt_802_3;
++	if (VOS_MONITOR_MODE == vos_get_conparam())
++		cfg_ctx->frame_type = wlan_frm_fmt_raw;
++	else
++		cfg_ctx->frame_type = wlan_frm_fmt_802_3;
+ 	cfg_ctx->max_thruput_mbps = 800;
+ 	cfg_ctx->max_nbuf_frags = 1;
+ 	cfg_ctx->vow_config = vow_config;
+diff --git a/CORE/CLD_TXRX/TXRX/ol_rx.c b/CORE/CLD_TXRX/TXRX/ol_rx.c
+index 61065cb..fdc84ba 100644
+--- a/CORE/CLD_TXRX/TXRX/ol_rx.c
++++ b/CORE/CLD_TXRX/TXRX/ol_rx.c
+@@ -38,6 +38,7 @@
+ #include <ol_htt_rx_api.h>     /* htt_rx_peer_id, etc. */
+ 
+ /* internal API header files */
++#include <ol_txrx.h>           /* ol_txrx_peer_unref_delete */
+ #include <ol_txrx_types.h>     /* ol_txrx_vdev_t, etc. */
+ #include <ol_txrx_peer_find.h> /* ol_txrx_peer_find_by_id */
+ #include <ol_rx_reorder.h>     /* ol_rx_reorder_store, etc. */
+@@ -225,6 +226,78 @@ OL_RX_MPDU_RSSI_UPDATE(
+ #define OL_RX_MPDU_RSSI_UPDATE(peer, rx_mpdu_desc) /* no-op */
+ #endif /* QCA_SUPPORT_PEER_DATA_RX_RSSI */
+ 
++/**
++ * ol_rx_mon_indication_handler() - htt rx indication message handler
++ * for HL monitor mode.
++ * @pdev: pointer to struct ol_txrx_pdev_handle
++ * @rx_ind_msg:      htt rx indication message
++ * @peer_id:         peer id
++ * @tid:             tid
++ * @num_mpdu_ranges: number of mpdu ranges
++ *
++ * This function pops amsdu from rx indication message and directly
++ * deliver to upper layer.
++ */
++void
++ol_rx_mon_indication_handler(
++	ol_txrx_pdev_handle pdev,
++	adf_nbuf_t rx_ind_msg,
++	u_int16_t peer_id,
++	u_int8_t tid,
++	int num_mpdu_ranges)
++{
++	int mpdu_range;
++	struct ol_txrx_peer_t *peer;
++	htt_pdev_handle htt_pdev;
++	struct ol_txrx_vdev_t *vdev = NULL;
++
++	htt_pdev = pdev->htt_pdev;
++
++	peer = pdev->self_peer;
++
++	if (peer) {
++	    adf_os_atomic_inc(&peer->ref_cnt);
++	    vdev = peer->vdev;
++	}
++
++	for (mpdu_range = 0; mpdu_range < num_mpdu_ranges; mpdu_range++) {
++		enum htt_rx_status status;
++		int i, num_mpdus;
++		adf_nbuf_t head_msdu, tail_msdu;
++
++		htt_rx_ind_mpdu_range_info(
++			pdev->htt_pdev,
++			rx_ind_msg,
++			mpdu_range,
++			&status,
++			&num_mpdus);
++
++		TXRX_STATS_ADD(pdev, priv.rx.normal.mpdus, num_mpdus);
++
++		for (i = 0; i < num_mpdus; i++) {
++			htt_rx_amsdu_pop(
++				htt_pdev, rx_ind_msg, &head_msdu, &tail_msdu);
++			if (peer && vdev) {
++				peer->rx_opt_proc(vdev, peer, tid, head_msdu);
++			} else {
++				while (1) {
++					adf_nbuf_t next;
++					next = adf_nbuf_next(head_msdu);
++					htt_rx_desc_frame_free(
++						htt_pdev,
++						head_msdu);
++					if (head_msdu == tail_msdu)
++						break;
++					head_msdu = next;
++				}
++			}
++		}
++	}
++
++	if (peer)
++		ol_txrx_peer_unref_delete(peer);
++}
++
+ void
+ ol_rx_indication_handler(
+     ol_txrx_pdev_handle pdev,
+diff --git a/CORE/CLD_TXRX/TXRX/ol_txrx.c b/CORE/CLD_TXRX/TXRX/ol_txrx.c
+index e2fd2de..9d00549 100644
+--- a/CORE/CLD_TXRX/TXRX/ol_txrx.c
++++ b/CORE/CLD_TXRX/TXRX/ol_txrx.c
+@@ -538,6 +538,8 @@ ol_txrx_pdev_attach(
+         pdev->htt_pkt_type = htt_pkt_type_native_wifi;
+     } else if (pdev->frame_format == wlan_frm_fmt_802_3) {
+         pdev->htt_pkt_type = htt_pkt_type_ethernet;
++    } else if (pdev->frame_format == wlan_frm_fmt_raw) {
++        pdev->htt_pkt_type = htt_pkt_type_raw;
+     } else {
+         VOS_TRACE(VOS_MODULE_ID_TXRX, VOS_TRACE_LEVEL_ERROR,
+             "%s Invalid standard frame type: %d\n",
+@@ -632,7 +634,9 @@ ol_txrx_pdev_attach(
+             pdev->rx_opt_proc = ol_rx_fwd_check;
+         }
+     } else {
+-        if (ol_cfg_rx_pn_check(pdev->ctrl_pdev)) {
++        if (VOS_MONITOR_MODE == vos_get_conparam()) {
++            pdev->rx_opt_proc = ol_rx_deliver;
++        } else if (ol_cfg_rx_pn_check(pdev->ctrl_pdev)) {
+             if (ol_cfg_rx_fwd_disabled(pdev->ctrl_pdev)) {
+                 /*
+                  * PN check done on host, rx->tx forwarding not done at all.
+@@ -1838,6 +1842,9 @@ ol_txrx_peer_unref_delete(ol_txrx_peer_handle peer)
+         }
+ 
+         adf_os_mem_free(peer);
++        /* set self_peer to null, otherwise may crash when unload driver */
++        if (VOS_MONITOR_MODE == vos_get_conparam())
++            pdev->self_peer = NULL;
+     } else {
+         adf_os_spin_unlock_bh(&pdev->peer_ref_mutex);
+     }
+diff --git a/CORE/HDD/src/wlan_hdd_tx_rx.c b/CORE/HDD/src/wlan_hdd_tx_rx.c
+index 62ee662..6b927fd 100644
+--- a/CORE/HDD/src/wlan_hdd_tx_rx.c
++++ b/CORE/HDD/src/wlan_hdd_tx_rx.c
+@@ -1112,6 +1112,40 @@ bool drop_ip6_mcast(struct sk_buff *skb)
+ #define drop_ip6_mcast(_a) 0
+ #endif
+ 
++#ifdef CONFIG_HL_SUPPORT
++/*
++ * hdd_move_radiotap_header_forward - move radiotap header to head of skb
++ * @skb: skb to be modified
++ *
++ * For HL monitor mode, radiotap is appended to tail when update radiotap
++ * info in htt layer. Need to copy it ahead of skb before indicating to OS.
++ */
++static void hdd_move_radiotap_header_forward(struct sk_buff *skb)
++{
++	adf_nbuf_t msdu = (adf_nbuf_t)skb;
++	struct ieee80211_radiotap_header *rthdr;
++	uint8_t rtap_len;
++
++	adf_nbuf_put_tail(msdu,
++		sizeof(struct ieee80211_radiotap_header));
++	rthdr = (struct ieee80211_radiotap_header *)
++	    (adf_nbuf_data(msdu) + adf_nbuf_len(msdu) -
++	     sizeof(struct ieee80211_radiotap_header));
++	rtap_len = rthdr->it_len;
++	adf_nbuf_put_tail(msdu,
++			  rtap_len -
++			  sizeof(struct ieee80211_radiotap_header));
++	adf_nbuf_push_head(msdu, rtap_len);
++	adf_os_mem_copy(adf_nbuf_data(msdu), rthdr, rtap_len);
++	adf_nbuf_trim_tail(msdu, rtap_len);
++}
++#else
++static inline void hdd_move_radiotap_header_forward(struct sk_buff *skb)
++{
++    /* no-op */
++}
++#endif
++
+ /**
+  * hdd_mon_rx_packet_cbk() - Receive callback registered with TLSHIM.
+  * @vosContext: [in] pointer to VOS context
+@@ -1161,6 +1195,8 @@ VOS_STATUS hdd_mon_rx_packet_cbk(v_VOID_t *vos_ctx, adf_nbuf_t rx_buf,
+ 	/* walk the chain until all are processed */
+ 	skb = (struct sk_buff *) rx_buf;
+ 	while (NULL != skb) {
++		hdd_move_radiotap_header_forward(skb);
++
+ 		skb_next = skb->next;
+ 		skb->dev = adapter->dev;
+ 
+diff --git a/CORE/SERVICES/COMMON/adf/adf_nbuf.c b/CORE/SERVICES/COMMON/adf/adf_nbuf.c
+index 30bba71..c184a33 100644
+--- a/CORE/SERVICES/COMMON/adf/adf_nbuf.c
++++ b/CORE/SERVICES/COMMON/adf/adf_nbuf.c
+@@ -1705,12 +1705,13 @@ int adf_nbuf_update_radiotap(struct mon_rx_status *rx_status, adf_nbuf_t nbuf,
+ 	rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_RATE);
+ 	rtap_buf[rtap_len] = rx_status->rate;
+ 	rtap_len += 1;
++
++	/* IEEE80211_RADIOTAP_CHANNEL */
+ 	rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_CHANNEL);
+-	/* IEEE80211_RADIOTAP_CHANNEL, Channel frequency in Mhz */
++	/* Channel frequency in Mhz */
+ 	put_unaligned_le16(rx_status->chan, (void *)&rtap_buf[rtap_len]);
+ 	rtap_len += 2;
+ 	/* Channel flags. */
+-
+ 	put_unaligned_le16(rx_status->chan_flags, (void *)&rtap_buf[rtap_len]);
+ 	rtap_len += 2;
+ 
+@@ -1724,16 +1725,30 @@ int adf_nbuf_update_radiotap(struct mon_rx_status *rx_status, adf_nbuf_t nbuf,
+ 	rtap_buf[rtap_len] = rx_status->ant_signal_db +
+ 		NORMALIZED_TO_NOISE_FLOOR;
+ 	rtap_len += 1;
++
++	/* IEEE80211_RADIOTAP_DBM_ANTNOISE */
++	rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_DBM_ANTNOISE);
++	rtap_buf[rtap_len] = NORMALIZED_TO_NOISE_FLOOR;
++	rtap_len += 1;
++
++	/* IEEE80211_RADIOTAP_ANTENNA */
+ 	rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_ANTENNA);
+ 	rtap_buf[rtap_len] = rx_status->nr_ant;
+ 	rtap_len += 1;
+ 
+ 	rthdr->it_len = cpu_to_le16(rtap_len);
+ 
+-	adf_nbuf_pull_head(nbuf, headroom_sz  - rtap_len);
+-	adf_os_mem_copy(adf_nbuf_data(nbuf), rthdr, rtap_hdr_len);
+-	adf_os_mem_copy(adf_nbuf_data(nbuf) + rtap_hdr_len, rtap_buf +
+-			rtap_hdr_len, rtap_len - rtap_hdr_len);
++	if (headroom_sz >= rtap_len) {
++		adf_nbuf_pull_head(nbuf, headroom_sz  - rtap_len);
++		adf_os_mem_copy(adf_nbuf_data(nbuf), rthdr, rtap_len);
++	} else {
++		/* If no headroom, append to tail */
++		uint8_t *rtap_start = adf_nbuf_put_tail(nbuf, rtap_len);
++
++		adf_os_mem_copy(rtap_start, rthdr, rtap_len);
++		adf_nbuf_trim_tail(nbuf, rtap_len);
++	}
++
+ 	return rtap_len;
+ }
+ 
+diff --git a/core/dp/ol/inc/ol_txrx_htt_api.h b/core/dp/ol/inc/ol_txrx_htt_api.h
+index 0aa85ce..d72dacc 100644
+--- a/core/dp/ol/inc/ol_txrx_htt_api.h
++++ b/core/dp/ol/inc/ol_txrx_htt_api.h
+@@ -357,6 +357,44 @@ ol_rx_indication_handler(
+     int num_mpdu_ranges);
+ 
+ /**
++ * ol_rx_mon_indication_handler - brief Process an rx indication message
++ * sent by the target in monitor mode (only for HL, LL is in another path).
++ *
++ * The target sends a rx indication message to the host as a
++ * notification that there are new rx frames available for the
++ * host to process.
++ * The HTT host layer locates the rx descriptors and rx frames
++ * associated with the indication, and calls this function to
++ * invoke the rx data processing on the new frames.
++ * (For LL, the rx descriptors and frames are delivered directly
++ * to the host via MAC DMA, while for HL the rx descriptor and
++ * frame for individual frames are combined with the rx indication
++ * message.)
++ * All MPDUs referenced by a rx indication message belong to the
++ * same peer-TID.
++ *
++ * @pdev:            the data physical device that received the frames
++ *                   (registered with HTT as a context pointer during
++ *                   attach time)
++ * @rx_ind_msg:      the network buffer holding the rx indication message
++ *                   (For HL, this netbuf also holds the rx desc and rx
++ *                   payload, but the data SW is agnostic to whether the
++ *                   desc and payload are piggybacked with the rx indication
++ *                   message.)
++ * @peer_id: which peer sent this rx data
++ * @tid:             what (extended) traffic type the rx data is
++ * @num_mpdu_ranges: how many ranges of MPDUs does the message describe.
++ *                   Each MPDU within the range has the same rx status.
++ */
++void
++ol_rx_mon_indication_handler(
++	ol_txrx_pdev_handle pdev,
++	qdf_nbuf_t rx_ind_msg,
++	u_int16_t peer_id,
++	u_int8_t tid,
++	int num_mpdu_ranges);
++
++/**
+  * @brief Process an rx fragment indication message sent by the target.
+  * @details
+  *  The target sends a rx fragment indication message to the host as a
+diff --git a/CORE/SERVICES/WMA/wma.c b/CORE/SERVICES/WMA/wma.c
+index b9a6947..0f803d4 100644
+--- a/CORE/SERVICES/WMA/wma.c
++++ b/CORE/SERVICES/WMA/wma.c
+@@ -8998,8 +8998,9 @@ static VOS_STATUS wma_vdev_detach(tp_wma_handle wma_handle,
+ 	struct wma_txrx_node *iface = &wma_handle->interfaces[vdev_id];
+ 	struct wma_target_req *msg;
+ 
+-	if ((iface->type == WMI_VDEV_TYPE_AP) &&
+-	    (iface->sub_type == WMI_UNIFIED_VDEV_SUBTYPE_P2P_DEVICE)) {
++	if (((iface->type == WMI_VDEV_TYPE_AP) &&
++	     (iface->sub_type == WMI_UNIFIED_VDEV_SUBTYPE_P2P_DEVICE)) ||
++	    (iface->type == WMI_VDEV_TYPE_MONITOR)) {
+ 
+ 		WMA_LOGA("P2P Device: removing self peer %pM",
+ 				pdel_sta_self_req_param->selfMacAddr);
+-- 
+cgit v1.1

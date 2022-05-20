@@ -76,6 +76,8 @@ The optional flashable zip signature with AOSP Keys requires java (JDK) which is
         -m, --msg          [message]    send message on Telegram
         -f, --file            [file]    send file on Telegram
         -z, --zip     [Image.gz-dtb]    create flashable zip
+        -p, --patch                     apply a patch to a kernel
+        -r, --revert                    revert a patch to a kernel
         -d, --debug                     start compilation in debug mode
 
 <br>
@@ -175,6 +177,7 @@ Found a problem? Want a new feature? Have a question? First of all see if your i
 - Lineage-GCC: [@LineageOS](https://github.com/LineageOS)
 - AnyKernel3: [@osm0sis](https://github.com/osm0sis)
 - ZipSigner: [@osm0sis](https://github.com/osm0sis) [@topjohnwu](https://github.com/topjohnwu)
+- Patches: [@Kali-Linux](https://gitlab.com/kalilinux) [@cyberknight777](https://github.com/cyberknight777)
 
 <br>
 ## Buy me a beer ?

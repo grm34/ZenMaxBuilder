@@ -1,0 +1,84 @@
+From 59e3edce09662a2771bbf51adcd9937e6517f4df Mon Sep 17 00:00:00 2001
+From: Hong Shi <hongsh@codeaurora.org>
+Date: Wed, 21 Jun 2017 23:03:28 +0800
+Subject: [PATCH] qcacld-2.0: Fix buffer overwrite issue in packet injection
+
+Local buffer is shared to send radiotap buffer. When packets are send
+very quickly, previous packet buffer might be overwritten. To fix it,
+add radiotap buffer in tx desc so that each packet has its own radiotap
+buffer.
+
+CRs-fixed: 2064779
+Change-Id: I5a120e52f7ab5dcaf49343cdad8c03140ae84129
+---
+ CORE/CLD_TXRX/TXRX/ol_tx.c         | 11 ++++++-----
+ CORE/CLD_TXRX/TXRX/ol_txrx_types.h |  4 ++++
+ 2 files changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/CORE/CLD_TXRX/TXRX/ol_tx.c b/CORE/CLD_TXRX/TXRX/ol_tx.c
+index 17dadabde..16a37bbf9 100644
+--- a/CORE/CLD_TXRX/TXRX/ol_tx.c
++++ b/CORE/CLD_TXRX/TXRX/ol_tx.c
+@@ -634,8 +634,6 @@ static void merge_ocb_tx_ctrl_hdr(struct ocb_tx_ctrl_hdr_t *tx_ctrl,
+ 	}
+ }
+ 
+-#define MAX_RADIOTAP_LEN 256
+-
+ static inline adf_nbuf_t
+ ol_tx_hl_base(
+     ol_txrx_vdev_handle vdev,
+@@ -662,7 +660,7 @@ ol_tx_hl_base(
+      */
+     while (msdu) {
+         adf_nbuf_t next;
+-        adf_nbuf_t prev_drop;
++        adf_nbuf_t prev_drop = NULL;
+         struct ol_tx_frms_queue_t *txq;
+         struct ol_tx_desc_t *tx_desc = NULL;
+ 
+@@ -724,6 +722,9 @@ ol_tx_hl_base(
+             return msdu_drop_list; /* the list of unaccepted MSDUs */
+         }
+ 
++        tx_desc->rtap_len = rtap_len;
++        adf_os_mem_copy(tx_desc->rtap, rtap, rtap_len);
++
+ //        OL_TXRX_PROT_AN_LOG(pdev->prot_an_tx_sent, msdu);
+ 
+         if (tx_spec != ol_tx_spec_std) {
+@@ -836,8 +837,8 @@ ol_tx_hl_base(
+         if (VOS_MONITOR_MODE == vos_get_conparam()) {
+             adf_nbuf_frag_push_head(
+                     msdu,
+-                    rtap_len,
+-                    (uint8_t *)rtap, /* virtual addr */
++                    tx_desc->rtap_len,
++                    (uint8_t *)tx_desc->rtap, /* virtual addr */
+                     0, 0 /* phys addr MSBs - n/a */);
+                     adf_nbuf_set_frag_is_wordstream(msdu, 1, 1);
+         }
+diff --git a/CORE/CLD_TXRX/TXRX/ol_txrx_types.h b/CORE/CLD_TXRX/TXRX/ol_txrx_types.h
+index 67a578d4e..c2c80944f 100644
+--- a/CORE/CLD_TXRX/TXRX/ol_txrx_types.h
++++ b/CORE/CLD_TXRX/TXRX/ol_txrx_types.h
+@@ -167,6 +167,8 @@ typedef struct _tx_peer_threshold{
+ } tx_peer_threshold;
+ #endif
+ 
++#define MAX_RADIOTAP_LEN 64
++
+ struct ol_tx_desc_t {
+ 	adf_nbuf_t netbuf;
+ 	void *htt_tx_desc;
+@@ -202,6 +204,8 @@ struct ol_tx_desc_t {
+ 	struct ol_txrx_vdev_t* vdev;
+ 
+ 	void *txq;
++	uint8_t rtap[MAX_RADIOTAP_LEN];
++	uint8_t rtap_len;
+ };
+ 
+ typedef TAILQ_HEAD(, ol_tx_desc_t) ol_tx_desc_list;
+-- 
+GitLab

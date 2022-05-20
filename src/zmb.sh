@@ -123,6 +123,8 @@ _zenmaxbuilder() {
       "--zip")    set -- "$@" "-z" ;;
       "--list")   set -- "$@" "-l" ;;
       "--tag")    set -- "$@" "-t" ;;
+      "--patch")  set -- "$@" "-p" ;;
+      "--revert") set -- "$@" "-r" ;;
       "--debug")  set -- "$@" "-d" ;;
       *)          set -- "$@" "$opt" ;;
     esac
@@ -130,7 +132,7 @@ _zenmaxbuilder() {
 
   # Handle options arguments
   if [[ $# -eq 0 ]]; then _error "$MSG_ERR_EOPT"; _exit; fi
-  while getopts ':hsuldt:m:f:z:' option; do
+  while getopts ':hsuldprt:m:f:z:' option; do
     case $option in
       h)  clear; _terminal_banner; _usage
           rm -f "./bashvar"; exit 0 ;;
@@ -140,8 +142,10 @@ _zenmaxbuilder() {
       z)  _install_dependencies; _create_zip_option; _exit ;;
       l)  _install_dependencies; _list_all_kernels; _exit ;;
       t)  _install_dependencies; _get_linux_tag; _exit ;;
-      s)  _install_dependencies; _start ;;
-      d)  DEBUG_MODE=True; _install_dependencies; _start ;;
+      p)  _install_dependencies; pmod=PATCH; _patch; _exit ;;
+      r)  _install_dependencies; pmod=REVERT; _patch; _exit ;;
+      s)  _install_dependencies; _start; _exit ;;
+      d)  DEBUG_MODE=True; _install_dependencies; _start; _exit ;;
       :)  _error "$MSG_ERR_MARG ${RED}-$OPTARG"; _exit ;;
       \?) _error "$MSG_ERR_IOPT ${RED}-$OPTARG"; _exit ;;
     esac
@@ -597,6 +601,27 @@ _create_zip_option() {
   fi
 }
 
+# Patch Option
+#-------------
+
+_patch() {
+  case $pmod in
+    PATCH) pargs=(-p1) ;;
+    REVERT) pargs=(-R -p1) ;;
+  esac
+  _ask_for_patch
+  _ask_for_kernel_dir
+  _ask_for_apply_patch
+  if [[ $APPLY_PATCH == True ]]; then
+        _note "${MSG_NOTE_PATCH}: $KPATCH > ${KERNEL_DIR##*/}"
+    _cd "$KERNEL_DIR" "$MSG_ERR_DIR ${RED}$KERNEL_DIR"
+    patch "${pargs[@]}" -i "${DIR}/patches/$KPATCH"
+    _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
+  else
+    _exit
+  fi
+}
+
 # Help option
 #-------------
 
@@ -615,6 +640,8 @@ ${NC}[${YELLOW}OPTION${NC}] [${YELLOW}ARGUMENT${NC}] \
     -m, --msg          [message]    $MSG_HELP_M
     -f, --file            [file]    $MSG_HELP_F
     -z, --zip     [Image.gz-dtb]    $MSG_HELP_Z
+    -p, --patch                     $MSG_HELP_P
+    -r, --revert                    $MSG_HELP_R
     -d, --debug                     $MSG_HELP_D
 
 ${BOLD}${MSG_HELP_INFO}: \
@@ -666,6 +693,7 @@ _start() {
   LOS_ARM64_DIR="${DIR}/toolchains/$LOS_ARM64_DIR"
   LOS_ARM_DIR="${DIR}/toolchains/$LOS_ARM_DIR"
   ANYKERNEL_DIR="${DIR}/$ANYKERNEL_DIR"
+  BOOT_DIR="${DIR}/out/${CODENAME}/arch/${ARCH}/boot"
 
   # Ask questions to the user
   _ask_for_kernel_dir
@@ -720,7 +748,6 @@ _start() {
 
   # Status -> zip -> upload the build
   _get_build_time
-  BOOT_DIR="${DIR}/out/${CODENAME}/arch/${ARCH}/boot"
   # shellcheck disable=SC2012
   most_recent_file="$(ls -Art "$BOOT_DIR" 2>/dev/null | tail -n 1)"
   ft="$(stat -c %Z "${BOOT_DIR}/${most_recent_file}" 2>/dev/null)"
@@ -730,8 +757,6 @@ _start() {
   else
     _note "$MSG_NOTE_SUCCESS $BUILD_TIME !"
     _send_success_build_status
-
-    # Create flashable signed zip
     _ask_for_flashable_zip
     if [[ $FLASH_ZIP == True ]]; then
       _ask_for_kernel_image
@@ -741,10 +766,7 @@ _start() {
         | tee -a "$LOG"
       _note "$MSG_NOTE_ZIPPED !"
     fi
-
-    # Upload the build and exit
     _upload_kernel_build
-    _exit
   fi
 }
 
@@ -786,6 +808,7 @@ _ask_for_kernel_dir() {
       read -r -e KERNEL_DIR
     done
     KERNEL_DIR="$(realpath "$KERNEL_DIR")"
+    CONF_DIR="${KERNEL_DIR}/arch/${ARCH}/configs"
     _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
   fi
 }
@@ -795,7 +818,6 @@ _ask_for_defconfig() {
   # Choices: all defconfig files located in <configs>,
   # folder corresponding to the current architecture
   # Validation checks are not needed here
-  CONF_DIR="${KERNEL_DIR}/arch/${ARCH}/configs"
   _cd "$CONF_DIR" "$MSG_ERR_DIR ${RED}$CONF_DIR"
   _prompt "$MSG_ASK_DEF :" 2
   select DEFCONFIG in *_defconfig; do
@@ -977,6 +999,30 @@ _ask_for_clone_anykernel() {
       _error "${MSG_ERR_CLONE}: ${RED}AnyKernel"; _exit
       ;;
     *) CLONE_AK=True ;;
+  esac
+}
+
+# Selection: get the patch to apply
+_ask_for_patch() {
+  # Choices: all patch files located in <patches>
+  # Validation checks are not needed here
+  _cd "${DIR}/patches" "$MSG_ERR_DIR ${RED}${DIR}/patches"
+  _prompt "$MSG_ASK_PATCH :" 2
+  select KPATCH in *.patch; do
+    [[ $KPATCH ]] && break
+    _error "$MSG_ERR_SELECT"
+  done
+  _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
+}
+
+# Confirmation: apply Patch
+_ask_for_apply_patch() {
+  # Validation checks are not needed here
+  _error WARN "$KPATCH => ${KERNEL_DIR##*/}"
+  _confirm "$MSG_CONFIRM_PATCH (${pmod}) ?" "[Y/n]"
+  case $CONFIRM in
+    n|N|no|No|NO) _exit ;;
+    *) APPLY_PATCH=True ;;
   esac
 }
 
