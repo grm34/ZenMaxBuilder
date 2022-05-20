@@ -410,8 +410,8 @@ _install_dependencies() {
             if [[ $DEP == ld ]]; then DEP=binutils; fi
             _ask_for_install_pkg "$DEP"
             if [[ $INSTALL_PKG == True ]]; then
-              eval "${pm[0]/_}" "${pm[1]}" \
-                   "${pm[2]}" "${pm[3]}" "$DEP"
+              if [[ ${pm[0]} == _ ]]; then pm=("${pm[@]:1}"); fi
+              "${pm[@]}" "$DEP"
             fi
           fi
         fi
