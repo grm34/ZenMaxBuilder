@@ -358,11 +358,12 @@ _exit() {
       _check rm -rf "${DIR}/${folder}/$CODENAME"
     fi
   done
+  echo
   for (( second=3; second>=1; second-- )); do
     echo -ne "\r\033[K${BLUE}${MSG_EXIT}"\
              "in ${MAGENTA}${second}${BLUE}"\
              "second(s)...$NC"
-    sleep 1
+    sleep 0.9
   done
   echo && kill -- $$
 }
@@ -1195,10 +1196,10 @@ _make_build() {
   linuxversion="${LINUX_VERSION//.}"
   if [[ $(echo "${linuxversion:0:2} > 42" | bc) == 1 ]] && \
       [[ ${TC_OPTIONS[3]} == clang ]]; then
-    cflags="${cflags/CROSS_COMPILE_ARM32/CROSS_COMPILE_COMPAT}"
+    TC_OPTIONS[2]="${TC_OPTIONS[2]/_ARM32=/_COMPAT=}"
   fi
   _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
-    O="$OUT_DIR" ARCH="$ARCH" "${TC_OPTIONS[*]}" 2>&1
+    O="$OUT_DIR" ARCH="$ARCH" "${TC_OPTIONS[@]}" 2>&1
 }
 
 
