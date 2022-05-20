@@ -115,16 +115,16 @@ _zenmaxbuilder() {
   for opt in "$@"; do
     shift
     case $opt in
-      "--help")   set -- "$@" "-h"; break;;
-      "--start")  set -- "$@" "-s";;
-      "--update") set -- "$@" "-u";;
-      "--msg")    set -- "$@" "-m";;
-      "--file")   set -- "$@" "-f";;
-      "--zip")    set -- "$@" "-z";;
-      "--list")   set -- "$@" "-l";;
-      "--tag")    set -- "$@" "-t";;
-      "--debug")  set -- "$@" "-d";;
-      *)          set -- "$@" "$opt"
+      "--help")   set -- "$@" "-h"; break ;;
+      "--start")  set -- "$@" "-s" ;;
+      "--update") set -- "$@" "-u" ;;
+      "--msg")    set -- "$@" "-m" ;;
+      "--file")   set -- "$@" "-f" ;;
+      "--zip")    set -- "$@" "-z" ;;
+      "--list")   set -- "$@" "-l" ;;
+      "--tag")    set -- "$@" "-t" ;;
+      "--debug")  set -- "$@" "-d" ;;
+      *)          set -- "$@" "$opt" ;;
     esac
   done
 
@@ -133,17 +133,17 @@ _zenmaxbuilder() {
   while getopts ':hsuldt:m:f:z:' option; do
     case $option in
       h)  clear; _terminal_banner; _usage
-          rm -f "./bashvar"; exit 0;;
-      u)  _install_dependencies; _full_upgrade; _exit;;
-      m)  _install_dependencies; _send_msg_option; _exit;;
-      f)  _install_dependencies; _send_file_option; _exit;;
-      z)  _install_dependencies; _create_zip_option; _exit;;
-      l)  _install_dependencies; _list_all_kernels; _exit;;
-      t)  _install_dependencies; _get_linux_tag; _exit;;
-      s)  _install_dependencies; _start;;
-      d)  DEBUG_MODE=True; _install_dependencies; _start;;
-      :)  _error "$MSG_ERR_MARG ${RED}-$OPTARG"; _exit;;
-      \?) _error "$MSG_ERR_IOPT ${RED}-$OPTARG"; _exit
+          rm -f "./bashvar"; exit 0 ;;
+      u)  _install_dependencies; _full_upgrade; _exit ;;
+      m)  _install_dependencies; _send_msg_option; _exit ;;
+      f)  _install_dependencies; _send_file_option; _exit ;;
+      z)  _install_dependencies; _create_zip_option; _exit ;;
+      l)  _install_dependencies; _list_all_kernels; _exit ;;
+      t)  _install_dependencies; _get_linux_tag; _exit ;;
+      s)  _install_dependencies; _start ;;
+      d)  DEBUG_MODE=True; _install_dependencies; _start ;;
+      :)  _error "$MSG_ERR_MARG ${RED}-$OPTARG"; _exit ;;
+      \?) _error "$MSG_ERR_IOPT ${RED}-$OPTARG"; _exit ;;
     esac
   done
   if [[ $OPTIND -eq 1 ]]; then
@@ -453,6 +453,7 @@ _clone_toolchains() {
                 "$LOS_ARM_URL" "$LOS_ARM_DIR"
       _clone_tc "$LOS_ARM64_BRANCH" \
                 "$LOS_ARM64_URL" "$LOS_ARM64_DIR"
+      ;;
   esac
 }
 
@@ -808,7 +809,7 @@ _ask_for_defconfig() {
 _ask_for_menuconfig() {
   # Validation checks are not needed here
   _confirm "$MSG_ASK_CONF ?" "[y/N]"
-  case $CONFIRM in y|Y|yes|Yes|YES) MENUCONFIG=True; esac
+  case $CONFIRM in y|Y|yes|Yes|YES) MENUCONFIG=True ;; esac
 }
 
 # Confirmation: save new defconfig
@@ -824,7 +825,7 @@ _ask_for_save_defconfig() {
       SAVE_DEFCONFIG=False
       _confirm "${MSG_ASK_USE_DEF}: $DEFCONFIG ?" "[Y/n]"
       case $CONFIRM in n|N|no|No|NO)
-        ORIGINAL_DEFCONFIG=False
+        ORIGINAL_DEFCONFIG=False ;;
       esac
       ;;
     *)
@@ -837,6 +838,7 @@ _ask_for_save_defconfig() {
         read -r DEFCONFIG
       done
       DEFCONFIG=${DEFCONFIG}_defconfig
+      ;;
   esac
 }
 
@@ -858,7 +860,7 @@ _ask_for_toolchain() {
 _ask_for_edit_cross_compile() {
   # Validation checks are not needed here
   _confirm "$MSG_ASK_CC $COMPILER ?" "[Y/n]"
-  case $CONFIRM in n|N|no|No|NO) EDIT_CC=False; esac
+  case $CONFIRM in n|N|no|No|NO) EDIT_CC=False ;; esac
 }
 
 # Question: get the number of cpu cores to use
@@ -879,7 +881,7 @@ _ask_for_cores() {
         read -r CORES
       done
       ;;
-    *) CORES=$CPU
+    *) CORES=$CPU ;;
   esac
 }
 
@@ -887,7 +889,7 @@ _ask_for_cores() {
 _ask_for_make_clean() {
   # Validation checks are not needed here
   _confirm "${MSG_ASK_MCLEAN}: v$LINUX_VERSION ?" "[y/N]"
-  case $CONFIRM in y|Y|yes|Yes|YES) MAKE_CLEAN=True; esac
+  case $CONFIRM in y|Y|yes|Yes|YES) MAKE_CLEAN=True ;; esac
 }
 
 # Confirmation: make new build
@@ -895,7 +897,7 @@ _ask_for_new_build() {
   # Validation checks are not needed here
   _confirm \
     "$MSG_START ${TAG}-${CODENAME}-$LINUX_VERSION ?" "[Y/n]"
-  case $CONFIRM in n|N|no|No|NO) NEW_BUILD=False; esac
+  case $CONFIRM in n|N|no|No|NO) NEW_BUILD=False ;; esac
 }
 
 # Confirmation: send build status on telegram
@@ -903,7 +905,7 @@ _ask_for_telegram() {
   # Validation checks are not needed here
   if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
     _confirm "$MSG_ASK_TG ?" "[y/N]"
-    case $CONFIRM in y|Y|yes|Yes|YES) BUILD_STATUS=True; esac
+    case $CONFIRM in y|Y|yes|Yes|YES) BUILD_STATUS=True ;; esac
   fi
 }
 
@@ -912,7 +914,7 @@ _ask_for_flashable_zip() {
   # Validation checks are not needed here
   _confirm \
     "$MSG_ASK_ZIP ${TAG}-${CODENAME}-$LINUX_VERSION ?" "[y/N]"
-  case $CONFIRM in y|Y|yes|Yes|YES) FLASH_ZIP=True; esac
+  case $CONFIRM in y|Y|yes|Yes|YES) FLASH_ZIP=True ;; esac
 }
 
 # Question: get the kernel image to zip
@@ -936,7 +938,7 @@ _ask_for_run_again() {
   # Validation checks are not needed here
   RUN_AGAIN=False
   _confirm "$MSG_RUN_AGAIN ?" "[y/N]"
-  case $CONFIRM in y|Y|yes|Yes|YES) RUN_AGAIN=True; esac
+  case $CONFIRM in y|Y|yes|Yes|YES) RUN_AGAIN=True ;; esac
 }
 
 # Confirmation: install missing packages
@@ -948,7 +950,7 @@ _ask_for_install_pkg() {
     n|N|no|No|NO)
       _error WARN "${MSG_WARN_DEP}: ${RED}${DEP}"; sleep 2
       ;;
-    *) INSTALL_PKG=True
+    *) INSTALL_PKG=True ;;
   esac
 }
 
@@ -961,7 +963,7 @@ _ask_for_clone_toolchain() {
     n|N|no|No|NO)
       _error "${MSG_ERR_CLONE}: ${RED}$1"; _exit
       ;;
-    *) CLONE_TC=True
+    *) CLONE_TC=True ;;
   esac
 }
 
@@ -974,7 +976,7 @@ _ask_for_clone_anykernel() {
     n|N|no|No|NO)
       _error "${MSG_ERR_CLONE}: ${RED}AnyKernel"; _exit
       ;;
-    *) CLONE_AK=True
+    *) CLONE_AK=True ;;
   esac
 }
 
@@ -1035,6 +1037,7 @@ _export_path_and_options() {
       TCVER="${v1##*/} ${v2##*/}"
       cross=${PROTON_GCC_OPTIONS[1]/CROSS_COMPILE=}
       ccross=${PROTON_GCC_OPTIONS[3]/CC=}
+      ;;
   esac
   if [[ $LTO == True ]]; then
     export LD_LIBRARY_PATH=${PROTON_DIR}/lib
@@ -1231,7 +1234,7 @@ _clean_anykernel() {
   for file in "${ANYKERNEL_DIR}"/*; do
     case $file in
       (*.zip*|*Image*|*erofs*|*dtb*|*spectrum.rc*)
-        _check rm -rf "${file}"
+        _check rm -rf "${file}" ;;
     esac
   done
 }
@@ -1273,10 +1276,10 @@ _send_file() {
   # ARG $1 = file
   # ARG $2 = caption
   case $1 in
-    *.png|*.jpg|*.jpeg|*.gif|*.bmp) tg=sendPhoto;;
-    *.mp3|*.flac|*.wav|*.aac|*.m4a|*.ogg) tg=sendAudio;;
-    *.mp4|*.mkv|*.avi|*.webm|*.m4v|*.3gp|*.mpeg) tg=sendVideo;;
-    *) tg=sendDocument
+    *.png|*.jpg|*.jpeg|*.gif|*.bmp) tg=sendPhoto ;;
+    *.mp3|*.flac|*.wav|*.aac|*.m4a|*.ogg) tg=sendAudio ;;
+    *.mp4|*.mkv|*.avi|*.webm|*.m4v|*.3gp|*.mpeg) tg=sendVideo ;;
+    *) tg=sendDocument ;;
   esac
   type=${tg/send}
   curl --progress-bar -o /dev/null -fL -X POST \
