@@ -613,12 +613,10 @@ _patch() {
   _ask_for_kernel_dir
   _ask_for_apply_patch
   if [[ $APPLY_PATCH == True ]]; then
-        _note "${MSG_NOTE_PATCH}: $KPATCH > ${KERNEL_DIR##*/}"
+    _note "${MSG_NOTE_PATCH}: $KPATCH > ${KERNEL_DIR##*/}"
     _cd "$KERNEL_DIR" "$MSG_ERR_DIR ${RED}$KERNEL_DIR"
     patch "${pargs[@]}" -i "${DIR}/patches/$KPATCH"
     _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
-  else
-    _exit
   fi
 }
 
