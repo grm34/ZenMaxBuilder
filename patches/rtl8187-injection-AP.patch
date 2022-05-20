@@ -1,0 +1,44 @@
+diff -Naur backports-4.14-rc2-1/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c backports-4.14-rc2-1.new/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c
+--- backports-4.14-rc2-1/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c	2017-09-30 18:00:14.000000000 +0200
++++ backports-4.14-rc2-1.new/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c	2017-11-10 12:14:44.280910405 +0100
+@@ -1113,6 +1113,7 @@
+ 		goto exit;
+
+ 	switch (vif->type) {
++	case NL80211_IFTYPE_AP:
+ 	case NL80211_IFTYPE_STATION:
+ 	case NL80211_IFTYPE_ADHOC:
+ 		break;
+@@ -1602,7 +1603,8 @@
+ 			priv->rfkill_mask = RFKILL_MASK_8198;
+ 	}
+ 	dev->vif_data_size = sizeof(struct rtl8187_vif);
+-	dev->wiphy->interface_modes = BIT(NL80211_IFTYPE_STATION) |
++	dev->wiphy->interface_modes = BIT(NL80211_IFTYPE_AP) |
++				      BIT(NL80211_IFTYPE_STATION) |
+ 				      BIT(NL80211_IFTYPE_ADHOC) ;
+
+ 	wiphy_ext_feature_set(dev->wiphy, NL80211_EXT_FEATURE_CQM_RSSI_LIST);
+diff -Naur backports-4.14-rc2-1/defconfigs/rtl8187 backports-4.14-rc2-1.new/defconfigs/rtl8187
+--- backports-4.14-rc2-1/defconfigs/rtl8187	1970-01-01 01:00:00.000000000 +0100
++++ backports-4.14-rc2-1.new/defconfigs/rtl8187	2017-11-14 17:37:55.452785950 +0100
+@@ -0,0 +1,19 @@
++CPTCFG_CFG80211=m
++CPTCFG_CFG80211_DEFAULT_PS=y
++CPTCFG_CFG80211_DEBUGFS=y
++CPTCFG_CFG80211_CRDA_SUPPORT=y
++CPTCFG_CFG80211_WEXT=y
++CPTCFG_MAC80211=m
++CPTCFG_MAC80211_HAS_RC=y
++CPTCFG_MAC80211_RC_MINSTREL=y
++CPTCFG_MAC80211_RC_MINSTREL_HT=y
++CPTCFG_MAC80211_RC_DEFAULT_MINSTREL=y
++CPTCFG_MAC80211_RC_DEFAULT="minstrel_ht"
++CPTCFG_MAC80211_LEDS=y
++CPTCFG_MAC80211_DEBUGFS=y
++CPTCFG_MAC80211_MESSAGE_TRACING=y
++CPTCFG_MAC80211_STA_HASH_MAX_SIZE=0
++CPTCFG_WLAN=y
++CPTCFG_WLAN_VENDOR_REALTEK=y
++CPTCFG_RTL8187=m
++CPTCFG_RTL8187_LEDS=y
