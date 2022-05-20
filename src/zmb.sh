@@ -416,6 +416,7 @@ _install_dependencies() {
     else
       _error "$MSG_ERR_OS"
     fi
+    _clone_anykernel
   fi
 }
 
@@ -673,9 +674,8 @@ _start() {
   _ask_for_toolchain
   _ask_for_cores
 
-  # Clone AK3 and selected toolchains
+  # Clone the selected toolchains
   _clone_toolchains
-  _clone_anykernel
 
   # Make kernel version
   _export_path_and_options
