@@ -52,7 +52,7 @@ elif [[ $(uname) != Linux ]]; then
 fi
 
 # Absolute path
-DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 if ! cd "$DIR"; then
   echo "ERROR: ZenMaxBuilder directory not found" >&2
   exit 1
@@ -74,7 +74,7 @@ shopt -s checkwinsize progcomp
 shopt -u cdspell dirspell progcomp_alias
 
 # User language
-LANGUAGE=${DIR}/lang/${LANG:0:2}.cfg
+LANGUAGE="${DIR}/lang/${LANG:0:2}.cfg"
 if [[ -f $LANGUAGE ]]; then
   # shellcheck source=/dev/null
   source "$LANGUAGE"
@@ -108,8 +108,8 @@ _zenmaxbuilder() {
 
   # Date and time
   if [[ $TIMEZONE == default ]]; then _get_user_timezone; fi
-  DATE=$(TZ=$TIMEZONE date +%Y-%m-%d)
-  TIME=$(TZ=$TIMEZONE date +%Hh%Mm%Ss)
+  DATE="$(TZ=$TIMEZONE date +%Y-%m-%d)"
+  TIME="$(TZ=$TIMEZONE date +%Hh%Mm%Ss)"
 
   # Transfrom long options to short
   for opt in "$@"; do
@@ -171,7 +171,7 @@ _terminal_banner() {
 # Shell colors
 _terminal_colors() {
   if [[ -t 1 ]]; then
-    ncolors=$(tput colors)
+    ncolors="$(tput colors)"
     if [[ -n $ncolors ]] && [[ $ncolors -ge 8 ]]; then
       BOLD="$(tput bold)"
       NC="\e[0m"
@@ -188,25 +188,25 @@ _terminal_colors() {
 
 # Operating system timezone
 _get_user_timezone() {
-  TIMEZONE=$( # linux
+  TIMEZONE="$( # linux
     (timedatectl | grep 'Time zone' \
       | xargs | cut -d' ' -f3) 2>/dev/null
-  )
+  )"
   if ! [[ $TIMEZONE ]]; then
-    TIMEZONE=$( # termux
+    TIMEZONE="$( # termux
       (getprop | grep timezone | cut -d' ' -f2 \
         | sed 's/\[//g' | sed 's/\]//g') 2>/dev/null
-    )
+    )"
   fi
 }
 
 # Current build time
 _get_build_time() {
-  end_time=$(TZ=$TIMEZONE date +%s)
-  diff_time=$((end_time - START_TIME))
-  min=$((diff_time / 60))
-  sec=$((diff_time % 60))
-  BUILD_TIME=${min}m${sec}s
+  end_time="$(TZ=$TIMEZONE date +%s)"
+  diff_time="$(( end_time - START_TIME ))"
+  min="$(( diff_time / 60 ))"
+  sec="$(( diff_time % 60 ))"
+  BUILD_TIME="${min}m${sec}s"
 }
 
 # Handle build logs
@@ -218,7 +218,7 @@ _get_build_logs() {
   if [[ -f $LOG ]]; then
     # shellcheck source=/dev/null
     source "${DIR}/etc/excluded.cfg"
-    null=$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")
+    null="$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")"
     unset IFS
     (set -o posix; set | grep -v "${null//|/\\|}")> \
       "${DIR}/buildervar"
@@ -241,8 +241,8 @@ _cd() {
 _prompt() {
     # ARG $1 = the question to ask
     # ARG $2 = prompt type (1 for question / 2 for selection)
-    lenth=$*
-    count=${#lenth}
+    lenth="$*"
+    count="${#lenth}"
     echo -ne "\n${YELL}==> ${GREEN}$1 ${YELL}\n==> "
     for (( char=1; char<=count-2; char++ )); do
       echo -ne "─"
@@ -257,7 +257,7 @@ _prompt() {
 # Confirmation prompt
 _confirm_msg() {
     CONFIRM=False
-    count=$((${#1} + 6))
+    count="$(( ${#1} + 6 ))"
     echo -ne "${YELL}\n==> ${GREEN}${1} ${RED}${2}${YELL}\n==> "
     for (( char=1; char<=count; char++ )); do
       echo -ne "─"
@@ -304,16 +304,16 @@ _check() {
   # 2. notify function and file on ERR
   # 3. get failed build logs (+TG feedback)
   # 4. ask to run again last failed command
-  cmd_err=${*}
+  cmd_err="${*}"
   if [[ $DEBUG_MODE == True ]]; then
     echo -e "\n${BLUE}Command:"\
             "${NC}${YELLOW}${cmd_err/unbuffer }$NC" >&2
     sleep 0.5
   fi
   until "$@" & wait $!; do
-    line=${BASH_LINENO[$i+1]}
-    func=${FUNCNAME[$i+1]}
-    file=${BASH_SOURCE[$i+1]##*/}
+    line="${BASH_LINENO[$i+1]}"
+    func="${FUNCNAME[$i+1]}"
+    file="${BASH_SOURCE[$i+1]##*/}"
     _error "${cmd_err/unbuffer } ${RED}${MSG_ERR_LINE}"\
            "${line}:${NC}${YELLOW} ${func}"\
            "${RED}${MSG_ERR_FROM}:"\
@@ -323,7 +323,7 @@ _check() {
     if [[ $RUN_AGAIN == True ]]; then
       if [[ -f $LOG ]]; then _terminal_banner > "$LOG"; fi
       if [[ $START_TIME ]]; then
-        START_TIME=$(TZ=$TIMEZONE date +%s)
+        START_TIME="$(TZ=$TIMEZONE date +%s)"
         _send_start_build_status
         "$@" | tee -a "$LOG" & wait $!
       else
@@ -486,7 +486,7 @@ _update_git() {
   # 5. ALL: reset to origin then pull changes
   git checkout "$1"
   if [[ $1 == zmb ]] && [[ -f ${DIR}/etc/user.cfg ]]; then
-    conf=$(git diff origin/zmb "${DIR}/etc/settings.cfg")
+    conf="$(git diff origin/zmb "${DIR}/etc/settings.cfg")"
     if [[ -n $conf ]] && [[ -f ${DIR}/etc/user.cfg ]]; then
       _error WARN "${MSG_CONF}"; echo
       _check mv "${DIR}/etc/user.cfg" "${DIR}/etc/old.cfg"
@@ -500,7 +500,7 @@ _update_git() {
 _full_upgrade() {
   # 1. set ZMB and AK3 and TC data
   # 2. upgrade existing stuff...
-  tp=${DIR}/toolchains
+  tp="${DIR}/toolchains"
   declare -A up_data=(
     [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
     [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}€$MSG_UP_AK3"
@@ -571,9 +571,9 @@ _list_all_kernels() {
 
 _get_linux_tag() {
   _note "${MSG_NOTE_LTAG}..."
-  ltag=$(git ls-remote --refs --sort='v:refname' --tags \
+  ltag="$(git ls-remote --refs --sort='v:refname' --tags \
     "$LINUX_STABLE" | grep "$OPTARG" | tail --lines=1 \
-    | cut --delimiter='/' --fields=3)
+    | cut --delimiter='/' --fields=3)"
   if [[ $ltag == ${OPTARG}* ]]; then
     _note "${MSG_SUCCESS_LTAG}: ${RED}$ltag"
   else
@@ -657,14 +657,14 @@ _start() {
   done
 
   # Get realpath working folders
-  OUT_DIR=${DIR}/out/$CODENAME
-  BUILD_DIR=${DIR}/builds/$CODENAME
-  PROTON_DIR=${DIR}/toolchains/$PROTON_DIR
-  GCC_ARM64_DIR=${DIR}/toolchains/$GCC_ARM64_DIR
-  GCC_ARM_DIR=${DIR}/toolchains/$GCC_ARM_DIR
-  LOS_ARM64_DIR=${DIR}/toolchains/$LOS_ARM64_DIR
-  LOS_ARM_DIR=${DIR}/toolchains/$LOS_ARM_DIR
-  ANYKERNEL_DIR=${DIR}/$ANYKERNEL_DIR
+  OUT_DIR="${DIR}/out/$CODENAME"
+  BUILD_DIR="${DIR}/builds/$CODENAME"
+  PROTON_DIR="${DIR}/toolchains/$PROTON_DIR"
+  GCC_ARM64_DIR="${DIR}/toolchains/$GCC_ARM64_DIR"
+  GCC_ARM_DIR="${DIR}/toolchains/$GCC_ARM_DIR"
+  LOS_ARM64_DIR="${DIR}/toolchains/$LOS_ARM64_DIR"
+  LOS_ARM_DIR="${DIR}/toolchains/$LOS_ARM_DIR"
+  ANYKERNEL_DIR="${DIR}/$ANYKERNEL_DIR"
 
   # Ask questions to the user
   _ask_for_kernel_dir
@@ -683,8 +683,8 @@ _start() {
   _note "${MSG_NOTE_LINUXVER}..."
   make -C "$KERNEL_DIR" kernelversion \
     | grep -v make > linuxver & wait $!
-  LINUX_VERSION=$(cat linuxver)
-  KERNEL_NAME=${TAG}-${CODENAME}-$LINUX_VERSION
+  LINUX_VERSION="$(cat linuxver)"
+  KERNEL_NAME="${TAG}-${CODENAME}-$LINUX_VERSION"
 
   # Make clean
   _ask_for_make_clean
@@ -712,8 +712,8 @@ _start() {
     _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."; _exit
   else
     _ask_for_telegram
-    START_TIME=$(TZ=$TIMEZONE date +%s)
-    LOG=${DIR}/logs/${CODENAME}/${KERNEL_NAME}_${DATE}_${TIME}.log
+    START_TIME="$(TZ=$TIMEZONE date +%s)"
+    LOG="${DIR}/logs/${CODENAME}/${KERNEL_NAME}_${DATE}_${TIME}.log"
     _terminal_banner > "$LOG"
     _make_build | tee -a "$LOG"
   fi
@@ -722,8 +722,8 @@ _start() {
   _get_build_time
   BOOT_DIR="${DIR}/out/${CODENAME}/arch/${ARCH}/boot"
   # shellcheck disable=SC2012
-  most_recent_file=$(ls -Art "$BOOT_DIR" 2>/dev/null | tail -n 1)
-  ft=$(stat -c %Z "${BOOT_DIR}/${most_recent_file}" 2>/dev/null)
+  most_recent_file="$(ls -Art "$BOOT_DIR" 2>/dev/null | tail -n 1)"
+  ft="$(stat -c %Z "${BOOT_DIR}/${most_recent_file}" 2>/dev/null)"
   if ! [[ -d $BOOT_DIR ]] || [[ -z $(ls -A "$BOOT_DIR") ]] || \
   [[ $ft < $START_TIME ]]; then
     _error "$MSG_ERR_MAKE"; _exit
@@ -785,7 +785,7 @@ _ask_for_kernel_dir() {
       _prompt "$MSG_ASK_KDIR :" 1
       read -r -e KERNEL_DIR
     done
-    KERNEL_DIR=$(realpath "$KERNEL_DIR")
+    KERNEL_DIR="$(realpath "$KERNEL_DIR")"
     _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
   fi
 }
@@ -837,7 +837,7 @@ _ask_for_save_defconfig() {
         _prompt "$MSG_ASK_DEF_NAME :" 1
         read -r DEFCONFIG
       done
-      DEFCONFIG=${DEFCONFIG}_defconfig
+      DEFCONFIG="${DEFCONFIG}_defconfig"
       ;;
   esac
 }
@@ -868,7 +868,7 @@ _ask_for_cores() {
   # Validation checks for a valid number corresponding,
   # to the amount of available CPU cores (no limits here)
   # Otherwise all available CPU cores will be used.
-  CPU=$(nproc --all)
+  CPU="$(nproc --all)"
   _confirm "$MSG_ASK_CPU ?" "[Y/n]"
   case $CONFIRM in
     n|N|no|No|NO)
@@ -881,7 +881,7 @@ _ask_for_cores() {
         read -r CORES
       done
       ;;
-    *) CORES=$CPU ;;
+    *) CORES="$CPU" ;;
   esac
 }
 
@@ -929,7 +929,7 @@ _ask_for_kernel_image() {
     _prompt "$MSG_ASK_IMG" 1
     read -r -e K_IMG
   done
-  K_IMG=$(realpath "$K_IMG")
+  K_IMG="$(realpath "$K_IMG")"
   _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
 }
 
@@ -993,54 +993,54 @@ _export_path_and_options() {
   # 4. get CROSS_COMPILE and CC (to handle Makefile)
   # 5. set Link Time Optimization (LTO)
   # 6. DEBUG MODE: display $PATH
-  if [[ $BUILDER == default ]]; then BUILDER=$(whoami); fi
-  if [[ $HOST == default ]]; then HOST=$(uname -n); fi
-  export KBUILD_BUILD_USER=${BUILDER}
-  export KBUILD_BUILD_HOST=${HOST}
+  if [[ $BUILDER == default ]]; then BUILDER="$(whoami)"; fi
+  if [[ $HOST == default ]]; then HOST="$(uname -n)"; fi
+  export KBUILD_BUILD_USER="${BUILDER}"
+  export KBUILD_BUILD_HOST="${HOST}"
   export PLATFORM_VERSION ANDROID_MAJOR_VERSION
   case $COMPILER in
     "$PROTON_CLANG_NAME")
-      export PATH=${PROTON_DIR}/bin:${PATH}
+      export PATH="${PROTON_DIR}/bin:${PATH}"
       _check_toolchain_path "$PROTON_DIR"
       TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
       _get_tc_version "$PROTON_VERSION"
-      TCVER=${tc_version##*/}
-      cross=${PROTON_CLANG_OPTIONS[1]/CROSS_COMPILE=}
-      ccross=${PROTON_CLANG_OPTIONS[3]/CC=}
+      TCVER="${tc_version##*/}"
+      cross="${PROTON_CLANG_OPTIONS[1]/CROSS_COMPILE=}"
+      ccross="${PROTON_CLANG_OPTIONS[3]/CC=}"
       ;;
     "$EVA_GCC_NAME")
-      export PATH=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin:${PATH}
+      export PATH="${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin:${PATH}"
       _check_toolchain_path "$GCC_ARM64_DIR" "$GCC_ARM_DIR"
       TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
       _get_tc_version "$GCC_ARM64_VERSION"
-      TCVER=${tc_version##*/}
-      cross=${EVA_GCC_OPTIONS[1]/CROSS_COMPILE=}
-      ccross=${EVA_GCC_OPTIONS[3]/CC=}
+      TCVER="${tc_version##*/}"
+      cross="${EVA_GCC_OPTIONS[1]/CROSS_COMPILE=}"
+      ccross="${EVA_GCC_OPTIONS[3]/CC=}"
       ;;
     "$LOS_GCC_NAME")
-      export PATH=${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:${PATH}
+      export PATH="${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:${PATH}"
       _check_toolchain_path "$LOS_ARM64_DIR" "$LOS_ARM_DIR"
       TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
       _get_tc_version "$LOS_ARM64_VERSION"
-      TCVER=${tc_version##*/}
-      cross=${LOS_GCC_OPTIONS[1]/CROSS_COMPILE=}
-      ccross=${LOS_GCC_OPTIONS[3]/CC=}
+      TCVER="${tc_version##*/}"
+      cross="${LOS_GCC_OPTIONS[1]/CROSS_COMPILE=}"
+      ccross="${LOS_GCC_OPTIONS[3]/CC=}"
       ;;
     "$PROTON_GCC_NAME")
-      eva_path=${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin
-      export PATH=${PROTON_DIR}/bin:${eva_path}:${PATH}
+      eva_path="${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin"
+      export PATH="${PROTON_DIR}/bin:${eva_path}:${PATH}"
       _check_toolchain_path "$PROTON_DIR" "$GCC_ARM_DIR" \
                             "$GCC_ARM64_DIR"
       TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
-      _get_tc_version "$PROTON_VERSION"; v1=$tc_version
-      _get_tc_version "$GCC_ARM64_VERSION"; v2=$tc_version
+      _get_tc_version "$PROTON_VERSION"; v1="$tc_version"
+      _get_tc_version "$GCC_ARM64_VERSION"; v2="$tc_version"
       TCVER="${v1##*/} ${v2##*/}"
-      cross=${PROTON_GCC_OPTIONS[1]/CROSS_COMPILE=}
-      ccross=${PROTON_GCC_OPTIONS[3]/CC=}
+      cross="${PROTON_GCC_OPTIONS[1]/CROSS_COMPILE=}"
+      ccross="${PROTON_GCC_OPTIONS[3]/CC=}"
       ;;
   esac
   if [[ $LTO == True ]]; then
-    export LD_LIBRARY_PATH=${PROTON_DIR}/lib
+    export LD_LIBRARY_PATH="${PROTON_DIR}/lib"
     TC_OPTIONS[6]="LD=$LTO_LIBRARY"
   fi
   if [[ $DEBUG_MODE == True ]]; then
@@ -1062,16 +1062,16 @@ _check_toolchain_path() {
 # Get toolchain version
 _get_tc_version() {
   # ARG: $1 = toolchain lib DIR
-  tc_version=$(find "${DIR}/toolchains/$1" \
-    -mindepth 1 -maxdepth 1 -type d | head -n 1)
+  tc_version="$(find "${DIR}/toolchains/$1" \
+    -mindepth 1 -maxdepth 1 -type d | head -n 1)"
 }
 
 # Get CROSS_COMPILE and CC from Makefile
 _get_and_display_cross_compile() {
   r1=("^CROSS_COMPILE\s.*?=.*" "CROSS_COMPILE\ ?=\ ${cross}")
   r2=("^CC\s.*=.*" "CC\ =\ ${ccross}\ -I${KERNEL_DIR}")
-  c1=$(sed -n "/${r1[0]}/{p;}" "${KERNEL_DIR}/Makefile")
-  c2=$(sed -n "/${r2[0]}/{p;}" "${KERNEL_DIR}/Makefile")
+  c1="$(sed -n "/${r1[0]}/{p;}" "${KERNEL_DIR}/Makefile")"
+  c2="$(sed -n "/${r2[0]}/{p;}" "${KERNEL_DIR}/Makefile")"
   if [[ -z $c1 ]]; then
     _error "$MSG_ERR_CC"; _exit
   else
@@ -1093,7 +1093,7 @@ _handle_makefile_cross_compile() {
     _check sed -i "s|${r1[0]}|${r1[1]}|g" "${KERNEL_DIR}/Makefile"
     _check sed -i "s|${r2[0]}|${r2[1]}|g" "${KERNEL_DIR}/Makefile"
   fi
-  mk=$(grep "${r1[0]}" "${KERNEL_DIR}/Makefile")
+  mk="$(grep "${r1[0]}" "${KERNEL_DIR}/Makefile")"
   if [[ -n ${mk##*"${cross/CROSS_COMPILE=/}"*} ]]; then
     _error WARN "$MSG_WARN_CC"
   fi
@@ -1153,7 +1153,7 @@ _make_build() {
   linuxversion="${LINUX_VERSION//.}"
   if [[ $(echo "${linuxversion:0:2} > 42" | bc) == 1 ]] && \
   [[ ${TC_OPTIONS[3]} == clang ]]; then
-    cflags=${cflags/CROSS_COMPILE_ARM32/CROSS_COMPILE_COMPAT}
+    cflags="${cflags/CROSS_COMPILE_ARM32/CROSS_COMPILE_COMPAT}"
   fi
   _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
     O="$OUT_DIR" ARCH="$ARCH" "${TC_OPTIONS[*]}" 2>&1
@@ -1197,15 +1197,15 @@ _set_ak3_conf() {
   for file in "${INCLUDED[@]}"; do
     if [[ -f ${BOOT_DIR}/$file ]]; then
       if [[ ${file##*/} == *erofs.dtb ]]; then
-        _check mkdir erofs; inc_dir=erofs/
+        _check mkdir erofs; inc_dir="erofs/"
       elif [[ ${file##*/} != *Image* ]] && \
       [[ ${file##*/} != *erofs.dtb ]] && \
       [[ ${file##*/} == *.dtb ]]; then
-        _check mkdir dtb; inc_dir=dtb/;
+        _check mkdir dtb; inc_dir="dtb/";
       else
         inc_dir=""
       fi
-      file=$(realpath "${BOOT_DIR}/$file")
+      file="$(realpath "${BOOT_DIR}/$file")"
       _check cp -af "$file" "${inc_dir}${file##*/}"
     fi
   done
@@ -1334,10 +1334,10 @@ _send_failed_build_logs() {
 # Upload the kernel
 _upload_kernel_build() {
   if [[ $BUILD_STATUS == True ]] && [[ $FLASH_ZIP == True ]]; then
-    file=${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip
-    if ! [[ -f $file ]]; then file=${file/-signed}; fi
+    file="${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip"
+    if ! [[ -f $file ]]; then file="${file/-signed}"; fi
     _note "${MSG_NOTE_UPLOAD}: ${file##*/}..."
-    MD5=$(md5sum "$file" | cut -d' ' -f1)
+    MD5="$(md5sum "$file" | cut -d' ' -f1)"
     caption="${MSG_TG_CAPTION}: $BUILD_TIME"
     _send_file \
       "$file" "$caption | MD5 Checksum: ${MD5//_/-}"
@@ -1348,7 +1348,7 @@ _upload_kernel_build() {
 _set_html_status_msg() {
   android_version="AOSP Unified"
   if [[ -n $PLATFORM_VERSION ]]; then
-    android_version=${android_version/Unified/$PLATFORM_VERSION}
+    android_version="${android_version/Unified/$PLATFORM_VERSION}"
   fi
   STATUS_MSG="
 
