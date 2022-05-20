@@ -97,7 +97,6 @@ fi
 ### .1. MAIN => the ZenMaxBuilder (ZMB) main process function    ###
 ###--------------------------------------------------------------###
 
-# Main process
 _zenmaxbuilder() {
 
   # Terminal colors
@@ -276,7 +275,7 @@ _confirm() {
   # ARG $2 = [Y/n] (to set default <ENTER> behavior)
   _confirm_msg "$@"
   until [[ -z $CONFIRM ]] || \
-  [[ $CONFIRM =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]]; do
+      [[ $CONFIRM =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]]; do
     _error "$MSG_ERR_CONFIRM"
     _confirm_msg "$@"
   done
@@ -355,7 +354,7 @@ _exit() {
   device_folders=(out builds logs)
   for folder in "${device_folders[@]}"; do
     if [[ -d ${DIR}/${folder}/$CODENAME ]] && \
-    [[ -z $(ls -A "${DIR}/${folder}/$CODENAME") ]]; then
+        [[ -z $(ls -A "${DIR}/${folder}/$CODENAME") ]]; then
       _check rm -rf "${DIR}/${folder}/$CODENAME"
     fi
   done
@@ -562,7 +561,7 @@ _send_file_option() {
 
 _list_all_kernels() {
   if [[ -d ${DIR}/out ]] && \
-  [[ $(ls -d out/*/ 2>/dev/null) ]]; then
+      [[ $(ls -d out/*/ 2>/dev/null) ]]; then
     _note "${MSG_NOTE_LISTKERNEL}:"
     find out/ -mindepth 1 -maxdepth 1 -type d \
       | cut -f2 -d'/' | cat -n
@@ -657,11 +656,12 @@ _start() {
 
   # Prevent errors in user settings
   if [[ $KERNEL_DIR != default  ]] &&
-  ! [[ -f ${KERNEL_DIR}/Makefile ]] && \
-  ! [[ -d ${KERNEL_DIR}/arch ]]; then
+      ! [[ -f ${KERNEL_DIR}/Makefile ]] && \
+      ! [[ -d ${KERNEL_DIR}/arch ]]; then
     _error "$MSG_ERR_KDIR"; _exit
   elif ! [[ $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
-  ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|${LOS_GCC_NAME}) ]]; then
+      ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|\
+      ${LOS_GCC_NAME}) ]]; then
     _error "$MSG_ERR_COMPILER"; _exit
   fi
 
@@ -673,11 +673,9 @@ _start() {
   folders=(builds logs toolchains out)
   for folder in "${folders[@]}"; do
     if ! [[ -d ${DIR}/${folder}/$CODENAME ]] && \
-    [[ $folder != toolchains ]]; then
+        [[ $folder != toolchains ]]; then
       _check mkdir -p "${DIR}/${folder}/$CODENAME"
-    elif
-      ! [[ -d ${DIR}/$folder ]]
-    then
+    elif ! [[ -d ${DIR}/$folder ]]; then
       _check mkdir "${DIR}/$folder"
     fi
   done
@@ -750,7 +748,7 @@ _start() {
   most_recent_file="$(ls -Art "$BOOT_DIR" 2>/dev/null | tail -n 1)"
   ft="$(stat -c %Z "${BOOT_DIR}/${most_recent_file}" 2>/dev/null)"
   if ! [[ -d $BOOT_DIR ]] || [[ -z $(ls -A "$BOOT_DIR") ]] || \
-  [[ $ft < $START_TIME ]]; then
+      [[ $ft < $START_TIME ]]; then
     _error "$MSG_ERR_MAKE"; _exit
   else
     _note "$MSG_NOTE_SUCCESS $BUILD_TIME !"
@@ -869,7 +867,7 @@ _ask_for_toolchain() {
   if [[ $COMPILER == default ]]; then
     _prompt "$MSG_SELECT_TC :" 2
     select COMPILER in $PROTON_CLANG_NAME \
-    $EVA_GCC_NAME $PROTON_GCC_NAME $LOS_GCC_NAME; do
+        $EVA_GCC_NAME $PROTON_GCC_NAME $LOS_GCC_NAME; do
       [[ $COMPILER ]] && break
       _error "$MSG_ERR_SELECT"
     done
@@ -1196,7 +1194,7 @@ _make_build() {
   _send_start_build_status
   linuxversion="${LINUX_VERSION//.}"
   if [[ $(echo "${linuxversion:0:2} > 42" | bc) == 1 ]] && \
-  [[ ${TC_OPTIONS[3]} == clang ]]; then
+      [[ ${TC_OPTIONS[3]} == clang ]]; then
     cflags="${cflags/CROSS_COMPILE_ARM32/CROSS_COMPILE_COMPAT}"
   fi
   _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
@@ -1243,8 +1241,8 @@ _set_ak3_conf() {
       if [[ ${file##*/} == *erofs.dtb ]]; then
         _check mkdir erofs; inc_dir="erofs/"
       elif [[ ${file##*/} != *Image* ]] && \
-      [[ ${file##*/} != *erofs.dtb ]] && \
-      [[ ${file##*/} == *.dtb ]]; then
+          [[ ${file##*/} != *erofs.dtb ]] && \
+          [[ ${file##*/} == *.dtb ]]; then
         _check mkdir dtb; inc_dir="dtb/";
       else
         inc_dir=""
@@ -1368,7 +1366,7 @@ _send_zip_signing_status() {
 # Fail build status (+ logfile)
 _send_failed_build_logs() {
   if [[ $START_TIME ]] && [[ $BUILD_STATUS == True ]] && \
-  { ! [[ $BUILD_TIME ]] || [[ $RUN_AGAIN == True ]]; }; then
+      { ! [[ $BUILD_TIME ]] || [[ $RUN_AGAIN == True ]]; }; then
     _get_build_time
     _send_file "$LOG" \
       "v${LINUX_VERSION//_/-} | $MSG_TG_FAILED $BUILD_TIME"
