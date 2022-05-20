@@ -38,30 +38,30 @@
 
 # Ban all 'n00bz'
 if [[ ${BASH_SOURCE[0]} != "$0" ]]; then
-  echo "ERROR: ZenMaxBuilder cannot be sourced"
+  echo "ERROR: ZenMaxBuilder cannot be sourced" >&2
   exit 1
 elif ! [[ -t 0 ]]; then
-  echo "ERROR: run ZenMaxBuilder from a terminal"
+  echo "ERROR: run ZenMaxBuilder from a terminal" >&2
   exit 1
 elif [[ $(tput cols) -lt 76 ]] || [[ $(tput lines) -lt 12 ]]; then
-  echo "ERROR: terminal window is too small (min 76x12)"
+  echo "ERROR: terminal window is too small (min 76x12)" >&2
   exit 1
 elif [[ $(uname) != Linux ]]; then
-  echo "ERROR: run ZenMaxBuilder on Linux"
+  echo "ERROR: run ZenMaxBuilder on Linux" >&2
   exit 1
 fi
 
 # Absolute path
 DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 if ! cd "$DIR"; then
-  echo "ERROR: ZenMaxBuilder directory not found"
+  echo "ERROR: ZenMaxBuilder directory not found" >&2
   exit 1
 fi
 
 # Lockfile
 exec 201> "$(basename "$0").lock"
 if ! flock -n 201; then
-  echo "ERROR: ZenMaxBuilder is already running"
+  echo "ERROR: ZenMaxBuilder is already running" >&2
   exit 1
 fi
 
@@ -290,9 +290,9 @@ _error() {
   # ARG $1 = <WARN> for warning (ignore $1 for error)
   # ARG $* = the error or warning message
   if [[ $1 == WARN ]]; then
-    echo -e "\n${BLUE}${MSG_WARN}:${NC}${YELLOW}${*/WARN/}$NC"
+    echo -e "\n${BLUE}${MSG_WARN}:${NC}${YELLOW}${*/WARN/}$NC" >&2
   else
-    echo -e "\n${RED}${MSG_ERROR}: ${NC}${YELLOW}${*}$NC"
+    echo -e "\n${RED}${MSG_ERROR}: ${NC}${YELLOW}${*}$NC" >&2
   fi
 }
 
@@ -307,7 +307,7 @@ _check() {
   cmd_err=${*}
   if [[ $DEBUG_MODE == True ]]; then
     echo -e "\n${BLUE}Command:"\
-            "${NC}${YELLOW}${cmd_err/unbuffer }$NC"
+            "${NC}${YELLOW}${cmd_err/unbuffer }$NC" >&2
     sleep 0.5
   fi
   until "$@" & wait $!; do
@@ -1041,7 +1041,8 @@ _export_path_and_options() {
     TC_OPTIONS[6]="LD=$LTO_LIBRARY"
   fi
   if [[ $DEBUG_MODE == True ]]; then
-    echo -e "\n${BLUE}PATH: ${NC}${YELLOW}${PATH}$NC"; sleep 0.5
+    echo -e "\n${BLUE}PATH: ${NC}${YELLOW}${PATH}$NC" >&2
+    sleep 0.5
   fi
 }
 
@@ -1094,7 +1095,7 @@ _handle_makefile_cross_compile() {
     _error WARN "$MSG_WARN_CC"
   fi
   if [[ $DEBUG_MODE == True ]] && [[ $EDIT_CC != False ]]; then
-    echo -e "\n${BLUE}${MSG_DEBUG_CC}:$NC"
+    echo -e "\n${BLUE}${MSG_DEBUG_CC}:$NC" >&2
     _get_and_display_cross_compile; sleep 0.5
   fi
 }
