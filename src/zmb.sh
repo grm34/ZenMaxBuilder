@@ -39,7 +39,7 @@
 # Ban all 'n00bz'
 if [[ ${BASH_SOURCE[0]} != "$0" ]]; then
   echo "ERROR: ZenMaxBuilder cannot be sourced" >&2
-  exit 1
+  return 1
 elif ! [[ -t 0 ]]; then
   echo "ERROR: run ZenMaxBuilder from a terminal" >&2
   exit 1
