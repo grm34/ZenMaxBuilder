@@ -1,0 +1,51 @@
+From 7decae12432c5f274801429fd452ea62ce11dff8 Mon Sep 17 00:00:00 2001
+From: Reinazhard <muh.alfarozy@gmail.com>
+Date: Mon, 14 Dec 2020 02:07:15 +0700
+Subject: [PATCH] wireguard: fix
+
+../net/wireguard/src/ratelimiter.c:187:22: error: invalid operands to binary expression ('unsigned long (void)' and 'int')
+                        (totalram_pages() << PAGE_SHIFT) /
+                         ~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~
+../include/linux/log2.h:163:19: note: expanded from macro 'roundup_pow_of_two'
+                (1UL << (ilog2((n) - 1) + 1))   \
+                                ^
+../include/linux/log2.h:85:4: note: expanded from macro 'ilog2'
+                (n) & (1ULL << 61) ? 61 :       \
+                 ^
+../include/linux/kernel.h:788:17: note: expanded from macro 'max_t'
+        type __max2 = (y);                      \
+                       ^
+
+Signed-off-by: Reinazhard <muh.alfarozy@gmail.com>
+---
+ net/wireguard/compat/compat.h | 4 ----
+ net/wireguard/ratelimiter.c   | 1 -
+ 2 files changed, 5 deletions(-)
+
+diff --git a/net/wireguard/compat/compat.h b/net/wireguard/compat/compat.h
+index 3e8e005c81c6..00a918137dfa 100644
+--- a/net/wireguard/compat/compat.h
++++ b/net/wireguard/compat/compat.h
+@@ -757,10 +757,6 @@ static inline void crypto_xor_cpy(u8 *dst, const u8 *src1, const u8 *src2,
+ #define hlist_add_behind(a, b) hlist_add_after(b, a)
+ #endif
+ 
+-#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 0, 0) && !defined(ISCENTOS8S)
+-#define totalram_pages() totalram_pages
+-#endif
+-
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 18, 0)
+ struct __kernel_timespec {
+ 	int64_t tv_sec, tv_nsec;
+diff --git a/net/wireguard/ratelimiter.c b/net/wireguard/ratelimiter.c
+index e33ec72a9642..f779e07834d1 100644
+--- a/net/wireguard/ratelimiter.c
++++ b/net/wireguard/ratelimiter.c
+@@ -184,7 +184,6 @@ int wg_ratelimiter_init(void)
+ 	 */
+ 	table_size = (totalram_pages() > (1U << 30) / PAGE_SIZE) ? 8192 :
+ 		max_t(unsigned long, 16, roundup_pow_of_two(
+-			(totalram_pages() << PAGE_SHIFT) /
+ 			(1U << 14) / sizeof(struct hlist_head)));
+ 	max_entries = table_size * 8;
+ 

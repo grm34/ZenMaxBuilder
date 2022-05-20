@@ -76,6 +76,8 @@ The optional flashable zip signature with AOSP Keys requires java (JDK) which is
         -m, --msg          [message]    send message on Telegram
         -f, --file            [file]    send file on Telegram
         -z, --zip     [Image.gz-dtb]    create flashable zip
+        -p, --patch                     apply a patch to a kernel
+        -r, --revert                    revert a patch to a kernel
         -d, --debug                     start compilation in debug mode
 
 <br>

@@ -1,0 +1,22 @@
+From ac699b04784e819c4a8babac780f398a63c29347 Mon Sep 17 00:00:00 2001
+From: Sultan Alsawaf <sultan@kerneltoast.com>
+Date: Sun, 13 May 2018 22:35:12 -0700
+Subject: [PATCH] scripts: Don't append "+" to localversion
+
+Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+---
+ scripts/setlocalversion | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/scripts/setlocalversion b/scripts/setlocalversion
+index f3d95e38a330..a38d61d4b3d2 100644
+--- a/scripts/setlocalversion
++++ b/scripts/setlocalversion
+@@ -202,7 +202,6 @@ else
+ 	# LOCALVERSION= is not specified
+ 	if test "${LOCALVERSION+set}" != "set"; then
+ 		scm=$(scm_version --short)
+-		res="$res${scm:++}"
+ 	fi
+ fi
+ 

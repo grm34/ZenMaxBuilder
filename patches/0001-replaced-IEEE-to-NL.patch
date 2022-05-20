@@ -1,0 +1,56 @@
+From 39f68b196235187f23587a7165125697a0f84432 Mon Sep 17 00:00:00 2001
+From: Cyber Knight <cyberknight755@gmail.com>
+Date: Wed, 26 May 2021 06:37:53 +0800
+Subject: [PATCH] replaced IEEE to NL
+
+---
+ drivers/net/wireless/ath/regd.c | 4 ++--
+ net/mac80211/mlme.c             | 2 +-
+ net/mac80211/tx.c               | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/regd.c b/drivers/net/wireless/ath/regd.c
+index 81f0dc1cddc0..069c89377553 100644
+--- a/drivers/net/wireless/ath/regd.c
++++ b/drivers/net/wireless/ath/regd.c
+@@ -667,9 +667,9 @@ ath_regd_init_wiphy(struct ath_regulatory *reg,
+ 	 * Therefore, disable 2.4 Ghz channels that dont have 20 mhz bw
+ 	 */
+ 	for (chan_num = 0;
+-	     chan_num < wiphy->bands[IEEE80211_BAND_2GHZ]->n_channels;
++	     chan_num < wiphy->bands[NL80211_BAND_2GHZ]->n_channels;
+ 	     chan_num++) {
+-		chan = &wiphy->bands[IEEE80211_BAND_2GHZ]->channels[chan_num];
++		chan = &wiphy->bands[NL80211_BAND_2GHZ]->channels[chan_num];
+ 		if (chan->flags & IEEE80211_CHAN_NO_20MHZ)
+ 			chan->flags |= IEEE80211_CHAN_DISABLED;
+ 	}
+diff --git a/net/mac80211/mlme.c b/net/mac80211/mlme.c
+index 063ad42167fb..8d9da11281b1 100644
+--- a/net/mac80211/mlme.c
++++ b/net/mac80211/mlme.c
+@@ -1345,7 +1345,7 @@ ieee80211_find_80211h_pwr_constr(struct ieee80211_sub_if_data *sdata,
+ 		WARN_ON_ONCE(1);
+ 		/* fall through */
+ 	case NL80211_BAND_2GHZ:
+-	case IEEE80211_BAND_60GHZ:
++	case NL80211_BAND_60GHZ:
+ 		chan_increment = 1;
+ 		break;
+ 	case NL80211_BAND_5GHZ:
+diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
+index d94cf009937c..54e92a0ec0b0 100644
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -164,7 +164,7 @@ static __le16 ieee80211_duration(struct ieee80211_tx_data *tx,
+ 			if (r->flags & IEEE80211_RATE_MANDATORY_A)
+ 				mrate = r->bitrate;
+ 			break;
+-		case IEEE80211_BAND_60GHZ:
++		case NL80211_BAND_60GHZ:
+ 			/* TODO, for now fall through */
+ 		case NUM_NL80211_BANDS:
+ 			WARN_ON(1);
+-- 
+2.31.1
+
