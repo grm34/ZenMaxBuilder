@@ -45,7 +45,7 @@ elif ! [[ -t 0 ]]; then
   exit 1
 elif [[ $(tput cols) -lt 76 ]] || [[ $(tput lines) -lt 12 ]]; then
   echo "ERROR: terminal window is too small (min 76x12)" >&2
-  exit 1
+  exit 68
 elif [[ $(uname) != Linux ]]; then
   echo "ERROR: run ZenMaxBuilder on Linux" >&2
   exit 1
@@ -55,14 +55,14 @@ fi
 DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 if ! cd "$DIR"; then
   echo "ERROR: ZenMaxBuilder directory not found" >&2
-  exit 1
+  exit 2
 fi
 
 # Lockfile
 exec 201> "$(basename "$0").lock"
 if ! flock -n 201; then
   echo "ERROR: ZenMaxBuilder is already running" >&2
-  exit 1
+  exit 114
 fi
 
 # Job control
@@ -139,8 +139,8 @@ _zenmaxbuilder() {
       r)  _install_dependencies; pmod=REVERT; _patch; _exit 0 ;;
       s)  _install_dependencies; _start; _exit 0 ;;
       d)  DEBUG=True; _install_dependencies; _start; _exit 0 ;;
-      :)  _error "$MSG_ERR_MARG ${RED}-$OPTARG"; _exit 0 ;;
-      \?) _error "$MSG_ERR_IOPT ${RED}-$OPTARG"; _exit 0 ;;
+      :)  _error "$MSG_ERR_MARG ${RED}-$OPTARG"; _exit 1 ;;
+      \?) _error "$MSG_ERR_IOPT ${RED}-$OPTARG"; _exit 1 ;;
     esac
   done
   if [[ $OPTIND -eq 1 ]]; then
