@@ -247,7 +247,7 @@ _error() {
 # Handle shell commands
 _check() {
   # ARG $@ = the command to run
-  # ? DEBUG MODE: display command
+  # ?  DEBUG MODE: display command
   # 1. run command as child and wait
   # 2. notify function and file on ERR
   # 3. get failed build logs (+TG feedback)
@@ -317,6 +317,7 @@ _exit() {
 
 # Operating system timezone
 _get_user_timezone() {
+  # Return: TIMEZONE
   TIMEZONE="$( # linux
     (timedatectl | grep 'Time zone' \
       | xargs | cut -d' ' -f3) 2>/dev/null
@@ -331,6 +332,7 @@ _get_user_timezone() {
 
 # Current build time
 _get_build_time() {
+  # Return: BUILD_TIME
   end_time="$(TZ=$TIMEZONE date +%s)"
   diff_time="$(( end_time - start_time ))"
   min="$(( diff_time / 60 ))"
@@ -1015,7 +1017,8 @@ _export_path_and_options() {
   # 3. get current toolchain compiler options and version
   # 4. get CROSS_COMPILE and CC (to handle Makefile)
   # 5. set Link Time Optimization (LTO)
-  # 6. DEBUG MODE: display $PATH
+  # ?  DEBUG MODE: display $PATH
+  # Return: PATH TC_OPTIONS TCVER
   if [[ $BUILDER == default ]]; then BUILDER="$(whoami)"; fi
   if [[ $HOST == default ]]; then HOST="$(uname -n)"; fi
   export KBUILD_BUILD_USER="${BUILDER}"
@@ -1108,7 +1111,7 @@ _handle_makefile_cross_compile() {
   # 2. ask to modify them in the kernel Makefile
   # 3. edit the kernel Makefile (SED) while True
   # 4. warn the user when they not seems correctly set
-  # 5. DEBUG MODE: display edited Makefile values
+  # ?  DEBUG MODE: display edited Makefile values
   _note "$MSG_NOTE_CC"
   _get_and_display_cross_compile
   _ask_for_edit_cross_compile
