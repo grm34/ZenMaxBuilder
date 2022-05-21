@@ -174,8 +174,8 @@ _terminal_colors() {
       nc="\e[0m"
       red="$(tput bold setaf 1)"
       green="$(tput bold setaf 2)"
-      yell="$(tput bold setaf 3)"
-      yellow="$(tput setaf 3)"
+      yellow="$(tput bold setaf 3)"
+      lyellow="$(tput setaf 3)"
       blue="$(tput bold setaf 4)"
       magenta="$(tput setaf 5)"
       cyan="$(tput bold setaf 6)"
@@ -196,7 +196,7 @@ _prompt() {
     # ARG $2 = prompt type (1 for question / 2 for selection)
     lenth="$*"
     count="${#lenth}"
-    echo -ne "\n${yell}==> ${green}$1 ${yell}\n==> "
+    echo -ne "\n${yellow}==> ${green}$1 ${yellow}\n==> "
     for (( char=1; char<=count-2; char++ )); do
       echo -ne "─"
     done
@@ -213,7 +213,7 @@ _confirm() {
   # ARG $2 = [Y/n] (to set default <ENTER> behavior)
   confirm="False"
   count="$(( ${#1} + 6 ))"
-  echo -ne "${yell}\n==> ${green}${1} ${red}${2}${yell}\n==> "
+  echo -ne "${yellow}\n==> ${green}${1} ${red}${2}${yellow}\n==> "
   for (( char=1; char<=count; char++ )); do
     echo -ne "─"
   done
@@ -229,7 +229,7 @@ _confirm() {
 # Display some notes (with timestamp)
 _note() {
   # ARG $1 = the note to display
-  echo -e "${yell}\n[$(TZ=$TIMEZONE date +%T)] ${cyan}${1}$nc"
+  echo -e "${yellow}\n[$(TZ=$TIMEZONE date +%T)] ${cyan}${1}$nc"
   sleep 1
 }
 
@@ -238,9 +238,9 @@ _error() {
   # ARG $1 = <warn> for warning (ignore $1 for error)
   # ARG $* = the error or warning message
   if [[ $1 == warn ]]; then
-    echo -e "\n${blue}${MSG_WARN}:${nc}${yellow}${*/warn/}$nc" >&2
+    echo -e "\n${blue}${MSG_WARN}:${nc}${lyellow}${*/warn/}$nc" >&2
   else
-    echo -e "\n${red}${MSG_ERROR}: ${nc}${yellow}${*}$nc" >&2
+    echo -e "\n${red}${MSG_ERROR}: ${nc}${lyellow}${*}$nc" >&2
   fi
 }
 
@@ -255,7 +255,7 @@ _check() {
   cmd_err="${*}"
   if [[ $DEBUG == True ]]; then
     echo -e "\n${blue}Command:"\
-            "${nc}${yellow}${cmd_err/unbuffer }$nc" >&2
+            "${nc}${lyellow}${cmd_err/unbuffer }$nc" >&2
     sleep 0.5
   fi
   until "$@" & wait $!; do
@@ -263,9 +263,9 @@ _check() {
     func="${FUNCNAME[$i+1]}"
     file="${BASH_SOURCE[$i+1]##*/}"
     _error "${cmd_err/unbuffer } ${red}${MSG_ERR_LINE}"\
-           "${line}:${nc}${yellow} ${func}"\
+           "${line}:${nc}${lyellow} ${func}"\
            "${red}${MSG_ERR_FROM}:"\
-           "${nc}${yellow}${file##*/}"
+           "${nc}${lyellow}${file##*/}"
     _get_build_logs
     _ask_for_run_again
     if [[ $run_again == True ]]; then
@@ -386,8 +386,7 @@ _install_dependencies() {
         IFS=" "
         pm="${pm_install_cmd[$manager]}"
         read -ra pm <<< "$pm"
-        unset IFS
-        break
+        unset IFS; break
       fi
     done
     if [[ ${pm[3]} ]]; then
@@ -433,22 +432,19 @@ _clone_toolchains() {
   case $COMPILER in
     # Proton-Clang or Proton-GCC
     "$PROTON_CLANG_NAME"|"$PROTON_GCC_NAME")
-      _clone_tc "$PROTON_BRANCH" \
-                "$PROTON_URL" "$PROTON_DIR"
+      _clone_tc "$PROTON_BRANCH" "$PROTON_URL" "$PROTON_DIR"
       ;;
     # Eva-GCC or Proton-GCC
     "$EVA_GCC_NAME"|"$PROTON_GCC_NAME")
-      _clone_tc "$GCC_ARM_BRANCH" \
-                "$GCC_ARM_URL" "$GCC_ARM_DIR"
-      _clone_tc "$GCC_ARM64_BRANCH" \
-                "$GCC_ARM64_URL" "$GCC_ARM64_DIR"
+      _clone_tc "$GCC_ARM_BRANCH" "$GCC_ARM_URL" "$GCC_ARM_DIR"
+      _clone_tc "$GCC_ARM64_BRANCH" "$GCC_ARM64_URL" \
+                "$GCC_ARM64_DIR"
       ;;
     # Lineage-GCC
     "$LOS_GCC_NAME")
-      _clone_tc "$LOS_ARM_BRANCH" \
-                "$LOS_ARM_URL" "$LOS_ARM_DIR"
-      _clone_tc "$LOS_ARM64_BRANCH" \
-                "$LOS_ARM64_URL" "$LOS_ARM64_DIR"
+      _clone_tc "$LOS_ARM_BRANCH" "$LOS_ARM_URL" "$LOS_ARM_DIR"
+      _clone_tc "$LOS_ARM64_BRANCH" "$LOS_ARM64_URL" \
+                "$LOS_ARM64_DIR"
       ;;
   esac
 }
@@ -458,8 +454,8 @@ _clone_anykernel() {
   if ! [[ -d $ANYKERNEL_DIR ]]; then
     _ask_for_clone_anykernel
     if [[ $clone_ak == True ]]; then
-      git clone -b "$ANYKERNEL_BRANCH" \
-                   "$ANYKERNEL_URL" "$ANYKERNEL_DIR"
+      git clone -b "$ANYKERNEL_BRANCH" "$ANYKERNEL_URL" \
+                   "$ANYKERNEL_DIR"
     fi
   fi
 }
@@ -488,8 +484,7 @@ _update_git() {
       _check mv "${DIR}/etc/user.cfg" "${DIR}/etc/old.cfg"
     fi
   fi
-  git reset --hard "origin/$1"
-  git pull
+  git reset --hard "origin/$1"; git pull
 }
 
 # Update everything that needs to be
@@ -617,7 +612,7 @@ _patch() {
 _usage() {
   echo -e "
 ${bold}Usage:$nc ${green}bash zmb \
-${nc}[${yellow}OPTION${nc}] [${yellow}ARGUMENT${nc}] \
+${nc}[${lyellow}OPTION${nc}] [${lyellow}ARGUMENT${nc}] \
 (e.g. ${magenta}bash zmb --start${nc})
 
   ${bold}Options$nc
@@ -877,7 +872,7 @@ _ask_for_cores() {
       read -r CORES
       until (( 1<=CORES && CORES<=cpu )); do
         _error "$MSG_ERR_CORES ${red}${CORES}"\
-               "${yell}(${MSG_ERR_TOTAL}: ${cpu})"
+               "${yellow}(${MSG_ERR_TOTAL}: ${cpu})"
         _prompt "$MSG_ASK_CORES :" 1
         read -r CORES
       done
@@ -1070,7 +1065,7 @@ _export_path_and_options() {
     TC_OPTIONS[6]="LD=$LTO_LIBRARY"
   fi
   if [[ $DEBUG == True ]]; then
-    echo -e "\n${blue}PATH: ${nc}${yellow}${PATH}$nc" >&2
+    echo -e "\n${blue}PATH: ${nc}${lyellow}${PATH}$nc" >&2
     sleep 0.5
   fi
 }
