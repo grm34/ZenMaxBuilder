@@ -638,21 +638,23 @@ ${cyan}https://kernel-builder.com$nc\n"
 ###--------------------------------------------------------------###
 
 _start() {
-  clear; _terminal_banner
 
   # Prevent errors in user settings
   if [[ $KERNEL_DIR != default  ]] &&
       ! [[ -f ${KERNEL_DIR}/Makefile ]] && \
       ! [[ -d ${KERNEL_DIR}/arch ]]; then
-    _error "$MSG_ERR_KDIR"; _exit 1
+    _error "$MSG_ERR_CONF_KDIR"; _exit 1
   elif ! [[ $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
       ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|\
       ${LOS_GCC_NAME}) ]]; then
     _error "$MSG_ERR_COMPILER"; _exit 1
   fi
 
-  # Device codename
+  # Start
+  clear; _terminal_banner
   _note "$MSG_NOTE_START $DATE"
+
+  # Device codename
   _ask_for_codename
 
   # Create device folders
