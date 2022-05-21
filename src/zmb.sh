@@ -103,7 +103,7 @@ _zenmaxbuilder() {
   # 3. transform long options to short
   # 4. handle general options
   _terminal_colors
-  trap '_error $MSG_ERR_KBOARD; _exit' INT QUIT TSTP CONT HUP
+  trap '_error $MSG_ERR_KBOARD; _exit 1' INT QUIT TSTP CONT HUP
   if [[ $TIMEZONE == default ]]; then _get_user_timezone; fi
   DATE="$(TZ=$TIMEZONE date +%Y-%m-%d)"
   TIME="$(TZ=$TIMEZONE date +%Hh%Mm%Ss)"
@@ -124,27 +124,27 @@ _zenmaxbuilder() {
       *)          set -- "$@" "$opt" ;;
     esac
   done
-  if [[ $# -eq 0 ]]; then _error "$MSG_ERR_EOPT"; _exit; fi
+  if [[ $# -eq 0 ]]; then _error "$MSG_ERR_EOPT"; _exit 1; fi
   while getopts ':hsuldprt:m:f:z:' option; do
     case $option in
       h)  clear; _terminal_banner; _usage
           rm -f "./bashvar"; exit 0 ;;
-      u)  _install_dependencies; _full_upgrade; _exit ;;
-      m)  _install_dependencies; _send_msg_option; _exit ;;
-      f)  _install_dependencies; _send_file_option; _exit ;;
-      z)  _install_dependencies; _create_zip_option; _exit ;;
-      l)  _install_dependencies; _list_all_kernels; _exit ;;
-      t)  _install_dependencies; _get_linux_tag; _exit ;;
-      p)  _install_dependencies; pmod=PATCH; _patch; _exit ;;
-      r)  _install_dependencies; pmod=REVERT; _patch; _exit ;;
-      s)  _install_dependencies; _start; _exit ;;
-      d)  DEBUG_MODE=True; _install_dependencies; _start; _exit ;;
-      :)  _error "$MSG_ERR_MARG ${RED}-$OPTARG"; _exit ;;
-      \?) _error "$MSG_ERR_IOPT ${RED}-$OPTARG"; _exit ;;
+      u)  _install_dependencies; _full_upgrade; _exit 0 ;;
+      m)  _install_dependencies; _send_msg_option; _exit 0 ;;
+      f)  _install_dependencies; _send_file_option; _exit 0 ;;
+      z)  _install_dependencies; _create_zip_option; _exit 0 ;;
+      l)  _install_dependencies; _list_all_kernels; _exit 0 ;;
+      t)  _install_dependencies; _get_linux_tag; _exit 0 ;;
+      p)  _install_dependencies; pmod=PATCH; _patch; _exit 0 ;;
+      r)  _install_dependencies; pmod=REVERT; _patch; _exit 0 ;;
+      s)  _install_dependencies; _start; _exit 0 ;;
+      d)  DEBUG=True; _install_dependencies; _start; _exit 0 ;;
+      :)  _error "$MSG_ERR_MARG ${RED}-$OPTARG"; _exit 0 ;;
+      \?) _error "$MSG_ERR_IOPT ${RED}-$OPTARG"; _exit 0 ;;
     esac
   done
   if [[ $OPTIND -eq 1 ]]; then
-    _error "$MSG_ERR_IOPT ${RED}$1"; _exit
+    _error "$MSG_ERR_IOPT ${RED}$1"; _exit 1
   fi
   shift $(( OPTIND - 1 ))
 }
@@ -187,7 +187,7 @@ _terminal_colors() {
 _cd() {
   # ARG $1 = the location to go
   # ARG $2 = the error message
-  cd "$1" || (_error "$2"; _exit)
+  cd "$1" || (_error "$2"; _exit 1)
 }
 
 # Ask some information
@@ -253,7 +253,7 @@ _check() {
   # 3. get failed build logs (+TG feedback)
   # 4. ask to run again last failed command
   cmd_err="${*}"
-  if [[ $DEBUG_MODE == True ]]; then
+  if [[ $DEBUG == True ]]; then
     echo -e "\n${BLUE}Command:"\
             "${NC}${YELLOW}${cmd_err/unbuffer }$NC" >&2
     sleep 0.5
@@ -278,13 +278,14 @@ _check() {
         "$@" & wait $!
       fi
     else
-      _exit; break
+      _exit 1; break
     fi
   done
 }
 
 # Properly exit the script
 _exit() {
+  # ARG: $1 = exit code
   # 1. kill make PID child on interrupt
   # 2. get current build logs
   # 3. remove user input files
@@ -310,7 +311,8 @@ _exit() {
              "second(s)...$NC"
     sleep 0.9
   done
-  echo && kill -- $$
+  echo
+  if [[ $1 == 0 ]]; then exit 0; else kill -- $$; fi
 }
 
 # Operating system timezone
@@ -647,11 +649,11 @@ _start() {
   if [[ $KERNEL_DIR != default  ]] &&
       ! [[ -f ${KERNEL_DIR}/Makefile ]] && \
       ! [[ -d ${KERNEL_DIR}/arch ]]; then
-    _error "$MSG_ERR_KDIR"; _exit
+    _error "$MSG_ERR_KDIR"; _exit 1
   elif ! [[ $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
       ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|\
       ${LOS_GCC_NAME}) ]]; then
-    _error "$MSG_ERR_COMPILER"; _exit
+    _error "$MSG_ERR_COMPILER"; _exit 1
   fi
 
   # Device codename
@@ -714,7 +716,7 @@ _start() {
       _save_defconfig
     else
       if [[ $ORIGINAL_DEFCONFIG == False ]]; then
-        _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."; _exit
+        _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."; _exit 0
       fi
     fi
   fi
@@ -722,7 +724,7 @@ _start() {
   # Make kernel
   _ask_for_new_build
   if [[ $NEW_BUILD == False ]]; then
-    _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."; _exit
+    _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."; _exit 0
   else
     _ask_for_telegram
     START_TIME="$(TZ=$TIMEZONE date +%s)"
@@ -738,7 +740,7 @@ _start() {
   ft="$(stat -c %Z "${BOOT_DIR}/${most_recent_file}" 2>/dev/null)"
   if ! [[ -d $BOOT_DIR ]] || [[ -z $(ls -A "$BOOT_DIR") ]] || \
       [[ $ft < $START_TIME ]]; then
-    _error "$MSG_ERR_MAKE"; _exit
+    _error "$MSG_ERR_MAKE"; _exit 1
   else
     _note "$MSG_NOTE_SUCCESS $BUILD_TIME !"
     _send_success_build_status
@@ -962,7 +964,7 @@ _ask_for_clone_toolchain() {
   _confirm "${MSG_ASK_CLONE_TC}: $1 ?" "[Y/n]"
   case $CONFIRM in
     n|N|no|No|NO)
-      _error "${MSG_ERR_CLONE}: ${RED}$1"; _exit
+      _error "${MSG_ERR_CLONE}: ${RED}$1"; _exit 1
       ;;
     *) CLONE_TC=True ;;
   esac
@@ -975,7 +977,7 @@ _ask_for_clone_anykernel() {
   _confirm "${MSG_ASK_CLONE_AK3}: AK3 ?" "[Y/n]"
   case $CONFIRM in
     n|N|no|No|NO)
-      _error "${MSG_ERR_CLONE}: ${RED}AnyKernel"; _exit
+      _error "${MSG_ERR_CLONE}: ${RED}AnyKernel"; _exit 1
       ;;
     *) CLONE_AK=True ;;
   esac
@@ -1000,7 +1002,7 @@ _ask_for_apply_patch() {
   _error WARN "$KPATCH => ${KERNEL_DIR##*/}"
   _confirm "$MSG_CONFIRM_PATCH (${pmod}) ?" "[Y/n]"
   case $CONFIRM in
-    n|N|no|No|NO) _exit ;;
+    n|N|no|No|NO) _exit 0 ;;
     *) APPLY_PATCH=True ;;
   esac
 }
@@ -1068,7 +1070,7 @@ _export_path_and_options() {
     export LD_LIBRARY_PATH="${PROTON_DIR}/lib"
     TC_OPTIONS[6]="LD=$LTO_LIBRARY"
   fi
-  if [[ $DEBUG_MODE == True ]]; then
+  if [[ $DEBUG == True ]]; then
     echo -e "\n${BLUE}PATH: ${NC}${YELLOW}${PATH}$NC" >&2
     sleep 0.5
   fi
@@ -1079,7 +1081,7 @@ _check_toolchain_path() {
   # ARG: $@ = toolchains DIR
   for toolchain_path in "$@"; do
     if [[ $PATH != *${toolchain_path}/bin* ]]; then
-      _error "$MSG_ERR_PATH"; echo "$PATH"; _exit
+      _error "$MSG_ERR_PATH"; echo "$PATH"; _exit 1
     fi
   done
 }
@@ -1098,7 +1100,7 @@ _get_and_display_cross_compile() {
   c1="$(sed -n "/${r1[0]}/{p;}" "${KERNEL_DIR}/Makefile")"
   c2="$(sed -n "/${r2[0]}/{p;}" "${KERNEL_DIR}/Makefile")"
   if [[ -z $c1 ]]; then
-    _error "$MSG_ERR_CC"; _exit
+    _error "$MSG_ERR_CC"; _exit 1
   else
     echo "$c1"; echo "$c2"
   fi
@@ -1122,7 +1124,7 @@ _handle_makefile_cross_compile() {
   if [[ -n ${mk##*"${cross/CROSS_COMPILE=/}"*} ]]; then
     _error WARN "$MSG_WARN_CC"
   fi
-  if [[ $DEBUG_MODE == True ]] && [[ $EDIT_CC != False ]]; then
+  if [[ $DEBUG == True ]] && [[ $EDIT_CC != False ]]; then
     echo -e "\n${BLUE}${MSG_DEBUG_CC}:$NC" >&2
     _get_and_display_cross_compile; sleep 0.5
   fi
