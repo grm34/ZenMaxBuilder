@@ -238,7 +238,7 @@ _error() {
   # ARG $1 = <warn> for warning (ignore $1 for error)
   # ARG $* = the error or warning message
   if [[ $1 == warn ]]; then
-    echo -e "\n${blue}${MSG_WARN}:${nc}${yellow}${*/WARN/}$nc" >&2
+    echo -e "\n${blue}${MSG_WARN}:${nc}${yellow}${*/warn/}$nc" >&2
   else
     echo -e "\n${red}${MSG_ERROR}: ${nc}${yellow}${*}$nc" >&2
   fi
@@ -747,7 +747,8 @@ _start() {
     _ask_for_flashable_zip
     if [[ $flash_zip == True ]]; then
       _ask_for_kernel_image
-      _zip "${KERNEL_NAME}-$DATE" "$K_IMG" "$BUILD_DIR" | tee -a "$log"
+      _zip "${KERNEL_NAME}-$DATE" "$K_IMG" \
+           "$BUILD_DIR" | tee -a "$log"
       _sign_zip "${BUILD_DIR}/${KERNEL_NAME}-$DATE" | tee -a "$log"
       _note "$MSG_NOTE_ZIPPED !"
     fi
