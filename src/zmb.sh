@@ -24,7 +24,7 @@
 # ZMB: ZenMaxBuilder
 # ===================
 # .0. Starting blocks...                                       (RUN)
-# .1. MAIN: the ZenMaxBuilder (ZMB) main process function.    (FUNC)
+# .1. MAIN: the ZenMaxBuilder (ZMB) main function.            (FUNC)
 # .2. MANAGER: global management functions of the script.     (FUNC)
 # .3. REQUIREMENTS: dependency install management functions.  (FUNC)
 # .4. OPTIONS: command line option management functions.      (FUNC)
@@ -36,7 +36,7 @@
 # 10. ==> run the ZenMaxBuilder (ZMB) main process.            (RUN)
 # ------------------------------------------------------------------
 
-# Ban all 'n00bz'
+# Ensure proper use
 if [[ ${BASH_SOURCE[0]} != "$0" ]]; then
   echo "ERROR: ZenMaxBuilder cannot be sourced" >&2
   return 1
@@ -94,23 +94,19 @@ fi
 
 
 ###--------------------------------------------------------------###
-### .1. MAIN => the ZenMaxBuilder (ZMB) main process function    ###
+### .1. MAIN => the ZenMaxBuilder (ZMB) main function            ###
 ###--------------------------------------------------------------###
 
 _zenmaxbuilder() {
-
-  # Terminal colors
+  # 1. set shell colors
+  # 2. trap interrupt signals
+  # 3. transform long options to short
+  # 4. handle general options
   _terminal_colors
-
-  # Trap interrupt signals
   trap '_error $MSG_ERR_KBOARD; _exit' INT QUIT TSTP CONT HUP
-
-  # Date and time
   if [[ $TIMEZONE == default ]]; then _get_user_timezone; fi
   DATE="$(TZ=$TIMEZONE date +%Y-%m-%d)"
   TIME="$(TZ=$TIMEZONE date +%Hh%Mm%Ss)"
-
-  # Transfrom long options to short
   for opt in "$@"; do
     shift
     case $opt in
@@ -128,8 +124,6 @@ _zenmaxbuilder() {
       *)          set -- "$@" "$opt" ;;
     esac
   done
-
-  # Handle options arguments
   if [[ $# -eq 0 ]]; then _error "$MSG_ERR_EOPT"; _exit; fi
   while getopts ':hsuldprt:m:f:z:' option; do
     case $option in
@@ -189,50 +183,6 @@ _terminal_colors() {
   fi
 }
 
-# Operating system timezone
-_get_user_timezone() {
-  TIMEZONE="$( # linux
-    (timedatectl | grep 'Time zone' \
-      | xargs | cut -d' ' -f3) 2>/dev/null
-  )"
-  if ! [[ $TIMEZONE ]]; then
-    TIMEZONE="$( # termux
-      (getprop | grep timezone | cut -d' ' -f2 \
-        | sed 's/\[//g' | sed 's/\]//g') 2>/dev/null
-    )"
-  fi
-}
-
-# Current build time
-_get_build_time() {
-  end_time="$(TZ=$TIMEZONE date +%s)"
-  diff_time="$(( end_time - START_TIME ))"
-  min="$(( diff_time / 60 ))"
-  sec="$(( diff_time % 60 ))"
-  BUILD_TIME="${min}m${sec}s"
-}
-
-# Handle build logs
-_get_build_logs() {
-  # 1. get user inputs without excluded from CFG
-  # 2. diff bash/user inputs and add them to logfile
-  # 3. remove ANSI sequences (colors) from logfile
-  # 4. send logfile on Telegram when the build fail
-  if [[ -f $LOG ]]; then
-    # shellcheck source=/dev/null
-    source "${DIR}/etc/excluded.cfg"
-    null="$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")"
-    unset IFS
-    (set -o posix; set | grep -v "${null//|/\\|}")> \
-      "${DIR}/buildervar"
-    printf "\n\n### ZMB SETTINGS ###\n" >> "$LOG"
-    diff bashvar buildervar | grep -E \
-      "^> [A-Z0-9_]{3,32}=" >> "$LOG" || sleep 0.5
-    sed -ri "s/\x1b\[[0-9;]*[mGKHF]//g" "$LOG"
-    _send_failed_build_logs
-  fi
-}
-
 # Move to specified directory
 _cd() {
   # ARG $1 = the location to go
@@ -257,23 +207,18 @@ _prompt() {
     fi
 }
 
-# Confirmation prompt
-_confirm_msg() {
-    CONFIRM=False
-    count="$(( ${#1} + 6 ))"
-    echo -ne "${YELL}\n==> ${GREEN}${1} ${RED}${2}${YELL}\n==> "
-    for (( char=1; char<=count; char++ )); do
-      echo -ne "─"
-    done
-    echo -ne "\n==> $NC"
-    read -r CONFIRM
-}
-
 # Ask confirmation yes/no
 _confirm() {
   # ARG $1 = the question to ask
   # ARG $2 = [Y/n] (to set default <ENTER> behavior)
-  _confirm_msg "$@"
+  CONFIRM=False
+  count="$(( ${#1} + 6 ))"
+  echo -ne "${YELL}\n==> ${GREEN}${1} ${RED}${2}${YELL}\n==> "
+  for (( char=1; char<=count; char++ )); do
+    echo -ne "─"
+  done
+  echo -ne "\n==> $NC"
+  read -r CONFIRM
   until [[ -z $CONFIRM ]] || \
       [[ $CONFIRM =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]]; do
     _error "$MSG_ERR_CONFIRM"
@@ -281,7 +226,7 @@ _confirm() {
   done
 }
 
-# Display some notes with timestamp
+# Display some notes (with timestamp)
 _note() {
   # ARG $1 = the note to display
   echo -e "${YELL}\n[$(TZ=$TIMEZONE date +%T)] ${CYAN}${1}$NC"
@@ -366,6 +311,50 @@ _exit() {
     sleep 0.9
   done
   echo && kill -- $$
+}
+
+# Operating system timezone
+_get_user_timezone() {
+  TIMEZONE="$( # linux
+    (timedatectl | grep 'Time zone' \
+      | xargs | cut -d' ' -f3) 2>/dev/null
+  )"
+  if ! [[ $TIMEZONE ]]; then
+    TIMEZONE="$( # termux
+      (getprop | grep timezone | cut -d' ' -f2 \
+        | sed 's/\[//g' | sed 's/\]//g') 2>/dev/null
+    )"
+  fi
+}
+
+# Current build time
+_get_build_time() {
+  end_time="$(TZ=$TIMEZONE date +%s)"
+  diff_time="$(( end_time - START_TIME ))"
+  min="$(( diff_time / 60 ))"
+  sec="$(( diff_time % 60 ))"
+  BUILD_TIME="${min}m${sec}s"
+}
+
+# Handle build logs
+_get_build_logs() {
+  # 1. get user inputs without excluded from CFG
+  # 2. diff bash/user inputs and add them to logfile
+  # 3. remove ANSI sequences (colors) from logfile
+  # 4. send logfile on Telegram when the build fail
+  if [[ -f $LOG ]]; then
+    # shellcheck source=/dev/null
+    source "${DIR}/etc/excluded.cfg"
+    null="$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")"
+    unset IFS
+    (set -o posix; set | grep -v "${null//|/\\|}")> \
+      "${DIR}/buildervar"
+    printf "\n\n### ZMB SETTINGS ###\n" >> "$LOG"
+    diff bashvar buildervar | grep -E \
+      "^> [A-Z0-9_]{3,32}=" >> "$LOG" || sleep 0.5
+    sed -ri "s/\x1b\[[0-9;]*[mGKHF]//g" "$LOG"
+    _send_failed_build_logs
+  fi
 }
 
 
@@ -651,7 +640,6 @@ ${CYAN}https://kernel-builder.com$NC\n"
 ### .5. START => start new android kernel compilation            ###
 ###--------------------------------------------------------------###
 
-# Display banner then start
 _start() {
   clear; _terminal_banner
 
@@ -772,12 +760,10 @@ _start() {
 ### .6. QUESTIONER => functions of questions asked to the user   ###
 ###--------------------------------------------------------------###
 
-# Question: get the device codename
+# Question: device codename
 _ask_for_codename() {
-  # Validation checks REGEX to prevent invalid string
-  # Match "letters" and "numbers" and "-" and "_" only
-  # Should be at least "3" characters long and maximum "20"
-  # Device codename can't start with "_" or "-" characters
+  # Validation checks: REGEX to prevent invalid string
+  # Return: CODENAME
   if [[ $CODENAME == default ]]; then
     _prompt "$MSG_ASK_DEV :" 1
     read -r CODENAME
@@ -790,11 +776,11 @@ _ask_for_codename() {
   fi
 }
 
-# Question: get the kernel location
+# Question: kernel location
 _ask_for_kernel_dir() {
-  # NOTE: we are working here from HOME folder (auto completion)
-  # Validation checks the presence of the <configs>
-  # folder corresponding to the current architecture
+  # NOTE: we are working here from HOME (auto completion)
+  # Validation checks: presence of <configs> folder (ARM)
+  # Return: KERNEL_DIR CONF_DIR
   if [[ $KERNEL_DIR == default ]]; then
     _cd "$HOME" "$MSG_ERR_DIR ${RED}HOME"
     _prompt "$MSG_ASK_KDIR :" 1
@@ -810,11 +796,10 @@ _ask_for_kernel_dir() {
   fi
 }
 
-# Selection: get the defconfig file to use
+# Selection: defconfig file
 _ask_for_defconfig() {
-  # Choices: all defconfig files located in <configs>,
-  # folder corresponding to the current architecture
-  # Validation checks are not needed here
+  # Choices: all defconfig files located in <configs> (ARM)
+  # Return: DEFCONFIG
   _cd "$CONF_DIR" "$MSG_ERR_DIR ${RED}$CONF_DIR"
   _prompt "$MSG_ASK_DEF :" 2
   select DEFCONFIG in *_defconfig; do
@@ -824,20 +809,18 @@ _ask_for_defconfig() {
   _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
 }
 
-# Confirmation: <make menuconfig>
+# Confirmation: make menuconfig?
 _ask_for_menuconfig() {
-  # Validation checks are not needed here
+  # Return: MENUCONFIG
   _confirm "$MSG_ASK_CONF ?" "[y/N]"
   case $CONFIRM in y|Y|yes|Yes|YES) MENUCONFIG=True ;; esac
 }
 
-# Confirmation: save new defconfig
+# Confirmation: save new defconfig?
 _ask_for_save_defconfig() {
   # Otherwise request to continue with the original one
-  # Validation checks REGEX to prevent invalid string
-  # Match "letters" and "numbers" and "-" and "_" only
-  # Should be at least "3" characters long and maximum "26"
-  # Defconfig file can't start with "_" or "-" characters
+  # Validation checks: REGEX to prevent invalid string
+  # Return: DEFCONFIG
   _confirm "${MSG_ASK_SAVE_DEF} ?" "[Y/n]"
   case $CONFIRM in
     n|N|no|No|NO)
@@ -861,10 +844,9 @@ _ask_for_save_defconfig() {
   esac
 }
 
-# Selection: get the toolchain to use
+# Selection: toolchain compiler
 _ask_for_toolchain() {
-  # Choices: Proton-Clang Eva-GCC Proton-GCC
-  # Validation checks are not needed here
+  # Return: COMPILER
   if [[ $COMPILER == default ]]; then
     _prompt "$MSG_SELECT_TC :" 2
     select COMPILER in $PROTON_CLANG_NAME \
@@ -875,18 +857,17 @@ _ask_for_toolchain() {
   fi
 }
 
-# Confirmation: edit makefile cross_compile
+# Confirmation: edit makefile?
 _ask_for_edit_cross_compile() {
-  # Validation checks are not needed here
+  # Return: EDIT_CC
   _confirm "$MSG_ASK_CC $COMPILER ?" "[Y/n]"
   case $CONFIRM in n|N|no|No|NO) EDIT_CC=False ;; esac
 }
 
-# Question: get the number of cpu cores to use
+# Question: number of cpu cores
 _ask_for_cores() {
-  # Validation checks for a valid number corresponding,
-  # to the amount of available CPU cores (no limits here)
-  # Otherwise all available CPU cores will be used.
+  # Validation checks: amount of available cores (no limits here)
+  # Return: CORES
   CPU="$(nproc --all)"
   _confirm "$MSG_ASK_CPU ?" "[Y/n]"
   case $CONFIRM in
@@ -904,42 +885,43 @@ _ask_for_cores() {
   esac
 }
 
-# Confirmation: <make clean> and <make mrproprer>
+# Confirmation: make clean and mrproprer?
 _ask_for_make_clean() {
-  # Validation checks are not needed here
+  # Return: MAKE_CLEAN
   _confirm "${MSG_ASK_MCLEAN}: v$LINUX_VERSION ?" "[y/N]"
   case $CONFIRM in y|Y|yes|Yes|YES) MAKE_CLEAN=True ;; esac
 }
 
-# Confirmation: make new build
+# Confirmation: make new build?
 _ask_for_new_build() {
-  # Validation checks are not needed here
+  # Return: NEW_BUILD
   _confirm \
     "$MSG_START ${TAG}-${CODENAME}-$LINUX_VERSION ?" "[Y/n]"
   case $CONFIRM in n|N|no|No|NO) NEW_BUILD=False ;; esac
 }
 
-# Confirmation: send build status on telegram
+# Confirmation: send build status on telegram?
 _ask_for_telegram() {
-  # Validation checks are not needed here
+  # Return: BUILD_STATUS
   if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
     _confirm "$MSG_ASK_TG ?" "[y/N]"
     case $CONFIRM in y|Y|yes|Yes|YES) BUILD_STATUS=True ;; esac
   fi
 }
 
-# Confirmation: create flashable zip
+# Confirmation: create flashable zip?
 _ask_for_flashable_zip() {
-  # Validation checks are not needed here
+  # Return: FLASH_ZIP
   _confirm \
     "$MSG_ASK_ZIP ${TAG}-${CODENAME}-$LINUX_VERSION ?" "[y/N]"
   case $CONFIRM in y|Y|yes|Yes|YES) FLASH_ZIP=True ;; esac
 }
 
-# Question: get the kernel image to zip
+# Question: kernel image
 _ask_for_kernel_image() {
-  # NOTE: we are working here from <boot> folder (auto completion)
-  # Validation checks the presence of this file
+  # NOTE: we are working here from <boot> (auto completion)
+  # Validation checks: presence of this file
+  # Return: K_IMG
   _cd "$BOOT_DIR" "$MSG_ERR_DIR ${RED}$BOOT_DIR"
   _prompt "$MSG_ASK_IMG :" 1
   read -r -e K_IMG
@@ -952,18 +934,18 @@ _ask_for_kernel_image() {
   _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
 }
 
-# Confirmation: run again last failed command
+# Confirmation: run again failed command?
 _ask_for_run_again() {
-  # Validation checks are not needed here
+  # Return: RUN_AGAIN
   RUN_AGAIN=False
   _confirm "$MSG_RUN_AGAIN ?" "[y/N]"
   case $CONFIRM in y|Y|yes|Yes|YES) RUN_AGAIN=True ;; esac
 }
 
-# Confirmation: install missing packages
+# Confirmation: install missing packages?
 _ask_for_install_pkg() {
   # Warn the user that the script may crash while NO
-  # Validation checks are not needed here
+  # Return: INSTALL_PKG
   _confirm "${MSG_ASK_PKG}: $1 ?" "[Y/n]"
   case $CONFIRM in
     n|N|no|No|NO)
@@ -973,10 +955,10 @@ _ask_for_install_pkg() {
   esac
 }
 
-# Confirmation: clone missing toolchains
+# Confirmation: clone missing toolchains?
 _ask_for_clone_toolchain() {
   # Warn the user and exit the script while NO
-  # Validation checks are not needed here
+  # Return: CLONE_TC
   _confirm "${MSG_ASK_CLONE_TC}: $1 ?" "[Y/n]"
   case $CONFIRM in
     n|N|no|No|NO)
@@ -986,10 +968,10 @@ _ask_for_clone_toolchain() {
   esac
 }
 
-# Confirmation: clone AK3
+# Confirmation: clone AK3?
 _ask_for_clone_anykernel() {
   # Warn the user and exit the script while NO
-  # Validation checks are not needed here
+  # Return: CLONE_AK
   _confirm "${MSG_ASK_CLONE_AK3}: AK3 ?" "[Y/n]"
   case $CONFIRM in
     n|N|no|No|NO)
@@ -999,10 +981,10 @@ _ask_for_clone_anykernel() {
   esac
 }
 
-# Selection: get the patch to apply
+# Selection: kernel patch
 _ask_for_patch() {
   # Choices: all patch files located in <patches>
-  # Validation checks are not needed here
+  # Return: KPATCH
   _cd "${DIR}/patches" "$MSG_ERR_DIR ${RED}${DIR}/patches"
   _prompt "$MSG_ASK_PATCH :" 2
   select KPATCH in *.patch; do
@@ -1012,9 +994,9 @@ _ask_for_patch() {
   _cd "$DIR" "$MSG_ERR_DIR ${RED}$DIR"
 }
 
-# Confirmation: apply Patch
+# Confirmation: apply patch?
 _ask_for_apply_patch() {
-  # Validation checks are not needed here
+  # Return: APPLY_PATCH
   _error WARN "$KPATCH => ${KERNEL_DIR##*/}"
   _confirm "$MSG_CONFIRM_PATCH (${pmod}) ?" "[Y/n]"
   case $CONFIRM in
@@ -1028,7 +1010,7 @@ _ask_for_apply_patch() {
 ### .7. MAKER => all the functions related to the make process   ###
 ###--------------------------------------------------------------###
 
-# Set compiler build options
+# Set compiler options
 _export_path_and_options() {
   # 1. export target variables (CFG)
   # 2. append toolchains to the $PATH, export and verify
@@ -1174,7 +1156,7 @@ _make_menuconfig() {
 
 # Save defconfig from menuconfig
 _save_defconfig() {
-  # When an existing defconfig file is modified with menuconfig,
+  # When an existing defconfig file is modified with menuconfig
   # the original defconfig will be saved as "example_defconfig_old"
   _note "$MSG_NOTE_SAVE $DEFCONFIG (arch/${ARCH}/configs)..."
   if [[ -f "${CONF_DIR}/$DEFCONFIG" ]]; then
