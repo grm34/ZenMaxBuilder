@@ -71,7 +71,7 @@ set -m -E -o pipefail #-b -v
 
 # Shell settings
 shopt -s checkwinsize progcomp
-shopt -u cdspell dirspell progcomp_alias
+shopt -u autocd cdspell dirspell extglob progcomp_alias
 
 # User language
 LANGUAGE="${DIR}/lang/${LANG:0:2}.cfg"
@@ -1181,7 +1181,7 @@ _make_build() {
     TC_OPTIONS[2]="${TC_OPTIONS[2]/_ARM32=/_COMPAT=}"
   fi
   _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
-    O="$OUT_DIR" ARCH="$ARCH" "${TC_OPTIONS[@]}" 2>&1
+    O="$OUT_DIR" ARCH="$ARCH" "${TC_OPTIONS[*]}" 2>&1
 }
 
 
