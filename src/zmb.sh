@@ -36,7 +36,7 @@
 # 10. ==> run the ZenMaxBuilder (ZMB) main process.            (RUN)
 # ------------------------------------------------------------------
 
-# Ban all 'n00bz'
+# Ensure proper use
 if [[ ${BASH_SOURCE[0]} != "$0" ]]; then
   echo "ERROR: ZenMaxBuilder cannot be sourced" >&2
   return 1
@@ -763,6 +763,7 @@ _start() {
 # Question: device codename
 _ask_for_codename() {
   # Validation checks: REGEX to prevent invalid string
+  # Return: CODENAME
   if [[ $CODENAME == default ]]; then
     _prompt "$MSG_ASK_DEV :" 1
     read -r CODENAME
@@ -779,6 +780,7 @@ _ask_for_codename() {
 _ask_for_kernel_dir() {
   # NOTE: we are working here from HOME (auto completion)
   # Validation checks: presence of <configs> folder (ARM)
+  # Return: KERNEL_DIR CONF_DIR
   if [[ $KERNEL_DIR == default ]]; then
     _cd "$HOME" "$MSG_ERR_DIR ${RED}HOME"
     _prompt "$MSG_ASK_KDIR :" 1
@@ -797,6 +799,7 @@ _ask_for_kernel_dir() {
 # Selection: defconfig file
 _ask_for_defconfig() {
   # Choices: all defconfig files located in <configs> (ARM)
+  # Return: DEFCONFIG
   _cd "$CONF_DIR" "$MSG_ERR_DIR ${RED}$CONF_DIR"
   _prompt "$MSG_ASK_DEF :" 2
   select DEFCONFIG in *_defconfig; do
@@ -808,6 +811,7 @@ _ask_for_defconfig() {
 
 # Confirmation: make menuconfig?
 _ask_for_menuconfig() {
+  # Return: MENUCONFIG
   _confirm "$MSG_ASK_CONF ?" "[y/N]"
   case $CONFIRM in y|Y|yes|Yes|YES) MENUCONFIG=True ;; esac
 }
@@ -816,6 +820,7 @@ _ask_for_menuconfig() {
 _ask_for_save_defconfig() {
   # Otherwise request to continue with the original one
   # Validation checks: REGEX to prevent invalid string
+  # Return: DEFCONFIG
   _confirm "${MSG_ASK_SAVE_DEF} ?" "[Y/n]"
   case $CONFIRM in
     n|N|no|No|NO)
@@ -841,6 +846,7 @@ _ask_for_save_defconfig() {
 
 # Selection: toolchain compiler
 _ask_for_toolchain() {
+  # Return: COMPILER
   if [[ $COMPILER == default ]]; then
     _prompt "$MSG_SELECT_TC :" 2
     select COMPILER in $PROTON_CLANG_NAME \
@@ -853,6 +859,7 @@ _ask_for_toolchain() {
 
 # Confirmation: edit makefile?
 _ask_for_edit_cross_compile() {
+  # Return: EDIT_CC
   _confirm "$MSG_ASK_CC $COMPILER ?" "[Y/n]"
   case $CONFIRM in n|N|no|No|NO) EDIT_CC=False ;; esac
 }
@@ -860,6 +867,7 @@ _ask_for_edit_cross_compile() {
 # Question: number of cpu cores
 _ask_for_cores() {
   # Validation checks: amount of available cores (no limits here)
+  # Return: CORES
   CPU="$(nproc --all)"
   _confirm "$MSG_ASK_CPU ?" "[Y/n]"
   case $CONFIRM in
@@ -879,12 +887,14 @@ _ask_for_cores() {
 
 # Confirmation: make clean and mrproprer?
 _ask_for_make_clean() {
+  # Return: MAKE_CLEAN
   _confirm "${MSG_ASK_MCLEAN}: v$LINUX_VERSION ?" "[y/N]"
   case $CONFIRM in y|Y|yes|Yes|YES) MAKE_CLEAN=True ;; esac
 }
 
 # Confirmation: make new build?
 _ask_for_new_build() {
+  # Return: NEW_BUILD
   _confirm \
     "$MSG_START ${TAG}-${CODENAME}-$LINUX_VERSION ?" "[Y/n]"
   case $CONFIRM in n|N|no|No|NO) NEW_BUILD=False ;; esac
@@ -892,6 +902,7 @@ _ask_for_new_build() {
 
 # Confirmation: send build status on telegram?
 _ask_for_telegram() {
+  # Return: BUILD_STATUS
   if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
     _confirm "$MSG_ASK_TG ?" "[y/N]"
     case $CONFIRM in y|Y|yes|Yes|YES) BUILD_STATUS=True ;; esac
@@ -900,6 +911,7 @@ _ask_for_telegram() {
 
 # Confirmation: create flashable zip?
 _ask_for_flashable_zip() {
+  # Return: FLASH_ZIP
   _confirm \
     "$MSG_ASK_ZIP ${TAG}-${CODENAME}-$LINUX_VERSION ?" "[y/N]"
   case $CONFIRM in y|Y|yes|Yes|YES) FLASH_ZIP=True ;; esac
@@ -909,6 +921,7 @@ _ask_for_flashable_zip() {
 _ask_for_kernel_image() {
   # NOTE: we are working here from <boot> (auto completion)
   # Validation checks: presence of this file
+  # Return: K_IMG
   _cd "$BOOT_DIR" "$MSG_ERR_DIR ${RED}$BOOT_DIR"
   _prompt "$MSG_ASK_IMG :" 1
   read -r -e K_IMG
@@ -923,6 +936,7 @@ _ask_for_kernel_image() {
 
 # Confirmation: run again failed command?
 _ask_for_run_again() {
+  # Return: RUN_AGAIN
   RUN_AGAIN=False
   _confirm "$MSG_RUN_AGAIN ?" "[y/N]"
   case $CONFIRM in y|Y|yes|Yes|YES) RUN_AGAIN=True ;; esac
@@ -931,6 +945,7 @@ _ask_for_run_again() {
 # Confirmation: install missing packages?
 _ask_for_install_pkg() {
   # Warn the user that the script may crash while NO
+  # Return: INSTALL_PKG
   _confirm "${MSG_ASK_PKG}: $1 ?" "[Y/n]"
   case $CONFIRM in
     n|N|no|No|NO)
@@ -943,6 +958,7 @@ _ask_for_install_pkg() {
 # Confirmation: clone missing toolchains?
 _ask_for_clone_toolchain() {
   # Warn the user and exit the script while NO
+  # Return: CLONE_TC
   _confirm "${MSG_ASK_CLONE_TC}: $1 ?" "[Y/n]"
   case $CONFIRM in
     n|N|no|No|NO)
@@ -955,6 +971,7 @@ _ask_for_clone_toolchain() {
 # Confirmation: clone AK3?
 _ask_for_clone_anykernel() {
   # Warn the user and exit the script while NO
+  # Return: CLONE_AK
   _confirm "${MSG_ASK_CLONE_AK3}: AK3 ?" "[Y/n]"
   case $CONFIRM in
     n|N|no|No|NO)
@@ -967,6 +984,7 @@ _ask_for_clone_anykernel() {
 # Selection: kernel patch
 _ask_for_patch() {
   # Choices: all patch files located in <patches>
+  # Return: KPATCH
   _cd "${DIR}/patches" "$MSG_ERR_DIR ${RED}${DIR}/patches"
   _prompt "$MSG_ASK_PATCH :" 2
   select KPATCH in *.patch; do
@@ -978,6 +996,7 @@ _ask_for_patch() {
 
 # Confirmation: apply patch?
 _ask_for_apply_patch() {
+  # Return: APPLY_PATCH
   _error WARN "$KPATCH => ${KERNEL_DIR##*/}"
   _confirm "$MSG_CONFIRM_PATCH (${pmod}) ?" "[Y/n]"
   case $CONFIRM in
