@@ -1181,7 +1181,7 @@ _make_build() {
     TC_OPTIONS[2]="${TC_OPTIONS[2]/_ARM32=/_COMPAT=}"
   fi
   _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
-    O="$OUT_DIR" ARCH="$ARCH" "${TC_OPTIONS[@]}" 2>&1
+    O="$OUT_DIR" ARCH="$ARCH" "${TC_OPTIONS[*]}" 2>&1
 }
 
 
