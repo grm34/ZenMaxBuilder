@@ -197,8 +197,6 @@ Found a problem? Want a new feature? Have a question? First of all see if your i
 
 ### Buy me a beer ?
 
-If you feel like buying me a beer donations are welcome :
-
     LTC: MHjiEKDw7SAtx6HzSeFEWTfEUiVUak2wUD
     BTC: 356URzmeVn8AF8WxMtqipP2qQ3gwZQHdRi
     BCH: 1MrG2pNek2v1nM2JShjW6gnxvS9sdxaytw

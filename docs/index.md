@@ -2,8 +2,8 @@
 { % seo % }
 ---
 
-<img alt="ZenMaxBuilder" src="assets/images/zmb.png" />
-<br>
+# 🆉🅴🅽🅼🅰🆇🅱🆄🅸🅻🅳🅴🆁 📲
+
 <img src="https://api.codiga.io/project/23638/score/svg" alt="Codescore"><img src="https://api.codiga.io/project/23638/status/svg" alt="Codequality"><img src="https://www.codefactor.io/repository/github/grm34/zenmaxbuilder/badge" alt="Codefactor"><img src="https://img.shields.io/github/forks/grm34/ZenMaxBuilder.svg?logo=github" alt="Forks"><img src="https://img.shields.io/github/stars/grm34/ZenMaxBuilder.svg?logo=github-sponsors" alt="Stars">
 <br>
 <img src="https://img.shields.io/badge/license-MIT-blue.svg?logo=keepassxc" alt="License: MIT"><img src="https://img.shields.io/github/issues/grm34/ZenMaxBuilder.svg?logo=git" alt="Issues"><img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/y/grm34/zenmaxbuilder?label=commits&logo=github"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/grm34/ZenMaxBuilder?style=flat-square&logo=Github">
@@ -181,8 +181,6 @@ Found a problem? Want a new feature? Have a question? First of all see if your i
 
 <br>
 ## Buy me a beer ?
-
-If you feel like buying me a beer donations are welcome :
 
     LTC: MHjiEKDw7SAtx6HzSeFEWTfEUiVUak2wUD
     BTC: 356URzmeVn8AF8WxMtqipP2qQ3gwZQHdRi
