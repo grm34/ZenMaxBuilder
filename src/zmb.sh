@@ -690,8 +690,8 @@ _start() {
   _ask_for_kernel_dir
   _ask_for_defconfig
   _ask_for_menuconfig
-  _ask_for_toolchain
   _ask_for_cores
+  _ask_for_toolchain
 
   # Clone the selected toolchains
   _clone_toolchains
@@ -1075,8 +1075,14 @@ _export_path_and_options() {
     TC_OPTIONS[6]="LD=$LTO_LIBRARY"
   fi
   if [[ $DEBUG == True ]]; then
+    echo -e "\n${blue}SELECTED COMPILER:"\
+            "${nc}${lyellow}${COMPILER} ${TCVER}$nc" >&2
+    echo -e "\n${blue}COMPILER OPTIONS:$nc" >&2
+    echo -e "${lyellow}ARCH=${ARCH}$nc" >&2
+    for opt in "${TC_OPTIONS[@]}"; do
+      echo -e "${lyellow}${opt}$nc" >&2
+    done
     echo -e "\n${blue}PATH: ${nc}${lyellow}${PATH}$nc" >&2
-    sleep 0.5
   fi
 }
 
