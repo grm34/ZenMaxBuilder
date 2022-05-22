@@ -129,16 +129,16 @@ _zenmaxbuilder() {
     case $option in
       h)  clear; _terminal_banner; _usage
           rm -f "./bashvar"; exit 0 ;;
-      u)  _install_dependencies; _full_upgrade; _exit 0 ;;
-      m)  _install_dependencies; _send_msg_option; _exit 0 ;;
-      f)  _install_dependencies; _send_file_option; _exit 0 ;;
-      z)  _install_dependencies; _create_zip_option; _exit 0 ;;
-      l)  _install_dependencies; _list_all_kernels; _exit 0 ;;
-      t)  _install_dependencies; _get_linux_tag; _exit 0 ;;
-      p)  _install_dependencies; pmod=PATCH; _patch; _exit 0 ;;
-      r)  _install_dependencies; pmod=REVERT; _patch; _exit 0 ;;
-      s)  _install_dependencies; _start; _exit 0 ;;
-      d)  DEBUG="True"; _install_dependencies; _start; _exit 0 ;;
+      u)  _install_dep; _full_upgrade; _exit 0 ;;
+      m)  _install_dep; _send_msg_option; _exit 0 ;;
+      f)  _install_dep; _patterns; _send_file_option; _exit 0 ;;
+      z)  _install_dep; _create_zip_option; _exit 0 ;;
+      l)  _install_dep; _list_all_kernels; _exit 0 ;;
+      t)  _install_dep; _get_linux_tag; _exit 0 ;;
+      p)  _install_dep; pmod=PATCH; _patch; _exit 0 ;;
+      r)  _install_dep; pmod=REVERT; _patch; _exit 0 ;;
+      s)  _install_dep; _patterns; _start; _exit 0 ;;
+      d)  DEBUG="True"; _install_dep; _patterns; _start; _exit 0 ;;
       :)  _error "$MSG_ERR_MARG ${red}-$OPTARG"; _exit 1 ;;
       \?) _error "$MSG_ERR_IOPT ${red}-$OPTARG"; _exit 1 ;;
     esac
@@ -190,10 +190,10 @@ _cd() {
   cd "$1" || (_error "$2"; _exit 1)
 }
 
-# Ask some information
+# Ask some information (question or selection)
 _prompt() {
     # ARG $1 = the question to ask
-    # ARG $2 = prompt type (1 for question / 2 for selection)
+    # ARG $2 = question type (1=question/2=selection)
     lenth="$*"
     count="${#lenth}"
     echo -ne "\n${yellow}==> ${green}$1 ${yellow}\n==> "
@@ -347,8 +347,6 @@ _get_build_logs() {
   # 3. remove ANSI sequences (colors) from logfile
   # 4. send logfile on Telegram when the build fail
   if [[ -f $log ]]; then
-    # shellcheck source=/dev/null
-    source "${DIR}/etc/patterns.cfg"
     null="$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")"
     unset IFS
     (set -o posix; set | grep -v "${null//|/\\|}")> \
@@ -361,13 +359,20 @@ _get_build_logs() {
   fi
 }
 
+# Source some patterns
+_patterns() {
+  # Return: EXCLUDED_VARS PHOTO_F AUDIO_F VIDEO_F
+  # shellcheck source=/dev/null
+  source "${DIR}/etc/patterns.cfg"
+}
+
 
 ###--------------------------------------------------------------###
 ### .3. REQUIREMENTS => dependency install management functions  ###
 ###--------------------------------------------------------------###
 
 # Handle dependency installation
-_install_dependencies() {
+_install_dep() {
   # 1. set the package manager for each Linux distribution
   # 2. get the install command of the current OS package manager
   # 3. install the missing dependencies...
@@ -429,7 +434,7 @@ _clone_tc() {
   fi
 }
 
-# Clone the selected toolchain compiler
+# Clone the selected toolchains
 _clone_toolchains() {
   case $COMPILER in
     # Proton-Clang or Proton-GCC
@@ -720,7 +725,7 @@ _start() {
     fi
   fi
 
-  # Make kernel
+  # Make the kernel
   _ask_for_new_build
   if [[ $new_build == False ]]; then
     _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."; _exit 0
@@ -1129,26 +1134,26 @@ _handle_makefile_cross_compile() {
   fi
 }
 
-# Run: make clean
+# Make clean process
 _make_clean() {
   _note "$MSG_NOTE_MAKE_CLEAN [${LINUX_VERSION}]..."
   _check unbuffer make -C "$KERNEL_DIR" clean 2>&1
 }
 
-# Run: make mrproper
+# Make mrproper process
 _make_mrproper() {
   _note "$MSG_NOTE_MRPROPER [${LINUX_VERSION}]..."
   _check unbuffer make -C "$KERNEL_DIR" mrproper 2>&1
 }
 
-# Run: make defconfig
+# Make defconfig process
 _make_defconfig() {
   _note "$MSG_NOTE_DEFCONFIG $DEFCONFIG [${LINUX_VERSION}]..."
   _check unbuffer make -C "$KERNEL_DIR" \
     O="$OUT_DIR" ARCH="$ARCH" "$DEFCONFIG" 2>&1
 }
 
-# Run: make menuconfig
+# Make menuconfig process
 _make_menuconfig() {
   _note "$MSG_NOTE_MENUCONFIG $DEFCONFIG [${LINUX_VERSION}]..."
   make -C "$KERNEL_DIR" O="$OUT_DIR" \
@@ -1167,7 +1172,7 @@ _save_defconfig() {
   _check cp "${OUT_DIR}/.config" "${CONF_DIR}/$DEFCONFIG"
 }
 
-# Run: make new build
+# Make new build process
 _make_build() {
   # 1. set Telegram HTML message
   # 2. send build status on Telegram
@@ -1302,9 +1307,9 @@ _send_file() {
   # ARG $1 = file
   # ARG $2 = caption
   case $1 in
-    *.png|*.jpg|*.jpeg|*.gif|*.bmp) tg=sendPhoto ;;
-    *.mp3|*.flac|*.wav|*.aac|*.m4a|*.ogg) tg=sendAudio ;;
-    *.mp4|*.mkv|*.avi|*.webm|*.m4v|*.3gp|*.mpeg) tg=sendVideo ;;
+    *${PHOTO_F}*) tg=sendPhoto ;;
+    *${AUDIO_F}*) tg=sendAudio ;;
+    *${VIDEO_F}*) tg=sendVideo ;;
     *) tg=sendDocument ;;
   esac
   type=${tg/send}
