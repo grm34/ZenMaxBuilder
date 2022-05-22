@@ -122,8 +122,12 @@ Start ZMB and follow instructions
 
 ## Screenshots
 
-![screenshot](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/screenshot.png)
-![telegram](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/telegram.jpg)
+<details>
+  <summary>Clic to expand</summary>
+
+  ![screenshot](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/screenshot.png)
+  ![telegram](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/telegram.jpg)
+</details>
 
 ## Warning
 
