@@ -18,8 +18,8 @@
 - [Working Structure](https://kernel-builder.com#working-structure)
 - [Screenshots](https://kernel-builder.com#screenshots)
 - [Warning](https://kernel-builder.com#warning)
-- [Contributing](https://kernel-builder.com#contributing)
 - [Reporting Issues](https://kernel-builder.com#reporting-issues)
+- [Contributing](https://kernel-builder.com#contributing)
 - [Help us Translate ZenMaxBuilder](https://kernel-builder.com#help-us-translate-zenmaxbuilder)
 - [License](https://kernel-builder.com#license)
 - [Credits](https://kernel-builder.com#credits)
@@ -100,8 +100,12 @@ Start ZMB and follow instructions
 <br>
 # Screenshots
 
-![screenshot](assets/images/screenshot.png)
-![telegram](assets/images/telegram.jpg)
+<details>
+  <summary>Clic to expand</summary>
+
+  ![screenshot](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/screenshot.png)
+  ![telegram](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/telegram.jpg)
+</details>
 
 <br>
 # Warning
@@ -123,14 +127,14 @@ The only change made is the addition of the selected toolchain compiler in the m
     CC             = aarch64-linux-android-gcc
 
 <br>
-# Contributing
-
-If you want to contribute to ZenMaxBuilder project and make it better, your help is very welcome: [Contributing Guidelines](https://github.com/grm34/ZenMaxBuilder/blob/zmb/.github/CONTRIBUTING.md).
-
-<br>
 # Reporting Issues
 
 Found a problem? Want a new feature? Have a question? First of all see if your issue, question or idea has [already been reported](https://github.com/grm34/ZenMaxBuilder/issues). If don't, just open a [new clear and descriptive issue](https://github.com/grm34/ZenMaxBuilder/issues/new/choose).
+
+<br>
+# Contributing
+
+If you want to contribute to ZenMaxBuilder project and make it better, your help is very welcome: [Contributing Guidelines](https://github.com/grm34/ZenMaxBuilder/blob/zmb/.github/CONTRIBUTING.md).
 
 <br>
 # Help us Translate ZenMaxBuilder

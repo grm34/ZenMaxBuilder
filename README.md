@@ -46,8 +46,8 @@
 - [Working Structure](#working-structure)
 - [Screenshots](#screenshots)
 - [Warning](#warning)
-- [Contributing](#contributing)
 - [Reporting Issues](#reporting-issues)
+- [Contributing](#contributing)
 - [Help us Translate ZenMaxBuilder](#help-us-translate-zenmaxbuilder)
 - [License](#license)
 - [Credits](#credits)
@@ -147,13 +147,13 @@ The only change made is the addition of the selected toolchain compiler in the m
     CROSS_COMPILE ?= aarch64-linux-android-
     CC             = aarch64-linux-android-gcc
 
-## Contributing
-
-If you want to contribute to ZenMaxBuilder project and make it better, your help is very welcome: [Contributing Guidelines](https://github.com/grm34/ZenMaxBuilder/blob/zmb/.github/CONTRIBUTING.md).
-
 ## Reporting Issues
 
 Found a problem? Want a new feature? Have a question? First of all see if your issue, question or idea has [already been reported](https://github.com/grm34/ZenMaxBuilder/issues). If don't, just open a [new clear and descriptive issue](https://github.com/grm34/ZenMaxBuilder/issues/new/choose).
+
+## Contributing
+
+If you want to contribute to ZenMaxBuilder project and make it better, your help is very welcome: [Contributing Guidelines](https://github.com/grm34/ZenMaxBuilder/blob/zmb/.github/CONTRIBUTING.md).
 
 ## Help us Translate ZenMaxBuilder
 
