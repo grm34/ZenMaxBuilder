@@ -73,17 +73,17 @@ The optional flashable zip signature with AOSP Keys requires java (JDK) which is
 
 ## Usage
 
-:arrow_right: Clone and enter ZMB repository
+Clone and enter ZMB repository
 
     git clone https://github.com/grm34/ZenMaxBuilder;
     cd ZenMaxBuilder
 
-:arrow_right: Create a copy of [settings.cfg](https://github.com/grm34/ZenMaxBuilder/blob/zmb/etc/settings.cfg) to set your settings (optional)
+Create a copy of [settings.cfg](https://github.com/grm34/ZenMaxBuilder/blob/zmb/etc/settings.cfg) to set your settings (optional)
 
     cp etc/settings.cfg etc/user.cfg;
     vi etc/user.cfg
 
-:arrow_right: Start ZMB and follow instructions
+Start ZMB and follow instructions
 
     bash zmb --start
 
