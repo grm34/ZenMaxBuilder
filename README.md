@@ -1,7 +1,4 @@
-<a href="https://kernel-builder.com" target="blank_">
-<img height="100" alt="ZenMaxBuilder" src="https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/zmb.png" />
-</a>
-<br>
+# 𒆜🆉🅴🅽🅼🅰🆇🅱🆄🅸🅻🅳🅴🆁𒆜
 
 <a href="https://app.codiga.io/public/project/23638/ZenMaxBuilder/dashboard">
 <img src="https://api.codiga.io/project/23638/score/svg" alt="Codescore">
