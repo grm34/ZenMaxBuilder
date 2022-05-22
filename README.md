@@ -1,4 +1,4 @@
-# 𒆜🆉🅴🅽🅼🅰🆇🅱🆄🅸🅻🅳🅴🆁𒆜
+# 🆉🅴🅽🅼🅰🆇🅱🆄🅸🅻🅳🅴🆁 📲
 
 <a href="https://app.codiga.io/public/project/23638/ZenMaxBuilder/dashboard">
 <img src="https://api.codiga.io/project/23638/score/svg" alt="Codescore">
