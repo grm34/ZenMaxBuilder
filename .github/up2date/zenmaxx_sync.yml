@@ -17,4 +17,3 @@ jobs:
           source_branch: "zmb"
           destination_branch: "zmb"
           github_token: ${{ secrets.PAT }}
-

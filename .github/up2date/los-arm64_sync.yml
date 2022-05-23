@@ -17,4 +17,3 @@ jobs:
           source_branch: "lineage-19.1"
           destination_branch: "ZenMaxBuilder"
           github_token: ${{ secrets.PAT }}
-

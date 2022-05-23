@@ -17,4 +17,3 @@ jobs:
           source_branch: "gcc-master"
           destination_branch: "ZenMaxBuilder"
           github_token: ${{ secrets.PAT }}
-
