@@ -150,7 +150,7 @@ If you want to contribute to ZenMaxBuilder project and make it better, your help
 
     MIT License
 
-    Copyright (c) 2021-2022 @grm34 Neternels Team
+    Copyright (c) 2021-2022 darkmaster @grm34 Neternels Team
 
     Permission is hereby granted, free of charge, to any person
     obtaining a copy of this software and associated documentation
