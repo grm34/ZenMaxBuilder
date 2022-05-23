@@ -1,13 +1,10 @@
-<a href="https://kernel-builder.com" target="blank\_">
-<img height="100" alt="ZenMaxBuilder" src="https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/zmb.png" />
-</a>
-<br>
+# 🆉🅴🅽🅼🅰🆇🅱🆄🅸🅻🅳🅴🆁 📲
 
-# Contributing
+## Contributing
 
 If you want to contribute to ZenMaxBuilder (ZMB) project and make it better, your help is very welcome.
 
-## Help us translate ZenMaxBuilder
+### Help us translate ZenMaxBuilder
 
 If you know another language and are willing to help translate ZMB, here are the steps to get started:
 
@@ -27,7 +24,7 @@ If you know another language and are willing to help translate ZMB, here are the
 | French   |   🇫🇷 |     @grm34 |     100% |
 | German   |   🇩🇪 |    @Besix2 |     100% |
 
-## How to make a clean pull request
+### How to make a clean pull request
 
 - Create a personal fork of the project on Github.
 - Clone the fork on your local machine. Your remote repo on Github is called `origin`.
