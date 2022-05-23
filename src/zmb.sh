@@ -361,7 +361,7 @@ _get_build_logs() {
 
 # Source some patterns
 _patterns() {
-  # Return: EXCLUDED_VARS PHOTO_F AUDIO_F VIDEO_F
+  # Return: EXCLUDED_VARS PHOTO_F AUDIO_F VIDEO_F VOICE_F ANIM_F
   # shellcheck source=/dev/null
   source "${DIR}/etc/patterns.cfg"
 }
@@ -1316,6 +1316,8 @@ _send_file() {
     *${PHOTO_F}*) tg=sendPhoto ;;
     *${AUDIO_F}*) tg=sendAudio ;;
     *${VIDEO_F}*) tg=sendVideo ;;
+    *${ANIM_F}*) tg=sendAnimation ;;
+    *${VOICE_F}*) tg=sendVoice ;;
     *) tg=sendDocument ;;
   esac
   type=${tg/send}
