@@ -1,0 +1,19 @@
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  repo-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: repo-sync
+        uses: repo-sync/github-sync@v2
+        with:
+          source_repo: "Magisk-Modules-Repo/zipsigner"
+          source_branch: "master"
+          destination_branch: "ZenMaxBuilder"
+          github_token: ${{ secrets.PAT }}

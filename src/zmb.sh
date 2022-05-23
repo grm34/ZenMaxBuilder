@@ -503,9 +503,9 @@ _full_upgrade() {
     [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
     [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}€$MSG_UP_AK3"
     [t1]="${tp}/${PROTON_DIR}€${PROTON_BRANCH}€$MSG_UP_CLANG"
-    [t2]="${tp}/${GCC_ARM_DIR}€${GCC_ARM_BRANCH}€$MSG_UP_GCC32"
+    [t2]="${tp}/${GCC_ARM_DIR}€${GCC_ARM_BRANCH}€$MSG_UP_GCC"
     [t3]="${tp}/${GCC_ARM64_DIR}€${GCC_ARM64_BRANCH}€$MSG_UP_GCC64"
-    [t4]="${tp}/${LOS_ARM_DIR}€${LOS_ARM_BRANCH}€$MSG_UP_LOS32"
+    [t4]="${tp}/${LOS_ARM_DIR}€${LOS_ARM_BRANCH}€$MSG_UP_LOS"
     [t5]="${tp}/${LOS_ARM64_DIR}€${LOS_ARM64_BRANCH}€$MSG_UP_LOS64"
   )
   up_list=(zmb ak3 t1 t2 t3 t4 t5)
@@ -980,7 +980,7 @@ _ask_for_clone_anykernel() {
   _confirm "${MSG_ASK_CLONE_AK3}: AK3 ?" "[Y/n]"
   case $confirm in
     n|N|no|No|NO)
-      _error "${MSG_ERR_CLONE}: ${red}AnyKernel"; _exit 1
+      _error "${MSG_ERR_CLONE}: ${red}${ANYKERNEL_DIR}"; _exit 1
       ;;
     *) clone_ak="True" ;;
   esac
@@ -1219,7 +1219,7 @@ _zip() {
   if ! [[ -f ${ANYKERNEL_DIR}/banner ]]; then
     _check cp "${DIR}/docs/ak3/banner" "${ANYKERNEL_DIR}/banner"
   fi
-  _cd "$ANYKERNEL_DIR" "$MSG_ERR_DIR ${red}AnyKernel"
+  _cd "$ANYKERNEL_DIR" "$MSG_ERR_DIR ${red}${ANYKERNEL_DIR}"
   if [[ $start_time ]]; then _set_ak3_conf; fi
   _check unbuffer zip -r9 "${1}.zip" \
     ./* -x .git README.md ./*placeholder 2>&1
