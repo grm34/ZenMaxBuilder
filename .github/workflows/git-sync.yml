@@ -1,0 +1,12 @@
+on: push
+jobs:
+  git-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: git-sync
+        uses: wei/git-sync@v3
+        with:
+          source_repo: "grm34/ZenMaxBuilder"
+          source_branch: "zmb"
+          destination_repo: "ZenMaxx/ZenMaxBuilder"
+          destination_branch: "zmb"
