@@ -110,26 +110,28 @@ _zenmaxbuilder() {
   for opt in "$@"; do
     shift
     case $opt in
-      "--help")   set -- "$@" "-h"; break ;;
-      "--start")  set -- "$@" "-s" ;;
-      "--update") set -- "$@" "-u" ;;
-      "--msg")    set -- "$@" "-m" ;;
-      "--file")   set -- "$@" "-f" ;;
-      "--zip")    set -- "$@" "-z" ;;
-      "--list")   set -- "$@" "-l" ;;
-      "--tag")    set -- "$@" "-t" ;;
-      "--patch")  set -- "$@" "-p" ;;
-      "--revert") set -- "$@" "-r" ;;
-      "--debug")  set -- "$@" "-d" ;;
-      *)          set -- "$@" "$opt" ;;
+      "--help")    set -- "$@" "-h"; break ;;
+      "--start")   set -- "$@" "-s" ;;
+      "--update")  set -- "$@" "-u" ;;
+      "--version") set -- "$@" "-v" ;;
+      "--msg")     set -- "$@" "-m" ;;
+      "--file")    set -- "$@" "-f" ;;
+      "--zip")     set -- "$@" "-z" ;;
+      "--list")    set -- "$@" "-l" ;;
+      "--tag")     set -- "$@" "-t" ;;
+      "--patch")   set -- "$@" "-p" ;;
+      "--revert")  set -- "$@" "-r" ;;
+      "--debug")   set -- "$@" "-d" ;;
+      *)           set -- "$@" "$opt" ;;
     esac
   done
   if [[ $# -eq 0 ]]; then _error "$MSG_ERR_EOPT"; _exit 1; fi
-  while getopts ':hsuldprt:m:f:z:' option; do
+  while getopts ':hsuvldprt:m:f:z:' option; do
     case $option in
       h)  clear; _terminal_banner; _usage
           rm -f "./bashvar"; exit 0 ;;
       u)  _install_dep; _full_upgrade; _exit 0 ;;
+      v)  _install_dep; _tc_version_option; _exit 0 ;;
       m)  _install_dep; _send_msg_option; _exit 0 ;;
       f)  _install_dep; _patterns; _send_file_option; _exit 0 ;;
       z)  _install_dep; _create_zip_option; _exit 0 ;;
@@ -526,6 +528,30 @@ _full_upgrade() {
   done
 }
 
+# Toolchains Versions Option
+# ---------------------------
+
+_tc_version_option() {
+  _note "${MSG_SCAN_TC}..."
+  local v tcn pt gcc
+  v=("$PROTON_VERSION" "$GCC_ARM64_VERSION" "$LOS_ARM64_VERSION")
+  for tc in "${v[@]}"; do
+    if [[ -d ${DIR}/toolchains/$tc ]]; then
+      _get_tc_version "$tc"
+      case ${tc##*/} in
+        *clang*) tcn="$PROTON_GCC_NAME" pt="${tc_version##*/}";;
+        *elf*) tcn="$EVA_GCC_NAME" gcc="${tc_version##*/}" ;;
+        *android*) tcn="$LOS_GCC_NAME" ;;
+      esac
+      echo -e "${green}${tcn}: ${red}${tc_version##*/}$nc"
+    fi
+  done
+  if [[ -n $pt ]] && [[ -n $gcc ]]; then
+    echo -e "${green}${PROTON_GCC_NAME}: ${red}$pt ${gcc}$nc"
+  fi
+  if [[ -z $tcn ]]; then _error warn "$MSG_WARN_SCAN_TC"; fi
+}
+
 # Telegram options
 #------------------
 
@@ -629,6 +655,7 @@ ${nc}[${lyellow}OPTION${nc}] [${lyellow}ARGUMENT${nc}] \
     -h, --help                      $MSG_HELP_H
     -s, --start                     $MSG_HELP_S
     -u, --update                    $MSG_HELP_U
+    -v, --version                   $MSG_HELP_V
     -l, --list                      $MSG_HELP_L
     -t, --tag            [v4.19]    $MSG_HELP_T
     -m, --msg          [message]    $MSG_HELP_M
