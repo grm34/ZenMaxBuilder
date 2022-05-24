@@ -168,7 +168,7 @@ _terminal_banner() {
 # Shell colors
 _terminal_colors() {
   if [[ -t 1 ]]; then
-    ncolors="$(tput colors)"
+    local ncolors; ncolors="$(tput colors)"
     if [[ -n $ncolors ]] && [[ $ncolors -ge 8 ]]; then
       bold="$(tput bold)"
       nc="\e[0m"
@@ -194,8 +194,7 @@ _cd() {
 _prompt() {
     # ARG $1 = the question to ask
     # ARG $2 = question type (1=question/2=selection)
-    lenth="$*"
-    count="${#lenth}"
+    local length count; length="$*"; count="${#length}"
     echo -ne "\n${yellow}==> ${green}$1 ${yellow}\n==> "
     for (( char=1; char<=count-2; char++ )); do
       echo -ne "─"
@@ -212,7 +211,7 @@ _confirm() {
   # ARG $1 = the question to ask
   # ARG $2 = [Y/n] (to set default <ENTER> behavior)
   confirm="False"
-  count="$(( ${#1} + 6 ))"
+  local count; count="$(( ${#1} + 6 ))"
   echo -ne "${yellow}\n==> ${green}${1} ${red}${2}${yellow}\n==> "
   for (( char=1; char<=count; char++ )); do
     echo -ne "─"
@@ -252,7 +251,7 @@ _check() {
   # 2. notify function and file on ERR
   # 3. get failed build logs (+TG feedback)
   # 4. ask to run again last failed command
-  cmd_err="${*}"
+  local cmd_err line func file; cmd_err="${*}"
   if [[ $DEBUG == True ]]; then
     echo -e "\n${blue}Command:"\
             "${nc}${lyellow}${cmd_err/unbuffer }$nc" >&2
@@ -293,6 +292,7 @@ _exit() {
   # 5. exit with 3s timeout
   if pidof make; then pkill make || sleep 0.5; fi
   _get_build_logs
+  local input_files device_folders
   input_files=(bashvar buildervar linuxver)
   for file in "${input_files[@]}"; do
     if [[ -f $file ]]; then _check rm -f "${DIR}/$file"; fi
@@ -333,10 +333,10 @@ _get_user_timezone() {
 # Current build time
 _get_build_time() {
   # Return: BUILD_TIME
+  local end_time diff_time min sec
   end_time="$(TZ=$TIMEZONE date +%s)"
   diff_time="$(( end_time - start_time ))"
-  min="$(( diff_time / 60 ))"
-  sec="$(( diff_time % 60 ))"
+  min="$(( diff_time / 60 ))"; sec="$(( diff_time % 60 ))"
   BUILD_TIME="${min}m${sec}s"
 }
 
@@ -347,9 +347,8 @@ _get_build_logs() {
   # 3. remove ANSI sequences (colors) from logfile
   # 4. send logfile on Telegram when the build fail
   if [[ -f $log ]]; then
-    null="$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")"
-    unset IFS
-    (set -o posix; set | grep -v "${null//|/\\|}")> \
+    local null; null="$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")"
+    unset IFS; (set -o posix; set | grep -v "${null//|/\\|}")> \
       "${DIR}/buildervar"
     printf "\n\n### ZMB SETTINGS ###\n" >> "$log"
     diff bashvar buildervar | grep -E \
@@ -387,11 +386,10 @@ _install_dep() {
       [zypper]="sudo zypper install -y"
       [dnf]="sudo dnf install -y"
     )
-    pm_list=(pacman yum emerge zypper dnf pkg apt)
+    local pm_list; pm_list=(pacman yum emerge zypper dnf pkg apt)
     for manager in "${pm_list[@]}"; do
       if which "$manager" &>/dev/null; then
-        IFS=" "
-        pm="${pm_install_cmd[$manager]}"
+        IFS=" "; local pm; pm="${pm_install_cmd[$manager]}"
         read -ra pm <<< "$pm"
         unset IFS; break
       fi
@@ -489,6 +487,7 @@ _update_git() {
   # 5. ALL: reset to origin then pull changes
   git checkout "$1"
   if [[ $1 == zmb ]] && [[ -f ${DIR}/etc/user.cfg ]]; then
+    local conf
     conf="$(git diff origin/zmb "${DIR}/etc/settings.cfg")"
     if [[ -n $conf ]] && [[ -f ${DIR}/etc/user.cfg ]]; then
       _error warn "${MSG_CONF}"; echo
@@ -502,7 +501,7 @@ _update_git() {
 _full_upgrade() {
   # 1. set ZMB and AK3 and TC data
   # 2. upgrade existing stuff...
-  tp="${DIR}/toolchains"
+  local tp up_list; tp="${DIR}/toolchains"
   declare -A up_data=(
     [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
     [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}€$MSG_UP_AK3"
@@ -514,7 +513,7 @@ _full_upgrade() {
   )
   up_list=(zmb ak3 t1 t2 t3 t4 t5)
   for repository in "${up_list[@]}"; do
-    IFS="€"
+    IFS="€"; local repo
     repo="${up_data[$repository]}"
     read -ra repo <<< "$repo"
     unset IFS
@@ -573,8 +572,8 @@ _list_all_kernels() {
 
 _get_linux_tag() {
   _note "${MSG_NOTE_LTAG}..."
-  ltag="$(git ls-remote --refs --sort='v:refname' --tags \
-    "$LINUX_STABLE" | grep "$OPTARG" | tail --lines=1 \
+  local ltag; ltag="$(git ls-remote --refs --sort='v:refname' \
+    --tags "$LINUX_STABLE" | grep "$OPTARG" | tail --lines=1 \
     | cut --delimiter='/' --fields=3)"
   if [[ $ltag == ${OPTARG}* ]]; then
     _note "${MSG_SUCCESS_LTAG}: ${red}$ltag"
@@ -669,7 +668,7 @@ _start() {
   _ask_for_codename
 
   # Create device folders
-  folders=(builds logs toolchains out)
+  local folders; folders=(builds logs toolchains out)
   for folder in "${folders[@]}"; do
     if ! [[ -d ${DIR}/${folder}/$CODENAME ]] && \
         [[ $folder != toolchains ]]; then
@@ -743,11 +742,12 @@ _start() {
 
   # Status -> zip -> upload the build
   _get_build_time
+  local most_recent ftime
   # shellcheck disable=SC2012
-  most_recent_file="$(ls -Art "$BOOT_DIR" 2>/dev/null | tail -n 1)"
-  ft="$(stat -c %Z "${BOOT_DIR}/${most_recent_file}" 2>/dev/null)"
+  most_recent="$(ls -Art "$BOOT_DIR" 2>/dev/null | tail -n 1)"
+  ftime="$(stat -c %Z "${BOOT_DIR}/${most_recent}" 2>/dev/null)"
   if ! [[ -d $BOOT_DIR ]] || [[ -z $(ls -A "$BOOT_DIR") ]] || \
-      [[ $ft < $start_time ]]; then
+      [[ $ftime < $start_time ]]; then
     _error "$MSG_ERR_MAKE"; _exit 1
   else
     _note "$MSG_NOTE_SUCCESS $BUILD_TIME !"
@@ -776,7 +776,7 @@ _ask_for_codename() {
   if [[ $CODENAME == default ]]; then
     _prompt "$MSG_ASK_DEV :" 1
     read -r CODENAME
-    regex="^[a-zA-Z0-9][a-zA-Z0-9_-]{2,19}$"
+    local regex; regex="^[a-zA-Z0-9][a-zA-Z0-9_-]{2,19}$"
     until [[ $CODENAME =~ $regex ]]; do
       _error "$MSG_ERR_DEV ${red}$CODENAME"
       _prompt "$MSG_ASK_DEV :" 1
@@ -842,7 +842,7 @@ _ask_for_save_defconfig() {
     *)
       _prompt "$MSG_ASK_DEF_NAME :" 1
       read -r DEFCONFIG
-      regex="^[a-zA-Z0-9][a-zA-Z0-9_-]{2,25}$"
+      local regex; regex="^[a-zA-Z0-9][a-zA-Z0-9_-]{2,25}$"
       until [[ $DEFCONFIG =~ $regex ]]; do
         _error "$MSG_ERR_DEF_NAME ${red}$DEFCONFIG"
         _prompt "$MSG_ASK_DEF_NAME :" 1
@@ -877,7 +877,7 @@ _ask_for_edit_cross_compile() {
 _ask_for_cores() {
   # Validation checks: amount of available cores (no limits here)
   # Return: CORES
-  cpu="$(nproc --all)"
+  local cpu; cpu="$(nproc --all)"
   _confirm "$MSG_ASK_CPU ?" "[Y/n]"
   case $confirm in
     n|N|no|No|NO)
@@ -1111,6 +1111,7 @@ _get_tc_version() {
 _get_and_display_cross_compile() {
   r1=("^CROSS_COMPILE\s.*?=.*" "CROSS_COMPILE\ ?=\ ${cross}")
   r2=("^CC\s.*=.*" "CC\ =\ ${ccross}\ -I${KERNEL_DIR}")
+  local c1 c2
   c1="$(sed -n "/${r1[0]}/{p;}" "${KERNEL_DIR}/Makefile")"
   c2="$(sed -n "/${r2[0]}/{p;}" "${KERNEL_DIR}/Makefile")"
   if [[ -z $c1 ]]; then
@@ -1134,7 +1135,7 @@ _handle_makefile_cross_compile() {
     _check sed -i "s|${r1[0]}|${r1[1]}|g" "${KERNEL_DIR}/Makefile"
     _check sed -i "s|${r2[0]}|${r2[1]}|g" "${KERNEL_DIR}/Makefile"
   fi
-  mk="$(grep "${r1[0]}" "${KERNEL_DIR}/Makefile")"
+  local mk; mk="$(grep "${r1[0]}" "${KERNEL_DIR}/Makefile")"
   if [[ -n ${mk##*"${cross/CROSS_COMPILE=/}"*} ]]; then
     _error warn "$MSG_WARN_CC"
   fi
@@ -1191,7 +1192,7 @@ _make_build() {
   _note "${MSG_NOTE_MAKE}: ${KERNEL_NAME}..."
   _set_html_status_msg
   _send_start_build_status
-  linuxversion="${LINUX_VERSION//.}"
+  local linuxversion; linuxversion="${LINUX_VERSION//.}"
   if [[ $(echo "${linuxversion:0:2} > 42" | bc) == 1 ]] && \
       [[ ${TC_OPTIONS[3]} == clang ]]; then
     TC_OPTIONS[2]="${TC_OPTIONS[2]/_ARM32=/_COMPAT=}"
@@ -1240,6 +1241,7 @@ _set_ak3_conf() {
   # 2. edit anykernel.sh to append device infos (SED)
   for file in "${INCLUDED[@]}"; do
     if [[ -f ${BOOT_DIR}/$file ]]; then
+      local inc_dir
       if [[ ${file##*/} == *erofs.dtb ]]; then
         _check mkdir erofs; inc_dir="erofs/"
       elif [[ ${file##*/} != *Image* ]] && \
@@ -1253,7 +1255,7 @@ _set_ak3_conf() {
       _check cp -af "$file" "${inc_dir}${file##*/}"
     fi
   done
-  strings=(
+  local strings; strings=(
     "s/kernel.string=.*/kernel.string=${TAG}-${CODENAME}/g"
     "s/kernel.for=.*/kernel.for=${KERNEL_VARIANT}/g"
     "s/kernel.compiler=.*/kernel.compiler=${COMPILER}/g"
@@ -1319,6 +1321,7 @@ _send_msg() {
 _send_file() {
   # ARG $1 = file
   # ARG $2 = caption
+  local tg type
   case $1 in
     *${PHOTO_F}*) tg=sendPhoto ;;
     *${AUDIO_F}*) tg=sendAudio ;;
@@ -1348,7 +1351,7 @@ _send_start_build_status() {
 # Success build status
 _send_success_build_status() {
   if [[ $build_status == True ]]; then
-    msg="$MSG_NOTE_SUCCESS $BUILD_TIME"
+    local msg; msg="$MSG_NOTE_SUCCESS $BUILD_TIME"
     _send_msg "${KERNEL_NAME//_/-} | $msg"
   fi
 }
@@ -1380,6 +1383,7 @@ _send_failed_build_logs() {
 # Upload the kernel
 _upload_kernel_build() {
   if [[ $build_status == True ]] && [[ $flash_zip == True ]]; then
+    local file caption
     file="${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip"
     if ! [[ -f $file ]]; then file="${file/-signed}"; fi
     _note "${MSG_NOTE_UPLOAD}: ${file##*/}..."
@@ -1392,7 +1396,7 @@ _upload_kernel_build() {
 
 # HTML start build status message
 _set_html_status_msg() {
-  android_version="AOSP Unified"
+  local android_version; android_version="AOSP Unified"
   if [[ -n $PLATFORM_VERSION ]]; then
     android_version="${android_version/Unified/$PLATFORM_VERSION}"
   fi
