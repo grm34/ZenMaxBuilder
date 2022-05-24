@@ -128,8 +128,7 @@ _zenmaxbuilder() {
   if [[ $# -eq 0 ]]; then _error "$MSG_ERR_EOPT"; _exit 1; fi
   while getopts ':hsuvldprt:m:f:z:' option; do
     case $option in
-      h)  clear; _terminal_banner; _usage
-          rm -f "./bashvar"; exit 0 ;;
+      h)  clear; _terminal_banner; _usage; _exit 0 ;;
       u)  _install_dep; _full_upgrade; _exit 0 ;;
       v)  _install_dep; _tc_version_option; _exit 0 ;;
       m)  _install_dep; _send_msg_option; _exit 0 ;;
@@ -306,14 +305,18 @@ _exit() {
       _check rm -rf "${DIR}/${folder}/$CODENAME"
     fi
   done
-  echo
-  for (( second=3; second>=1; second-- )); do
-    echo -ne "\r\033[K${blue}${MSG_EXIT}"\
-             "in ${magenta}${second}${blue}"\
-             "second(s)...$nc"
-    sleep 0.9
-  done
-  echo
+  case $option in
+    s|u|z|p|r|d)
+      echo
+      for (( second=3; second>=1; second-- )); do
+        echo -ne "\r\033[K${blue}${MSG_EXIT}"\
+                 "in ${magenta}${second}${blue}"\
+                 "second(s)...$nc"
+        sleep 0.9
+      done
+      echo
+    ;;
+  esac
   if [[ $1 == 0 ]]; then exit 0; else kill -- $$; fi
 }
 
@@ -849,7 +852,9 @@ _ask_for_defconfig() {
 _ask_for_menuconfig() {
   # Return: MENUCONFIG
   _confirm "$MSG_ASK_CONF ?" "[y/N]"
-  case $confirm in y|Y|yes|Yes|YES) MENUCONFIG="True" ;; esac
+  case $confirm in
+    y|Y|yes|Yes|YES) MENUCONFIG="True" ;;
+  esac
 }
 
 # Confirmation: save new defconfig?
@@ -862,8 +867,8 @@ _ask_for_save_defconfig() {
     n|N|no|No|NO)
       save_defconfig="False"
       _confirm "${MSG_ASK_USE_DEF}: $DEFCONFIG ?" "[Y/n]"
-      case $confirm in n|N|no|No|NO)
-        original_defconfig="False" ;;
+      case $confirm in
+        n|N|no|No|NO) original_defconfig="False" ;;
       esac
       ;;
     *)
@@ -897,7 +902,9 @@ _ask_for_toolchain() {
 _ask_for_edit_cross_compile() {
   # Return: EDIT_CC
   _confirm "$MSG_ASK_CC $COMPILER ?" "[Y/n]"
-  case $confirm in n|N|no|No|NO) EDIT_CC="False" ;; esac
+  case $confirm in
+    n|N|no|No|NO) EDIT_CC="False" ;;
+  esac
 }
 
 # Question: number of cpu cores
@@ -925,7 +932,9 @@ _ask_for_cores() {
 _ask_for_make_clean() {
   # Return: MAKE_CLEAN
   _confirm "${MSG_ASK_MCLEAN}: v$LINUX_VERSION ?" "[y/N]"
-  case $confirm in y|Y|yes|Yes|YES) MAKE_CLEAN="True" ;; esac
+  case $confirm in
+    y|Y|yes|Yes|YES) MAKE_CLEAN="True" ;;
+  esac
 }
 
 # Confirmation: make new build?
@@ -933,7 +942,9 @@ _ask_for_new_build() {
   # Return: new_build
   _confirm \
     "$MSG_START ${TAG}-${CODENAME}-$LINUX_VERSION ?" "[Y/n]"
-  case $confirm in n|N|no|No|NO) new_build="False" ;; esac
+  case $confirm in
+    n|N|no|No|NO) new_build="False" ;;
+  esac
 }
 
 # Confirmation: send build status on telegram?
@@ -941,7 +952,9 @@ _ask_for_telegram() {
   # Return: build_status
   if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
     _confirm "$MSG_ASK_TG ?" "[y/N]"
-    case $confirm in y|Y|yes|Yes|YES) build_status="True" ;; esac
+    case $confirm in
+      y|Y|yes|Yes|YES) build_status="True" ;
+    esac
   fi
 }
 
@@ -950,7 +963,9 @@ _ask_for_flashable_zip() {
   # Return: flash_zip
   _confirm \
     "$MSG_ASK_ZIP ${TAG}-${CODENAME}-$LINUX_VERSION ?" "[y/N]"
-  case $confirm in y|Y|yes|Yes|YES) flash_zip="True" ;; esac
+  case $confirm in
+    y|Y|yes|Yes|YES) flash_zip="True" ;;
+  esac
 }
 
 # Question: kernel image
@@ -975,7 +990,9 @@ _ask_for_run_again() {
   # Return: run_again
   run_again="False"
   _confirm "$MSG_RUN_AGAIN ?" "[y/N]"
-  case $confirm in y|Y|yes|Yes|YES) run_again="True" ;; esac
+  case $confirm in
+    y|Y|yes|Yes|YES) run_again="True" ;;
+  esac
 }
 
 # Confirmation: install missing packages?
