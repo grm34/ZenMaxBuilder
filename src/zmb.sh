@@ -1322,14 +1322,13 @@ _send_file() {
   # ARG $1 = file
   # ARG $2 = caption
   local tg type
-  case $1 in
-    *${PHOTO_F}*) tg=sendPhoto ;;
-    *${AUDIO_F}*) tg=sendAudio ;;
-    *${VIDEO_F}*) tg=sendVideo ;;
-    *${ANIM_F}*) tg=sendAnimation ;;
-    *${VOICE_F}*) tg=sendVoice ;;
-    *) tg=sendDocument ;;
-  esac
+  if [[ ${PHOTO_F} =~ ${1##*/*.} ]]; then tg=sendPhoto
+  elif [[ ${AUDIO_F} =~ ${1##*/*.} ]]; then tg=sendAudio
+  elif [[ ${VIDEO_F} =~ ${1##*/*.} ]]; then tg=sendVideo
+  elif [[ ${ANIM_F} =~ ${1##*/*.} ]]; then tg=sendAnimation
+  elif [[ ${VOICE_F} =~ ${1##*/*.} ]]; then tg=sendVoice
+  else tg=sendDocument
+  fi
   type=${tg/send}
   curl --progress-bar -o /dev/null -fL -X POST \
     -F "${type,}"=@"$1" -F caption="$2" \
