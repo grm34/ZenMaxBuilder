@@ -1,11 +1,8 @@
-<a href="https://kernel-builder.com" target="blank\_">
-<img height="100" alt="ZenMaxBuilder" src="https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/zmb.png" />
-</a>
-<br>
+# 🆉🅴🅽🅼🅰🆇🅱🆄🅸🅻🅳🅴🆁 📲
 
-# Security Policy
+## Security Policy
 
-## Supported Versions
+### Supported Versions
 
 | Branch  | Supported             |
 | ------- | --------------------- |
@@ -13,7 +10,7 @@
 | dev     | :x:                   |
 | testing | :construction_worker: |
 
-## Statistics
+### Statistics
 
 | File   | blank | comment | code |
 | :----- | ----: | ------: | ---: |
@@ -21,6 +18,6 @@
 
 ZMB has been coded largely on a smartphone, so the length of the lines is greatly reduced for better visibility to ensure the best support and maintenance, which explains such a large number of lines.
 
-## Reporting a Vulnerability
+### Reporting a Vulnerability
 
 Please open an issue: [Bug Report Section](https://github.com/grm34/ZenMaxBuilder/issues/new/choose)
