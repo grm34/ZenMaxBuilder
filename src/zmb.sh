@@ -1348,7 +1348,7 @@ _send_msg() {
 _send_file() {
   # ARG $1 = file
   # ARG $2 = caption
-  local tg type
+  local tg sendtype
   if [[ ${PHOTO_F} =~ ${1##*/*.} ]]; then tg=sendPhoto
   elif [[ ${AUDIO_F} =~ ${1##*/*.} ]]; then tg=sendAudio
   elif [[ ${VIDEO_F} =~ ${1##*/*.} ]]; then tg=sendVideo
@@ -1356,9 +1356,9 @@ _send_file() {
   elif [[ ${VOICE_F} =~ ${1##*/*.} ]]; then tg=sendVoice
   else tg=sendDocument
   fi
-  type=${tg/send}
+  sendtype=${tg/send}
   curl --progress-bar -o /dev/null -fL -X POST \
-    -F "${type,}"=@"$1" -F caption="$2" \
+    -F "${sendtype,}"=@"$1" -F caption="$2" \
     -F chat_id="$TELEGRAM_CHAT_ID" \
     -F disable_web_page_preview=true \
     "${TELEGRAM_API}/bot${TELEGRAM_BOT_TOKEN}/$tg"
