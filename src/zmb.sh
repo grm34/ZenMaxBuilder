@@ -485,21 +485,22 @@ _clone_anykernel() {
 # Update git repository
 _update_git() {
   # ARG $1 = repo branch
-  # 1. ALL: checkout to main branch
+  # 1. ALL: checkout and reset to main branch
   # 2. ZMB: check if settings.cfg was updated
   # 3. ZMB: warn the user while settings changed
   # 4. ZMB: rename etc/user.cfg to etc/old.cfg
-  # 5. ALL: reset to origin then pull changes
-  git checkout "$1"
-  if [[ $1 == zmb ]] && [[ -f ${DIR}/etc/user.cfg ]]; then
-    local conf
-    conf="$(git diff origin/zmb "${DIR}/etc/settings.cfg")"
-    if [[ -n $conf ]] && [[ -f ${DIR}/etc/user.cfg ]]; then
+  # 5. ALL: pull changes
+  git checkout "$1"; git reset --hard HEAD
+  if [[ $1 == "$ZMB_BRANCH" ]] && \
+      [[ -f ${DIR}/etc/user.cfg ]]; then
+    local d
+    d="$(git diff origin/"$ZMB_BRANCH" "${DIR}/etc/settings.cfg")"
+    if [[ -n $d ]]; then
       _error warn "${MSG_CONF}"; echo
       _check mv "${DIR}/etc/user.cfg" "${DIR}/etc/old.cfg"
     fi
   fi
-  git reset --hard "origin/$1"; git pull
+  git pull
 }
 
 # Update everything that needs to be
