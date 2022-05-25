@@ -601,6 +601,7 @@ _list_all_kernels() {
 
 _get_linux_tag() {
   _note "${MSG_NOTE_LTAG}..."
+  if [[ $OPTARG != v* ]]; then OPTARG="v$OPTARG"; fi
   local ltag; ltag="$(git ls-remote --refs --sort='v:refname' \
     --tags "$LINUX_STABLE" | grep "$OPTARG" | tail --lines=1 \
     | cut --delimiter='/' --fields=3)"
