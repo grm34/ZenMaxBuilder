@@ -433,11 +433,11 @@ _clone_tc() {
     _ask_for_clone_toolchain "${3##*/}"
     if [[ $clone_tc == True ]]; then
       if [[ $2 == "$AOSP_CLANG_URL" ]]; then
-        mkdir "$3"
+        _check mkdir "$3"
         _check wget -q --show-progress -O "${3##*/}.tar.gz" "$2"
         _check tar -xvf "${3##*/}.tar.gz" -C "$3"
-        rm "${3##*/}.tar.gz"
-        if [[ -f wget-log ]]; then rm wget-log; fi
+        _check rm "${3##*/}.tar.gz"
+        if [[ -f wget-log ]]; then _check rm wget-log; fi
       else
         git clone --depth=1 -b "$1" "$2" "$3"
       fi
