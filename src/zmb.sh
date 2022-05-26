@@ -1143,7 +1143,7 @@ _export_path_and_options() {
 _check_linker() {
   # ARG: $1 = cross compiler
   local linker
-  linker="$(_check readelf --all "$1" \
+  linker="$(readelf --all "$1" \
     | grep interpreter | awk -F ": " '{print $NF}')"
   linker="${linker/]}"
   if [[ -n $linker ]] && ! [[ -f $linker ]]; then
