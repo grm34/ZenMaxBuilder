@@ -1068,7 +1068,7 @@ _ask_for_apply_patch() {
 # Set compiler options
 _export_path_and_options() {
   # 1. export target variables (CFG)
-  # 2. ensure system support toolchain compiler (verify linker)
+  # 2. ensure compiler is system supported (verify linker)
   # 3. append toolchains to the $PATH, export and verify
   # 4. get toolchain compiler version
   # 5. get CROSS_COMPILE and CC (to handle Makefile)
@@ -1140,7 +1140,7 @@ _export_path_and_options() {
   fi
 }
 
-# Ensure system support toolchain compiler
+# Ensure compiler is system supported
 _check_linker() {
   # ARG: $1 = cross compiler
   local linker
