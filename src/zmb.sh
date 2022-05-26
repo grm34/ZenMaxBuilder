@@ -1068,10 +1068,11 @@ _ask_for_apply_patch() {
 # Set compiler options
 _export_path_and_options() {
   # 1. export target variables (CFG)
-  # 2. append toolchains to the $PATH, export and verify
-  # 3. get current toolchain compiler options and version
-  # 4. get CROSS_COMPILE and CC (to handle Makefile)
-  # 5. set Link Time Optimization (LTO)
+  # 2. ensure system support toolchain compiler (verify linker)
+  # 3. append toolchains to the $PATH, export and verify
+  # 4. get toolchain compiler version
+  # 5. get CROSS_COMPILE and CC (to handle Makefile)
+  # 6. set Link Time Optimization (LTO)
   # ?  DEBUG MODE: display $PATH
   # Return: PATH TC_OPTIONS TCVER
   if [[ $BUILDER == default ]]; then BUILDER="$(whoami)"; fi
@@ -1081,43 +1082,46 @@ _export_path_and_options() {
   export PLATFORM_VERSION ANDROID_MAJOR_VERSION
   case $COMPILER in
     "$PROTON_CLANG_NAME")
-      export PATH="${PROTON_DIR}/bin:${PATH}"
-      _check_toolchain_path "$PROTON_DIR"
       TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
-      _get_tc_version "$PROTON_VERSION"
-      TCVER="${tc_version##*/}"
       cross="${PROTON_CLANG_OPTIONS[1]/CROSS_COMPILE=}"
       ccross="${PROTON_CLANG_OPTIONS[3]/CC=}"
+      _check_linker "$PROTON_DIR/bin/$ccross"
+      export PATH="${PROTON_DIR}/bin:${PATH}"
+      _check_tc_path "$PROTON_DIR"
+      _get_tc_version "$PROTON_VERSION"
+      TCVER="${tc_version##*/}"
       ;;
     "$EVA_GCC_NAME")
-      export PATH="${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin:${PATH}"
-      _check_toolchain_path "$GCC_ARM64_DIR" "$GCC_ARM_DIR"
       TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
-      _get_tc_version "$GCC_ARM64_VERSION"
-      TCVER="${tc_version##*/}"
       cross="${EVA_GCC_OPTIONS[1]/CROSS_COMPILE=}"
       ccross="${EVA_GCC_OPTIONS[3]/CC=}"
+      _check_linker "$GCC_ARM64_DIR/bin/$ccross"
+      export PATH="${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin:${PATH}"
+      _check_tc_path "$GCC_ARM64_DIR" "$GCC_ARM_DIR"
+      _get_tc_version "$GCC_ARM64_VERSION"
+      TCVER="${tc_version##*/}"
       ;;
     "$LOS_GCC_NAME")
-      export PATH="${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:${PATH}"
-      _check_toolchain_path "$LOS_ARM64_DIR" "$LOS_ARM_DIR"
       TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
-      _get_tc_version "$LOS_ARM64_VERSION"
-      TCVER="${tc_version##*/}"
       cross="${LOS_GCC_OPTIONS[1]/CROSS_COMPILE=}"
       ccross="${LOS_GCC_OPTIONS[3]/CC=}"
+      _check_linker "$LOS_ARM64_DIR/bin/$ccross"
+      export PATH="${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:${PATH}"
+      _check_tc_path "$LOS_ARM64_DIR" "$LOS_ARM_DIR"
+      _get_tc_version "$LOS_ARM64_VERSION"
+      TCVER="${tc_version##*/}"
       ;;
     "$PROTON_GCC_NAME")
+      TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
+      cross="${PROTON_GCC_OPTIONS[1]/CROSS_COMPILE=}"
+      ccross="${PROTON_GCC_OPTIONS[3]/CC=}"
+      _check_linker "$PROTON_DIR/bin/$ccross"
       eva_path="${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin"
       export PATH="${PROTON_DIR}/bin:${eva_path}:${PATH}"
-      _check_toolchain_path "$PROTON_DIR" "$GCC_ARM_DIR" \
-                            "$GCC_ARM64_DIR"
-      TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
+      _check_tc_path "$PROTON_DIR" "$GCC_ARM_DIR" "$GCC_ARM64_DIR"
       _get_tc_version "$PROTON_VERSION"; v1="$tc_version"
       _get_tc_version "$GCC_ARM64_VERSION"; v2="$tc_version"
       TCVER="${v1##*/} ${v2##*/}"
-      cross="${PROTON_GCC_OPTIONS[1]/CROSS_COMPILE=}"
-      ccross="${PROTON_GCC_OPTIONS[3]/CC=}"
       ;;
   esac
   if [[ $LTO == True ]]; then
@@ -1136,8 +1140,21 @@ _export_path_and_options() {
   fi
 }
 
+# Ensure system support toolchain compiler
+_check_linker() {
+  # ARG: $1 = cross compiler
+  local linker
+  linker="$(/usr/bin/readelf --all "$1" \
+    | grep interpreter | awk -F ": " '{print $NF}')"
+  linker="${linker/]}"
+  if ! [[ -f $linker ]]; then
+    _error warn "$MSG_WARN_LINKER ${red}${linker}$nc"
+    _error "$MSG_ERR_LINKER $COMPILER"; _exit 1
+  fi
+}
+
 # Ensure $PATH has been correctly set
-_check_toolchain_path() {
+_check_tc_path() {
   # ARG: $@ = toolchains DIR
   for toolchain_path in "$@"; do
     if [[ $PATH != *${toolchain_path}/bin* ]]; then
@@ -1375,7 +1392,7 @@ _send_file() {
   elif [[ ${VOICE_F} =~ ${1##*/*.} ]]; then tg=sendVoice
   else tg=sendDocument
   fi
-  sendtype=${tg/send}
+  sendtype="${tg/send}"
   curl --progress-bar -o /dev/null -fL -X POST \
     -F "${sendtype,}"=@"$1" -F caption="$2" \
     -F chat_id="$TELEGRAM_CHAT_ID" \
