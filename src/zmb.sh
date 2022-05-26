@@ -892,8 +892,8 @@ _ask_for_toolchain() {
   # Return: COMPILER
   if [[ $COMPILER == default ]]; then
     _prompt "$MSG_SELECT_TC :" 2
-    select COMPILER in $PROTON_CLANG_NAME \
-        $EVA_GCC_NAME $PROTON_GCC_NAME $LOS_GCC_NAME; do
+    select COMPILER in $PROTON_CLANG_NAME $EVA_GCC_NAME \
+        $PROTON_GCC_NAME $LOS_GCC_NAME $GNU_CLANG_NAME; do
       [[ $COMPILER ]] && break
       _error "$MSG_ERR_SELECT"
     done
@@ -1070,7 +1070,7 @@ _export_path_and_options() {
   # 1. export target variables (CFG)
   # 2. ensure compiler is system supported (verify linker)
   # 3. append toolchains to the $PATH, export and verify
-  # 4. get toolchain compiler version
+  # 4. get the toolchain compiler version
   # 5. get CROSS_COMPILE and CC (to handle Makefile)
   # 6. set Link Time Optimization (LTO)
   # ?  DEBUG MODE: display $PATH
@@ -1083,8 +1083,6 @@ _export_path_and_options() {
   case $COMPILER in
     "$PROTON_CLANG_NAME")
       TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
-      cross="${PROTON_CLANG_OPTIONS[1]/CROSS_COMPILE=}"
-      ccross="${PROTON_CLANG_OPTIONS[3]/CC=}"
       _check_linker "$PROTON_DIR/bin/$ccross"
       export PATH="${PROTON_DIR}/bin:${PATH}"
       _check_tc_path "$PROTON_DIR"
@@ -1093,8 +1091,6 @@ _export_path_and_options() {
       ;;
     "$EVA_GCC_NAME")
       TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
-      cross="${EVA_GCC_OPTIONS[1]/CROSS_COMPILE=}"
-      ccross="${EVA_GCC_OPTIONS[3]/CC=}"
       _check_linker "$GCC_ARM64_DIR/bin/$ccross"
       export PATH="${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin:${PATH}"
       _check_tc_path "$GCC_ARM64_DIR" "$GCC_ARM_DIR"
@@ -1103,8 +1099,6 @@ _export_path_and_options() {
       ;;
     "$LOS_GCC_NAME")
       TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
-      cross="${LOS_GCC_OPTIONS[1]/CROSS_COMPILE=}"
-      ccross="${LOS_GCC_OPTIONS[3]/CC=}"
       _check_linker "$LOS_ARM64_DIR/bin/$ccross"
       export PATH="${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:${PATH}"
       _check_tc_path "$LOS_ARM64_DIR" "$LOS_ARM_DIR"
@@ -1113,8 +1107,6 @@ _export_path_and_options() {
       ;;
     "$PROTON_GCC_NAME")
       TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
-      cross="${PROTON_GCC_OPTIONS[1]/CROSS_COMPILE=}"
-      ccross="${PROTON_GCC_OPTIONS[3]/CC=}"
       _check_linker "$PROTON_DIR/bin/$ccross"
       eva_path="${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin"
       export PATH="${PROTON_DIR}/bin:${eva_path}:${PATH}"
@@ -1123,7 +1115,14 @@ _export_path_and_options() {
       _get_tc_version "$GCC_ARM64_VERSION"; v2="$tc_version"
       TCVER="${v1##*/} ${v2##*/}"
       ;;
+    "$GNU_CLANG_NAME")
+      TC_OPTIONS=("${GNU_CLANG_OPTIONS[@]}")
+      TCVER="$(_check gcc --version | grep version \
+        | awk -F " " '{print $NF}')"
+      ;;
   esac
+  cross="${TC_OPTIONS[0]/CROSS_COMPILE=}"
+  ccross="${TC_OPTIONS[1]/CC=}"
   if [[ $LTO == True ]]; then
     export LD_LIBRARY_PATH="${PROTON_DIR}/lib"
     TC_OPTIONS[6]="LD=$LTO_LIBRARY"
@@ -1257,11 +1256,11 @@ _make_build() {
   _send_start_build_status
   local linuxversion; linuxversion="${LINUX_VERSION//.}"
   if [[ $(echo "${linuxversion:0:2} > 42" | bc) == 1 ]] && \
-      [[ ${TC_OPTIONS[3]} == clang ]]; then
+      [[ ${TC_OPTIONS[1]} == clang ]]; then
     TC_OPTIONS[2]="${TC_OPTIONS[2]/_ARM32=/_COMPAT=}"
   fi
-  _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
-    O="$OUT_DIR" ARCH="$ARCH" "${TC_OPTIONS[*]}" 2>&1
+  _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" O="$OUT_DIR" \
+    ARCH="$ARCH" SUBARCH="$SUBARCH" "${TC_OPTIONS[@]}" 2>&1
 }
 
 
