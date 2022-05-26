@@ -1083,7 +1083,7 @@ _export_path_and_options() {
   case $COMPILER in
     "$PROTON_CLANG_NAME")
       TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
-      _check_linker "$PROTON_DIR/bin/$ccross"
+      _linker "$PROTON_DIR/bin/${TC_OPTIONS[1]/CROSS_COMPILE=}"
       export PATH="${PROTON_DIR}/bin:${PATH}"
       _check_tc_path "$PROTON_DIR"
       _get_tc_version "$PROTON_VERSION"
@@ -1091,7 +1091,7 @@ _export_path_and_options() {
       ;;
     "$EVA_GCC_NAME")
       TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
-      _check_linker "$GCC_ARM64_DIR/bin/$ccross"
+      _linker "$GCC_ARM64_DIR/bin/${TC_OPTIONS[1]/CROSS_COMPILE=}"
       export PATH="${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin:${PATH}"
       _check_tc_path "$GCC_ARM64_DIR" "$GCC_ARM_DIR"
       _get_tc_version "$GCC_ARM64_VERSION"
@@ -1099,7 +1099,7 @@ _export_path_and_options() {
       ;;
     "$LOS_GCC_NAME")
       TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
-      _check_linker "$LOS_ARM64_DIR/bin/$ccross"
+      _linker "$LOS_ARM64_DIR/bin/${TC_OPTIONS[1]/CROSS_COMPILE=}"
       export PATH="${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:${PATH}"
       _check_tc_path "$LOS_ARM64_DIR" "$LOS_ARM_DIR"
       _get_tc_version "$LOS_ARM64_VERSION"
@@ -1107,7 +1107,7 @@ _export_path_and_options() {
       ;;
     "$PROTON_GCC_NAME")
       TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
-      _check_linker "$PROTON_DIR/bin/$ccross"
+      _linker "$PROTON_DIR/bin/${TC_OPTIONS[1]/CROSS_COMPILE=}"
       eva_path="${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin"
       export PATH="${PROTON_DIR}/bin:${eva_path}:${PATH}"
       _check_tc_path "$PROTON_DIR" "$GCC_ARM_DIR" "$GCC_ARM64_DIR"
@@ -1121,8 +1121,8 @@ _export_path_and_options() {
         | awk -F " " '{print $NF}')"
       ;;
   esac
-  cross="${TC_OPTIONS[1]/CROSS_COMPILE=}"
-  ccross="${TC_OPTIONS[3]/CC=}"
+  tc_cross="${TC_OPTIONS[1]/CROSS_COMPILE=}"
+  tc_cc="${TC_OPTIONS[3]/CC=}"
   if [[ $LTO == True ]]; then
     export LD_LIBRARY_PATH="${PROTON_DIR}/lib"
     TC_OPTIONS[7]="LD=$LTO_LIBRARY"
@@ -1140,7 +1140,7 @@ _export_path_and_options() {
 }
 
 # Ensure compiler is system supported
-_check_linker() {
+_linker() {
   # ARG: $1 = cross compiler
   local linker
   linker="$(readelf --all "$1" \
@@ -1171,8 +1171,8 @@ _get_tc_version() {
 
 # Get CROSS_COMPILE and CC from Makefile
 _get_and_display_cross_compile() {
-  r1=("^CROSS_COMPILE\s.*?=.*" "CROSS_COMPILE\ ?=\ ${cross}")
-  r2=("^CC\s.*=.*" "CC\ =\ ${ccross}\ -I${KERNEL_DIR}")
+  r1=("^CROSS_COMPILE\s.*?=.*" "CROSS_COMPILE\ ?=\ ${tc_cross}")
+  r2=("^CC\s.*=.*" "CC\ =\ ${tc_cc}\ -I${KERNEL_DIR}")
   local c1 c2
   c1="$(sed -n "/${r1[0]}/{p;}" "${KERNEL_DIR}/Makefile")"
   c2="$(sed -n "/${r2[0]}/{p;}" "${KERNEL_DIR}/Makefile")"
@@ -1198,7 +1198,7 @@ _handle_makefile_cross_compile() {
     _check sed -i "s|${r2[0]}|${r2[1]}|g" "${KERNEL_DIR}/Makefile"
   fi
   local mk; mk="$(grep "${r1[0]}" "${KERNEL_DIR}/Makefile")"
-  if [[ -n ${mk##*"${cross/CROSS_COMPILE=/}"*} ]]; then
+  if [[ -n ${mk##*"${tc_cross/CROSS_COMPILE=/}"*} ]]; then
     _error warn "$MSG_WARN_CC"
   fi
   if [[ $DEBUG == True ]] && [[ $EDIT_CC != False ]]; then
@@ -1259,8 +1259,8 @@ _make_build() {
       [[ ${TC_OPTIONS[3]} == clang ]]; then
     TC_OPTIONS[2]="${TC_OPTIONS[2]/_ARM32=/_COMPAT=}"
   fi
-  _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" O="$OUT_DIR" \
-    ARCH="$ARCH" SUBARCH="$SUBARCH" "${TC_OPTIONS[*]}" 2>&1
+  _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
+    O="$OUT_DIR" ARCH="$ARCH" "${TC_OPTIONS[*]}" 2>&1
 }
 
 
