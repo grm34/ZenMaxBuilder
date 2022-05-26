@@ -1083,7 +1083,7 @@ _export_path_and_options() {
   case $COMPILER in
     "$PROTON_CLANG_NAME")
       TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
-      _linker "$PROTON_DIR/bin/${TC_OPTIONS[1]/CROSS_COMPILE=}"
+      _check_linker "$PROTON_DIR/bin/${TC_OPTIONS[3]/CC=}"
       export PATH="${PROTON_DIR}/bin:${PATH}"
       _check_tc_path "$PROTON_DIR"
       _get_tc_version "$PROTON_VERSION"
@@ -1091,7 +1091,7 @@ _export_path_and_options() {
       ;;
     "$EVA_GCC_NAME")
       TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
-      _linker "$GCC_ARM64_DIR/bin/${TC_OPTIONS[1]/CROSS_COMPILE=}"
+      _check_linker "$GCC_ARM64_DIR/bin/${TC_OPTIONS[3]/CC=}"
       export PATH="${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin:${PATH}"
       _check_tc_path "$GCC_ARM64_DIR" "$GCC_ARM_DIR"
       _get_tc_version "$GCC_ARM64_VERSION"
@@ -1099,7 +1099,7 @@ _export_path_and_options() {
       ;;
     "$LOS_GCC_NAME")
       TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
-      _linker "$LOS_ARM64_DIR/bin/${TC_OPTIONS[1]/CROSS_COMPILE=}"
+      _check_linker "$LOS_ARM64_DIR/bin/${TC_OPTIONS[3]/CC=}"
       export PATH="${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:${PATH}"
       _check_tc_path "$LOS_ARM64_DIR" "$LOS_ARM_DIR"
       _get_tc_version "$LOS_ARM64_VERSION"
@@ -1107,7 +1107,7 @@ _export_path_and_options() {
       ;;
     "$PROTON_GCC_NAME")
       TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
-      _linker "$PROTON_DIR/bin/${TC_OPTIONS[1]/CROSS_COMPILE=}"
+      _check_linker "$PROTON_DIR/bin/${TC_OPTIONS[3]/CC=}"
       eva_path="${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin"
       export PATH="${PROTON_DIR}/bin:${eva_path}:${PATH}"
       _check_tc_path "$PROTON_DIR" "$GCC_ARM_DIR" "$GCC_ARM64_DIR"
@@ -1140,10 +1140,10 @@ _export_path_and_options() {
 }
 
 # Ensure compiler is system supported
-_linker() {
+_check_linker() {
   # ARG: $1 = cross compiler
   local linker
-  linker="$(readelf --all "$1" \
+  linker="$(_check readelf --all "$1" \
     | grep interpreter | awk -F ": " '{print $NF}')"
   linker="${linker/]}"
   if [[ -n $linker ]] && ! [[ -f $linker ]]; then
