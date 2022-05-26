@@ -1121,11 +1121,11 @@ _export_path_and_options() {
         | awk -F " " '{print $NF}')"
       ;;
   esac
-  cross="${TC_OPTIONS[0]/CROSS_COMPILE=}"
-  ccross="${TC_OPTIONS[1]/CC=}"
+  cross="${TC_OPTIONS[1]/CROSS_COMPILE=}"
+  ccross="${TC_OPTIONS[3]/CC=}"
   if [[ $LTO == True ]]; then
     export LD_LIBRARY_PATH="${PROTON_DIR}/lib"
-    TC_OPTIONS[6]="LD=$LTO_LIBRARY"
+    TC_OPTIONS[7]="LD=$LTO_LIBRARY"
   fi
   if [[ $DEBUG == True ]]; then
     echo -e "\n${blue}SELECTED COMPILER:"\
@@ -1256,11 +1256,11 @@ _make_build() {
   _send_start_build_status
   local linuxversion; linuxversion="${LINUX_VERSION//.}"
   if [[ $(echo "${linuxversion:0:2} > 42" | bc) == 1 ]] && \
-      [[ ${TC_OPTIONS[1]} == clang ]]; then
+      [[ ${TC_OPTIONS[3]} == clang ]]; then
     TC_OPTIONS[2]="${TC_OPTIONS[2]/_ARM32=/_COMPAT=}"
   fi
   _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" O="$OUT_DIR" \
-    ARCH="$ARCH" SUBARCH="$SUBARCH" "${TC_OPTIONS[@]}" 2>&1
+    ARCH="$ARCH" SUBARCH="$SUBARCH" "${TC_OPTIONS[*]}" 2>&1
 }
 
 
