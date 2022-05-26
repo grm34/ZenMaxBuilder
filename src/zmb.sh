@@ -1130,7 +1130,7 @@ _export_path_and_options() {
   ccross="${TC_OPTIONS[1]/CC=}"
   if [[ $LTO == True ]]; then
     export LD_LIBRARY_PATH="${PROTON_DIR}/lib"
-    TC_OPTIONS[5]="LD=$LTO_LIBRARY"
+    TC_OPTIONS[6]="LD=$LTO_LIBRARY"
   fi
   if [[ $DEBUG == True ]]; then
     echo -e "\n${blue}SELECTED COMPILER:"\
