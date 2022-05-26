@@ -1144,10 +1144,10 @@ _export_path_and_options() {
 _check_linker() {
   # ARG: $1 = cross compiler
   local linker
-  linker="$(/usr/bin/readelf --all "$1" \
+  linker="$(_check /usr/bin/readelf --all "$1" \
     | grep interpreter | awk -F ": " '{print $NF}')"
   linker="${linker/]}"
-  if ! [[ -f $linker ]]; then
+  if [[ -n $linker ]] && ! [[ -f $linker ]]; then
     _error warn "$MSG_WARN_LINKER ${red}${linker}$nc"
     _error "$MSG_ERR_LINKER $COMPILER"; _exit 1
   fi
