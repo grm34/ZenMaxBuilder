@@ -424,7 +424,7 @@ _install_dep() {
   fi
 }
 
-# Git clone some toolchains
+# Install some toolchains
 _clone_tc() {
   # ARG $1 = repo branch
   # ARG $2 = repo url
@@ -432,13 +432,28 @@ _clone_tc() {
   if ! [[ -d $3 ]]; then
     _ask_for_clone_toolchain "${3##*/}"
     if [[ $clone_tc == True ]]; then
-      git clone --depth=1 -b "$1" "$2" "$3"
+      if [[ $2 == "$AOSP_CLANG_URL" ]]; then
+        mkdir "$3"
+        _check wget -q --show-progress -O "${3##*/}.tar.gz" "$2"
+        _check tar -xvf "${3##*/}.tar.gz" -C "$3"
+        rm "${3##*/}.tar.gz"
+        if [[ -f wget-log ]]; then rm wget-log; fi
+      else
+        git clone --depth=1 -b "$1" "$2" "$3"
+      fi
     fi
   fi
 }
 
-# Clone the selected toolchains
+# Install the selected toolchains
 _clone_toolchains() {
+  case $COMPILER in
+    # AOSP-Clang
+    "$AOSP_CLANG_NAME")
+      _clone_tc "$AOSP_CLANG_BRANCH" "$AOSP_CLANG_URL" \
+                "$AOSP_CLANG_DIR"
+      ;;
+  esac
   case $COMPILER in
     # Proton-Clang or Proton-GCC
     "$PROTON_CLANG_NAME"|"$PROTON_GCC_NAME")
@@ -454,8 +469,8 @@ _clone_toolchains() {
       ;;
   esac
   case $COMPILER in
-    # Lineage-GCC
-    "$LOS_GCC_NAME")
+    # Lineage-GCC or AOSP-Clang
+    "$LOS_GCC_NAME"|"$AOSP_CLANG_NAME")
       _clone_tc "$LOS_ARM_BRANCH" "$LOS_ARM_URL" "$LOS_ARM_DIR"
       _clone_tc "$LOS_ARM64_BRANCH" "$LOS_ARM64_URL" \
                 "$LOS_ARM64_DIR"
@@ -687,8 +702,8 @@ _start() {
       ! [[ -d ${KERNEL_DIR}/arch ]]; then
     _error "$MSG_ERR_CONF_KDIR"; _exit 1
   elif ! [[ $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
-      ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|\
-      ${LOS_GCC_NAME}) ]]; then
+      ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|${HOST_CLANG_NAME}|\
+      ${LOS_GCC_NAME}|${AOSP_CLANG_NAME}) ]]; then
     _error "$MSG_ERR_COMPILER"; _exit 1
   fi
 
@@ -716,6 +731,7 @@ _start() {
   PROTON_DIR="${DIR}/toolchains/$PROTON_DIR"
   GCC_ARM64_DIR="${DIR}/toolchains/$GCC_ARM64_DIR"
   GCC_ARM_DIR="${DIR}/toolchains/$GCC_ARM_DIR"
+  AOSP_CLANG_DIR="${DIR}/toolchains/$AOSP_CLANG_DIR"
   LOS_ARM64_DIR="${DIR}/toolchains/$LOS_ARM64_DIR"
   LOS_ARM_DIR="${DIR}/toolchains/$LOS_ARM_DIR"
   ANYKERNEL_DIR="${DIR}/$ANYKERNEL_DIR"
@@ -892,8 +908,9 @@ _ask_for_toolchain() {
   # Return: COMPILER
   if [[ $COMPILER == default ]]; then
     _prompt "$MSG_SELECT_TC :" 2
-    select COMPILER in $PROTON_CLANG_NAME $EVA_GCC_NAME \
-        $PROTON_GCC_NAME $LOS_GCC_NAME $GNU_CLANG_NAME; do
+    select COMPILER in $AOSP_CLANG_NAME $EVA_GCC_NAME \
+        $PROTON_CLANG_NAME $PROTON_GCC_NAME \
+        $LOS_GCC_NAME $HOST_CLANG_NAME; do
       [[ $COMPILER ]] && break
       _error "$MSG_ERR_SELECT"
     done
@@ -1084,11 +1101,21 @@ _export_path_and_options() {
     "$PROTON_CLANG_NAME")
       TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
       _check_linker "$PROTON_DIR/bin/${TC_OPTIONS[3]/CC=}"
-      export PATH="${PROTON_DIR}/bin:${PATH}"
+      los_path="${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin"
+      export PATH="${PROTON_DIR}/bin:${los_path}:${PATH}"
       _check_tc_path "$PROTON_DIR"
       _get_tc_version "$PROTON_VERSION"
       TCVER="${tc_version##*/}"
       ;;
+    "$AOSP_CLANG_NAME")
+      TC_OPTIONS=("${AOSP_CLANG_OPTIONS[@]}")
+      _check_linker "$AOSP_CLANG_DIR/bin/${TC_OPTIONS[3]/CC=}"
+      export PATH="${AOSP_CLANG_DIR}/bin:${PATH}"
+      _check_tc_path "$AOSP_CLANG_DIR"
+      _get_tc_version "$AOSP_CLANG_VERSION"
+      TCVER="${tc_version##*/}"
+      ;;
+
     "$EVA_GCC_NAME")
       TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
       _check_linker "$GCC_ARM64_DIR/bin/${TC_OPTIONS[3]/CC=}"
@@ -1115,8 +1142,8 @@ _export_path_and_options() {
       _get_tc_version "$GCC_ARM64_VERSION"; v2="$tc_version"
       TCVER="${v1##*/} ${v2##*/}"
       ;;
-    "$GNU_CLANG_NAME")
-      TC_OPTIONS=("${GNU_CLANG_OPTIONS[@]}")
+    "$HOST_CLANG_NAME")
+      TC_OPTIONS=("${HOST_CLANG_OPTIONS[@]}")
       TCVER="$(_check gcc --version | grep version \
         | awk -F " " '{print $NF}')"
       ;;
