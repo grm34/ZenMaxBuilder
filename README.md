@@ -136,7 +136,7 @@ ZMB is a tool to facilitate the compilation of an Android kernel, it does not mo
 
 The only change made is the addition of the selected toolchain compiler in the main Makefile, all others options from ZMB settings will be passed directly to make as command-line argument:
 
-    # Proton-Clang / Proton-GCC
+    # AOSP-Clang / Proton-Clang
     CROSS_COMPILE ?= aarch64-linux-gnu-
     CC             = clang
 
