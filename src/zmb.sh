@@ -541,7 +541,7 @@ _update_aosp_clang() {
   local tag
   tag=$(grep -oP "r\d+[a-z]{1}" "$AOSP_CLANG_VERSION")
   _get_latest_aosp_clang
-  if [[ $tag != "$latest" ]]; then
+  if [[ $tag != "${latest/clang-}" ]]; then
     _ask_for_update_aosp_clang
     if [[ $update_aosp_clang == True ]]; then
       _check mv "$AOSP_CLANG_DIR" "${AOSP_CLANG_DIR}-$tag"
@@ -1117,8 +1117,8 @@ _ask_for_apply_patch() {
 # Confirmation: update AOSP-Clang?
 _ask_for_update_aosp_clang() {
   # Return: update_aosp_clang
-  _error warn "AOSP-Clang $tag => $latest"
-  _confirm "$MSG_CONFIRM_UP $AOSP_CLANG_NAME (${latest}) ?" "[Y/n]"
+  _error warn "$AOSP_CLANG_NAME $tag => ${latest/clang-}"
+  _confirm "$MSG_CONFIRM_UP $AOSP_CLANG_NAME ?" "[Y/n]"
   case $confirm in
     y|Y|yes|Yes|YES) update_aosp_clang="True" ;;
   esac
