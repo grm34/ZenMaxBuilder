@@ -436,8 +436,8 @@ _clone_tc() {
     _ask_for_clone_toolchain "${3##*/}"
     if [[ $clone_tc == True ]]; then
       if [[ $2 == "$AOSP_CLANG_URL" ]]; then
-        _check mkdir "$3"
-        _check unbuffer wget -O "${3##*/}.tar.gz" "$2"
+        _check mkdir "$3"; _get_latest_aosp_clang
+        _check unbuffer wget -O "${3##*/}.tar.gz" "$clang_tgz"
         _note "$MSG_TAR_AOSP"
         _check unbuffer tar -xvf "${3##*/}.tar.gz" -C "$3"
         _check rm "${3##*/}.tar.gz"
@@ -447,6 +447,14 @@ _clone_tc() {
       fi
     fi
   fi
+}
+
+# Get the latest AOSP-Clang tag
+_get_latest_aosp_clang() {
+  # Return: latest vlang_tgz
+  local url; url=$(curl -s "$AOSP_CLANG_URL")
+  latest=$(echo "$url" | grep -oP "clang-r\d+[a-z]{1}" | tail -n 1)
+  clang_tgz="${AOSP_CLANG_URL}/${latest}.tar.gz"
 }
 
 # Install the selected toolchains
