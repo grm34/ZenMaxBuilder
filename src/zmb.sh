@@ -291,7 +291,10 @@ _exit() {
   # 3. remove user input files
   # 4. remove empty device folders
   # 5. exit with 3s timeout
-  if pidof make; then pkill make || sleep 0.5; fi
+  local pids; pids=(make git wget tar readelf zip java)
+  for pid in "${pids[@]}"; do
+    if pidof "$pid"; then pkill "$pid" || sleep 0.5; fi
+  done
   _get_build_logs
   local files device_folders
   files=(bashvar buildervar linuxver wget-log aosp-clang.tar.gz)
@@ -1221,9 +1224,11 @@ _get_tc_version() {
 # Get PLATFORM_VERSION from Makefile
 _get_platform_version() {
   # Return: platformversion majorversion
-  if grep -m 1 ANDROID_MAJOR_VERSION "${KERNEL_DIR}/Makefile"; then
+  if grep -m 1 ANDROID_MAJOR_VERSION \
+      "${KERNEL_DIR}/Makefile" &>/dev/null; then
     amv=1
-  elif grep -m 1 PLATFORM_VERSION "${KERNEL_DIR}/Makefile"; then
+  elif grep -m 1 PLATFORM_VERSION \
+      "${KERNEL_DIR}/Makefile" &>/dev/null; then
     ptv=1
   fi
 }
