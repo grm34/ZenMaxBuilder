@@ -560,8 +560,8 @@ _tc_version_option() {
     if [[ -d ${DIR}/toolchains/${tc/AndroidVersion.txt} ]]; then
       _get_tc_version "$tc"
       case ${tc##*/} in
-        *txt*) tcn="$AOSP_CLANG_NAME" ;;
-        *clang*) tcn="$PROTON_GCC_NAME" pt="${tc_version##*/}";;
+        *AndroidVersion.txt*) tcn="$AOSP_CLANG_NAME" ;;
+        *clang*) tcn="$PROTON_CLANG_NAME" pt="${tc_version##*/}";;
         *elf*) tcn="$EVA_GCC_NAME" gcc="${tc_version##*/}" ;;
         *android*) tcn="$LOS_GCC_NAME" ;;
       esac
