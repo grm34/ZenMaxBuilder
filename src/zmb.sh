@@ -324,12 +324,12 @@ _exit() {
 _get_user_timezone() {
   # Return: TIMEZONE
   TIMEZONE="$( # linux
-    (timedatectl | grep 'Time zone' \
+    (timedatectl | grep -m 1 'Time zone' \
       | xargs | cut -d' ' -f3) 2>/dev/null
   )"
   if ! [[ $TIMEZONE ]]; then
     TIMEZONE="$( # termux
-      (getprop | grep timezone | cut -d' ' -f2 \
+      (getprop | grep -m 1 timezone | cut -d' ' -f2 \
         | sed 's/\[//g' | sed 's/\]//g') 2>/dev/null
     )"
   fi
@@ -553,7 +553,7 @@ _full_upgrade() {
 
 _tc_version_option() {
   _note "${MSG_SCAN_TC}..."
-  local toolchain_version tcn pt gcc ch
+  local toolchain_version tcn pt gcc hostclang
   toolchain_version=("$AOSP_CLANG_VERSION" "$PROTON_VERSION" \
                      "$GCC_ARM64_VERSION" "$LOS_ARM64_VERSION")
   for tc in "${toolchain_version[@]}"; do
@@ -571,8 +571,9 @@ _tc_version_option() {
   if [[ -n $pt ]] && [[ -n $gcc ]]; then
     echo -e "${green}${PROTON_GCC_NAME}: ${red}${pt}/${gcc}$nc"
   fi
-  ch="$(clang --version | grep version | awk -F " " '{print $NF}')"
-  echo -e "${green}${HOST_CLANG_NAME}: ${red}${ch}$nc"
+  hostclang="$(clang --version | grep -m1 version \
+    | awk -F " " '{print $NF}')"
+  echo -e "${green}${HOST_CLANG_NAME}: ${red}${hostclang}$nc"
 }
 
 # Telegram options
@@ -1134,7 +1135,7 @@ _export_path_and_options() {
       ;;
     "$LOS_GCC_NAME")
       TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
-      _check_linker "$LOS_ARM64_DIR/bin/${TC_OPTIONS[3]/CC=}"
+      _check_linker "$LOS_ARM64_DIR/bin/real-${TC_OPTIONS[3]/CC=}"
       export PATH="${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:${PATH}"
       _check_tc_path "$LOS_ARM64_DIR" "$LOS_ARM_DIR"
       _get_tc_version "$LOS_ARM64_VERSION"
@@ -1154,7 +1155,7 @@ _export_path_and_options() {
       ;;
     "$HOST_CLANG_NAME")
       TC_OPTIONS=("${HOST_CLANG_OPTIONS[@]}")
-      TCVER="$(clang --version | grep version \
+      TCVER="$(clang --version | grep -m 1 version \
         | awk -F " " '{print $NF}')"
       ;;
   esac
@@ -1182,7 +1183,7 @@ _check_linker() {
   # ARG: $1 = cross compiler
   local linker
   linker="$(readelf --all "$1" \
-    | grep interpreter | awk -F ": " '{print $NF}')"
+    | grep -m 1 interpreter | awk -F ": " '{print $NF}')"
   linker="${linker/]}"
   if [[ -n $linker ]] && ! [[ -f $linker ]]; then
     _error warn "$MSG_WARN_LINKER ${red}${linker}$nc"
@@ -1239,7 +1240,7 @@ _handle_makefile_cross_compile() {
     _check sed -i "s|${r1[0]}|${r1[1]}|g" "${KERNEL_DIR}/Makefile"
     _check sed -i "s|${r2[0]}|${r2[1]}|g" "${KERNEL_DIR}/Makefile"
   fi
-  local mk; mk="$(grep "${r1[0]}" "${KERNEL_DIR}/Makefile")"
+  local mk; mk="$(grep -m1 "${r1[0]}" "${KERNEL_DIR}/Makefile")"
   if [[ -n ${mk##*"${tc_cross/CROSS_COMPILE=/}"*} ]]; then
     _error warn "$MSG_WARN_CC"
   fi
