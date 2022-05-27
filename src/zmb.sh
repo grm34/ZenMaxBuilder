@@ -447,11 +447,12 @@ _clone_tc() {
 # Install AOSP-Clang
 _install_aosp_clang() {
   _check mkdir "$AOSP_CLANG_DIR"
-  _check unbuffer wget -O "${AOSP_CLANG_NAME}.tar.gz" "$clang_tgz"
+  _check unbuffer \
+    wget -O "${AOSP_CLANG_DIR##*/}.tar.gz" "$clang_tgz"
   _note "$MSG_TAR_AOSP"
   _check unbuffer tar -xvf \
-    "${AOSP_CLANG_NAME}.tar.gz" -C "$AOSP_CLANG_DIR"
-  _check rm "${AOSP_CLANG_NAME}.tar.gz"
+    "${AOSP_CLANG_DIR##*/}.tar.gz" -C "$AOSP_CLANG_DIR"
+  _check rm "${AOSP_CLANG_DIR##*/}.tar.gz"
   if [[ -f wget-log ]]; then _check rm wget-log; fi
 }
 
