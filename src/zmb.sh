@@ -1101,6 +1101,7 @@ _export_path_and_options() {
   export KBUILD_BUILD_USER="${BUILDER}"
   export KBUILD_BUILD_HOST="${HOST}"
   export PLATFORM_VERSION ANDROID_MAJOR_VERSION
+  local los_path eva_path lto_dir v1 v2
   case $COMPILER in
     "$PROTON_CLANG_NAME")
       TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
@@ -1110,6 +1111,7 @@ _export_path_and_options() {
       _check_tc_path "$PROTON_DIR"
       _get_tc_version "$PROTON_VERSION"
       TCVER="${tc_version##*/}"
+      lto_dir="$PROTON_DIR/lib"
       ;;
     "$AOSP_CLANG_NAME")
       TC_OPTIONS=("${AOSP_CLANG_OPTIONS[@]}")
@@ -1118,6 +1120,7 @@ _export_path_and_options() {
       _check_tc_path "$AOSP_CLANG_DIR"
       _get_tc_version "$AOSP_CLANG_VERSION"
       TCVER="$tc_version"
+      lto_dir="$AOSP_CLANG_DIR/lib"
       ;;
 
     "$EVA_GCC_NAME")
@@ -1127,6 +1130,7 @@ _export_path_and_options() {
       _check_tc_path "$GCC_ARM64_DIR" "$GCC_ARM_DIR"
       _get_tc_version "$GCC_ARM64_VERSION"
       TCVER="${tc_version##*/}"
+      lto_dir="$GCC_ARM64_DIR/lib"
       ;;
     "$LOS_GCC_NAME")
       TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
@@ -1135,6 +1139,7 @@ _export_path_and_options() {
       _check_tc_path "$LOS_ARM64_DIR" "$LOS_ARM_DIR"
       _get_tc_version "$LOS_ARM64_VERSION"
       TCVER="${tc_version##*/}"
+      lto_dir="$LOS_ARM64_DIR/lib"
       ;;
     "$PROTON_GCC_NAME")
       TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
@@ -1145,6 +1150,7 @@ _export_path_and_options() {
       _get_tc_version "$PROTON_VERSION"; v1="$tc_version"
       _get_tc_version "$GCC_ARM64_VERSION"; v2="$tc_version"
       TCVER="${v1##*/}/${v2##*/}"
+      lto_dir="$PROTON_DIR/lib"
       ;;
     "$HOST_CLANG_NAME")
       TC_OPTIONS=("${HOST_CLANG_OPTIONS[@]}")
@@ -1154,8 +1160,9 @@ _export_path_and_options() {
   esac
   tc_cross="${TC_OPTIONS[1]/CROSS_COMPILE=}"
   tc_cc="${TC_OPTIONS[3]/CC=}"
-  if [[ $LTO == True ]]; then
-    export LD_LIBRARY_PATH="${PROTON_DIR}/lib"
+  if [[ $LTO == True ]] && \
+      [[ $COMPILER != "$HOST_CLANG_NAME" ]]; then
+    export LD_LIBRARY_PATH="$lto_dir"
     TC_OPTIONS[7]="LD=$LTO_LIBRARY"
   fi
   if [[ $DEBUG == True ]]; then
