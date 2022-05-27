@@ -444,6 +444,14 @@ _clone_tc() {
   fi
 }
 
+# Get latest AOSP-Clang tag
+_get_latest_aosp_clang() {
+  # Return: latest clang_tgz
+  local url; url=$(curl -s "$AOSP_CLANG_URL")
+  latest=$(echo "$url" | grep -oP "clang-r\d+[a-z]{1}" | tail -n 1)
+  clang_tgz="${AOSP_CLANG_URL/+/+archive}/${latest}.tar.gz"
+}
+
 # Install AOSP-Clang
 _install_aosp_clang() {
   _check mkdir "$AOSP_CLANG_DIR"
@@ -454,14 +462,6 @@ _install_aosp_clang() {
     "${AOSP_CLANG_DIR##*/}.tar.gz" -C "$AOSP_CLANG_DIR"
   _check rm "${AOSP_CLANG_DIR##*/}.tar.gz"
   if [[ -f wget-log ]]; then _check rm wget-log; fi
-}
-
-# Get the latest AOSP-Clang tag
-_get_latest_aosp_clang() {
-  # Return: latest clang_tgz
-  local url; url=$(curl -s "$AOSP_CLANG_URL")
-  latest=$(echo "$url" | grep -oP "clang-r\d+[a-z]{1}" | tail -n 1)
-  clang_tgz="${AOSP_CLANG_URL}/${latest}.tar.gz"
 }
 
 # Install the selected toolchains
