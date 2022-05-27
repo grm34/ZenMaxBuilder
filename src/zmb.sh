@@ -427,7 +427,7 @@ _install_dep() {
   fi
 }
 
-# Install some toolchains
+# Clone some toolchains
 _clone_tc() {
   # ARG $1 = repo branch
   # ARG $2 = repo url
@@ -436,12 +436,7 @@ _clone_tc() {
     _ask_for_clone_toolchain "${3##*/}"
     if [[ $clone_tc == True ]]; then
       if [[ $2 == "$AOSP_CLANG_URL" ]]; then
-        _check mkdir "$3"; _get_latest_aosp_clang
-        _check unbuffer wget -O "${3##*/}.tar.gz" "$clang_tgz"
-        _note "$MSG_TAR_AOSP"
-        _check unbuffer tar -xvf "${3##*/}.tar.gz" -C "$3"
-        _check rm "${3##*/}.tar.gz"
-        if [[ -f wget-log ]]; then _check rm wget-log; fi
+        _get_latest_aosp_clang; _install_aosp_clang
       else
         _check unbuffer git clone --depth=1 -b "$1" "$2" "$3"
       fi
@@ -449,9 +444,20 @@ _clone_tc() {
   fi
 }
 
+# Install AOSP-Clang
+_install_aosp_clang() {
+  _check mkdir "$AOSP_CLANG_DIR"
+  _check unbuffer wget -O "${AOSP_CLANG_NAME}.tar.gz" "$clang_tgz"
+  _note "$MSG_TAR_AOSP"
+  _check unbuffer tar -xvf \
+    "${AOSP_CLANG_NAME}.tar.gz" -C "$AOSP_CLANG_DIR"
+  _check rm "${AOSP_CLANG_NAME}.tar.gz"
+  if [[ -f wget-log ]]; then _check rm wget-log; fi
+}
+
 # Get the latest AOSP-Clang tag
 _get_latest_aosp_clang() {
-  # Return: latest vlang_tgz
+  # Return: latest clang_tgz
   local url; url=$(curl -s "$AOSP_CLANG_URL")
   latest=$(echo "$url" | grep -oP "clang-r\d+[a-z]{1}" | tail -n 1)
   clang_tgz="${AOSP_CLANG_URL}/${latest}.tar.gz"
@@ -528,6 +534,20 @@ _update_git() {
     fi
   fi
   _check unbuffer git pull
+}
+
+# Update AOSP-Clang
+_update_aosp_clang() {
+  local tag
+  tag=$(grep -oP "r\d+[a-z]{1}" "$AOSP_CLANG_VERSION")
+  _get_latest_aosp_clang
+  if [[ $tag != "$latest" ]]; then
+    _ask_for_update_aosp_clang
+    if [[ $update_aosp_clang == True ]]; then
+      _check mv "$AOSP_CLANG_DIR" "${AOSP_CLANG_DIR}-$tag"
+      _install_aosp_clang
+    fi
+  fi
 }
 
 # Update everything that needs to be
@@ -750,6 +770,7 @@ _start() {
   AOSP_CLANG_DIR="${DIR}/toolchains/$AOSP_CLANG_DIR"
   LOS_ARM64_DIR="${DIR}/toolchains/$LOS_ARM64_DIR"
   LOS_ARM_DIR="${DIR}/toolchains/$LOS_ARM_DIR"
+  AOSP_CLANG_DIR="${DIR}/toolchains/$AOSP_CLANG_DIR"
   ANYKERNEL_DIR="${DIR}/$ANYKERNEL_DIR"
   BOOT_DIR="${DIR}/out/${CODENAME}/arch/${ARCH}/boot"
 
@@ -1090,6 +1111,16 @@ _ask_for_apply_patch() {
   case $confirm in
     n|N|no|No|NO) _exit 0 ;;
     *) apply_patch="True" ;;
+  esac
+}
+
+# Confirmation: update AOSP-Clang?
+_ask_for_update_aosp_clang() {
+  # Return: update_aosp_clang
+  _error warn "AOSP-Clang $tag => $latest"
+  _confirm "$MSG_CONFIRM_UP $AOSP_CLANG_NAME (${latest}) ?" "[Y/n]"
+  case $confirm in
+    y|Y|yes|Yes|YES) update_aosp_clang="True" ;;
   esac
 }
 
