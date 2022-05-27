@@ -457,7 +457,7 @@ _install_aosp_clang() {
   _check mkdir "$AOSP_CLANG_DIR"
   _check unbuffer \
     wget -O "${AOSP_CLANG_DIR##*/}.tar.gz" "$clang_tgz"
-  _note "$MSG_TAR_AOSP"
+  _note "$MSG_TAR_AOSP toolchains/${AOSP_CLANG_DIR##*/}"
   _check unbuffer tar -xvf \
     "${AOSP_CLANG_DIR##*/}.tar.gz" -C "$AOSP_CLANG_DIR"
   _check rm "${AOSP_CLANG_DIR##*/}.tar.gz"
@@ -555,6 +555,7 @@ _update_aosp_clang() {
 _full_upgrade() {
   # 1. set ZMB and AK3 and TC data
   # 2. upgrade existing stuff...
+  _update_aosp_clang
   local tp up_list; tp="${DIR}/toolchains"
   declare -A up_data=(
     [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
