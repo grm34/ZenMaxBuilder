@@ -291,14 +291,17 @@ _exit() {
   # 3. remove user input files
   # 4. remove empty device folders
   # 5. exit with 3s timeout
-  if pidof make; then pkill make || sleep 0.5; fi
+  local pids; pids=(make git wget tar readelf zip java)
+  for pid in "${pids[@]}"; do
+    if pidof "$pid"; then pkill "$pid" || sleep 0.5; fi
+  done
   _get_build_logs
-  local input_files device_folders
-  input_files=(bashvar buildervar linuxver)
-  for file in "${input_files[@]}"; do
+  local files device_folders
+  files=(bashvar buildervar linuxver wget-log aosp-clang.tar.gz)
+  for file in "${files[@]}"; do
     if [[ -f $file ]]; then _check rm -f "${DIR}/$file"; fi
   done
-  device_folders=(out builds logs)
+  device_folders=(out builds logs toolchains/aosp-clang)
   for folder in "${device_folders[@]}"; do
     if [[ -d ${DIR}/${folder}/$CODENAME ]] && \
         [[ -z $(ls -A "${DIR}/${folder}/$CODENAME") ]]; then
@@ -324,12 +327,12 @@ _exit() {
 _get_user_timezone() {
   # Return: TIMEZONE
   TIMEZONE="$( # linux
-    (timedatectl | grep 'Time zone' \
+    (timedatectl | grep -m 1 'Time zone' \
       | xargs | cut -d' ' -f3) 2>/dev/null
   )"
   if ! [[ $TIMEZONE ]]; then
     TIMEZONE="$( # termux
-      (getprop | grep timezone | cut -d' ' -f2 \
+      (getprop | grep -m 1 timezone | cut -d' ' -f2 \
         | sed 's/\[//g' | sed 's/\]//g') 2>/dev/null
     )"
   fi
@@ -424,7 +427,7 @@ _install_dep() {
   fi
 }
 
-# Git clone some toolchains
+# Install some toolchains
 _clone_tc() {
   # ARG $1 = repo branch
   # ARG $2 = repo url
@@ -432,13 +435,29 @@ _clone_tc() {
   if ! [[ -d $3 ]]; then
     _ask_for_clone_toolchain "${3##*/}"
     if [[ $clone_tc == True ]]; then
-      git clone --depth=1 -b "$1" "$2" "$3"
+      if [[ $2 == "$AOSP_CLANG_URL" ]]; then
+        _check mkdir "$3"
+        _check unbuffer wget -O "${3##*/}.tar.gz" "$2"
+        _note "$MSG_TAR_AOSP"
+        _check unbuffer tar -xvf "${3##*/}.tar.gz" -C "$3"
+        _check rm "${3##*/}.tar.gz"
+        if [[ -f wget-log ]]; then _check rm wget-log; fi
+      else
+        _check unbuffer git clone --depth=1 -b "$1" "$2" "$3"
+      fi
     fi
   fi
 }
 
-# Clone the selected toolchains
+# Install the selected toolchains
 _clone_toolchains() {
+  case $COMPILER in
+    # AOSP-Clang
+    "$AOSP_CLANG_NAME")
+      _clone_tc "$AOSP_CLANG_BRANCH" "$AOSP_CLANG_URL" \
+                "$AOSP_CLANG_DIR"
+      ;;
+  esac
   case $COMPILER in
     # Proton-Clang or Proton-GCC
     "$PROTON_CLANG_NAME"|"$PROTON_GCC_NAME")
@@ -454,8 +473,8 @@ _clone_toolchains() {
       ;;
   esac
   case $COMPILER in
-    # Lineage-GCC
-    "$LOS_GCC_NAME")
+    # Lineage-GCC or AOSP-Clang
+    "$LOS_GCC_NAME"|"$AOSP_CLANG_NAME")
       _clone_tc "$LOS_ARM_BRANCH" "$LOS_ARM_URL" "$LOS_ARM_DIR"
       _clone_tc "$LOS_ARM64_BRANCH" "$LOS_ARM64_URL" \
                 "$LOS_ARM64_DIR"
@@ -500,7 +519,7 @@ _update_git() {
       _check mv "${DIR}/etc/user.cfg" "${DIR}/etc/old.cfg"
     fi
   fi
-  git pull
+  _check unbuffer git pull
 }
 
 # Update everything that needs to be
@@ -537,13 +556,15 @@ _full_upgrade() {
 
 _tc_version_option() {
   _note "${MSG_SCAN_TC}..."
-  local v tcn pt gcc
-  v=("$PROTON_VERSION" "$GCC_ARM64_VERSION" "$LOS_ARM64_VERSION")
-  for tc in "${v[@]}"; do
-    if [[ -d ${DIR}/toolchains/$tc ]]; then
+  local toolchain_version tcn pt gcc hostclang
+  toolchain_version=("$AOSP_CLANG_VERSION" "$PROTON_VERSION" \
+                     "$GCC_ARM64_VERSION" "$LOS_ARM64_VERSION")
+  for tc in "${toolchain_version[@]}"; do
+    if [[ -d ${DIR}/toolchains/${tc/AndroidVersion.txt} ]]; then
       _get_tc_version "$tc"
       case ${tc##*/} in
-        *clang*) tcn="$PROTON_GCC_NAME" pt="${tc_version##*/}";;
+        *AndroidVersion.txt*) tcn="$AOSP_CLANG_NAME" ;;
+        *clang*) tcn="$PROTON_CLANG_NAME" pt="${tc_version##*/}";;
         *elf*) tcn="$EVA_GCC_NAME" gcc="${tc_version##*/}" ;;
         *android*) tcn="$LOS_GCC_NAME" ;;
       esac
@@ -551,9 +572,11 @@ _tc_version_option() {
     fi
   done
   if [[ -n $pt ]] && [[ -n $gcc ]]; then
-    echo -e "${green}${PROTON_GCC_NAME}: ${red}$pt ${gcc}$nc"
+    echo -e "${green}${PROTON_GCC_NAME}: ${red}${pt}/${gcc}$nc"
   fi
-  if [[ -z $tcn ]]; then _error warn "$MSG_WARN_SCAN_TC"; fi
+  hostclang="$(clang --version | grep -m1 version \
+    | awk -F " " '{print $NF}')"
+  echo -e "${green}${HOST_CLANG_NAME}: ${red}${hostclang}$nc"
 }
 
 # Telegram options
@@ -687,8 +710,8 @@ _start() {
       ! [[ -d ${KERNEL_DIR}/arch ]]; then
     _error "$MSG_ERR_CONF_KDIR"; _exit 1
   elif ! [[ $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
-      ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|\
-      ${LOS_GCC_NAME}) ]]; then
+      ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|${HOST_CLANG_NAME}|\
+      ${LOS_GCC_NAME}|${AOSP_CLANG_NAME}) ]]; then
     _error "$MSG_ERR_COMPILER"; _exit 1
   fi
 
@@ -716,6 +739,7 @@ _start() {
   PROTON_DIR="${DIR}/toolchains/$PROTON_DIR"
   GCC_ARM64_DIR="${DIR}/toolchains/$GCC_ARM64_DIR"
   GCC_ARM_DIR="${DIR}/toolchains/$GCC_ARM_DIR"
+  AOSP_CLANG_DIR="${DIR}/toolchains/$AOSP_CLANG_DIR"
   LOS_ARM64_DIR="${DIR}/toolchains/$LOS_ARM64_DIR"
   LOS_ARM_DIR="${DIR}/toolchains/$LOS_ARM_DIR"
   ANYKERNEL_DIR="${DIR}/$ANYKERNEL_DIR"
@@ -892,8 +916,9 @@ _ask_for_toolchain() {
   # Return: COMPILER
   if [[ $COMPILER == default ]]; then
     _prompt "$MSG_SELECT_TC :" 2
-    select COMPILER in $PROTON_CLANG_NAME $EVA_GCC_NAME \
-        $PROTON_GCC_NAME $LOS_GCC_NAME $GNU_CLANG_NAME; do
+    select COMPILER in $AOSP_CLANG_NAME $EVA_GCC_NAME \
+        $PROTON_CLANG_NAME $PROTON_GCC_NAME \
+        $LOS_GCC_NAME $HOST_CLANG_NAME; do
       [[ $COMPILER ]] && break
       _error "$MSG_ERR_SELECT"
     done
@@ -1079,7 +1104,14 @@ _export_path_and_options() {
   if [[ $HOST == default ]]; then HOST="$(uname -n)"; fi
   export KBUILD_BUILD_USER="${BUILDER}"
   export KBUILD_BUILD_HOST="${HOST}"
-  export PLATFORM_VERSION ANDROID_MAJOR_VERSION
+  _get_platform_version
+  if [[ $IGNORE_MAKEFILE == "True" ]] || [[ $ptv != 1 ]]; then
+    export PLATFORM_VERSION
+  fi
+  if [[ $IGNORE_MAKEFILE == "True" ]] || [[ $amv != 1 ]]; then
+    export ANDROID_MAJOR_VERSION
+  fi
+  local los_path eva_path lto_dir v1 v2
   case $COMPILER in
     "$PROTON_CLANG_NAME")
       TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
@@ -1088,7 +1120,19 @@ _export_path_and_options() {
       _check_tc_path "$PROTON_DIR"
       _get_tc_version "$PROTON_VERSION"
       TCVER="${tc_version##*/}"
+      lto_dir="$PROTON_DIR/lib"
       ;;
+    "$AOSP_CLANG_NAME")
+      TC_OPTIONS=("${AOSP_CLANG_OPTIONS[@]}")
+      _check_linker "$AOSP_CLANG_DIR/bin/${TC_OPTIONS[3]/CC=}"
+      los_path="${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin"
+      export PATH="${AOSP_CLANG_DIR}/bin:${los_path}:${PATH}"
+      _check_tc_path "$AOSP_CLANG_DIR"
+      _get_tc_version "$AOSP_CLANG_VERSION"
+      TCVER="$tc_version"
+      lto_dir="$AOSP_CLANG_DIR/lib"
+      ;;
+
     "$EVA_GCC_NAME")
       TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
       _check_linker "$GCC_ARM64_DIR/bin/${TC_OPTIONS[3]/CC=}"
@@ -1096,14 +1140,16 @@ _export_path_and_options() {
       _check_tc_path "$GCC_ARM64_DIR" "$GCC_ARM_DIR"
       _get_tc_version "$GCC_ARM64_VERSION"
       TCVER="${tc_version##*/}"
+      lto_dir="$GCC_ARM64_DIR/lib"
       ;;
     "$LOS_GCC_NAME")
       TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
-      _check_linker "$LOS_ARM64_DIR/bin/${TC_OPTIONS[3]/CC=}"
+      _check_linker "$LOS_ARM64_DIR/bin/real-${TC_OPTIONS[3]/CC=}"
       export PATH="${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:${PATH}"
       _check_tc_path "$LOS_ARM64_DIR" "$LOS_ARM_DIR"
       _get_tc_version "$LOS_ARM64_VERSION"
       TCVER="${tc_version##*/}"
+      lto_dir="$LOS_ARM64_DIR/lib"
       ;;
     "$PROTON_GCC_NAME")
       TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
@@ -1113,18 +1159,20 @@ _export_path_and_options() {
       _check_tc_path "$PROTON_DIR" "$GCC_ARM_DIR" "$GCC_ARM64_DIR"
       _get_tc_version "$PROTON_VERSION"; v1="$tc_version"
       _get_tc_version "$GCC_ARM64_VERSION"; v2="$tc_version"
-      TCVER="${v1##*/} ${v2##*/}"
+      TCVER="${v1##*/}/${v2##*/}"
+      lto_dir="$PROTON_DIR/lib"
       ;;
-    "$GNU_CLANG_NAME")
-      TC_OPTIONS=("${GNU_CLANG_OPTIONS[@]}")
-      TCVER="$(_check gcc --version | grep version \
+    "$HOST_CLANG_NAME")
+      TC_OPTIONS=("${HOST_CLANG_OPTIONS[@]}")
+      TCVER="$(clang --version | grep -m 1 version \
         | awk -F " " '{print $NF}')"
       ;;
   esac
   tc_cross="${TC_OPTIONS[1]/CROSS_COMPILE=}"
   tc_cc="${TC_OPTIONS[3]/CC=}"
-  if [[ $LTO == True ]]; then
-    export LD_LIBRARY_PATH="${PROTON_DIR}/lib"
+  if [[ $LTO == True ]] && \
+      [[ $COMPILER != "$HOST_CLANG_NAME" ]]; then
+    export LD_LIBRARY_PATH="$lto_dir"
     TC_OPTIONS[7]="LD=$LTO_LIBRARY"
   fi
   if [[ $DEBUG == True ]]; then
@@ -1144,7 +1192,7 @@ _check_linker() {
   # ARG: $1 = cross compiler
   local linker
   linker="$(readelf --all "$1" \
-    | grep interpreter | awk -F ": " '{print $NF}')"
+    | grep -m 1 interpreter | awk -F ": " '{print $NF}')"
   linker="${linker/]}"
   if [[ -n $linker ]] && ! [[ -f $linker ]]; then
     _error warn "$MSG_WARN_LINKER ${red}${linker}$nc"
@@ -1164,9 +1212,25 @@ _check_tc_path() {
 
 # Get toolchain version
 _get_tc_version() {
-  # ARG: $1 = toolchain lib DIR
-  tc_version="$(find "${DIR}/toolchains/$1" \
-    -mindepth 1 -maxdepth 1 -type d | head -n 1)"
+  # ARG: $1 = toolchain VERSION (from settings.cfg)
+  if [[ $1 == "$AOSP_CLANG_VERSION" ]]; then
+    tc_version="$(head -n 1 "${DIR}/toolchains/$1")"
+  else
+    tc_version="$(find "${DIR}/toolchains/$1" \
+      -mindepth 1 -maxdepth 1 -type d | head -n 1)"
+  fi
+}
+
+# Get PLATFORM_VERSION from Makefile
+_get_platform_version() {
+  # Return: platformversion majorversion
+  if grep -m 1 ANDROID_MAJOR_VERSION \
+      "${KERNEL_DIR}/Makefile" &>/dev/null; then
+    amv=1
+  elif grep -m 1 PLATFORM_VERSION \
+      "${KERNEL_DIR}/Makefile" &>/dev/null; then
+    ptv=1
+  fi
 }
 
 # Get CROSS_COMPILE and CC from Makefile
@@ -1197,7 +1261,7 @@ _handle_makefile_cross_compile() {
     _check sed -i "s|${r1[0]}|${r1[1]}|g" "${KERNEL_DIR}/Makefile"
     _check sed -i "s|${r2[0]}|${r2[1]}|g" "${KERNEL_DIR}/Makefile"
   fi
-  local mk; mk="$(grep "${r1[0]}" "${KERNEL_DIR}/Makefile")"
+  local mk; mk="$(grep -m1 "${r1[0]}" "${KERNEL_DIR}/Makefile")"
   if [[ -n ${mk##*"${tc_cross/CROSS_COMPILE=/}"*} ]]; then
     _error warn "$MSG_WARN_CC"
   fi
@@ -1258,6 +1322,9 @@ _make_build() {
   if [[ $(echo "${linuxversion:0:2} > 42" | bc) == 1 ]] && \
       [[ ${TC_OPTIONS[3]} == clang ]]; then
     TC_OPTIONS[2]="${TC_OPTIONS[2]/_ARM32=/_COMPAT=}"
+  fi
+  if [[ $MAKE_CMD_ARGS != True ]]; then
+    TC_OPTIONS=("${TC_OPTIONS[0]}")
   fi
   _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
     O="$OUT_DIR" ARCH="$ARCH" "${TC_OPTIONS[*]}" 2>&1
