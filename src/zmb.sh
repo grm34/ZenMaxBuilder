@@ -434,7 +434,8 @@ _clone_tc() {
     if [[ $clone_tc == True ]]; then
       if [[ $2 == "$AOSP_CLANG_URL" ]]; then
         _check mkdir "$3"
-        _check wget -q --show-progress -O "${3##*/}.tar.gz" "$2"
+        _check wget -O "${3##*/}.tar.gz" "$2"
+        _note "$MSG_TAR_AOSP"
         _check tar -xvf "${3##*/}.tar.gz" -C "$3"
         _check rm "${3##*/}.tar.gz"
         if [[ -f wget-log ]]; then _check rm wget-log; fi
@@ -552,12 +553,14 @@ _full_upgrade() {
 
 _tc_version_option() {
   _note "${MSG_SCAN_TC}..."
-  local v tcn pt gcc
-  v=("$PROTON_VERSION" "$GCC_ARM64_VERSION" "$LOS_ARM64_VERSION")
-  for tc in "${v[@]}"; do
-    if [[ -d ${DIR}/toolchains/$tc ]]; then
+  local toolchain_version tcn pt gcc ch
+  toolchain_version=("$AOSP_CLANG_VERSION" "$PROTON_VERSION" \
+                     "$GCC_ARM64_VERSION" "$LOS_ARM64_VERSION")
+  for tc in "${toolchain_version[@]}"; do
+    if [[ -d ${DIR}/toolchains/${tc/AndroidVersion.txt} ]]; then
       _get_tc_version "$tc"
       case ${tc##*/} in
+        *txt*) tcn="$AOSP_CLANG_NAME" ;;
         *clang*) tcn="$PROTON_GCC_NAME" pt="${tc_version##*/}";;
         *elf*) tcn="$EVA_GCC_NAME" gcc="${tc_version##*/}" ;;
         *android*) tcn="$LOS_GCC_NAME" ;;
@@ -566,9 +569,10 @@ _tc_version_option() {
     fi
   done
   if [[ -n $pt ]] && [[ -n $gcc ]]; then
-    echo -e "${green}${PROTON_GCC_NAME}: ${red}$pt ${gcc}$nc"
+    echo -e "${green}${PROTON_GCC_NAME}: ${red}${pt}/${gcc}$nc"
   fi
-  if [[ -z $tcn ]]; then _error warn "$MSG_WARN_SCAN_TC"; fi
+  ch="$(clang --version | grep version | awk -F " " '{print $NF}')"
+  echo -e "${green}${HOST_CLANG_NAME}: ${red}${ch}$nc"
 }
 
 # Telegram options
@@ -1113,7 +1117,7 @@ _export_path_and_options() {
       export PATH="${AOSP_CLANG_DIR}/bin:${PATH}"
       _check_tc_path "$AOSP_CLANG_DIR"
       _get_tc_version "$AOSP_CLANG_VERSION"
-      TCVER="${tc_version##*/}"
+      TCVER="$tc_version"
       ;;
 
     "$EVA_GCC_NAME")
@@ -1140,11 +1144,11 @@ _export_path_and_options() {
       _check_tc_path "$PROTON_DIR" "$GCC_ARM_DIR" "$GCC_ARM64_DIR"
       _get_tc_version "$PROTON_VERSION"; v1="$tc_version"
       _get_tc_version "$GCC_ARM64_VERSION"; v2="$tc_version"
-      TCVER="${v1##*/} ${v2##*/}"
+      TCVER="${v1##*/}/${v2##*/}"
       ;;
     "$HOST_CLANG_NAME")
       TC_OPTIONS=("${HOST_CLANG_OPTIONS[@]}")
-      TCVER="$(_check gcc --version | grep version \
+      TCVER="$(clang --version | grep version \
         | awk -F " " '{print $NF}')"
       ;;
   esac
@@ -1191,9 +1195,13 @@ _check_tc_path() {
 
 # Get toolchain version
 _get_tc_version() {
-  # ARG: $1 = toolchain lib DIR
-  tc_version="$(find "${DIR}/toolchains/$1" \
-    -mindepth 1 -maxdepth 1 -type d | head -n 1)"
+  # ARG: $1 = toolchain VERSION (from settings.cfg)
+  if [[ $1 == "$AOSP_CLANG_VERSION" ]]; then
+    tc_version="$(head -n 1 "${DIR}/toolchains/$1")"
+  else
+    tc_version="$(find "${DIR}/toolchains/$1" \
+      -mindepth 1 -maxdepth 1 -type d | head -n 1)"
+  fi
 }
 
 # Get CROSS_COMPILE and CC from Makefile
