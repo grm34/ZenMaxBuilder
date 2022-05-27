@@ -1101,7 +1101,13 @@ _export_path_and_options() {
   if [[ $HOST == default ]]; then HOST="$(uname -n)"; fi
   export KBUILD_BUILD_USER="${BUILDER}"
   export KBUILD_BUILD_HOST="${HOST}"
-  export PLATFORM_VERSION ANDROID_MAJOR_VERSION
+  _get_platform_version
+  if [[ $IGNORE_MAKEFILE == "True" ]] || [[ $ptv != 1 ]]; then
+    export PLATFORM_VERSION
+  fi
+  if [[ $IGNORE_MAKEFILE == "True" ]] || [[ $amv != 1 ]]; then
+    export ANDROID_MAJOR_VERSION
+  fi
   local los_path eva_path lto_dir v1 v2
   case $COMPILER in
     "$PROTON_CLANG_NAME")
@@ -1212,6 +1218,16 @@ _get_tc_version() {
   fi
 }
 
+# Get PLATFORM_VERSION from Makefile
+_get_platform_version() {
+  # Return: platformversion majorversion
+  if grep -m 1 ANDROID_MAJOR_VERSION "${KERNEL_DIR}/Makefile"; then
+    amv=1
+  elif grep -m 1 PLATFORM_VERSION "${KERNEL_DIR}/Makefile"; then
+    ptv=1
+  fi
+}
+
 # Get CROSS_COMPILE and CC from Makefile
 _get_and_display_cross_compile() {
   r1=("^CROSS_COMPILE\s.*?=.*" "CROSS_COMPILE\ ?=\ ${tc_cross}")
@@ -1301,6 +1317,9 @@ _make_build() {
   if [[ $(echo "${linuxversion:0:2} > 42" | bc) == 1 ]] && \
       [[ ${TC_OPTIONS[3]} == clang ]]; then
     TC_OPTIONS[2]="${TC_OPTIONS[2]/_ARM32=/_COMPAT=}"
+  fi
+  if [[ $MAKE_CMD_ARGS != True ]]; then
+    TC_OPTIONS=("${TC_OPTIONS[0]}")
   fi
   _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
     O="$OUT_DIR" ARCH="$ARCH" "${TC_OPTIONS[*]}" 2>&1
