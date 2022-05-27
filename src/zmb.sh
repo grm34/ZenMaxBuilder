@@ -1107,8 +1107,7 @@ _export_path_and_options() {
     "$PROTON_CLANG_NAME")
       TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
       _check_linker "$PROTON_DIR/bin/${TC_OPTIONS[3]/CC=}"
-      los_path="${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin"
-      export PATH="${PROTON_DIR}/bin:${los_path}:${PATH}"
+      export PATH="${PROTON_DIR}/bin:${PATH}"
       _check_tc_path "$PROTON_DIR"
       _get_tc_version "$PROTON_VERSION"
       TCVER="${tc_version##*/}"
@@ -1117,7 +1116,8 @@ _export_path_and_options() {
     "$AOSP_CLANG_NAME")
       TC_OPTIONS=("${AOSP_CLANG_OPTIONS[@]}")
       _check_linker "$AOSP_CLANG_DIR/bin/${TC_OPTIONS[3]/CC=}"
-      export PATH="${AOSP_CLANG_DIR}/bin:${PATH}"
+      los_path="${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin"
+      export PATH="${AOSP_CLANG_DIR}/bin:${los_path}:${PATH}"
       _check_tc_path "$AOSP_CLANG_DIR"
       _get_tc_version "$AOSP_CLANG_VERSION"
       TCVER="$tc_version"
