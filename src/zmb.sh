@@ -293,12 +293,12 @@ _exit() {
   # 5. exit with 3s timeout
   if pidof make; then pkill make || sleep 0.5; fi
   _get_build_logs
-  local input_files device_folders
-  input_files=(bashvar buildervar linuxver)
-  for file in "${input_files[@]}"; do
+  local files device_folders
+  files=(bashvar buildervar linuxver wget-log aosp-clang.tar.gz)
+  for file in "${files[@]}"; do
     if [[ -f $file ]]; then _check rm -f "${DIR}/$file"; fi
   done
-  device_folders=(out builds logs)
+  device_folders=(out builds logs toolchains/aosp-clang)
   for folder in "${device_folders[@]}"; do
     if [[ -d ${DIR}/${folder}/$CODENAME ]] && \
         [[ -z $(ls -A "${DIR}/${folder}/$CODENAME") ]]; then
@@ -434,13 +434,13 @@ _clone_tc() {
     if [[ $clone_tc == True ]]; then
       if [[ $2 == "$AOSP_CLANG_URL" ]]; then
         _check mkdir "$3"
-        _check wget -O "${3##*/}.tar.gz" "$2"
+        _check unbuffer wget -O "${3##*/}.tar.gz" "$2"
         _note "$MSG_TAR_AOSP"
-        _check tar -xvf "${3##*/}.tar.gz" -C "$3"
+        _check unbuffer tar -xvf "${3##*/}.tar.gz" -C "$3"
         _check rm "${3##*/}.tar.gz"
         if [[ -f wget-log ]]; then _check rm wget-log; fi
       else
-        git clone --depth=1 -b "$1" "$2" "$3"
+        _check unbuffer git clone --depth=1 -b "$1" "$2" "$3"
       fi
     fi
   fi
@@ -516,7 +516,7 @@ _update_git() {
       _check mv "${DIR}/etc/user.cfg" "${DIR}/etc/old.cfg"
     fi
   fi
-  git pull
+  _check unbuffer git pull
 }
 
 # Update everything that needs to be

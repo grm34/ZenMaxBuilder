@@ -9,3 +9,5 @@ linuxver
 etc/user.cfg
 etc/old.cfg
 zmb.lock
+wget-log
+aosp-clang.tar.gz
