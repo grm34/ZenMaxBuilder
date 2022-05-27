@@ -770,7 +770,6 @@ _start() {
   AOSP_CLANG_DIR="${DIR}/toolchains/$AOSP_CLANG_DIR"
   LOS_ARM64_DIR="${DIR}/toolchains/$LOS_ARM64_DIR"
   LOS_ARM_DIR="${DIR}/toolchains/$LOS_ARM_DIR"
-  AOSP_CLANG_DIR="${DIR}/toolchains/$AOSP_CLANG_DIR"
   ANYKERNEL_DIR="${DIR}/$ANYKERNEL_DIR"
   BOOT_DIR="${DIR}/out/${CODENAME}/arch/${ARCH}/boot"
 
