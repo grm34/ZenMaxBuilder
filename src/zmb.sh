@@ -219,8 +219,8 @@ _confirm() {
   done
   echo -ne "\n==> $nc"
   read -r confirm
-  until [[ -z $confirm ]] || \
-      [[ $confirm =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]]; do
+  until [[ -z $confirm ]] \
+      || [[ $confirm =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]]; do
     _error "$MSG_ERR_CONFIRM"
     _confirm_msg "$@"
   done
@@ -308,8 +308,8 @@ _exit() {
   done
   device_folders=(out builds logs toolchains/aosp-clang)
   for folder in "${device_folders[@]}"; do
-    if [[ -d ${DIR}/${folder}/$CODENAME ]] && \
-        [[ -z $(ls -A "${DIR}/${folder}/$CODENAME") ]]; then
+    if [[ -d ${DIR}/${folder}/$CODENAME ]] \
+        && [[ -z $(ls -A "${DIR}/${folder}/$CODENAME") ]]; then
       _check rm -rf "${DIR}/${folder}/$CODENAME"
     fi
   done
@@ -550,8 +550,8 @@ _update_git() {
   # 4. ZMB: rename etc/user.cfg to etc/old.cfg
   # 5. ALL: pull changes
   git checkout "$1"; git reset --hard HEAD
-  if [[ $1 == "$ZMB_BRANCH" ]] && \
-      [[ -f ${DIR}/etc/user.cfg ]]; then
+  if [[ $1 == "$ZMB_BRANCH" ]] \
+      && [[ -f ${DIR}/etc/user.cfg ]]; then
     local d
     d="$(git diff origin/"$ZMB_BRANCH" "${DIR}/etc/settings.cfg")"
     if [[ -n $d ]]; then
@@ -627,6 +627,20 @@ _full_upgrade() {
 # Toolchains Versions Option
 # ---------------------------
 
+_get_tc_version() {
+  # ARG: $1 = toolchain VERSION (from settings.cfg)
+  case $1 in
+    "$AOSP_CLANG_VERSION"|"$LLVM_ARM64_VERSION"|\
+    "$LLVM_ARM_VERSION")
+      tc_version="$(head -n 1 "${DIR}/toolchains/$1")"
+      ;;
+    *)
+      tc_version="$(find "${DIR}/toolchains/$1" \
+        -mindepth 1 -maxdepth 1 -type d | head -n 1)"
+      ;;
+  esac
+}
+
 _tc_version_option() {
   _note "${MSG_SCAN_TC}..."
   local toolchain_version tcn pt gcc hostclang
@@ -689,8 +703,8 @@ _send_file_option() {
 #---------------------
 
 _list_all_kernels() {
-  if [[ -d ${DIR}/out ]] && \
-      [[ $(ls -d out/*/ 2>/dev/null) ]]; then
+  if [[ -d ${DIR}/out ]] \
+      && [[ $(ls -d out/*/ 2>/dev/null) ]]; then
     _note "${MSG_NOTE_LISTKERNEL}:"
     find out/ -mindepth 1 -maxdepth 1 -type d \
       | cut -f2 -d'/' | cat -n
@@ -784,9 +798,9 @@ ${cyan}https://kernel-builder.com$nc\n"
 _start() {
 
   # Prevent errors in user settings
-  if [[ $KERNEL_DIR != default  ]] &&
-      ! [[ -f ${KERNEL_DIR}/Makefile ]] && \
-      ! [[ -d ${KERNEL_DIR}/arch ]]; then
+  if [[ $KERNEL_DIR != default  ]] \
+      && ! [[ -f ${KERNEL_DIR}/Makefile ]] \
+      && ! [[ -d ${KERNEL_DIR}/arch ]]; then
     _error "$MSG_ERR_CONF_KDIR"; _exit 1
   elif ! [[ $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
       ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|${HOST_CLANG_NAME}|\
@@ -804,8 +818,8 @@ _start() {
   # Create device folders
   local folders; folders=(builds logs toolchains out)
   for folder in "${folders[@]}"; do
-    if ! [[ -d ${DIR}/${folder}/$CODENAME ]] && \
-        [[ $folder != toolchains ]]; then
+    if ! [[ -d ${DIR}/${folder}/$CODENAME ]] \
+        && [[ $folder != toolchains ]]; then
       _check mkdir -p "${DIR}/${folder}/$CODENAME"
     elif ! [[ -d ${DIR}/$folder ]]; then
       _check mkdir "${DIR}/$folder"
@@ -842,7 +856,7 @@ _start() {
   _note "${MSG_NOTE_LINUXVER}..."
   make -C "$KERNEL_DIR" kernelversion \
     | grep -v make > linuxver & wait $!
-  LINUX_VERSION="$(cat linuxver)"
+  LINUX_VERSION="$(head -n 1 linuxver)"
   KERNEL_NAME="${TAG}-${CODENAME}-$LINUX_VERSION"
 
   # Make clean
@@ -879,15 +893,14 @@ _start() {
 
   # Status -> zip -> upload the build
   _get_build_time
-  local most_recent ftime
-  # shellcheck disable=SC2012
-  most_recent="$(ls -Art "$BOOT_DIR" 2>/dev/null | tail -n 1)"
-  ftime="$(stat -c %Z "${BOOT_DIR}/${most_recent}" 2>/dev/null)"
-  if ! [[ -d $BOOT_DIR ]] || [[ -z $(ls -A "$BOOT_DIR") ]] || \
-      [[ $ftime < $start_time ]]; then
+  local gen; gen="${BOOT_DIR}/include/generated/compile.h"
+  if ! [[ -f $compiler ]] \
+      || "$(stat -c %Z "$gen" 2>/dev/null)" < "$start_time"; then
     _error "$MSG_ERR_MAKE"; _exit 1
   else
+    compiler="$(grep -m 1 LINUX_COMPILER "$gen")"
     _note "$MSG_NOTE_SUCCESS $BUILD_TIME !"
+    _note "${compiler/\#define }"
     _send_success_build_status
     _ask_for_flashable_zip
     if [[ $flash_zip == True ]]; then
@@ -1261,8 +1274,8 @@ _export_path_and_options() {
   esac
   tc_cross="${TC_OPTIONS[1]/CROSS_COMPILE=}"
   tc_cc="${TC_OPTIONS[3]/CC=}"
-  if [[ $LTO == True ]] && \
-      [[ $COMPILER != "$HOST_CLANG_NAME" ]]; then
+  if [[ $LTO == True ]] \
+      && [[ $COMPILER != "$HOST_CLANG_NAME" ]]; then
     export LD_LIBRARY_PATH="$lto_dir"
     TC_OPTIONS[7]="LD=$LTO_LIBRARY"
   fi
@@ -1299,21 +1312,6 @@ _check_tc_path() {
       _error "$MSG_ERR_PATH"; echo "$PATH"; _exit 1
     fi
   done
-}
-
-# Get toolchain version
-_get_tc_version() {
-  # ARG: $1 = toolchain VERSION (from settings.cfg)
-  case $1 in
-    "$AOSP_CLANG_VERSION"|"$LLVM_ARM64_VERSION"|\
-    "$LLVM_ARM_VERSION")
-      tc_version="$(head -n 1 "${DIR}/toolchains/$1")"
-      ;;
-    *)
-      tc_version="$(find "${DIR}/toolchains/$1" \
-        -mindepth 1 -maxdepth 1 -type d | head -n 1)"
-      ;;
-  esac
 }
 
 # Get PLATFORM_VERSION from Makefile
@@ -1414,8 +1412,8 @@ _make_build() {
   _set_html_status_msg
   _send_start_build_status
   local linuxversion; linuxversion="${LINUX_VERSION//.}"
-  if [[ $(echo "${linuxversion:0:2} > 42" | bc) == 1 ]] && \
-      [[ ${TC_OPTIONS[3]} == clang ]]; then
+  if [[ $(echo "${linuxversion:0:2} > 42" | bc) == 1 ]] \
+      && [[ ${TC_OPTIONS[3]} == clang ]]; then
     TC_OPTIONS[2]="${TC_OPTIONS[2]/_ARM32=/_COMPAT=}"
   fi
   if [[ $MAKE_CMD_ARGS != True ]]; then
@@ -1468,9 +1466,9 @@ _set_ak3_conf() {
       local inc_dir
       if [[ ${file##*/} == *erofs.dtb ]]; then
         _check mkdir erofs; inc_dir="erofs/"
-      elif [[ ${file##*/} != *Image* ]] && \
-          [[ ${file##*/} != *erofs.dtb ]] && \
-          [[ ${file##*/} == *.dtb ]]; then
+      elif [[ ${file##*/} != *Image* ]] \
+          && [[ ${file##*/} != *erofs.dtb ]] \
+          && [[ ${file##*/} == *.dtb ]]; then
         _check mkdir dtb; inc_dir="dtb/";
       else
         inc_dir=""
@@ -1576,7 +1574,8 @@ _send_start_build_status() {
 # Success build status
 _send_success_build_status() {
   if [[ $build_status == True ]]; then
-    local msg; msg="$MSG_NOTE_SUCCESS $BUILD_TIME"
+    local msg
+    msg="$MSG_NOTE_SUCCESS $BUILD_TIME ${compiler/\#define }"
     _send_msg "${KERNEL_NAME//_/-} | $msg"
   fi
 }
@@ -1597,8 +1596,8 @@ _send_zip_signing_status() {
 
 # Fail build status (+ logfile)
 _send_failed_build_logs() {
-  if [[ $start_time ]] && [[ $build_status == True ]] && \
-      { ! [[ $BUILD_TIME ]] || [[ $run_again == True ]]; }; then
+  if [[ $start_time ]] && [[ $build_status == True ]] \
+      && { ! [[ $BUILD_TIME ]] || [[ $run_again == True ]]; }; then
     _get_build_time
     _send_file "$log" \
       "v${LINUX_VERSION//_/-} | $MSG_TG_FAILED $BUILD_TIME"
