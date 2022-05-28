@@ -555,23 +555,17 @@ _update_git() {
   _check unbuffer git pull
 }
 
-# Update AOSP-Clang
-_update_aosp_clang() {
-  local tag
-  AOSP_CLANG_DIR="${DIR}/toolchains/$AOSP_CLANG_DIR"
-  _note "${MSG_UP_AOSP_CLANG}..."
-  tag=$(grep -oP "r\d+[a-z]{1}" \
-    "${DIR}/toolchains/$AOSP_CLANG_VERSION")
-  _get_latest_aosp_tag "$AOSP_CLANG_URL" "$AOSP_CLANG_DIR"
-  if [[ $tag != "${latest/clang-}" ]]; then
-    _ask_for_update_aosp_clang
-    if [[ $update_aosp_clang == True ]]; then
-      _check mv "$AOSP_CLANG_DIR" "${AOSP_CLANG_DIR}-$tag"
-      _install_aosp_clang
-    fi
-  else
-    echo "${MSG_ALREADY_UP}: $latest"
-  fi
+# Get local AOSP CLANG/LLVM tag
+_get_local_aosp_tag() {
+  # ARG $1 = TC dir
+  # ARG $2 = TC version
+  # Return: tag
+  local tag regex
+  case ${1##*/} in
+    aosp-clang) regex="r\d+[a-z]{1}" ;;
+    llvm-arm64|llvm-arm) regex="llvm-r\d+[a-z]{0,1}" ;;
+  esac
+  tag=$(grep -oP "${regex}" "${DIR}/toolchains/$2")
 }
 
 # Update everything that needs to be
@@ -581,27 +575,46 @@ _full_upgrade() {
   local tp up_list; tp="${DIR}/toolchains"
   declare -A up_data=(
     [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
-    [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}€$MSG_UP_AK3"
-    [t1]="${tp}/${PROTON_DIR}€${PROTON_BRANCH}€$MSG_UP_CLANG"
-    [t2]="${tp}/${EVA_ARM_DIR}€${EVA_ARM_BRANCH}€$MSG_UP_GCC"
-    [t3]="${tp}/${EVA_ARM64_DIR}€${EVA_ARM64_BRANCH}€$MSG_UP_GCC64"
-    [t4]="${tp}/${LOS_ARM_DIR}€${LOS_ARM_BRANCH}€$MSG_UP_LOS"
-    [t5]="${tp}/${LOS_ARM64_DIR}€${LOS_ARM64_BRANCH}€$MSG_UP_LOS64"
+    [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}"
+    [t1]="${tp}/${PROTON_DIR}€${PROTON_BRANCH}"
+    [t2]="${tp}/${EVA_ARM_DIR}€${EVA_ARM_BRANCH}"
+    [t3]="${tp}/${EVA_ARM64_DIR}€${EVA_ARM64_BRANCH}"
+    [t4]="${tp}/${LOS_ARM_DIR}€${LOS_ARM_BRANCH}"
+    [t5]="${tp}/${LOS_ARM64_DIR}€${LOS_ARM64_BRANCH}"
+    [t6]="${tp}/${AOSP_CLANG_DIR}€${AOSP_CLANG_URL}€$AOSP_CLANG_VERSION"
+    [t7]="${tp}/${LLVM_ARM64_DIR}€${LLVM_ARM64_URL}€$LLVM_ARM64_VERSION"
+    [t8]="${tp}/${LLVM_ARM_DIR}€${LLVM_ARM_URL}€$LLVM_ARM_VERSION"
   )
-  up_list=(zmb ak3 t1 t2 t3 t4 t5)
+  up_list=(zmb ak3 t1 t2 t3 t4 t5 t6 t7 t8)
   for repository in "${up_list[@]}"; do
     IFS="€"; local repo
     repo="${up_data[$repository]}"
     read -ra repo <<< "$repo"
     unset IFS
     if [[ -d ${repo[0]} ]]; then
-      _note "${repo[2]}..."
-      _cd "${repo[0]}" "$MSG_ERR_DIR ${red}${repo[0]}"
-      _update_git "${repo[1]}"
-      _cd "$DIR" "$MSG_ERR_DIR ${red}$DIR"
+      _note "$MSG_UP ${repo[0]##*/}..."
+      case $repository in
+        t6|t7|t8)
+          _get_local_aosp_tag "${repo[0]}" "${repo[2]}"
+          _get_latest_aosp_tag "${repo[1]}" "${repo[0]}"
+          if [[ $tag != "${latest/clang-}" ]]; then
+            _ask_for_update_aosp "${repo[0]##*/}"
+            if [[ $update_aosp == True ]]; then
+              _check mv "${repo[0]}" "${repo[0]}-$tag"
+              _install_aosp_tgz "${repo[0]}" "${repo[2]}"
+            fi
+          else
+            echo "${MSG_ALREADY_UP}: $latest"
+          fi
+          ;;
+        *)
+          _cd "${repo[0]}" "$MSG_ERR_DIR ${red}${repo[0]}"
+         _update_git "${repo[1]}"
+         _cd "$DIR" "$MSG_ERR_DIR ${red}$DIR"
+         ;;
+      esac
     fi
   done
-  _update_aosp_clang
 }
 
 # Toolchains Versions Option
@@ -1146,13 +1159,14 @@ _ask_for_apply_patch() {
   esac
 }
 
-# Confirmation: update AOSP-Clang?
-_ask_for_update_aosp_clang() {
-  # Return: update_aosp_clang
-  _error warn "$AOSP_CLANG_NAME $MSG_TAG $tag => ${latest/clang-}"
-  _confirm "$MSG_CONFIRM_UP $AOSP_CLANG_NAME ?" "[y/N]"
+# Confirmation: update AOSP toolchains?
+_ask_for_update_aosp() {
+  # ARG $1 = name
+  # Return: update_aosp
+  _error warn "$1 $MSG_TAG $tag => ${latest/clang-}"
+  _confirm "$MSG_CONFIRM_UP $1 ?" "[y/N]"
   case $confirm in
-    y|Y|yes|Yes|YES) update_aosp_clang="True" ;;
+    y|Y|yes|Yes|YES) update_aosp="True" ;;
   esac
 }
 
