@@ -298,7 +298,8 @@ _exit() {
   _get_build_logs
   local files device_folders
   files=(bashvar buildervar linuxver wget-log \
-    aosp-clang.tar.gz llvm-arm64.tar.gz llvm-arm.tar.gz)
+    "${AOSP_CLANG_DIR##*/}.tar.gz" "${LLVM_ARM_DIR##*/}.gz"
+    "${LLVM_ARM64_DIR##*/}.tar.gz")
   for file in "${files[@]}"; do
     if [[ -f $file ]]; then _check rm -f "${DIR}/$file"; fi
   done
@@ -455,7 +456,9 @@ _get_latest_aosp_tag() {
   # Return: latest tgz
   local url regex rep
   case ${2##*/} in
-    aosp-clang) regex="clang-r\d+[a-z]{1}"; rep="${1/+/+archive}" ;;
+    aosp-clang)
+      regex="clang-r\d+[a-z]{1}"; rep="${1/+/+archive}"
+      ;;
     llvm-arm64|llvm-arm)
       regex="llvm-r\d+[a-z]{0,1}"
       rep="${1/+refs/+archive\/refs\/heads}"
@@ -581,8 +584,10 @@ _full_upgrade() {
     [t3]="${tp}/${EVA_ARM_DIR}€${EVA_ARM_BRANCH}"
     [t4]="${tp}/${LOS_ARM64_DIR}€${LOS_ARM64_BRANCH}"
     [t5]="${tp}/${LOS_ARM_DIR}€${LOS_ARM_BRANCH}"
-    [t6]="${tp}/${AOSP_CLANG_DIR}€${AOSP_CLANG_URL}€$AOSP_CLANG_VERSION"
-    [t7]="${tp}/${LLVM_ARM64_DIR}€${LLVM_ARM64_URL}€$LLVM_ARM64_VERSION"
+    [t6]="${tp}/${AOSP_CLANG_DIR}€${AOSP_CLANG_URL}€\
+      $AOSP_CLANG_VERSION"
+    [t7]="${tp}/${LLVM_ARM64_DIR}€${LLVM_ARM64_URL}€\
+      $LLVM_ARM64_VERSION"
     [t8]="${tp}/${LLVM_ARM_DIR}€${LLVM_ARM_URL}€$LLVM_ARM_VERSION"
   )
   up_list=(zmb ak3 t1 t2 t3 t4 t5 t6 t7 t8)
