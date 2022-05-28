@@ -478,8 +478,7 @@ _install_aosp_tgz() {
   # ARG $1 = dir
   # ARG $2 = version
   _check mkdir "$1"
-  _check unbuffer \
-    wget -O "${1##*/}.tar.gz" "$tgz"
+  _check unbuffer wget -O "${1##*/}.tar.gz" "$tgz"
   _note "$MSG_TAR_AOSP ${1##*/}.tar.gz > toolchains/${1##*/}"
   _check unbuffer tar -xvf "${1##*/}.tar.gz" -C "$1"
   if ! [[ -f ${DIR}/toolchains/$2 ]]; then
@@ -616,9 +615,9 @@ _full_upgrade() {
           ;;
         *)
           _cd "${repo[0]}" "$MSG_ERR_DIR ${red}${repo[0]}"
-         _update_git "${repo[1]}"
-         _cd "$DIR" "$MSG_ERR_DIR ${red}$DIR"
-         ;;
+          _update_git "${repo[1]}"
+          _cd "$DIR" "$MSG_ERR_DIR ${red}$DIR"
+          ;;
       esac
     fi
   done
@@ -678,8 +677,7 @@ _tc_version_option() {
 # Send message
 _send_msg_option() {
   if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
-    _note "${MSG_NOTE_SEND}..."
-    _send_msg "${OPTARG//_/-}"
+    _note "${MSG_NOTE_SEND}..."; _send_msg "${OPTARG//_/-}"
   else
     _error "$MSG_ERR_API"
   fi
@@ -1502,7 +1500,7 @@ _clean_anykernel() {
   done
   for file in "${ANYKERNEL_DIR}"/*; do
     case $file in
-      (*.zip*|*Image*|*erofs*|*dtb*|*spectrum.rc*)
+      *.zip*|*Image*|*erofs*|*dtb*|*spectrum.rc*)
         _check rm -rf "${file}" ;;
     esac
   done
