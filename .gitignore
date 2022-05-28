@@ -11,3 +11,5 @@ etc/old.cfg
 zmb.lock
 wget-log
 aosp-clang.tar.gz
+llvm-arm64.tar.gz
+llvm-arm.tar.gz
