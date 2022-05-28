@@ -430,7 +430,7 @@ _install_dep() {
 
 # Clone some toolchains
 _clone_tc() {
-  # ARG $1 = repo branch
+  # ARG $1 = repo branch / version
   # ARG $2 = repo url
   # ARG $3 = repo folder
   if ! [[ -d $3 ]]; then
@@ -439,7 +439,7 @@ _clone_tc() {
       case $2 in
         "$AOSP_CLANG_URL"|"$LLVM_ARM64_URL"|"$LLVM_ARM_URL")
           _get_latest_aosp_tag "$2" "$3"
-          _install_aosp_tgz "$3"
+          _install_aosp_tgz "$3" "$1"
           ;;
         *)
           _check unbuffer git clone --depth=1 -b "$1" "$2" "$3"
@@ -469,11 +469,15 @@ _get_latest_aosp_tag() {
 # Install AOSP CLANG/LLVM
 _install_aosp_tgz() {
   # ARG $1 = TC dir
+  # ARG $2 = TC version
   _check mkdir "$1"
   _check unbuffer \
     wget -O "${1##*/}.tar.gz" "$tgz"
   _note "$MSG_TAR_AOSP ${1##*/}.tar.gz > toolchains/${1##*/}"
   _check unbuffer tar -xvf "${1##*/}.tar.gz" -C "$1"
+  if ! [[ -f ${DIR}/toolchains/$2 ]]; then
+    echo "$latest" > "${DIR}/toolchains/$2"
+  fi
   _check rm "${1##*/}.tar.gz"
   if [[ -f wget-log ]]; then _check rm wget-log; fi
 }
@@ -482,15 +486,11 @@ _install_aosp_tgz() {
 _clone_toolchains() {
   case $COMPILER in # AOSP-Clang
     "$AOSP_CLANG_NAME")
-      _clone_tc "$AOSP_CLANG_BRANCH" "$AOSP_CLANG_URL" \
+      _clone_tc "$AOSP_CLANG_VERSION" "$AOSP_CLANG_URL" \
                 "$AOSP_CLANG_DIR"
-      ;;
-  esac
-  case $COMPILER in # AOSP-GCC or AOSP-Clang
-    "$AOSP_GCC_NAME")
-      _clone_tc "$LLVM_ARM64_BRANCH" "$LLVM_ARM64_URL" \
+      _clone_tc "$LLVM_ARM64_VERSION" "$LLVM_ARM64_URL" \
                 "$LLVM_ARM64_DIR"
-      _clone_tc "$LLVM_ARM_BRANCH" "$LLVM_ARM_URL" \
+      _clone_tc "$LLVM_ARM_VERSION" "$LLVM_ARM_URL" \
                 "$LLVM_ARM_DIR"
       ;;
   esac
@@ -610,13 +610,19 @@ _full_upgrade() {
 _tc_version_option() {
   _note "${MSG_SCAN_TC}..."
   local toolchain_version tcn pt gcc hostclang
-  toolchain_version=("$AOSP_CLANG_VERSION" "$PROTON_VERSION" \
-                     "$EVA_ARM64_VERSION" "$LOS_ARM64_VERSION")
+  toolchain_version=("$AOSP_CLANG_VERSION" "$LLVM_ARM64_VERSION" \
+    "$PROTON_VERSION" "$EVA_ARM64_VERSION" "$LOS_ARM64_VERSION")
   for tc in "${toolchain_version[@]}"; do
     if [[ -d ${DIR}/toolchains/${tc/AndroidVersion.txt} ]]; then
       _get_tc_version "$tc"
       case ${tc##*/} in
-        *AndroidVersion.txt*) tcn="$AOSP_CLANG_NAME" ;;
+        *AndroidVersion.txt*)
+          if [[ ${tc} == *$AOSP_CLANG_DIR* ]]; then
+            tcn="$AOSP_CLANG_NAME"
+          else
+            tcn="Binutils"
+          fi
+          ;;
         *clang*) tcn="$PROTON_CLANG_NAME" pt="${tc_version##*/}";;
         *elf*) tcn="$EVA_GCC_NAME" gcc="${tc_version##*/}" ;;
         *android*) tcn="$LOS_GCC_NAME" ;;
@@ -971,8 +977,8 @@ _ask_for_toolchain() {
   # Return: COMPILER
   if [[ $COMPILER == default ]]; then
     _prompt "$MSG_SELECT_TC :" 2
-    select COMPILER in $AOSP_CLANG_NAME $AOSP_GCC_NAME \
-        $EVA_GCC_NAME $PROTON_CLANG_NAME $LOS_GCC_NAME \
+    select COMPILER in $AOSP_CLANG_NAME $EVA_GCC_NAME \
+        $PROTON_CLANG_NAME $LOS_GCC_NAME \
         $PROTON_GCC_NAME $HOST_CLANG_NAME; do
       [[ $COMPILER ]] && break
       _error "$MSG_ERR_SELECT"
@@ -1197,15 +1203,6 @@ _export_path_and_options() {
       TCVER="$tc_version"
       lto_dir="$AOSP_CLANG_DIR/lib"
       ;;
-    "$AOSP_GCC_NAME")
-      TC_OPTIONS=("${AOSP_GCC_OPTIONS[@]}")
-      _check_linker "$LLVM_ARM64_DIR/bin/${TC_OPTIONS[3]/CC=}"
-      export PATH="${llvm_path}:${PATH}"
-      _check_tc_path "$LLVM_ARM64_DIR" "$LLVM_ARM_DIR"
-      _get_tc_version "$LLVM_ARM64_VERSION"
-      TCVER="${tc_version##*/}"
-      lto_dir="$LLVM_ARM64_DIR/lib"
-      ;;
     "$EVA_GCC_NAME")
       TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
       _check_linker "$EVA_ARM64_DIR/bin/${TC_OPTIONS[3]/CC=}"
@@ -1286,12 +1283,16 @@ _check_tc_path() {
 # Get toolchain version
 _get_tc_version() {
   # ARG: $1 = toolchain VERSION (from settings.cfg)
-  if [[ $1 == "$AOSP_CLANG_VERSION" ]]; then
-    tc_version="$(head -n 1 "${DIR}/toolchains/$1")"
-  else
-    tc_version="$(find "${DIR}/toolchains/$1" \
-      -mindepth 1 -maxdepth 1 -type d | head -n 1)"
-  fi
+  case $1 in
+    "$AOSP_CLANG_VERSION"|"$LLVM_ARM64_VERSION"|\
+    "$LLVM_ARM_VERSION")
+      tc_version="$(head -n 1 "${DIR}/toolchains/$1")"
+      ;;
+    *)
+      tc_version="$(find "${DIR}/toolchains/$1" \
+        -mindepth 1 -maxdepth 1 -type d | head -n 1)"
+      ;;
+  esac
 }
 
 # Get PLATFORM_VERSION from Makefile
