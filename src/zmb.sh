@@ -291,10 +291,13 @@ _exit() {
   # 3. remove user input files
   # 4. remove empty device folders
   # 5. exit with 3s timeout
-  local pids; pids=(make git wget tar readelf zip java)
-  for pid in "${pids[@]}"; do
-    if pidof "$pid"; then pkill "$pid" || sleep 0.5; fi
-  done
+  if [[ $1 != 0 ]]; then
+    local pids; pids=(make git wget tar readelf zip java \
+      apt pkg pacman yum emerge zypper dnf)
+    for pid in "${pids[@]}"; do
+      if pidof "$pid"; then pkill "$pid" || sleep 0.5; fi
+    done
+  fi
   _get_build_logs
   local files device_folders
   files=(bashvar buildervar linuxver wget-log \
@@ -417,7 +420,7 @@ _install_dep() {
             _ask_for_install_pkg "$dep"
             if [[ $install_pkg == True ]]; then
               if [[ ${pm[0]} == _ ]]; then pm=("${pm[@]:1}"); fi
-              "${pm[@]}" "$dep"
+              _check unbuffer "${pm[@]}" "$dep"
             fi
           fi
         fi
@@ -524,8 +527,8 @@ _clone_anykernel() {
   if ! [[ -d $ANYKERNEL_DIR ]]; then
     _ask_for_clone_anykernel
     if [[ $clone_ak == True ]]; then
-      git clone -b "$ANYKERNEL_BRANCH" "$ANYKERNEL_URL" \
-                   "$ANYKERNEL_DIR"
+      _check unbuffer git clone -b "$ANYKERNEL_BRANCH" \
+        "$ANYKERNEL_URL" "$ANYKERNEL_DIR"
     fi
   fi
 }
