@@ -560,7 +560,7 @@ _get_local_aosp_tag() {
   # ARG $1 = TC dir
   # ARG $2 = TC version
   # Return: tag
-  local tag regex
+  local regex
   case ${1##*/} in
     aosp-clang) regex="r\d+[a-z]{1}" ;;
     llvm-arm64|llvm-arm) regex="llvm-r\d+[a-z]{0,1}" ;;
@@ -577,10 +577,10 @@ _full_upgrade() {
     [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
     [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}"
     [t1]="${tp}/${PROTON_DIR}€${PROTON_BRANCH}"
-    [t2]="${tp}/${EVA_ARM_DIR}€${EVA_ARM_BRANCH}"
-    [t3]="${tp}/${EVA_ARM64_DIR}€${EVA_ARM64_BRANCH}"
-    [t4]="${tp}/${LOS_ARM_DIR}€${LOS_ARM_BRANCH}"
-    [t5]="${tp}/${LOS_ARM64_DIR}€${LOS_ARM64_BRANCH}"
+    [t2]="${tp}/${EVA_ARM64_DIR}€${EVA_ARM64_BRANCH}"
+    [t3]="${tp}/${EVA_ARM_DIR}€${EVA_ARM_BRANCH}"
+    [t4]="${tp}/${LOS_ARM64_DIR}€${LOS_ARM64_BRANCH}"
+    [t5]="${tp}/${LOS_ARM_DIR}€${LOS_ARM_BRANCH}"
     [t6]="${tp}/${AOSP_CLANG_DIR}€${AOSP_CLANG_URL}€$AOSP_CLANG_VERSION"
     [t7]="${tp}/${LLVM_ARM64_DIR}€${LLVM_ARM64_URL}€$LLVM_ARM64_VERSION"
     [t8]="${tp}/${LLVM_ARM_DIR}€${LLVM_ARM_URL}€$LLVM_ARM_VERSION"
