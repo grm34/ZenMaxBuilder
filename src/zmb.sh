@@ -1545,12 +1545,14 @@ _send_msg() {
 _send_file() {
   # ARG $1 = file
   # ARG $2 = caption
-  local tg sendtype
-  if [[ ${PHOTO_F} =~ ${1##*/*.} ]]; then tg=sendPhoto
-  elif [[ ${AUDIO_F} =~ ${1##*/*.} ]]; then tg=sendAudio
-  elif [[ ${VIDEO_F} =~ ${1##*/*.} ]]; then tg=sendVideo
-  elif [[ ${ANIM_F} =~ ${1##*/*.} ]]; then tg=sendAnimation
-  elif [[ ${VOICE_F} =~ ${1##*/*.} ]]; then tg=sendVoice
+  local tg sendtype extension
+  extension=${1##*/*.}
+  if [[ ${#extension} < 3 ]]; then tg=sendDocument
+  elif [[ ${PHOTO_F} =~ ${extension} ]]; then tg=sendPhoto
+  elif [[ ${AUDIO_F} =~ ${extension} ]]; then tg=sendAudio
+  elif [[ ${VIDEO_F} =~ ${extension} ]]; then tg=sendVideo
+  elif [[ ${ANIM_F} =~ ${extension} ]]; then tg=sendAnimation
+  elif [[ ${VOICE_F} =~ ${extension} ]]; then tg=sendVoice
   else tg=sendDocument
   fi
   sendtype="${tg/send}"
