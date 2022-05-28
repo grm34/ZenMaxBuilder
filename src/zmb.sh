@@ -893,9 +893,12 @@ _start() {
 
   # Status -> zip -> upload the build
   _get_build_time
-  local gen; gen="${BOOT_DIR}/include/generated/compile.h"
-  if ! [[ -f $compiler ]] \
-      || "$(stat -c %Z "$gen" 2>/dev/null)" < "$start_time"; then
+  local most_recent ftime gen
+  gen="${BOOT_DIR}/include/generated/compile.h"
+  # shellcheck disable=SC2012
+  most_recent="$(ls -Art "$BOOT_DIR" 2>/dev/null | tail -n 1)"
+  ftime="$(stat -c %Z "${BOOT_DIR}/${most_recent}" 2>/dev/null)"
+  if ! [[ -f $gen ]] || [[ $ftime < $start_time ]]; then
     _error "$MSG_ERR_MAKE"; _exit 1
   else
     compiler="$(grep -m 1 LINUX_COMPILER "$gen")"
