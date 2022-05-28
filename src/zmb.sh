@@ -431,9 +431,9 @@ _install_dep() {
 
 # Clone some toolchains
 _clone_tc() {
-  # ARG $1 = repo branch / version
-  # ARG $2 = repo url
-  # ARG $3 = repo folder
+  # ARG $1 = branch/version
+  # ARG $2 = url
+  # ARG $3 = dir
   if ! [[ -d $3 ]]; then
     _ask_for_clone_toolchain "${3##*/}"
     if [[ $clone_tc == True ]]; then
@@ -444,6 +444,7 @@ _clone_tc() {
           ;;
         *)
           _check unbuffer git clone --depth=1 -b "$1" "$2" "$3"
+          ;;
       esac
     fi
   fi
@@ -451,8 +452,8 @@ _clone_tc() {
 
 # Get latest AOSP CLANG/LLVM tag
 _get_latest_aosp_tag() {
-  # ARG $1 = TC url
-  # ARG $2 = TC dir
+  # ARG $1 = url
+  # ARG $2 = dir
   # Return: latest tgz
   local url regex rep
   case ${2##*/} in
@@ -471,8 +472,8 @@ _get_latest_aosp_tag() {
 
 # Install AOSP CLANG/LLVM
 _install_aosp_tgz() {
-  # ARG $1 = TC dir
-  # ARG $2 = TC version
+  # ARG $1 = dir
+  # ARG $2 = version
   _check mkdir "$1"
   _check unbuffer \
     wget -O "${1##*/}.tar.gz" "$tgz"
@@ -560,8 +561,8 @@ _update_git() {
 
 # Get local AOSP CLANG/LLVM tag
 _get_local_aosp_tag() {
-  # ARG $1 = TC dir
-  # ARG $2 = TC version
+  # ARG $1 = dir
+  # ARG $2 = version
   # Return: tag
   local regex
   case ${1##*/} in
@@ -639,7 +640,7 @@ _tc_version_option() {
             tcn="Binutils"
           fi
           ;;
-        *clang*) tcn="$PROTON_CLANG_NAME" pt="${tc_version##*/}";;
+        *clang*) tcn="$PROTON_CLANG_NAME" pt="${tc_version##*/}" ;;
         *elf*) tcn="$EVA_GCC_NAME" gcc="${tc_version##*/}" ;;
         *android*) tcn="$LOS_GCC_NAME" ;;
       esac
