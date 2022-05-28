@@ -893,15 +893,15 @@ _start() {
 
   # Status -> zip -> upload the build
   _get_build_time
-  local ftime gen
-  gen="${OUT_DIR}/include/generated/compile.h"
+  local ftime gen; gen="${OUT_DIR}/include/generated/compile.h"
   ftime="$(stat -c %Z "${gen}" 2>/dev/null)"
   if ! [[ -f $gen ]] || [[ $ftime < $start_time ]]; then
     _error "$MSG_ERR_MAKE"; _exit 1
   else
     compiler="$(grep -m 1 LINUX_COMPILER "$gen")"
+    compiler="${compiler/\#define }"
     _note "$MSG_NOTE_SUCCESS $BUILD_TIME !"
-    _note "${compiler/\#define }"
+    _note "$compiler"
     _send_success_build_status
     _ask_for_flashable_zip
     if [[ $flash_zip == True ]]; then
@@ -1576,7 +1576,7 @@ _send_start_build_status() {
 _send_success_build_status() {
   if [[ $build_status == True ]]; then
     local msg
-    msg="$MSG_NOTE_SUCCESS $BUILD_TIME ${compiler/\#define }"
+    msg="$MSG_NOTE_SUCCESS $BUILD_TIME ${compiler//_/-}"
     _send_msg "${KERNEL_NAME//_/-} | $msg"
   fi
 }
