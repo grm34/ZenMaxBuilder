@@ -9,13 +9,14 @@
 <img src="https://img.shields.io/badge/license-MIT-blue.svg?logo=keepassxc" alt="License: MIT"><img src="https://img.shields.io/github/issues/grm34/ZenMaxBuilder.svg?logo=git" alt="Issues"><img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/y/grm34/zenmaxbuilder?label=commits&logo=github"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/grm34/ZenMaxBuilder?style=flat-square&logo=Github">
 
 <br>
-# Table of Contents
+## Table of Contents
 
 - [Overview](https://kernel-builder.com#overview)
 - [Requirements](https://kernel-builder.com#requirements)
 - [Usage](https://kernel-builder.com#usage)
 - [Options](https://kernel-builder.com#options)
 - [Working Structure](https://kernel-builder.com#working-structure)
+- [Toolchains](https://kernel-builder.com#toolchains)
 - [Screenshots](https://kernel-builder.com#screenshots)
 - [Warning](https://kernel-builder.com#warning)
 - [Reporting Issues](https://kernel-builder.com#reporting-issues)
@@ -25,14 +26,14 @@
 - [Credits](https://kernel-builder.com#credits)
 
 <br>
-# Overview
+## Overview
 
 ZenMaxBuilder (ZMB) is an Android Kernel Builder written in Bash, which can be launched on any compatible Linux system (feel free to Pull Request for Windows support). By default it uses AOSP-Clang, Eva-GCC, Proton-Clang or Lineage-GCC but you can use any Clang or GCC toolchain you like (with LLVM and binutils included).
 
 Find all your compilations and working folders in one place, update and maintain your kernels faster. Full logs with the possibility to restart the build after error. Automatic creation of a flashable signed ZIP (with AK3 and AOSP Keys). Real time status feedback with build sending on any group or Telegram channel. And more. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
 
 <br>
-# Requirements
+## Requirements
 
 - A compatible Linux system
 - The kernel source code of your device
@@ -46,7 +47,7 @@ The installation of the missing dependencies will be offered by ZenMaxBuilder bu
 The optional flashable zip signature with AOSP Keys requires java (JDK) which is not proposed to install by ZenMaxBuilder (openjdk recommended).
 
 <br>
-# Usage
+## Usage
 
 Clone and enter ZMB repository
 
@@ -63,7 +64,7 @@ Start ZMB and follow instructions
     bash zmb --start
 
 <br>
-# Options
+## Options
 
     Usage: bash zmb [OPTION] [ARGUMENT] (e.g. bash zmb --start)
 
@@ -82,7 +83,7 @@ Start ZMB and follow instructions
         -d, --debug                     start compilation in debug mode
 
 <br>
-# Working Structure
+## Working Structure
 
     ZenMaxBuilder/
     |
@@ -99,7 +100,17 @@ Start ZMB and follow instructions
     |     |---- DEVICE2/
 
 <br>
-# Screenshots
+## Toolchains
+
+- [AOSP-Clang](https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/) `Android Clang/LLVM Prebuilts by Google`
+- [Eva-GCC](https://github.com/mvaisakh/gcc-build) `Bleeding Edge Bare Metal GCC Prebuilts`
+- [Proton-Clang](https://github.com/kdrag0n/proton-clang) `Android Clang/LLVM Prebuilts by kdrag0n`
+- [Lineage-GCC](https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9) `LineageOS Android GCC Prebuilts`
+- Proton-GCC `Proton-Clang vs Eva-GCC`
+- Host-Clang `system host clang`
+
+<br>
+## Screenshots
 
 <details>
   <summary>Clic to expand</summary>
@@ -108,7 +119,7 @@ Start ZMB and follow instructions
 </details>
 
 <br>
-# Warning
+## Warning
 
 ZMB is a tool to facilitate the compilation of an Android kernel, it does not modify the source, does not adds possible patchset and does not fixes specific drivers or compilation warnings.
 
@@ -127,17 +138,17 @@ The only change made is the addition of the selected toolchain compiler in the m
     CC             = aarch64-linux-android-gcc
 
 <br>
-# Reporting Issues
+## Reporting Issues
 
 Found a problem? Want a new feature? Have a question? First of all see if your issue, question or idea has [already been reported](https://github.com/grm34/ZenMaxBuilder/issues). If don't, just open a [new clear and descriptive issue](https://github.com/grm34/ZenMaxBuilder/issues/new/choose).
 
 <br>
-# Contributing
+## Contributing
 
 If you want to contribute to ZenMaxBuilder project and make it better, your help is very welcome: [Contributing Guidelines](https://github.com/grm34/ZenMaxBuilder/blob/zmb/.github/CONTRIBUTING.md).
 
 <br>
-# Help us Translate ZenMaxBuilder
+## Help us Translate ZenMaxBuilder
 
 | language | flag | translator | progress |
 | :------- | ---: | ---------: | -------: |
@@ -147,7 +158,7 @@ If you want to contribute to ZenMaxBuilder project and make it better, your help
 | German   |   🇩🇪 |    @Besix2 |     100% |
 
 <br>
-# License
+## License
 
     MIT License
 
@@ -173,7 +184,7 @@ If you want to contribute to ZenMaxBuilder project and make it better, your help
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 <br>
-# Credits
+## Credits
 
 - Neternels Team: [https://neternels.org](https://neternels.org)
 - Proton-Clang: [@kdrag0n](https://github.com/kdrag0n)
@@ -184,7 +195,7 @@ If you want to contribute to ZenMaxBuilder project and make it better, your help
 - Patches: [@Kali-Linux](https://gitlab.com/kalilinux) [@cyberknight777](https://github.com/cyberknight777)
 
 <br>
-## Buy me a beer ?
+### Buy me a beer ?
 
     LTC: MHjiEKDw7SAtx6HzSeFEWTfEUiVUak2wUD
     BTC: 356URzmeVn8AF8WxMtqipP2qQ3gwZQHdRi
