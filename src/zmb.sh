@@ -322,8 +322,7 @@ _exit() {
                  "second(s)...$nc"
         sleep 0.9
       done
-      echo
-    ;;
+      echo ;;
   esac
   if [[ $1 == 0 ]]; then exit 0; else kill -- $$; fi
 }
@@ -453,7 +452,7 @@ _clone_tc() {
   fi
 }
 
-# Get latest AOSP CLANG/LLVM tag
+# Get latest AOSP clang/llvm tag
 _get_latest_aosp_tag() {
   # ARG $1 = url
   # ARG $2 = dir
@@ -473,7 +472,7 @@ _get_latest_aosp_tag() {
   tgz="${rep}/${latest}.tar.gz"
 }
 
-# Install AOSP CLANG/LLVM
+# Install AOSP clang/llvm
 _install_aosp_tgz() {
   # ARG $1 = dir
   # ARG $2 = version
@@ -654,8 +653,7 @@ _tc_version_option() {
             tcn="$AOSP_CLANG_NAME"
           else
             tcn="Binutils"
-          fi
-          ;;
+          fi ;;
         *clang*) tcn="$PROTON_CLANG_NAME" pt="${tc_version##*/}" ;;
         *elf*) tcn="$EVA_GCC_NAME" gcc="${tc_version##*/}" ;;
         *android*) tcn="$LOS_GCC_NAME" ;;
@@ -1042,8 +1040,7 @@ _ask_for_cores() {
                "${yellow}(${MSG_ERR_TOTAL}: ${cpu})"
         _prompt "$MSG_ASK_CORES :" 1
         read -r CORES
-      done
-      ;;
+      done ;;
     *) CORES="$cpu" ;;
   esac
 }
@@ -1073,7 +1070,7 @@ _ask_for_telegram() {
   if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
     _confirm "$MSG_ASK_TG ?" "[y/N]"
     case $confirm in
-      y|Y|yes|Yes|YES) build_status="True" ;
+      y|Y|yes|Yes|YES) build_status="True" ;;
     esac
   fi
 }
@@ -1122,8 +1119,7 @@ _ask_for_install_pkg() {
   _confirm "${MSG_ASK_PKG}: $1 ?" "[Y/n]"
   case $confirm in
     n|N|no|No|NO)
-      _error warn "${MSG_WARN_DEP}: ${red}${dep}"; sleep 2
-      ;;
+      _error warn "${MSG_WARN_DEP}: ${red}${dep}"; sleep 2 ;;
     *) install_pkg="True" ;;
   esac
 }
@@ -1135,8 +1131,7 @@ _ask_for_clone_toolchain() {
   _confirm "${MSG_ASK_CLONE_TC}: $1 ?" "[Y/n]"
   case $confirm in
     n|N|no|No|NO)
-      _error "${MSG_ERR_CLONE}: ${red}$1"; _exit 1
-      ;;
+      _error "${MSG_ERR_CLONE}: ${red}$1"; _exit 1 ;;
     *) clone_tc="True" ;;
   esac
 }
