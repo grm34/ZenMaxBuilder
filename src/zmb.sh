@@ -1547,7 +1547,7 @@ _send_file() {
   # ARG $2 = caption
   local tg sendtype extension
   extension=${1##*/*.}
-  if [[ ${#extension} < 3 ]]; then tg=sendDocument
+  if [[ ${#extension} -lt 3 ]]; then tg=sendDocument
   elif [[ ${PHOTO_F} =~ ${extension} ]]; then tg=sendPhoto
   elif [[ ${AUDIO_F} =~ ${extension} ]]; then tg=sendAudio
   elif [[ ${VIDEO_F} =~ ${extension} ]]; then tg=sendVideo
