@@ -124,6 +124,8 @@ Start ZMB and follow instructions
 
 ## Toolchains
 
+ZMB uses prebuilts toolchains as default, in case of you already have compiled or downloaded some, just move it in `toolchains` folder and named it `aosp-clang` for example (refer [settings.cfg](https://github.com/grm34/ZenMaxBuilder/blob/zmb/etc/settings.cfg)).
+
 - [AOSP-Clang](https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/) `Android Clang/LLVM Prebuilts by Google`
 - [Binutils](https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/) `Android GCC/LLVM Prebuilts by Google`
 - [Eva-GCC](https://github.com/mvaisakh/gcc-build) `Bleeding Edge Bare Metal GCC Prebuilts by mvaisakh`
