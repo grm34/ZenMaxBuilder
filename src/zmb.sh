@@ -584,10 +584,8 @@ _full_upgrade() {
     [t3]="${tp}/${EVA_ARM_DIR}€${EVA_ARM_BRANCH}"
     [t4]="${tp}/${LOS_ARM64_DIR}€${LOS_ARM64_BRANCH}"
     [t5]="${tp}/${LOS_ARM_DIR}€${LOS_ARM_BRANCH}"
-    [t6]="${tp}/${AOSP_CLANG_DIR}€${AOSP_CLANG_URL}€\
-      $AOSP_CLANG_VERSION"
-    [t7]="${tp}/${LLVM_ARM64_DIR}€${LLVM_ARM64_URL}€\
-      $LLVM_ARM64_VERSION"
+    [t6]="${tp}/${AOSP_CLANG_DIR}€${AOSP_CLANG_URL}€$AOSP_CLANG_VERSION"
+    [t7]="${tp}/${LLVM_ARM64_DIR}€${LLVM_ARM64_URL}€$LLVM_ARM64_VERSION"
     [t8]="${tp}/${LLVM_ARM_DIR}€${LLVM_ARM_URL}€$LLVM_ARM_VERSION"
   )
   up_list=(zmb ak3 t1 t2 t3 t4 t5 t6 t7 t8)
