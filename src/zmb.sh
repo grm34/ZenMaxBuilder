@@ -541,6 +541,7 @@ _update_git() {
 _update_aosp_clang() {
   local tag
   AOSP_CLANG_DIR="${DIR}/toolchains/$AOSP_CLANG_DIR"
+  _note "${MSG_UP_AOSP_CLANG}..."
   tag=$(grep -oP "r\d+[a-z]{1}" \
     "${DIR}/toolchains/$AOSP_CLANG_VERSION")
   _get_latest_aosp_clang
@@ -550,6 +551,8 @@ _update_aosp_clang() {
       _check mv "$AOSP_CLANG_DIR" "${AOSP_CLANG_DIR}-$tag"
       _install_aosp_clang
     fi
+  else
+    echo "${MSG_ALREADY_UP}: $latest"
   fi
 }
 
