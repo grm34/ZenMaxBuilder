@@ -540,7 +540,9 @@ _update_git() {
 # Update AOSP-Clang
 _update_aosp_clang() {
   local tag
-  tag=$(grep -oP "r\d+[a-z]{1}" "$AOSP_CLANG_VERSION")
+  AOSP_CLANG_DIR="${DIR}/toolchains/$AOSP_CLANG_DIR"
+  tag=$(grep -oP "r\d+[a-z]{1}" \
+    "${DIR}/toolchains/$AOSP_CLANG_VERSION")
   _get_latest_aosp_clang
   if [[ $tag != "${latest/clang-}" ]]; then
     _ask_for_update_aosp_clang
@@ -555,7 +557,6 @@ _update_aosp_clang() {
 _full_upgrade() {
   # 1. set ZMB and AK3 and TC data
   # 2. upgrade existing stuff...
-  _update_aosp_clang
   local tp up_list; tp="${DIR}/toolchains"
   declare -A up_data=(
     [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
@@ -579,6 +580,7 @@ _full_upgrade() {
       _cd "$DIR" "$MSG_ERR_DIR ${red}$DIR"
     fi
   done
+  _update_aosp_clang
 }
 
 # Toolchains Versions Option
@@ -1118,8 +1120,8 @@ _ask_for_apply_patch() {
 # Confirmation: update AOSP-Clang?
 _ask_for_update_aosp_clang() {
   # Return: update_aosp_clang
-  _error warn "$AOSP_CLANG_NAME $tag => ${latest/clang-}"
-  _confirm "$MSG_CONFIRM_UP $AOSP_CLANG_NAME ?" "[Y/n]"
+  _error warn "$AOSP_CLANG_NAME $MSG_TAG $tag => ${latest/clang-}"
+  _confirm "$MSG_CONFIRM_UP $AOSP_CLANG_NAME ?" "[y/N]"
   case $confirm in
     y|Y|yes|Yes|YES) update_aosp_clang="True" ;;
   esac
