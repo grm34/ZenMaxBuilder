@@ -482,9 +482,9 @@ _clone_toolchains() {
   case $COMPILER in
     # Eva-GCC or Proton-GCC
     "$EVA_GCC_NAME"|"$PROTON_GCC_NAME")
-      _clone_tc "$GCC_ARM_BRANCH" "$GCC_ARM_URL" "$GCC_ARM_DIR"
-      _clone_tc "$GCC_ARM64_BRANCH" "$GCC_ARM64_URL" \
-                "$GCC_ARM64_DIR"
+      _clone_tc "$EVA_ARM_BRANCH" "$EVA_ARM_URL" "$EVA_ARM_DIR"
+      _clone_tc "$EVA_ARM64_BRANCH" "$EVA_ARM64_URL" \
+                "$EVA_ARM64_DIR"
       ;;
   esac
   case $COMPILER in
@@ -565,8 +565,8 @@ _full_upgrade() {
     [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
     [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}€$MSG_UP_AK3"
     [t1]="${tp}/${PROTON_DIR}€${PROTON_BRANCH}€$MSG_UP_CLANG"
-    [t2]="${tp}/${GCC_ARM_DIR}€${GCC_ARM_BRANCH}€$MSG_UP_GCC"
-    [t3]="${tp}/${GCC_ARM64_DIR}€${GCC_ARM64_BRANCH}€$MSG_UP_GCC64"
+    [t2]="${tp}/${EVA_ARM_DIR}€${EVA_ARM_BRANCH}€$MSG_UP_GCC"
+    [t3]="${tp}/${EVA_ARM64_DIR}€${EVA_ARM64_BRANCH}€$MSG_UP_GCC64"
     [t4]="${tp}/${LOS_ARM_DIR}€${LOS_ARM_BRANCH}€$MSG_UP_LOS"
     [t5]="${tp}/${LOS_ARM64_DIR}€${LOS_ARM64_BRANCH}€$MSG_UP_LOS64"
   )
@@ -593,7 +593,7 @@ _tc_version_option() {
   _note "${MSG_SCAN_TC}..."
   local toolchain_version tcn pt gcc hostclang
   toolchain_version=("$AOSP_CLANG_VERSION" "$PROTON_VERSION" \
-                     "$GCC_ARM64_VERSION" "$LOS_ARM64_VERSION")
+                     "$EVA_ARM64_VERSION" "$LOS_ARM64_VERSION")
   for tc in "${toolchain_version[@]}"; do
     if [[ -d ${DIR}/toolchains/${tc/AndroidVersion.txt} ]]; then
       _get_tc_version "$tc"
@@ -772,8 +772,8 @@ _start() {
   OUT_DIR="${DIR}/out/$CODENAME"
   BUILD_DIR="${DIR}/builds/$CODENAME"
   PROTON_DIR="${DIR}/toolchains/$PROTON_DIR"
-  GCC_ARM64_DIR="${DIR}/toolchains/$GCC_ARM64_DIR"
-  GCC_ARM_DIR="${DIR}/toolchains/$GCC_ARM_DIR"
+  EVA_ARM64_DIR="${DIR}/toolchains/$EVA_ARM64_DIR"
+  EVA_ARM_DIR="${DIR}/toolchains/$EVA_ARM_DIR"
   AOSP_CLANG_DIR="${DIR}/toolchains/$AOSP_CLANG_DIR"
   LOS_ARM64_DIR="${DIR}/toolchains/$LOS_ARM64_DIR"
   LOS_ARM_DIR="${DIR}/toolchains/$LOS_ARM_DIR"
@@ -1180,12 +1180,12 @@ _export_path_and_options() {
 
     "$EVA_GCC_NAME")
       TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
-      _check_linker "$GCC_ARM64_DIR/bin/${TC_OPTIONS[3]/CC=}"
-      export PATH="${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin:${PATH}"
-      _check_tc_path "$GCC_ARM64_DIR" "$GCC_ARM_DIR"
-      _get_tc_version "$GCC_ARM64_VERSION"
+      _check_linker "$EVA_ARM64_DIR/bin/${TC_OPTIONS[3]/CC=}"
+      export PATH="${EVA_ARM64_DIR}/bin:${EVA_ARM_DIR}/bin:${PATH}"
+      _check_tc_path "$EVA_ARM64_DIR" "$EVA_ARM_DIR"
+      _get_tc_version "$EVA_ARM64_VERSION"
       TCVER="${tc_version##*/}"
-      lto_dir="$GCC_ARM64_DIR/lib"
+      lto_dir="$EVA_ARM64_DIR/lib"
       ;;
     "$LOS_GCC_NAME")
       TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
@@ -1199,11 +1199,11 @@ _export_path_and_options() {
     "$PROTON_GCC_NAME")
       TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
       _check_linker "$PROTON_DIR/bin/${TC_OPTIONS[3]/CC=}"
-      eva_path="${GCC_ARM64_DIR}/bin:${GCC_ARM_DIR}/bin"
+      eva_path="${EVA_ARM64_DIR}/bin:${EVA_ARM_DIR}/bin"
       export PATH="${PROTON_DIR}/bin:${eva_path}:${PATH}"
-      _check_tc_path "$PROTON_DIR" "$GCC_ARM_DIR" "$GCC_ARM64_DIR"
+      _check_tc_path "$PROTON_DIR" "$EVA_ARM_DIR" "$EVA_ARM64_DIR"
       _get_tc_version "$PROTON_VERSION"; v1="$tc_version"
-      _get_tc_version "$GCC_ARM64_VERSION"; v2="$tc_version"
+      _get_tc_version "$EVA_ARM64_VERSION"; v2="$tc_version"
       TCVER="${v1##*/}/${v2##*/}"
       lto_dir="$PROTON_DIR/lib"
       ;;
