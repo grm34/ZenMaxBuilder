@@ -103,9 +103,9 @@ Start ZMB and follow instructions
 ## Toolchains
 
 - [AOSP-Clang](https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/) `Android Clang/LLVM Prebuilts by Google`
-- [Eva-GCC](https://github.com/mvaisakh/gcc-build) `Bleeding Edge Bare Metal GCC Prebuilts`
+- [Eva-GCC](https://github.com/mvaisakh/gcc-build) `Bleeding Edge Bare Metal GCC Prebuilts by mvaisakh`
 - [Proton-Clang](https://github.com/kdrag0n/proton-clang) `Android Clang/LLVM Prebuilts by kdrag0n`
-- [Lineage-GCC](https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9) `LineageOS Android GCC Prebuilts`
+- [Lineage-GCC](https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9) `Android GCC Prebuilts by LineageOS`
 - Proton-GCC `Proton-Clang vs Eva-GCC`
 - Host-Clang `system host clang`
 
