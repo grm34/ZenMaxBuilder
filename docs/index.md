@@ -108,7 +108,7 @@ Start ZMB and follow instructions
 - [Proton-Clang](https://github.com/kdrag0n/proton-clang) `Android Clang/LLVM Prebuilts by kdrag0n`
 - [Lineage-GCC](https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9) `Android GCC Prebuilts by LineageOS`
 - Proton-GCC `Proton-Clang vs Eva-GCC`
-- Host-Clang `system host clang`
+- Host-Clang `system host Clang/LLVM`
 
 <br>
 ## Screenshots
