@@ -427,7 +427,7 @@ _install_dep() {
   fi
 }
 
-# Install some toolchains
+# Clone some toolchains
 _clone_tc() {
   # ARG $1 = repo branch
   # ARG $2 = repo url
@@ -436,17 +436,32 @@ _clone_tc() {
     _ask_for_clone_toolchain "${3##*/}"
     if [[ $clone_tc == True ]]; then
       if [[ $2 == "$AOSP_CLANG_URL" ]]; then
-        _check mkdir "$3"
-        _check unbuffer wget -O "${3##*/}.tar.gz" "$2"
-        _note "$MSG_TAR_AOSP"
-        _check unbuffer tar -xvf "${3##*/}.tar.gz" -C "$3"
-        _check rm "${3##*/}.tar.gz"
-        if [[ -f wget-log ]]; then _check rm wget-log; fi
+        _get_latest_aosp_clang; _install_aosp_clang
       else
         _check unbuffer git clone --depth=1 -b "$1" "$2" "$3"
       fi
     fi
   fi
+}
+
+# Get latest AOSP-Clang tag
+_get_latest_aosp_clang() {
+  # Return: latest clang_tgz
+  local url; url=$(curl -s "$AOSP_CLANG_URL")
+  latest=$(echo "$url" | grep -oP "clang-r\d+[a-z]{1}" | tail -n 1)
+  clang_tgz="${AOSP_CLANG_URL/+/+archive}/${latest}.tar.gz"
+}
+
+# Install AOSP-Clang
+_install_aosp_clang() {
+  _check mkdir "$AOSP_CLANG_DIR"
+  _check unbuffer \
+    wget -O "${AOSP_CLANG_DIR##*/}.tar.gz" "$clang_tgz"
+  _note "$MSG_TAR_AOSP toolchains/${AOSP_CLANG_DIR##*/}"
+  _check unbuffer tar -xvf \
+    "${AOSP_CLANG_DIR##*/}.tar.gz" -C "$AOSP_CLANG_DIR"
+  _check rm "${AOSP_CLANG_DIR##*/}.tar.gz"
+  if [[ -f wget-log ]]; then _check rm wget-log; fi
 }
 
 # Install the selected toolchains
@@ -522,6 +537,22 @@ _update_git() {
   _check unbuffer git pull
 }
 
+# Update AOSP-Clang
+_update_aosp_clang() {
+  local tag
+  AOSP_CLANG_DIR="${DIR}/toolchains/$AOSP_CLANG_DIR"
+  tag=$(grep -oP "r\d+[a-z]{1}" \
+    "${DIR}/toolchains/$AOSP_CLANG_VERSION")
+  _get_latest_aosp_clang
+  if [[ $tag != "${latest/clang-}" ]]; then
+    _ask_for_update_aosp_clang
+    if [[ $update_aosp_clang == True ]]; then
+      _check mv "$AOSP_CLANG_DIR" "${AOSP_CLANG_DIR}-$tag"
+      _install_aosp_clang
+    fi
+  fi
+}
+
 # Update everything that needs to be
 _full_upgrade() {
   # 1. set ZMB and AK3 and TC data
@@ -549,6 +580,7 @@ _full_upgrade() {
       _cd "$DIR" "$MSG_ERR_DIR ${red}$DIR"
     fi
   done
+  _update_aosp_clang
 }
 
 # Toolchains Versions Option
@@ -1082,6 +1114,16 @@ _ask_for_apply_patch() {
   case $confirm in
     n|N|no|No|NO) _exit 0 ;;
     *) apply_patch="True" ;;
+  esac
+}
+
+# Confirmation: update AOSP-Clang?
+_ask_for_update_aosp_clang() {
+  # Return: update_aosp_clang
+  _error warn "$AOSP_CLANG_NAME $MSG_TAG $tag => ${latest/clang-}"
+  _confirm "$MSG_CONFIRM_UP $AOSP_CLANG_NAME ?" "[y/N]"
+  case $confirm in
+    y|Y|yes|Yes|YES) update_aosp_clang="True" ;;
   esac
 }
 

@@ -44,6 +44,7 @@
 - [Usage](#usage)
 - [Options](#options)
 - [Working Structure](#working-structure)
+- [Toolchains](#toolchains)
 - [Screenshots](#screenshots)
 - [Warning](#warning)
 - [Reporting Issues](#reporting-issues)
@@ -121,6 +122,15 @@ Start ZMB and follow instructions
     |     |---- DEVICE1/
     |     |---- DEVICE2/
 
+## Toolchains
+
+- [AOSP-Clang](https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/) `Android Clang/LLVM Prebuilts by Google`
+- [Eva-GCC](https://github.com/mvaisakh/gcc-build) `Bleeding Edge Bare Metal GCC Prebuilts by mvaisakh`
+- [Proton-Clang](https://github.com/kdrag0n/proton-clang) `Android Clang/LLVM Prebuilts by kdrag0n`
+- [Lineage-GCC](https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9) `Android GCC Prebuilts by LineageOS`
+- Proton-GCC `Proton-Clang vs Eva-GCC`
+- Host-Clang `system host clang`
+
 ## Screenshots
 
 <details>
@@ -136,7 +146,7 @@ ZMB is a tool to facilitate the compilation of an Android kernel, it does not mo
 
 The only change made is the addition of the selected toolchain compiler in the main Makefile, all others options from ZMB settings will be passed directly to make as command-line argument:
 
-    # Proton-Clang / Proton-GCC
+    # AOSP-Clang / Proton-Clang
     CROSS_COMPILE ?= aarch64-linux-gnu-
     CC             = clang
 
