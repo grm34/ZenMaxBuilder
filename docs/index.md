@@ -116,6 +116,7 @@ Start ZMB and follow instructions
 <details>
   <summary>Clic to expand</summary>
   <p><img alt="screenshot" src="https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/screenshot.png"></p>
+  <p><img alt="help" src="https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/help.png"></p>
   <p><img alt="telegram" src="https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/telegram.jpg"></p>
 </details>
 
