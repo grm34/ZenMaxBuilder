@@ -1194,23 +1194,28 @@ _ask_for_update_aosp() {
 # Set compiler options
 _export_path_and_options() {
   # 1. export target variables (CFG)
-  # 2. ensure compiler is system supported (verify linker)
-  # 3. append toolchains to the $PATH, export and verify
-  # 4. get the toolchain compiler version
-  # 5. get CROSS_COMPILE and CC (to handle Makefile)
-  # 6. set Link Time Optimization (LTO)
+  # 2. define PLATFORM_VERSION & ANDROID_MAJOR_VERSION
+  # 3. ensure compiler is system supported (verify linker)
+  # 4. append toolchains to the $PATH, export and verify
+  # 5. get the toolchain compiler version
+  # 6. get CROSS_COMPILE and CC (to handle Makefile)
+  # 7. set Link Time Optimization (LTO)
   # ?  DEBUG MODE: display $PATH
-  # Return: PATH TC_OPTIONS TCVER
+  # Return: PATH TC_OPTIONS TCVER tc_cross tc_cc
   if [[ $BUILDER == default ]]; then BUILDER="$(whoami)"; fi
   if [[ $HOST == default ]]; then HOST="$(uname -n)"; fi
   export KBUILD_BUILD_USER="${BUILDER}"
   export KBUILD_BUILD_HOST="${HOST}"
-  _get_platform_version
-  if [[ $IGNORE_MAKEFILE == "True" ]] || [[ $ptv != 1 ]]; then
-    export PLATFORM_VERSION
-  fi
-  if [[ $IGNORE_MAKEFILE == "True" ]] || [[ $amv != 1 ]]; then
+  _get_android_platform_version
+  if [[ $IGNORE_MAKEFILE == "True" ]] || [[ -z $amv ]]; then
     export ANDROID_MAJOR_VERSION
+  elif [[ -n $amv ]]; then
+    ANDROID_MAJOR_VERSION="$amv"
+  fi
+  if [[ $IGNORE_MAKEFILE == "True" ]] || [[ -z $ptv ]]; then
+    export PLATFORM_VERSION
+  elif [[ -n $ptv ]]; then
+    PLATFORM_VERSION="$ptv"
   fi
   local llvm_path eva_path lto_dir v1 v2
   llvm_path="${LLVM_ARM64_DIR}/bin:${LLVM_ARM_DIR}/bin"
@@ -1311,19 +1316,17 @@ _check_tc_path() {
 }
 
 # Get PLATFORM_VERSION from Makefile
-_get_platform_version() {
-  # Return: platformversion majorversion
-  if grep -m 1 ANDROID_MAJOR_VERSION \
-      "${KERNEL_DIR}/Makefile" &>/dev/null; then
-    amv=1
-  elif grep -m 1 PLATFORM_VERSION \
-      "${KERNEL_DIR}/Makefile" &>/dev/null; then
-    ptv=1
-  fi
+_get_android_platform_version() {
+  # Return: amv ptv
+  amv="$(grep -m 1 ANDROID_MAJOR_VERSION= "${KERNEL_DIR}/Makefile")"
+  ptv="$(grep -m 1 PLATFORM_VERSION= "${KERNEL_DIR}/Makefile")"
+  amv="${amv/ANDROID_MAJOR_VERSION=}"
+  ptv="${ptv/PLATFORM_VERSION=}"
 }
 
 # Get CROSS_COMPILE and CC from Makefile
 _get_and_display_cross_compile() {
+  # Return: r1 r2
   r1=("^CROSS_COMPILE\s.*?=.*" "CROSS_COMPILE\ ?=\ ${tc_cross}")
   r2=("^CC\s.*=.*" "CC\ =\ ${tc_cc}\ -I${KERNEL_DIR}")
   local c1 c2
@@ -1617,10 +1620,8 @@ _upload_kernel_build() {
 
 # HTML start build status message
 _set_html_status_msg() {
-  local android_version; android_version="AOSP Unified"
-  if [[ -n $PLATFORM_VERSION ]]; then
-    android_version="${android_version/Unified/$PLATFORM_VERSION}"
-  fi
+  # Return: status_msg
+  local android_version; android_version="AOSP $PLATFORM_VERSION"
   status_msg="
 
 <b>${MSG_TG_HTML[0]} :</b>  <code>${CODENAME}</code>
