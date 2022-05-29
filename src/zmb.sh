@@ -309,7 +309,7 @@ _exit() {
   for file in "${files[@]}"; do
     if [[ -f $file ]]; then _check rm -f "${DIR}/$file"; fi
   done
-  device_folders=(out builds logs toolchains/aosp-clang)
+  device_folders=(out builds logs)
   for folder in "${device_folders[@]}"; do
     if [[ -d ${DIR}/${folder}/$CODENAME ]] \
         && [[ -z $(ls -A "${DIR}/${folder}/$CODENAME") ]]; then
@@ -462,10 +462,10 @@ _get_latest_aosp_tag() {
   # Return: latest tgz
   local url regex rep
   case ${2##*/} in
-    aosp-clang)
+    "${AOSP_CLANG_DIR##*/}")
       regex="clang-r\d+[a-z]{1}"; rep="${1/+/+archive}"
       ;;
-    llvm-arm64|llvm-arm)
+    "${LLVM_ARM64_DIR##*/}"|"${LLVM_ARM_DIR##*/}")
       regex="llvm-r\d+[a-z]{0,1}"
       rep="${1/+refs/+archive\/refs\/heads}"
       ;;
@@ -570,8 +570,9 @@ _get_local_aosp_tag() {
   # Return: tag
   local regex
   case ${1##*/} in
-    aosp-clang) regex="r\d+[a-z]{1}" ;;
-    llvm-arm64|llvm-arm) regex="llvm-r\d+[a-z]{0,1}" ;;
+    "${AOSP_CLANG_DIR##*/}") regex="r\d+[a-z]{1}" ;;
+    "${LLVM_ARM64_DIR##*/}"|"${LLVM_ARM_DIR##*/}")
+      regex="llvm-r\d+[a-z]{0,1}" ;;
   esac
   tag=$(grep -oP "${regex}" "${DIR}/toolchains/$2")
 }
