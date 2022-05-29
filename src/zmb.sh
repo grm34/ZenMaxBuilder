@@ -1221,12 +1221,13 @@ _export_path_and_options() {
   elif [[ -n $ptv ]]; then
     PLATFORM_VERSION="$ptv"
   fi
-  local llvm_path eva_path lto_dir v1 v2
+  local llvm_path eva_path lto_dir v1 v2 x
+  x="${DIR}/toolchains/"
   llvm_path="${LLVM_ARM64_DIR}/bin:${LLVM_ARM_DIR}/bin"
   case $COMPILER in
     "$PROTON_CLANG_NAME")
       TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
-      _check_linker "$PROTON_DIR/bin/${TC_OPTIONS[3]/CC=}"
+      _check_linker "${x}$PROTON_CHECK"
       export PATH="${PROTON_DIR}/bin:${PATH}"
       _check_tc_path "$PROTON_DIR"
       _get_tc_version "$PROTON_VERSION"
@@ -1235,7 +1236,7 @@ _export_path_and_options() {
       ;;
     "$AOSP_CLANG_NAME")
       TC_OPTIONS=("${AOSP_CLANG_OPTIONS[@]}")
-      _check_linker "$AOSP_CLANG_DIR/bin/${TC_OPTIONS[3]/CC=}"
+      _check_linker "${x}$AOSP_CLANG_CHECK" "${x}$LLVM_ARM64_CHECK"
       export PATH="${AOSP_CLANG_DIR}/bin:${llvm_path}:${PATH}"
       _check_tc_path "$AOSP_CLANG_DIR"
       _get_tc_version "$AOSP_CLANG_VERSION"
@@ -1244,7 +1245,7 @@ _export_path_and_options() {
       ;;
     "$EVA_GCC_NAME")
       TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
-      _check_linker "$EVA_ARM64_DIR/bin/${TC_OPTIONS[3]/CC=}"
+      _check_linker "${x}$EVA_ARM64_CHECK"
       export PATH="${EVA_ARM64_DIR}/bin:${EVA_ARM_DIR}/bin:${PATH}"
       _check_tc_path "$EVA_ARM64_DIR" "$EVA_ARM_DIR"
       _get_tc_version "$EVA_ARM64_VERSION"
@@ -1253,7 +1254,7 @@ _export_path_and_options() {
       ;;
     "$LOS_GCC_NAME")
       TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
-      _check_linker "$LOS_ARM64_DIR/bin/real-${TC_OPTIONS[3]/CC=}"
+      _check_linker "${x}$LOS_ARM64_CHECK"
       export PATH="${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:${PATH}"
       _check_tc_path "$LOS_ARM64_DIR" "$LOS_ARM_DIR"
       _get_tc_version "$LOS_ARM64_VERSION"
@@ -1262,7 +1263,7 @@ _export_path_and_options() {
       ;;
     "$PROTON_GCC_NAME")
       TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
-      _check_linker "$PROTON_DIR/bin/${TC_OPTIONS[3]/CC=}"
+      _check_linker "${x}$PROTON_CHECK" "${x}$EVA_ARM64_CHECK"
       eva_path="${EVA_ARM64_DIR}/bin:${EVA_ARM_DIR}/bin"
       export PATH="${PROTON_DIR}/bin:${eva_path}:${PATH}"
       _check_tc_path "$PROTON_DIR" "$EVA_ARM_DIR" "$EVA_ARM64_DIR"
@@ -1298,15 +1299,16 @@ _export_path_and_options() {
 
 # Ensure compiler is system supported
 _check_linker() {
-  # ARG: $1 = cross compiler
-  local linker
-  linker="$(readelf --all "$1" \
-    | grep -m 1 interpreter | awk -F ": " '{print $NF}')"
-  linker="${linker/]}"
-  if [[ -n $linker ]] && ! [[ -f $linker ]]; then
-    _error warn "$MSG_WARN_LINKER ${red}${linker}$nc"
-    _error "$MSG_ERR_LINKER $COMPILER"; _exit 1
-  fi
+  # ARG: $@ = toolchain check (from settings.cfg)
+  for linker in "$@"; do
+    linker="$(readelf --all "$1" \
+      | grep -m 1 interpreter | awk -F ": " '{print $NF}')"
+    linker="${linker/]}"
+    if ! [[ -f $linker ]]; then
+      _error warn "$MSG_WARN_LINKER ${red}${linker}$nc"
+      _error "$MSG_ERR_LINKER $COMPILER"; _exit 1; break
+    fi
+  done
 }
 
 # Ensure $PATH has been correctly set
