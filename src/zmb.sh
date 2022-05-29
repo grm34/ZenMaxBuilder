@@ -605,7 +605,7 @@ _full_upgrade() {
           if [[ $tag != "${latest/clang-}" ]]; then
             _ask_for_update_aosp "${repo[0]##*/}"
             if [[ $update_aosp == True ]]; then
-              _check mv "${repo[0]}" "${repo[0]}-$tag"
+              _check mv "${repo[0]}" "${repo[0]}-${tag/llvm-}"
               _install_aosp_tgz "${repo[0]}" "${repo[2]}"
             fi
           else
