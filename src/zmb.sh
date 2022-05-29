@@ -668,7 +668,7 @@ _tc_version_option() {
   if [[ -n $pt ]] && [[ -n $gcc ]]; then
     echo -e "${green}${PROTON_GCC_NAME}: ${red}${pt}/${gcc}$nc"
   fi
-  hostclang="$(clang --version | grep -m1 version \
+  hostclang="$(clang --version | grep -m 1 "clang\|version" \
     | awk -F " " '{print $NF}')"
   echo -e "${green}${HOST_CLANG_NAME}: ${red}${hostclang}$nc"
 }
@@ -1274,7 +1274,7 @@ _export_path_and_options() {
       ;;
     "$HOST_CLANG_NAME")
       TC_OPTIONS=("${HOST_CLANG_OPTIONS[@]}")
-      TCVER="$(clang --version | grep -m 1 version \
+      TCVER="$(clang --version | grep -m 1 "clang\|version" \
         | awk -F " " '{print $NF}')"
       ;;
   esac
@@ -1302,7 +1302,7 @@ _check_linker() {
   # ARG: $@ = toolchain check (from settings.cfg)
   for linker in "$@"; do
     linker="$(readelf --program-headers "$linker" \
-      | grep -m 1 -E "^\s*\[\w{1,}\s\w{1,}\s\w{1,}:\s" \
+      | grep -m 1 -E "^\s*\[\w{1,}\s\w{1,}\s\w{1,}:\s|\[*:\s" \
       | awk -F ": " '{print $NF}')"
     linker="${linker/]}"
     if ! [[ -f $linker ]]; then
@@ -1360,7 +1360,7 @@ _handle_makefile_cross_compile() {
     _check sed -i "s|${r1[0]}|${r1[1]}|g" "${KERNEL_DIR}/Makefile"
     _check sed -i "s|${r2[0]}|${r2[1]}|g" "${KERNEL_DIR}/Makefile"
   fi
-  local mk; mk="$(grep -m1 "${r1[0]}" "${KERNEL_DIR}/Makefile")"
+  local mk; mk="$(grep -m 1 "${r1[0]}" "${KERNEL_DIR}/Makefile")"
   if [[ -n ${mk##*"${tc_cross/CROSS_COMPILE=/}"*} ]]; then
     _error warn "$MSG_WARN_CC"
   fi
