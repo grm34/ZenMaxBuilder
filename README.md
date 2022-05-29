@@ -177,7 +177,7 @@ If you want to contribute to ZenMaxBuilder project and make it better, your help
 | English  |   🇬🇧 |     @grm34 |     100% |
 | Spanish  |   🇪🇸 |     @grm34 |     100% |
 | French   |   🇫🇷 |     @grm34 |     100% |
-| German   |   🇩🇪 |    @Besix2 |     100% |
+| German   |   🇩🇪 |   @0n1cOn3 |     100% |
 
 ## License
 

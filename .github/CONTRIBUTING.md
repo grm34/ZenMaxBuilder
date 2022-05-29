@@ -22,7 +22,7 @@ If you know another language and are willing to help translate ZMB, here are the
 | English  |   🇬🇧 |     @grm34 |     100% |
 | Spanish  |   🇪🇸 |     @grm34 |     100% |
 | French   |   🇫🇷 |     @grm34 |     100% |
-| German   |   🇩🇪 |    @Besix2 |     100% |
+| German   |   🇩🇪 |   @0n1cOn3 |     100% |
 
 ### How to make a clean pull request
 
