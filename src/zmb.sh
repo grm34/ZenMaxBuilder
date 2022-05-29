@@ -286,7 +286,7 @@ _check() {
 # Properly exit the script
 _exit() {
   # ARG: $1 = exit code
-  # 1. kill make PID child on interrupt
+  # 1. kill running PID childs on interrupt
   # 2. get current build logs
   # 3. remove user input files
   # 4. remove empty device folders
@@ -846,9 +846,11 @@ _start() {
   # Clone the selected toolchains
   _clone_toolchains
 
-  # Make kernel version
+  # Export options and define CC
   _export_path_and_options
   _handle_makefile_cross_compile
+
+  # Make kernel version
   _note "${MSG_NOTE_LINUXVER}..."
   make -C "$KERNEL_DIR" kernelversion \
     | grep -v make > linuxver & wait $!
