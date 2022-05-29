@@ -1410,7 +1410,8 @@ _make_build() {
   # 1. set Telegram HTML message
   # 2. send build status on Telegram
   # 3. CLANG: CROSS_COMPILE_ARM32 -> CROSS_COMPILE_COMPAT (> v4.2)
-  # 4. make new android kernel build
+  # 4. CONFIG_DEBUG_SECTION_MISMATCH=y in DEBUG Mode
+  # 5. make new android kernel build
   _note "${MSG_NOTE_MAKE}: ${KERNEL_NAME}..."
   _set_html_status_msg
   _send_start_build_status
@@ -1421,6 +1422,9 @@ _make_build() {
   fi
   if [[ $MAKE_CMD_ARGS != True ]]; then
     TC_OPTIONS=("${TC_OPTIONS[0]}")
+  fi
+  if [[ $DEBUG == True ]]; then
+    TC_OPTIONS=(CONFIG_DEBUG_SECTION_MISMATCH=y "${TC_OPTIONS[@]}")
   fi
   _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
     O="$OUT_DIR" ARCH="$ARCH" "${TC_OPTIONS[*]}" 2>&1
