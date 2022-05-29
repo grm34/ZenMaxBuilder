@@ -1301,8 +1301,9 @@ _export_path_and_options() {
 _check_linker() {
   # ARG: $@ = toolchain check (from settings.cfg)
   for linker in "$@"; do
-    linker="$(readelf --all "$1" \
-      | grep -m 1 interpreter | awk -F ": " '{print $NF}')"
+    linker="$(readelf --program-headers "$1" \
+      | grep -m 1 -E "^\s*\[\w{1,}\s\w{1,}\s\w{1,}:\s" \
+      | awk -F ": " '{print $NF}')"
     linker="${linker/]}"
     if ! [[ -f $linker ]]; then
       _error warn "$MSG_WARN_LINKER ${red}${linker}$nc"
