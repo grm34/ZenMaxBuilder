@@ -1301,7 +1301,7 @@ _export_path_and_options() {
 _check_linker() {
   # ARG: $@ = toolchain check (from settings.cfg)
   for linker in "$@"; do
-    linker="$(readelf --program-headers "$1" \
+    linker="$(readelf --program-headers "$linker" \
       | grep -m 1 -E "^\s*\[\w{1,}\s\w{1,}\s\w{1,}:\s" \
       | awk -F ": " '{print $NF}')"
     linker="${linker/]}"
