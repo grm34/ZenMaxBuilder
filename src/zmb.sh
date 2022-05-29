@@ -419,7 +419,7 @@ _install_dep() {
             _ask_for_install_pkg "$dep"
             if [[ $install_pkg == True ]]; then
               if [[ ${pm[0]} == _ ]]; then pm=("${pm[@]:1}"); fi
-              _check unbuffer "${pm[@]}" "$dep"
+              "${pm[@]}" "$dep"
             fi
           fi
         fi
