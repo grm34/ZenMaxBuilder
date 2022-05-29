@@ -49,6 +49,9 @@ elif [[ $(tput cols) -lt 76 ]] || [[ $(tput lines) -lt 12 ]]; then
 elif [[ $(uname) != Linux ]]; then
   echo "ERROR: run ZenMaxBuilder on Linux" >&2
   exit 1
+elif [[ $(whoami) == root ]]; then
+  echo "ERROR: do not run ZenMaxBuilder as root" >&2
+  exit 1
 fi
 
 # Absolute path
