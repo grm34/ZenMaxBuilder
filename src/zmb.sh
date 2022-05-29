@@ -1300,16 +1300,18 @@ _export_path_and_options() {
 # Ensure compiler is system supported
 _check_linker() {
   # ARG: $@ = toolchain check (from settings.cfg)
-  local r; r="^\s*\[\w{1,}\s\w{1,}\s\w{1,}:\s|\[*\\w{1,}:\s"
-  for linker in "$@"; do
-    linker="$(readelf --program-headers "$linker" \
-      | grep -m 1 -E "${r}" | awk -F ": " '{print $NF}')"
-    linker="${linker/]}"
-    if ! [[ -f $linker ]]; then
-      _error warn "$MSG_WARN_LINKER ${red}${linker}$nc"
-      _error "$MSG_ERR_LINKER $COMPILER"; _exit 1; break
-    fi
-  done
+  if [[ $HOST_LINKER == True ]]; then
+    local r; r="^\s*\[\w{1,}\s\w{1,}\s\w{1,}:\s|\[*\\w{1,}:\s"
+    for linker in "$@"; do
+      linker="$(readelf --program-headers "$linker" \
+        | grep -m 1 -E "${r}" | awk -F ": " '{print $NF}')"
+      linker="${linker/]}"
+      if ! [[ -f $linker ]]; then
+        _error warn "$MSG_WARN_LINKER ${red}${linker}$nc"
+        _error "$MSG_ERR_LINKER $COMPILER"; _exit 1; break
+      fi
+    done
+  fi
 }
 
 # Ensure $PATH has been correctly set
