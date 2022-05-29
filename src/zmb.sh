@@ -225,7 +225,7 @@ _confirm() {
   until [[ -z $confirm ]] \
       || [[ $confirm =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]]; do
     _error "$MSG_ERR_CONFIRM"
-    _confirm_msg "$@"
+    _confirm "$@"
   done
 }
 
