@@ -1169,7 +1169,8 @@ _ask_for_update_aosp() {
 
 _aosp_clang_options() {
   TC_OPTIONS=("${AOSP_CLANG_OPTIONS[@]}")
-  _check_linker "${1}$AOSP_CLANG_CHECK" "${1}$LLVM_ARM64_CHECK"
+  _check_linker "${1}/$AOSP_CLANG_CHECK" "${1}/$LLVM_ARM64_CHECK"
+  local llvm _path
   llvm_path="${LLVM_ARM64_DIR}/bin:${LLVM_ARM_DIR}/bin"
   export PATH="${AOSP_CLANG_DIR}/bin:${llvm_path}:${PATH}"
   _check_tc_path "$AOSP_CLANG_DIR"
@@ -1180,8 +1181,8 @@ _aosp_clang_options() {
 
 _eva_gcc_options() {
   TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
-  _check_linker "${1}$EVA_ARM64_CHECK"
- export PATH="${EVA_ARM64_DIR}/bin:${EVA_ARM_DIR}/bin:${PATH}"
+  _check_linker "${1}/$EVA_ARM64_CHECK"
+  export PATH="${EVA_ARM64_DIR}/bin:${EVA_ARM_DIR}/bin:${PATH}"
   _check_tc_path "$EVA_ARM64_DIR" "$EVA_ARM_DIR"
   _get_tc_version "$EVA_ARM64_VERSION"
   TCVER="${tc_version##*/}"
@@ -1190,7 +1191,7 @@ _eva_gcc_options() {
 
 _proton_clang_options() {
   TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
-  _check_linker "${1}$PROTON_CHECK"
+  _check_linker "${1}/$PROTON_CHECK"
   export PATH="${PROTON_DIR}/bin:${PATH}"
   _check_tc_path "$PROTON_DIR"
   _get_tc_version "$PROTON_VERSION"
@@ -1200,7 +1201,7 @@ _proton_clang_options() {
 
 _los_gcc_options() {
   TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
-  _check_linker "${1}$EVA_ARM64_CHECK"
+  _check_linker "${1}/$EVA_ARM64_CHECK"
   export PATH="${EVA_ARM64_DIR}/bin:${EVA_ARM_DIR}/bin:${PATH}"
   _check_tc_path "$EVA_ARM64_DIR" "$EVA_ARM_DIR"
   _get_tc_version "$EVA_ARM64_VERSION"
@@ -1210,7 +1211,7 @@ _los_gcc_options() {
 
 _proton_gcc_options() {
   TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
-  _check_linker "${1}$PROTON_CHECK" "${1}$EVA_ARM64_CHECK"
+  _check_linker "${1}/$PROTON_CHECK" "${1}/$EVA_ARM64_CHECK"
   local eva_path eva_v pt_v
   eva_path="${EVA_ARM64_DIR}/bin:${EVA_ARM_DIR}/bin"
   export PATH="${PROTON_DIR}/bin:${eva_path}:${PATH}"
@@ -1224,7 +1225,7 @@ _proton_gcc_options() {
 _host_clang_options() {
   TC_OPTIONS=("${HOST_CLANG_OPTIONS[@]}")
   _get_tc_version "$HOST_CLANG_NAME"
-  TCVER="${tc_version##*/}"
+  TCVER="$tc_version"
 }
 
 _export_path_and_options() {
@@ -1236,7 +1237,7 @@ _export_path_and_options() {
   # 5. get the toolchain compiler version
   # 6. get CROSS_COMPILE and CC (to handle Makefile)
   # 7. set Link Time Optimization (LTO)
-  # ?  DEBUG MODE: display $PATH
+  # ?  DEBUG MODE: display compiler, options and PATH
   # Return: PATH TC_OPTIONS TCVER tc_cross tc_cc
   [[ $BUILDER == default ]] && BUILDER="$(whoami)"
   [[ $HOST == default ]] && HOST="$(uname -n)"
@@ -1253,7 +1254,7 @@ _export_path_and_options() {
   elif [[ -n $ptv ]]; then
     PLATFORM_VERSION="$ptv"
   fi
-  local tcpath; tcpath="${DIR}/toolchains/"
+  local tcpath; tcpath="${DIR}/toolchains"
   case $COMPILER in
     "$PROTON_CLANG_NAME") _proton_clang_options "$tcpath" ;;
     "$AOSP_CLANG_NAME") _aosp_clang_options "$tcpath" ;;
