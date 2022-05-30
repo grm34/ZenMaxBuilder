@@ -77,21 +77,18 @@ shopt -s checkwinsize progcomp
 shopt -u autocd cdspell dirspell extglob progcomp_alias
 
 # User language
-LANGUAGE="${DIR}/lang/${LANG:0:2}.cfg"
-if [[ -f $LANGUAGE ]]; then
-  # shellcheck source=/dev/null
-  source "$LANGUAGE"
+# shellcheck source=/dev/null
+if [[ -f "${DIR}/lang/${LANG:0:2}.cfg" ]]; then
+  source "${DIR}/lang/${LANG:0:2}.cfg"
 else
-  # shellcheck source=/dev/null
   source "${DIR}/lang/en.cfg"
 fi
 
 # User configuration
+# shellcheck source=/dev/null
 if [[ -f ${DIR}/etc/user.cfg ]]; then
-  # shellcheck source=/dev/null
   source "${DIR}/etc/user.cfg"
 else
-  # shellcheck source=/dev/null
   source "${DIR}/etc/settings.cfg"
 fi
 
@@ -107,7 +104,7 @@ _zenmaxbuilder() {
   # 4. handle general options
   _terminal_colors
   trap '_error $MSG_ERR_KBOARD; _exit 1' INT QUIT TSTP CONT HUP
-  if [[ $TIMEZONE == default ]]; then _get_user_timezone; fi
+  [[ $TIMEZONE == default ]] && _get_user_timezone
   DATE="$(TZ=$TIMEZONE date +%Y-%m-%d)"
   TIME="$(TZ=$TIMEZONE date +%Hh%Mm%Ss)"
   for opt in "$@"; do
@@ -196,18 +193,12 @@ _cd() {
 
 # Ask some information (question or selection)
 _prompt() {
-    # ARG $1 = the question to ask
-    # ARG $2 = question type (1=question/2=selection)
-    local length count; length="$*"; count="${#length}"
-    echo -ne "\n${yellow}==> ${green}$1 ${yellow}\n==> "
-    for (( char=1; char<=count-2; char++ )); do
-      echo -ne "─"
-    done
-    if [[ $2 == 1 ]]; then
-      echo -ne "\n==> $nc"
-    else
-      echo -ne "\n$nc"
-    fi
+  # ARG $1 = the question to ask
+  # ARG $2 = question type (1=question/2=selection)
+  local length count; length="$*"; count="${#length}"
+  echo -ne "\n${yellow}==> ${green}$1 ${yellow}\n==> "
+  for (( char=1; char<=count-2; char++ )); do echo -ne "─"; done
+  [[ $2 == 1 ]] && echo -ne "\n==> $nc" || echo -ne "\n$nc"
 }
 
 # Ask confirmation yes/no
@@ -217,9 +208,7 @@ _confirm() {
   confirm="False"
   local count; count="$(( ${#1} + 6 ))"
   echo -ne "${yellow}\n==> ${green}${1} ${red}${2}${yellow}\n==> "
-  for (( char=1; char<=count; char++ )); do
-    echo -ne "─"
-  done
+  for (( char=1; char<=count; char++ )); do echo -ne "─"; done
   echo -ne "\n==> $nc"
   read -r confirm
   until [[ -z $confirm ]] \
@@ -272,7 +261,7 @@ _check() {
     _get_build_logs
     _ask_for_run_again
     if [[ $run_again == True ]]; then
-      if [[ -f $log ]]; then _terminal_banner > "$log"; fi
+      [[ -f $log ]] && _terminal_banner > "$log"
       if [[ $start_time ]]; then
         start_time="$(TZ=$TIMEZONE date +%s)"
         _send_start_build_status
@@ -307,7 +296,7 @@ _exit() {
     "${AOSP_CLANG_DIR##*/}.tar.gz" "${LLVM_ARM_DIR##*/}.gz"
     "${LLVM_ARM64_DIR##*/}.tar.gz")
   for file in "${files[@]}"; do
-    if [[ -f $file ]]; then _check rm -f "${DIR}/$file"; fi
+    [[ -f $file ]] && _check rm -f "${DIR}/$file"
   done
   device_folders=(out builds logs)
   for folder in "${device_folders[@]}"; do
@@ -414,14 +403,14 @@ _install_dep() {
         if [[ ${pm[0]} == _ ]] && [[ $dep == gcc ]]; then
           continue
         else
-          if [[ $dep == llvm ]]; then dep=llvm-ar; fi
-          if [[ $dep == binutils ]]; then dep=ld; fi
+          [[ $dep == llvm ]] && dep=llvm-ar
+          [[ $dep == binutils ]] && dep=ld
           if ! which "${dep}" &>/dev/null; then
-            if [[ $dep == llvm-ar ]]; then dep=llvm; fi
-            if [[ $dep == ld ]]; then dep=binutils; fi
+            [[ $dep == llvm-ar ]] && dep=llvm
+            [[ $dep == ld ]] && dep=binutils
             _ask_for_install_pkg "$dep"
             if [[ $install_pkg == True ]]; then
-              if [[ ${pm[0]} == _ ]]; then pm=("${pm[@]:1}"); fi
+              [[ ${pm[0]} == _ ]] && pm=("${pm[@]:1}")
               "${pm[@]}" "$dep"
             fi
           fi
@@ -487,7 +476,7 @@ _install_aosp_tgz() {
     echo "$latest" > "${DIR}/toolchains/$2"
   fi
   _check rm "${1##*/}.tar.gz"
-  if [[ -f wget-log ]]; then _check rm wget-log; fi
+  [[ -f wget-log ]] && _check rm wget-log
 }
 
 # Install the selected toolchains
@@ -636,6 +625,10 @@ _get_tc_version() {
     "$LLVM_ARM_VERSION")
       tc_version="$(head -n 1 "${DIR}/toolchains/$1")"
       ;;
+    "$HOST_CLANG_NAME")
+      tc_version="$(clang --version | grep -m 1 "clang\|version" \
+        | awk -F " " '{print $NF}')"
+      ;;
     *)
       tc_version="$(find "${DIR}/toolchains/$1" \
         -mindepth 1 -maxdepth 1 -type d | head -n 1)"
@@ -645,32 +638,33 @@ _get_tc_version() {
 
 _tc_version_option() {
   _note "${MSG_SCAN_TC}..."
-  local toolchain_version tcn pt gcc hostclang
-  toolchain_version=("$AOSP_CLANG_VERSION" "$LLVM_ARM64_VERSION" \
-    "$PROTON_VERSION" "$EVA_ARM64_VERSION" "$LOS_ARM64_VERSION")
-  for tc in "${toolchain_version[@]}"; do
-    if [[ -d ${DIR}/toolchains/${tc/AndroidVersion.txt} ]]; then
-      _get_tc_version "$tc"
-      case ${tc##*/} in
-        *AndroidVersion.txt*)
-          if [[ ${tc} == *$AOSP_CLANG_DIR* ]]; then
-            tcn="$AOSP_CLANG_NAME"
-          else
-            tcn="Binutils"
-          fi ;;
-        *clang*) tcn="$PROTON_CLANG_NAME" pt="${tc_version##*/}" ;;
-        *elf*) tcn="$EVA_GCC_NAME" gcc="${tc_version##*/}" ;;
-        *android*) tcn="$LOS_GCC_NAME" ;;
+  declare -A toolchains_data=(
+    [aosp]="${AOSP_CLANG_VERSION}€${AOSP_CLANG_DIR}€$AOSP_CLANG_NAME"
+    [llvm]="${LLVM_ARM64_VERSION}€${LLVM_ARM64_DIR}€Binutils"
+    [eva]="${EVA_ARM64_VERSION}€${EVA_ARM64_DIR}€$EVA_GCC_NAME"
+    [pclang]="${PROTON_VERSION}€${PROTON_DIR}€$PROTON_CLANG_NAME"
+    [los]="${LOS_ARM64_VERSION}€${LOS_ARM64_DIR}€$LOS_GCC_NAME"
+    [pgcc]="${PROTON_GCC_NAME}€notfound€$PROTON_GCC_NAME"
+    [host]="${HOST_CLANG_NAME}€found€$HOST_CLANG_NAME"
+  )
+  local toolchains_list eva_v pt_v
+  toolchains_list=(aosp llvm eva pclang los pgcc host)
+  for toolchain in "${toolchains_list[@]}"; do
+    IFS="€"; local tc
+    tc="${toolchains_data[$toolchain]}"
+    read -ra tc <<< "$tc"
+    unset IFS
+    if [[ -d ${DIR}/toolchains/${tc[1]/found} ]]; then
+      _get_tc_version "${tc[0]}"
+      case ${tc[2]} in
+        "$EVA_GCC_NAME") eva_v="${tc_version##*/}" ;;
+        "$PROTON_CLANG_NAME") pt_v="${tc_version##*/}" ;;
       esac
-      echo -e "${green}${tcn}: ${red}${tc_version##*/}$nc"
+      echo -e "${green}${tc[2]}: ${red}${tc_version##*/}$nc"
+    elif [[ -n $eva_v ]] && [[ -n $pt_v ]]; then
+      echo -e "${green}${tc[2]}: ${red}${pt_v}/${eva_v}$nc"
     fi
   done
-  if [[ -n $pt ]] && [[ -n $gcc ]]; then
-    echo -e "${green}${PROTON_GCC_NAME}: ${red}${pt}/${gcc}$nc"
-  fi
-  hostclang="$(clang --version | grep -m 1 "clang\|version" \
-    | awk -F " " '{print $NF}')"
-  echo -e "${green}${HOST_CLANG_NAME}: ${red}${hostclang}$nc"
 }
 
 # Telegram options
@@ -1195,6 +1189,66 @@ _ask_for_update_aosp() {
 ### .7. MAKER => all the functions related to the make process   ###
 ###--------------------------------------------------------------###
 
+_aosp_clang_options() {
+  TC_OPTIONS=("${AOSP_CLANG_OPTIONS[@]}")
+  _check_linker "${1}$AOSP_CLANG_CHECK" "${1}$LLVM_ARM64_CHECK"
+  llvm_path="${LLVM_ARM64_DIR}/bin:${LLVM_ARM_DIR}/bin"
+  export PATH="${AOSP_CLANG_DIR}/bin:${llvm_path}:${PATH}"
+  _check_tc_path "$AOSP_CLANG_DIR"
+  _get_tc_version "$AOSP_CLANG_VERSION"
+  TCVER="$tc_version"
+  lto_dir="$AOSP_CLANG_DIR/lib"
+}
+
+_eva_gcc_options() {
+  TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
+  _check_linker "${1}$EVA_ARM64_CHECK"
+ export PATH="${EVA_ARM64_DIR}/bin:${EVA_ARM_DIR}/bin:${PATH}"
+  _check_tc_path "$EVA_ARM64_DIR" "$EVA_ARM_DIR"
+  _get_tc_version "$EVA_ARM64_VERSION"
+  TCVER="${tc_version##*/}"
+  lto_dir="$EVA_ARM64_DIR/lib"
+}
+
+_proton_clang_options() {
+  TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
+  _check_linker "${1}$PROTON_CHECK"
+  export PATH="${PROTON_DIR}/bin:${PATH}"
+  _check_tc_path "$PROTON_DIR"
+  _get_tc_version "$PROTON_VERSION"
+  TCVER="${tc_version##*/}"
+  lto_dir="$PROTON_DIR/lib"
+}
+
+_los_gcc_options() {
+  TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
+  _check_linker "${1}$EVA_ARM64_CHECK"
+  export PATH="${EVA_ARM64_DIR}/bin:${EVA_ARM_DIR}/bin:${PATH}"
+  _check_tc_path "$EVA_ARM64_DIR" "$EVA_ARM_DIR"
+  _get_tc_version "$EVA_ARM64_VERSION"
+  TCVER="${tc_version##*/}"
+  lto_dir="$EVA_ARM64_DIR/lib"
+}
+
+_proton_gcc_options() {
+  TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
+  _check_linker "${1}$PROTON_CHECK" "${1}$EVA_ARM64_CHECK"
+  local eva_path eva_v pt_v
+  eva_path="${EVA_ARM64_DIR}/bin:${EVA_ARM_DIR}/bin"
+  export PATH="${PROTON_DIR}/bin:${eva_path}:${PATH}"
+  _check_tc_path "$PROTON_DIR" "$EVA_ARM_DIR" "$EVA_ARM64_DIR"
+  _get_tc_version "$PROTON_VERSION"; pt_v="$tc_version"
+  _get_tc_version "$EVA_ARM64_VERSION"; eva_v="$tc_version"
+  TCVER="${pt_v##*/}/${eva_v##*/}"
+  lto_dir="$PROTON_DIR/lib"
+}
+
+_host_clang_options() {
+  TC_OPTIONS=("${HOST_CLANG_OPTIONS[@]}")
+  _get_tc_version "$HOST_CLANG_NAME"
+  TCVER="${tc_version##*/}"
+}
+
 # Set compiler options
 _export_path_and_options() {
   # 1. export target variables (CFG)
@@ -1206,8 +1260,8 @@ _export_path_and_options() {
   # 7. set Link Time Optimization (LTO)
   # ?  DEBUG MODE: display $PATH
   # Return: PATH TC_OPTIONS TCVER tc_cross tc_cc
-  if [[ $BUILDER == default ]]; then BUILDER="$(whoami)"; fi
-  if [[ $HOST == default ]]; then HOST="$(uname -n)"; fi
+  [[ $BUILDER == default ]] && BUILDER="$(whoami)"
+  [[ $HOST == default ]] && HOST="$(uname -n)"
   export KBUILD_BUILD_USER="${BUILDER}"
   export KBUILD_BUILD_HOST="${HOST}"
   _get_android_platform_version
@@ -1221,62 +1275,14 @@ _export_path_and_options() {
   elif [[ -n $ptv ]]; then
     PLATFORM_VERSION="$ptv"
   fi
-  local llvm_path eva_path lto_dir v1 v2 x
-  x="${DIR}/toolchains/"
-  llvm_path="${LLVM_ARM64_DIR}/bin:${LLVM_ARM_DIR}/bin"
+  local tcpath; tcpath="${DIR}/toolchains/"
   case $COMPILER in
-    "$PROTON_CLANG_NAME")
-      TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
-      _check_linker "${x}$PROTON_CHECK"
-      export PATH="${PROTON_DIR}/bin:${PATH}"
-      _check_tc_path "$PROTON_DIR"
-      _get_tc_version "$PROTON_VERSION"
-      TCVER="${tc_version##*/}"
-      lto_dir="$PROTON_DIR/lib"
-      ;;
-    "$AOSP_CLANG_NAME")
-      TC_OPTIONS=("${AOSP_CLANG_OPTIONS[@]}")
-      _check_linker "${x}$AOSP_CLANG_CHECK" "${x}$LLVM_ARM64_CHECK"
-      export PATH="${AOSP_CLANG_DIR}/bin:${llvm_path}:${PATH}"
-      _check_tc_path "$AOSP_CLANG_DIR"
-      _get_tc_version "$AOSP_CLANG_VERSION"
-      TCVER="$tc_version"
-      lto_dir="$AOSP_CLANG_DIR/lib"
-      ;;
-    "$EVA_GCC_NAME")
-      TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
-      _check_linker "${x}$EVA_ARM64_CHECK"
-      export PATH="${EVA_ARM64_DIR}/bin:${EVA_ARM_DIR}/bin:${PATH}"
-      _check_tc_path "$EVA_ARM64_DIR" "$EVA_ARM_DIR"
-      _get_tc_version "$EVA_ARM64_VERSION"
-      TCVER="${tc_version##*/}"
-      lto_dir="$EVA_ARM64_DIR/lib"
-      ;;
-    "$LOS_GCC_NAME")
-      TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
-      _check_linker "${x}$LOS_ARM64_CHECK"
-      export PATH="${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:${PATH}"
-      _check_tc_path "$LOS_ARM64_DIR" "$LOS_ARM_DIR"
-      _get_tc_version "$LOS_ARM64_VERSION"
-      TCVER="${tc_version##*/}"
-      lto_dir="$LOS_ARM64_DIR/lib"
-      ;;
-    "$PROTON_GCC_NAME")
-      TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
-      _check_linker "${x}$PROTON_CHECK" "${x}$EVA_ARM64_CHECK"
-      eva_path="${EVA_ARM64_DIR}/bin:${EVA_ARM_DIR}/bin"
-      export PATH="${PROTON_DIR}/bin:${eva_path}:${PATH}"
-      _check_tc_path "$PROTON_DIR" "$EVA_ARM_DIR" "$EVA_ARM64_DIR"
-      _get_tc_version "$PROTON_VERSION"; v1="$tc_version"
-      _get_tc_version "$EVA_ARM64_VERSION"; v2="$tc_version"
-      TCVER="${v1##*/}/${v2##*/}"
-      lto_dir="$PROTON_DIR/lib"
-      ;;
-    "$HOST_CLANG_NAME")
-      TC_OPTIONS=("${HOST_CLANG_OPTIONS[@]}")
-      TCVER="$(clang --version | grep -m 1 "clang\|version" \
-        | awk -F " " '{print $NF}')"
-      ;;
+    "$PROTON_CLANG_NAME") _proton_clang_options "$tcpath" ;;
+    "$AOSP_CLANG_NAME") _aosp_clang_options "$tcpath" ;;
+    "$EVA_GCC_NAME") _eva_gcc_options "$tcpath" ;;
+    "$LOS_GCC_NAME") _los_gcc_options "$tcpath" ;;
+    "$PROTON_GCC_NAME") _proton_gcc_options "$tcpath" ;;
+    "$HOST_CLANG_NAME") _host_clang_options ;;
   esac
   tc_cross="${TC_OPTIONS[1]/CROSS_COMPILE=}"
   tc_cc="${TC_OPTIONS[3]/CC=}"
@@ -1425,9 +1431,7 @@ _make_build() {
       && [[ ${TC_OPTIONS[3]} == clang ]]; then
     TC_OPTIONS[2]="${TC_OPTIONS[2]/_ARM32=/_COMPAT=}"
   fi
-  if [[ $MAKE_CMD_ARGS != True ]]; then
-    TC_OPTIONS=("${TC_OPTIONS[0]}")
-  fi
+  [[ $MAKE_CMD_ARGS != True ]] && TC_OPTIONS=("${TC_OPTIONS[0]}")
   if [[ $DEBUG == True ]]; then
     TC_OPTIONS=(CONFIG_DEBUG_SECTION_MISMATCH=y "${TC_OPTIONS[@]}")
   fi
@@ -1459,10 +1463,10 @@ _zip() {
     _check cp "${DIR}/docs/ak3/banner" "${ANYKERNEL_DIR}/banner"
   fi
   _cd "$ANYKERNEL_DIR" "$MSG_ERR_DIR ${red}${ANYKERNEL_DIR}"
-  if [[ $start_time ]]; then _set_ak3_conf; fi
+  [[ $start_time ]] && _set_ak3_conf
   _check unbuffer zip -r9 "${1}.zip" \
     ./* -x .git README.md ./*placeholder 2>&1
-  if ! [[ -d $3 ]]; then _check mkdir "$3"; fi
+  [[ ! -d $3 ]] && _check mkdir "$3"
   _check mv "${1}.zip" "$3"
   _cd "$DIR" "$MSG_ERR_DIR ${red}$DIR"
   _clean_anykernel
@@ -1579,9 +1583,7 @@ _send_file() {
 
 # Start build status
 _send_start_build_status() {
-  if [[ $build_status == True ]]; then
-    _send_msg "${status_msg//_/-}"
-  fi
+  [[ $build_status == True ]] && _send_msg "${status_msg//_/-}"
 }
 
 # Success build status
@@ -1622,7 +1624,7 @@ _upload_kernel_build() {
   if [[ $build_status == True ]] && [[ $flash_zip == True ]]; then
     local file caption
     file="${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip"
-    if ! [[ -f $file ]]; then file="${file/-signed}"; fi
+    [[ ! -f $file ]] && file="${file/-signed}"
     _note "${MSG_NOTE_UPLOAD}: ${file##*/}..."
     MD5="$(md5sum "$file" | cut -d' ' -f1)"
     caption="${MSG_TG_CAPTION}: $BUILD_TIME"
