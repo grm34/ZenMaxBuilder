@@ -1200,13 +1200,13 @@ _proton_clang_options() {
 }
 
 _los_gcc_options() {
-  TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
-  _check_linker "${1}/$EVA_ARM64_CHECK"
-  export PATH="${EVA_ARM64_DIR}/bin:${EVA_ARM_DIR}/bin:${PATH}"
-  _check_tc_path "$EVA_ARM64_DIR" "$EVA_ARM_DIR"
-  _get_tc_version "$EVA_ARM64_VERSION"
+  TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
+  _check_linker "${1}/$LOS_ARM64_CHECK"
+  export PATH="${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:${PATH}"
+  _check_tc_path "$LOS_ARM64_DIR" "$LOS_ARM_DIR"
+  _get_tc_version "$LOS_ARM64_VERSION"
   TCVER="${tc_version##*/}"
-  lto_dir="$EVA_ARM64_DIR/lib"
+  lto_dir="$LOS_ARM64_DIR/lib"
 }
 
 _proton_gcc_options() {
@@ -1215,7 +1215,7 @@ _proton_gcc_options() {
   local eva_path eva_v pt_v
   eva_path="${EVA_ARM64_DIR}/bin:${EVA_ARM_DIR}/bin"
   export PATH="${PROTON_DIR}/bin:${eva_path}:${PATH}"
-  _check_tc_path "$PROTON_DIR" "$EVA_ARM_DIR" "$EVA_ARM64_DIR"
+  _check_tc_path "$PROTON_DIR" "$EVA_ARM64_DIR" "$EVA_ARM_DIR"
   _get_tc_version "$PROTON_VERSION"; pt_v="$tc_version"
   _get_tc_version "$EVA_ARM64_VERSION"; eva_v="$tc_version"
   TCVER="${pt_v##*/}/${eva_v##*/}"
