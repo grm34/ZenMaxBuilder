@@ -94,7 +94,7 @@ fi
 
 
 ###---------------------------------------------------------------###
-###  1. MAIN => the ZenMaxBuilder main process (ZMB)              ###
+###        1. MAIN => the ZenMaxBuilder main process (ZMB)        ###
 ###---------------------------------------------------------------###
 
 _zenmaxbuilder() {
@@ -152,7 +152,7 @@ _zenmaxbuilder() {
 
 
 ###---------------------------------------------------------------###
-###  2. MANAGER => global management functions of the script      ###
+###    2. MANAGER => global management functions of the script    ###
 ###---------------------------------------------------------------###
 
 _terminal_banner() {
@@ -361,7 +361,7 @@ _patterns() {
 
 
 ###---------------------------------------------------------------###
-###  3. REQUIREMENTS => dependency install management functions   ###
+###     3. REQUIREMENTS => dependency installation management     ###
 ###---------------------------------------------------------------###
 
 _install_dep() {
@@ -508,7 +508,7 @@ _clone_anykernel() {
 
 
 ###---------------------------------------------------------------###
-###  4. OPTIONS => command line option management functions       ###
+###         4. OPTIONS => command-line options management         ###
 ###---------------------------------------------------------------###
 
 # Update option
@@ -764,7 +764,7 @@ ${cyan}https://kernel-builder.com$nc\n"
 
 
 ###---------------------------------------------------------------###
-###  5. START => new android kernel compilation function          ###
+###      5. START => new android kernel compilation function      ###
 ###---------------------------------------------------------------###
 
 _start() {
@@ -891,7 +891,7 @@ _start() {
 
 
 ###---------------------------------------------------------------###
-###  6. QUESTIONER => all the questions asked to the user         ###
+###     6. QUESTIONER => all the questions asked to the user      ###
 ###---------------------------------------------------------------###
 
 _ask_for_codename() {
@@ -1164,7 +1164,7 @@ _ask_for_update_aosp() {
 
 
 ###---------------------------------------------------------------###
-###  7. MAKER => everything related to the make process           ###
+###      7. MAKER => everything related to the make process       ###
 ###---------------------------------------------------------------###
 
 _aosp_clang_options() {
@@ -1412,7 +1412,7 @@ _make_build() {
 
 
 ###---------------------------------------------------------------###
-###  8. ZIP => everything related to the signed zip creation      ###
+###    8. ZIP => everything related to the signed zip creation    ###
 ###---------------------------------------------------------------###
 
 _zip() {
@@ -1508,7 +1508,7 @@ _sign_zip() {
 
 
 ###---------------------------------------------------------------###
-###  9. TELEGRAM => building status Telegram feedback (POST)      ###
+###    9. TELEGRAM => building status Telegram feedback (POST)    ###
 ###---------------------------------------------------------------###
 
 # Telegram API
@@ -1606,7 +1606,7 @@ _set_html_status_msg() {
 
 
 ###---------------------------------------------------------------###
-###  10. Run the ZenMaxBuilder (ZMB) main process...              ###
+###        10. Run the ZenMaxBuilder (ZMB) main process...        ###
 ###---------------------------------------------------------------###
 _zenmaxbuilder "$@"
 
