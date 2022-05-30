@@ -43,8 +43,8 @@ if [[ ${BASH_SOURCE[0]} != "$0" ]]; then
 elif ! [[ -t 0 ]]; then
   echo "ERROR: run ZenMaxBuilder from a terminal" >&2
   exit 1
-elif [[ $(tput cols) -lt 76 ]] || [[ $(tput lines) -lt 12 ]]; then
-  echo "ERROR: terminal window is too small (min 76x12)" >&2
+elif [[ $(tput cols) -lt 80 ]] || [[ $(tput lines) -lt 12 ]]; then
+  echo "ERROR: terminal window is too small (min 80x12)" >&2
   exit 68
 elif [[ $(uname) != Linux ]]; then
   echo "ERROR: run ZenMaxBuilder on Linux" >&2
@@ -193,9 +193,9 @@ _prompt() {
   # ARG $1 = the question to ask
   # ARG $2 = question type (1=question/2=selection)
   local length count; length="$*"; count="${#length}"
-  echo -ne "\n${yellow}==> ${green}$1 ${yellow}\n==> "
-  for (( char=1; char<=count-2; char++ )); do echo -ne "─"; done
-  [[ $2 == 1 ]] && echo -ne "\n==> $nc" || echo -ne "\n$nc"
+  echo -ne "\n${yellow}==> ${green}${1}$nc"
+  _underline_prompt 2; [[ $2 == 1 ]] &&
+    echo -ne "${yellow}\n==> $nc" || echo -ne "\n$nc"
 }
 
 _confirm() {
@@ -204,15 +204,24 @@ _confirm() {
   # ARG $2 = [Y/n] (to set default <ENTER> behavior)
   confirm="False"
   local count; count="$(( ${#1} + 6 ))"
-  echo -ne "${yellow}\n==> ${green}${1} ${red}${2}${yellow}\n==> "
-  for (( char=1; char<=count; char++ )); do echo -ne "─"; done
-  echo -ne "\n==> $nc"
+  echo -ne "${yellow}\n==> ${green}${1} ${red}${2}$nc"
+  _underline_prompt 0; echo -ne "${yellow}\n==> $nc"
   read -r confirm
   until [[ -z $confirm ]] \
       || [[ $confirm =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]]; do
     _error "$MSG_ERR_CONFIRM"
     _confirm "$@"
   done
+}
+
+_underline_prompt() {
+  # ARG $1 = char to remove
+  if [[ $(tput cols) > $count ]]; then
+    echo -ne "${yellow}\n==> "
+    for (( char=1; char<=count-${1}; char++ )); do
+      echo -ne "─"
+    done
+  fi
 }
 
 _note() {
@@ -388,6 +397,7 @@ _install_dep() {
         unset IFS; break
       fi
     done
+    [[ ${pm[0]} == _ ]] && termux=1
     if [[ ${pm[3]} ]]; then
       for dep in "${DEPENDENCIES[@]}"; do
         if [[ ${pm[0]} == _ ]] && [[ $dep == gcc ]]; then
@@ -783,6 +793,7 @@ _start() {
   # Start
   clear; _terminal_banner
   _note "$MSG_NOTE_START $DATE"
+  [[ $termux ]] && _error warn "${MSG_WARN_TERMUX}...?"
 
   # Device codename
   _ask_for_codename
