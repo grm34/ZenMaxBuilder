@@ -93,9 +93,9 @@ else
 fi
 
 
-###--------------------------------------------------------------###
-###  1. MAIN => the ZenMaxBuilder main process (ZMB)             ###
-###--------------------------------------------------------------###
+###---------------------------------------------------------------###
+###  1. MAIN => the ZenMaxBuilder main process (ZMB)              ###
+###---------------------------------------------------------------###
 
 _zenmaxbuilder() {
   # 1. set shell colors
@@ -151,9 +151,9 @@ _zenmaxbuilder() {
 }
 
 
-###--------------------------------------------------------------###
-###  2. MANAGER => global management functions of the script     ###
-###--------------------------------------------------------------###
+###---------------------------------------------------------------###
+###  2. MANAGER => global management functions of the script      ###
+###---------------------------------------------------------------###
 
 _terminal_banner() {
   echo -e "$bold
@@ -360,9 +360,9 @@ _patterns() {
 }
 
 
-###--------------------------------------------------------------###
-###  3. REQUIREMENTS => dependency install management functions  ###
-###--------------------------------------------------------------###
+###---------------------------------------------------------------###
+###  3. REQUIREMENTS => dependency install management functions   ###
+###---------------------------------------------------------------###
 
 _install_dep() {
   # Handle dependency installation
@@ -507,9 +507,9 @@ _clone_anykernel() {
 }
 
 
-###--------------------------------------------------------------###
-###  4. OPTIONS => command line option management functions      ###
-###--------------------------------------------------------------###
+###---------------------------------------------------------------###
+###  4. OPTIONS => command line option management functions       ###
+###---------------------------------------------------------------###
 
 # Update option
 #---------------
@@ -763,9 +763,9 @@ ${cyan}https://kernel-builder.com$nc\n"
 }
 
 
-###--------------------------------------------------------------###
-###  5. START => new android kernel compilation function         ###
-###--------------------------------------------------------------###
+###---------------------------------------------------------------###
+###  5. START => new android kernel compilation function          ###
+###---------------------------------------------------------------###
 
 _start() {
 
@@ -890,9 +890,9 @@ _start() {
 }
 
 
-###--------------------------------------------------------------###
-###  6. QUESTIONER => all the questions asked to the user        ###
-###--------------------------------------------------------------###
+###---------------------------------------------------------------###
+###  6. QUESTIONER => all the questions asked to the user         ###
+###---------------------------------------------------------------###
 
 _ask_for_codename() {
   # Question: device codename
@@ -1163,9 +1163,9 @@ _ask_for_update_aosp() {
 }
 
 
-###--------------------------------------------------------------###
-###  7. MAKER => everything related to the make process          ###
-###--------------------------------------------------------------###
+###---------------------------------------------------------------###
+###  7. MAKER => everything related to the make process           ###
+###---------------------------------------------------------------###
 
 _aosp_clang_options() {
   TC_OPTIONS=("${AOSP_CLANG_OPTIONS[@]}")
@@ -1411,9 +1411,9 @@ _make_build() {
 }
 
 
-###--------------------------------------------------------------###
-###  8. ZIP => everything related to the signed zip creation     ###
-###--------------------------------------------------------------###
+###---------------------------------------------------------------###
+###  8. ZIP => everything related to the signed zip creation      ###
+###---------------------------------------------------------------###
 
 _zip() {
   # Flashable zip creation
@@ -1499,8 +1499,7 @@ _sign_zip() {
   if which java &>/dev/null; then
     _note "${MSG_NOTE_SIGN}..."
     _send_zip_signing_status
-    _check unbuffer java -jar \
-      "${DIR}/bin/zipsigner-3.0-dexed.jar" \
+    _check unbuffer java -jar "${DIR}/bin/zipsigner-3.0-dexed.jar" \
       "${1}.zip" "${1}-signed.zip" 2>&1
   else
     _error warn "$MSG_WARN_JAVA"
@@ -1508,9 +1507,9 @@ _sign_zip() {
 }
 
 
-###--------------------------------------------------------------###
-###  9. TELEGRAM => building status Telegram feedback (POST)     ###
-###--------------------------------------------------------------###
+###---------------------------------------------------------------###
+###  9. TELEGRAM => building status Telegram feedback (POST)      ###
+###---------------------------------------------------------------###
 
 # Telegram API
 #--------------
@@ -1554,19 +1553,19 @@ _send_start_build_status() {
 _send_success_build_status() {
   if [[ $build_status == True ]]; then
     local msg
-    msg="$MSG_NOTE_SUCCESS $BUILD_TIME ${compiler//_/-}"
+    msg="$MSG_NOTE_SUCCESS $BUILD_TIME | ${compiler//_/-}"
     _send_msg "${KERNEL_NAME//_/-} | $msg"
   fi
 }
 
 _send_zip_creation_status() {
   [[ $build_status == True ]] &&
-    _send_msg "${KERNEL_NAME//_/-} | $MSG_NOTE_ZIP"
+    _send_msg "${KERNEL_NAME//_/-} | $MSG_NOTE_ZIP [AK3]"
 }
 
 _send_zip_signing_status() {
   [[ $build_status == True ]] &&
-    _send_msg "${KERNEL_NAME//_/-} | $MSG_NOTE_SIGN"
+    _send_msg "${KERNEL_NAME//_/-} | $MSG_NOTE_SIGN [JAVA]"
 }
 
 _send_failed_build_logs() {
@@ -1586,8 +1585,7 @@ _upload_kernel_build() {
     _note "${MSG_NOTE_UPLOAD}: ${file##*/}..."
     MD5="$(md5sum "$file" | cut -d' ' -f1)"
     caption="${MSG_TG_CAPTION}: $BUILD_TIME"
-    _send_file \
-      "$file" "$caption | MD5 Checksum: ${MD5//_/-}"
+    _send_file "$file" "$caption | MD5 Checksum: ${MD5//_/-}"
   fi
 }
 
@@ -1607,9 +1605,9 @@ _set_html_status_msg() {
 }
 
 
-###--------------------------------------------------------------###
-###  10. Run the ZenMaxBuilder (ZMB) main process...             ###
-###--------------------------------------------------------------###
+###---------------------------------------------------------------###
+###  10. Run the ZenMaxBuilder (ZMB) main process...              ###
+###---------------------------------------------------------------###
 _zenmaxbuilder "$@"
 
 
