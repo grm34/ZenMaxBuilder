@@ -33,7 +33,7 @@
 #  7. MAKER.........:  everything related to the make process  (FUNC)
 #  8. ZIP...........:  everything related to the zip creation  (FUNC)
 #  9. TELEGRAM......:  kernel building feedback                (FUNC)
-# 10. ==>              run ZenMaxBuilder              ''        (RUN)
+# 10. ==>              run ZenMaxBuilder                        (RUN)
 # -------------------------------------------------------------------
 
 # Ensure proper use
@@ -136,8 +136,8 @@ _zenmaxbuilder() {
       z)  _install_dep; _create_zip_option; _exit 0 ;;
       l)  _install_dep; _list_all_kernels; _exit 0 ;;
       t)  _install_dep; _get_linux_tag; _exit 0 ;;
-      p)  _install_dep; pmod=PATCH; _patch; _exit 0 ;;
-      r)  _install_dep; pmod=REVERT; _patch; _exit 0 ;;
+      p)  _install_dep; pmod="PATCH"; _patch; _exit 0 ;;
+      r)  _install_dep; pmod="REVERT"; _patch; _exit 0 ;;
       s)  _install_dep; _patterns; _start; _exit 0 ;;
       d)  DEBUG="True"; _install_dep; _patterns; _start; _exit 0 ;;
       :)  _error "$MSG_ERR_MARG ${red}-$OPTARG"; _exit 1 ;;
@@ -393,11 +393,11 @@ _install_dep() {
         if [[ ${pm[0]} == _ ]] && [[ $dep == gcc ]]; then
           continue
         else
-          [[ $dep == llvm ]] && dep=llvm-ar
-          [[ $dep == binutils ]] && dep=ld
+          [[ $dep == llvm ]] && dep="llvm-ar"
+          [[ $dep == binutils ]] && dep="ld"
           if ! which "${dep}" &>/dev/null; then
-            [[ $dep == llvm-ar ]] && dep=llvm
-            [[ $dep == ld ]] && dep=binutils
+            [[ $dep == llvm-ar ]] && dep="llvm"
+            [[ $dep == ld ]] && dep="binutils"
             _ask_for_install_pkg "$dep"
             if [[ $install_pkg == True ]]; then
               [[ ${pm[0]} == _ ]] && pm=("${pm[@]:1}")
@@ -447,8 +447,8 @@ _get_latest_aosp_tag() {
       rep="${1/+refs/+archive\/refs\/heads}"
       ;;
   esac
-  url=$(curl -s "$1")
-  latest=$(echo "$url" | grep -oP "${regex}" | tail -n 1)
+  url="$(curl -s "$1")"
+  latest="$(echo "$url" | grep -oP "${regex}" | tail -n 1)"
   tgz="${rep}/${latest}.tar.gz"
 }
 
@@ -1170,7 +1170,7 @@ _ask_for_update_aosp() {
 _aosp_clang_options() {
   TC_OPTIONS=("${AOSP_CLANG_OPTIONS[@]}")
   _check_linker "${1}/$AOSP_CLANG_CHECK" "${1}/$LLVM_ARM64_CHECK"
-  local llvm _path
+  local llvm_path
   llvm_path="${LLVM_ARM64_DIR}/bin:${LLVM_ARM_DIR}/bin"
   export PATH="${AOSP_CLANG_DIR}/bin:${llvm_path}:${PATH}"
   _check_tc_path "$AOSP_CLANG_DIR"
@@ -1528,13 +1528,13 @@ _send_file() {
   local tg sendtype extension
   extension=${1##*/*.}
   if [[ ${#extension} -lt 3 ]] \
-    && [[ $extension != ai ]]; then tg=sendDocument
-  elif [[ ${PHOTO_F} =~ ${extension} ]]; then tg=sendPhoto
-  elif [[ ${AUDIO_F} =~ ${extension} ]]; then tg=sendAudio
-  elif [[ ${VIDEO_F} =~ ${extension} ]]; then tg=sendVideo
-  elif [[ ${ANIM_F} =~ ${extension} ]]; then tg=sendAnimation
-  elif [[ ${VOICE_F} =~ ${extension} ]]; then tg=sendVoice
-  else tg=sendDocument
+    && [[ $extension != ai ]]; then tg="sendDocument"
+  elif [[ ${PHOTO_F} =~ ${extension} ]]; then tg="sendPhoto"
+  elif [[ ${AUDIO_F} =~ ${extension} ]]; then tg="sendAudio"
+  elif [[ ${VIDEO_F} =~ ${extension} ]]; then tg="sendVideo"
+  elif [[ ${ANIM_F} =~ ${extension} ]]; then tg="sendAnimation"
+  elif [[ ${VOICE_F} =~ ${extension} ]]; then tg="sendVoice"
+  else tg="sendDocument"
   fi
   sendtype="${tg/send}"
   curl --progress-bar -o /dev/null -fL -X POST \
