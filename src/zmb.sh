@@ -76,20 +76,22 @@ set -m -E -o pipefail #-b -v
 shopt -s checkwinsize progcomp
 shopt -u autocd cdspell dirspell extglob progcomp_alias
 
-# User language
-# shellcheck source=/dev/null
-if [[ -f "${DIR}/lang/${LANG:0:2}.cfg" ]]; then
-  source "${DIR}/lang/${LANG:0:2}.cfg"
-else
-  source "${DIR}/lang/en.cfg"
-fi
-
 # User configuration
 # shellcheck source=/dev/null
 if [[ -f ${DIR}/etc/user.cfg ]]; then
   source "${DIR}/etc/user.cfg"
 else
   source "${DIR}/etc/settings.cfg"
+fi
+
+# User language
+# shellcheck source=/dev/null
+if [[ -f "${DIR}/lang/${LANGUAGE}.cfg" ]]; then
+  source "${DIR}/lang/${LANGUAGE}.cfg"
+elif [[ -f "${DIR}/lang/${LANG:0:2}.cfg" ]]; then
+  source "${DIR}/lang/${LANG:0:2}.cfg"
+else
+  source "${DIR}/lang/en.cfg"
 fi
 
 
