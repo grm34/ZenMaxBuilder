@@ -194,9 +194,9 @@ _prompt() {
   # Ask some information (question or selection)
   # ARG $1 = the question to ask
   # ARG $2 = question type (1=question/2=selection)
-  local length count; length="$*"; count="${#length}"
+  local length; length="$*"; length="$(( ${#length} - 2 ))"
   echo -ne "\n${yellow}==> ${green}${1}$nc"
-  _underline_prompt 2; [[ $2 == 1 ]] &&
+  _underline_prompt; [[ $2 == 1 ]] &&
     echo -ne "${yellow}\n==> $nc" || echo -ne "\n$nc"
 }
 
@@ -204,10 +204,10 @@ _confirm() {
   # Ask confirmation yes/no
   # ARG $1 = the question to ask
   # ARG $2 = [Y/n] (to set default <ENTER> behavior)
-  confirm="False"
-  local count; count="$(( ${#1} + 6 ))"
+  local length; length="$*"; length="${#length}"
   echo -ne "${yellow}\n==> ${green}${1} ${red}${2}$nc"
-  _underline_prompt 0; echo -ne "${yellow}\n==> $nc"
+  _underline_prompt; confirm="False"
+  echo -ne "${yellow}\n==> $nc"
   read -r confirm
   until [[ -z $confirm ]] \
       || [[ $confirm =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]]; do
@@ -217,10 +217,9 @@ _confirm() {
 }
 
 _underline_prompt() {
-  # ARG $1 = char to remove
-  if [[ $(tput cols) -gt $count ]]; then
+  if [[ $(tput cols) -gt $length ]]; then
     echo -ne "${yellow}\n==> "
-    for (( char=1; char<=count-${1}; char++ )); do
+    for (( char=1; char<=length; char++ )); do
       echo -ne "─"
     done
   fi
