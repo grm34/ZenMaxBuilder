@@ -1285,10 +1285,12 @@ _export_path_and_options() {
   # 3. ensure compiler is system supported (verify linker)
   # 4. append toolchains to the $PATH, export and verify
   # 5. get the toolchain compiler version
-  # 6. get CROSS_COMPILE and CC (to handle Makefile)
-  # 7. set Link Time Optimization (LTO)
+  # 6. set Link Time Optimization (LTO)
+  # 7. set additional Clang/LLVM flags
+  # 8. CLANG: CROSS_COMPILE_ARM32 -> CROSS_COMPILE_COMPAT (> v4.2)
+  # 9. adds CONFIG_DEBUG_SECTION_MISMATCH=y in DEBUG Mode
   # ?  DEBUG MODE: display compiler, options and PATH
-  # Return: PATH TC_OPTIONS TCVER tc_cross tc_cc
+  # Return: PATH TC_OPTIONS TCVER
   [[ $BUILDER == default ]] && BUILDER="$(whoami)"
   [[ $HOST == default ]] && HOST="$(uname -n)"
   export KBUILD_BUILD_USER="${BUILDER}"
@@ -1304,7 +1306,7 @@ _export_path_and_options() {
   elif [[ -n $ptv ]]; then
     PLATFORM_VERSION="$ptv"
   fi
-  local tcpath; tcpath="${DIR}/toolchains"
+  local tcpath linuxversion; tcpath="${DIR}/toolchains"
   case $COMPILER in
     "$NEUTRON_CLANG_NAME") _neutron_clang_options "$tcpath" ;;
     "$PROTON_CLANG_NAME") _proton_clang_options "$tcpath" ;;
@@ -1315,14 +1317,19 @@ _export_path_and_options() {
     "$PROTON_GCC_NAME") _proton_gcc_options "$tcpath" ;;
     "$HOST_CLANG_NAME") _host_clang_options ;;
   esac
-  tc_cross="${TC_OPTIONS[1]/CROSS_COMPILE=}"
-  tc_cc="${TC_OPTIONS[3]/CC=}"
-  if [[ $LTO == True ]] \
-      && [[ $COMPILER != "$HOST_CLANG_NAME" ]]; then
+  if [[ $LTO == True ]]; then
     export LD_LIBRARY_PATH="$lto_dir"
     TC_OPTIONS[7]="LD=$LTO_LIBRARY"
   fi
+  [[ $LLVM_FLAGS == True ]] && export LLVM LLVM_IAS
+  linuxversion="${LINUX_VERSION//.}"
+  if [[ $(echo "${linuxversion:0:2} > 42" | bc) == 1 ]] \
+      && [[ ${TC_OPTIONS[3]} == clang ]]; then
+    TC_OPTIONS[2]="${TC_OPTIONS[2]/_ARM32=/_COMPAT=}"
+  fi
+  [[ $MAKE_CMD_ARGS != True ]] && TC_OPTIONS=("${TC_OPTIONS[0]}")
   if [[ $DEBUG == True ]]; then
+    TC_OPTIONS=(CONFIG_DEBUG_SECTION_MISMATCH=y "${TC_OPTIONS[@]}")
     echo -e "\n${blue}SELECTED COMPILER:"\
             "${nc}${lyellow}${COMPILER} ${TCVER}$nc" >&2
     echo -e "\n${blue}COMPILER OPTIONS:$nc" >&2
@@ -1372,10 +1379,12 @@ _get_android_platform_version() {
 
 _get_and_display_cross_compile() {
   # Get CROSS_COMPILE and CC from Makefile
-  # Return: r1 r2
+  # Return: r1 r2 tc_cross
+  local tc_cc c1 c2
+  tc_cc="${TC_OPTIONS[3]/CC=}"
+  tc_cross="${TC_OPTIONS[1]/CROSS_COMPILE=}"
   r1=("^CROSS_COMPILE\s.*?=.*" "CROSS_COMPILE\ ?=\ ${tc_cross}")
   r2=("^CC\s.*=.*" "CC\ =\ ${tc_cc}\ -I${KERNEL_DIR}")
-  local c1 c2
   c1="$(sed -n "/${r1[0]}/{p;}" "${KERNEL_DIR}/Makefile")"
   c2="$(sed -n "/${r2[0]}/{p;}" "${KERNEL_DIR}/Makefile")"
   if [[ -z $c1 ]]; then
@@ -1444,20 +1453,10 @@ _save_defconfig() {
 _make_build() {
   # 1. set Telegram HTML message
   # 2. send build status on Telegram
-  # 3. CLANG: CROSS_COMPILE_ARM32 -> CROSS_COMPILE_COMPAT (> v4.2)
-  # 4. CONFIG_DEBUG_SECTION_MISMATCH=y in DEBUG Mode
-  # 5. make new android kernel build
+  # 3. make new android kernel build
   _note "${MSG_NOTE_MAKE}: ${KERNEL_NAME}..."
   _set_html_status_msg
   _send_start_build_status
-  local linuxversion; linuxversion="${LINUX_VERSION//.}"
-  if [[ $(echo "${linuxversion:0:2} > 42" | bc) == 1 ]] \
-      && [[ ${TC_OPTIONS[3]} == clang ]]; then
-    TC_OPTIONS[2]="${TC_OPTIONS[2]/_ARM32=/_COMPAT=}"
-  fi
-  [[ $MAKE_CMD_ARGS != True ]] && TC_OPTIONS=("${TC_OPTIONS[0]}")
-  [[ $DEBUG == True ]] &&
-    TC_OPTIONS=(CONFIG_DEBUG_SECTION_MISMATCH=y "${TC_OPTIONS[@]}")
   _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
     O="$OUT_DIR" ARCH="$ARCH" "${TC_OPTIONS[*]}" 2>&1
 }
