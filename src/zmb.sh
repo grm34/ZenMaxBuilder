@@ -139,7 +139,7 @@ _zenmaxbuilder() {
       l)  _install_dep; _list_all_kernels; _exit 0 ;;
       t)  _install_dep; _get_linux_tag; _exit 0 ;;
       p)  _install_dep; _patch patch; _exit 0 ;;
-      r)  _install_dep; _patch revert; _patch; _exit 0 ;;
+      r)  _install_dep; _patch revert; _exit 0 ;;
       s)  _install_dep; _patterns; _start; _exit 0 ;;
       d)  DEBUG="True"; _install_dep; _patterns; _start; _exit 0 ;;
       :)  _error "$MSG_ERR_MARG ${red}-$OPTARG"; _exit 1 ;;
