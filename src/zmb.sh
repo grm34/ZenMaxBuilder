@@ -1306,7 +1306,7 @@ _export_path_and_options() {
   elif [[ -n $ptv ]]; then
     PLATFORM_VERSION="$ptv"
   fi
-  local tcpath linuxversion; tcpath="${DIR}/toolchains"
+  local tcpath; tcpath="${DIR}/toolchains"
   case $COMPILER in
     "$NEUTRON_CLANG_NAME") _neutron_clang_options "$tcpath" ;;
     "$PROTON_CLANG_NAME") _proton_clang_options "$tcpath" ;;
@@ -1322,7 +1322,7 @@ _export_path_and_options() {
     TC_OPTIONS[7]="LD=$LTO_LIBRARY"
   fi
   [[ $LLVM_FLAGS == True ]] && export LLVM LLVM_IAS
-  linuxversion="${LINUX_VERSION//.}"
+  local linuxversion; linuxversion="${LINUX_VERSION//.}"
   if [[ $(echo "${linuxversion:0:2} > 42" | bc) == 1 ]] \
       && [[ ${TC_OPTIONS[3]} == clang ]]; then
     TC_OPTIONS[2]="${TC_OPTIONS[2]/_ARM32=/_COMPAT=}"
