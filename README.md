@@ -55,7 +55,7 @@
 
 ## Overview
 
-ZenMaxBuilder (ZMB) is an Android Kernel Builder written in Bash, which can be launched on any compatible Linux system (feel free to Pull Request for Windows support). By default it uses AOSP-Clang, Eva-GCC, Proton-Clang or Lineage-GCC but you can use any Clang or GCC toolchain you like (with LLVM and binutils included).
+ZenMaxBuilder (ZMB) is an Android Kernel Builder written in Bash, which can be launched on any compatible Linux system (feel free to Pull Request for Windows support). By default it uses AOSP-Clang, Eva-GCC, Proton-Clang, Neutron-Clang or Lineage-GCC but you can use any Clang or GCC toolchain you like (with LLVM and binutils included).
 
 Find all your compilations and working folders in one place, update and maintain your kernels faster. Full logs with the possibility to restart the build after error. Automatic creation of a flashable signed ZIP (with AK3 and AOSP Keys). Real time status feedback with build sending on any group or Telegram channel. And more. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
 
@@ -129,9 +129,11 @@ ZMB uses prebuilts toolchains as default, in case of you already have compiled o
 - [AOSP-Clang](https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/) `Android Clang/LLVM Prebuilts by Google`
 - [Binutils](https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/) `Android GCC/LLVM Prebuilts by Google`
 - [Eva-GCC](https://github.com/mvaisakh/gcc-build) `Bleeding Edge Bare Metal GCC Prebuilts by mvaisakh`
+- [Neutron-Clang](https://gitlab.com/dakkshesh07/neutron-clang) `Bleeding Edge LLVM Prebuilts by dakkshesh07`
 - [Proton-Clang](https://github.com/kdrag0n/proton-clang) `Android Clang/LLVM Prebuilts by kdrag0n`
 - [Lineage-GCC](https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9) `Android GCC Prebuilts by LineageOS`
 - Proton-GCC `Proton-Clang vs Eva-GCC`
+- Neutron-GCC `Neutron-Clang vs Eva-GCC`
 - Host-Clang `system host Clang/LLVM`
 
 ## Screenshots
@@ -208,6 +210,7 @@ If you want to contribute to ZenMaxBuilder project and make it better, your help
 
 - Neternels Team: [https://neternels.org](https://neternels.org)
 - Proton-Clang: [@kdrag0n](https://github.com/kdrag0n)
+- Neutron-Clang: [@dakkshesh07](https://gitlab.com/dakkshesh07)
 - Eva-GCC: [@mvaisakh](https://github.com/mvaisakh)
 - Lineage-GCC: [@LineageOS](https://github.com/LineageOS)
 - AnyKernel3: [@osm0sis](https://github.com/osm0sis)
