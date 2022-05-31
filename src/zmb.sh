@@ -138,8 +138,8 @@ _zenmaxbuilder() {
       z)  _install_dep; _create_zip_option; _exit 0 ;;
       l)  _install_dep; _list_all_kernels; _exit 0 ;;
       t)  _install_dep; _get_linux_tag; _exit 0 ;;
-      p)  _install_dep; pmod="PATCH"; _patch; _exit 0 ;;
-      r)  _install_dep; pmod="REVERT"; _patch; _exit 0 ;;
+      p)  _install_dep; _patch patch; _exit 0 ;;
+      r)  _install_dep; _patch revert; _patch; _exit 0 ;;
       s)  _install_dep; _patterns; _start; _exit 0 ;;
       d)  DEBUG="True"; _install_dep; _patterns; _start; _exit 0 ;;
       :)  _error "$MSG_ERR_MARG ${red}-$OPTARG"; _exit 1 ;;
@@ -744,13 +744,15 @@ _create_zip_option() {
 #-------------
 
 _patch() {
-  case $pmod in
-    PATCH) pargs=(-p1) ;;
-    REVERT) pargs=(-R -p1) ;;
+  # ARG $1 = patch mode (patch or revert)
+  local pargs
+  case $1 in
+    patch) pargs=(-p1) ;;
+    revert) pargs=(-R -p1) ;;
   esac
   _ask_for_patch
   _ask_for_kernel_dir
-  _ask_for_apply_patch
+  _ask_for_apply_patch "${1}"
   if [[ $apply_patch == True ]]; then
     _note "${MSG_NOTE_PATCH}: $kpatch > ${KERNEL_DIR##*/}"
     _cd "$KERNEL_DIR" "$MSG_ERR_DIR ${red}$KERNEL_DIR"
@@ -1169,9 +1171,10 @@ _ask_for_patch() {
 
 _ask_for_apply_patch() {
   # Confirmation: apply patch?
+  # ARG $1 = patch mode (patch or revert)
   # Return: apply_patch
   _error warn "$kpatch => ${KERNEL_DIR##*/}"
-  _confirm "$MSG_CONFIRM_PATCH (${pmod}) ?" "[Y/n]"
+  _confirm "$MSG_CONFIRM_PATCH (${1^^}) ?" "[Y/n]"
   case $confirm in
     n|N|no|No|NO) _exit 0 ;;
     *) apply_patch="True" ;;
