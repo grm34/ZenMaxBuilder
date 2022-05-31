@@ -571,16 +571,17 @@ _full_upgrade() {
   declare -A up_data=(
     [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
     [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}"
-    [t1]="${tp}/${PROTON_DIR}€${PROTON_BRANCH}"
-    [t2]="${tp}/${EVA_ARM64_DIR}€${EVA_ARM64_BRANCH}"
-    [t3]="${tp}/${EVA_ARM_DIR}€${EVA_ARM_BRANCH}"
-    [t4]="${tp}/${LOS_ARM64_DIR}€${LOS_ARM64_BRANCH}"
-    [t5]="${tp}/${LOS_ARM_DIR}€${LOS_ARM_BRANCH}"
-    [t6]="${tp}/${AOSP_CLANG_DIR}€${AOSP_CLANG_URL}€$AOSP_CLANG_VERSION"
-    [t7]="${tp}/${LLVM_ARM64_DIR}€${LLVM_ARM64_URL}€$LLVM_ARM64_VERSION"
-    [t8]="${tp}/${LLVM_ARM_DIR}€${LLVM_ARM_URL}€$LLVM_ARM_VERSION"
+    [t1]="${tp}/${NEUTRON_DIR}€${NEUTRON_BRANCH}"
+    [t2]="${tp}/${PROTON_DIR}€${PROTON_BRANCH}"
+    [t3]="${tp}/${EVA_ARM64_DIR}€${EVA_ARM64_BRANCH}"
+    [t4]="${tp}/${EVA_ARM_DIR}€${EVA_ARM_BRANCH}"
+    [t5]="${tp}/${LOS_ARM64_DIR}€${LOS_ARM64_BRANCH}"
+    [t6]="${tp}/${LOS_ARM_DIR}€${LOS_ARM_BRANCH}"
+    [t7]="${tp}/${AOSP_CLANG_DIR}€${AOSP_CLANG_URL}€$AOSP_CLANG_VERSION"
+    [t8]="${tp}/${LLVM_ARM64_DIR}€${LLVM_ARM64_URL}€$LLVM_ARM64_VERSION"
+    [t9]="${tp}/${LLVM_ARM_DIR}€${LLVM_ARM_URL}€$LLVM_ARM_VERSION"
   )
-  up_list=(zmb ak3 t1 t2 t3 t4 t5 t6 t7 t8)
+  up_list=(zmb ak3 t1 t2 t3 t4 t5 t6 t7 t8 t9)
   for repository in "${up_list[@]}"; do
     IFS="€"; local repo
     repo="${up_data[$repository]}"
@@ -589,7 +590,7 @@ _full_upgrade() {
     if [[ -d ${repo[0]} ]]; then
       _note "$MSG_UP ${repo[0]##*/}..."
       case $repository in
-        t6|t7|t8)
+        t7|t8|t9)
           _get_local_aosp_tag "${repo[0]}" "${repo[2]}"
           _get_latest_aosp_tag "${repo[1]}" "${repo[0]}"
           if [[ $tag != "${latest/clang-}" ]]; then
