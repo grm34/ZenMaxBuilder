@@ -571,8 +571,8 @@ _full_upgrade() {
   declare -A up_data=(
     [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
     [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}"
-    [t1]="${tp}/${NEUTRON_DIR}€${NEUTRON_BRANCH}"
-    [t2]="${tp}/${PROTON_DIR}€${PROTON_BRANCH}"
+    [t1]="${tp}/${PROTON_DIR}€${PROTON_BRANCH}"
+    [t2]="${tp}/${NEUTRON_DIR}€${NEUTRON_BRANCH}"
     [t3]="${tp}/${EVA_ARM64_DIR}€${EVA_ARM64_BRANCH}"
     [t4]="${tp}/${EVA_ARM_DIR}€${EVA_ARM_BRANCH}"
     [t5]="${tp}/${LOS_ARM64_DIR}€${LOS_ARM64_BRANCH}"
@@ -640,15 +640,15 @@ _tc_version_option() {
     [aosp]="${AOSP_CLANG_VERSION}€${AOSP_CLANG_DIR}€$AOSP_CLANG_NAME"
     [llvm]="${LLVM_ARM64_VERSION}€${LLVM_ARM64_DIR}€Binutils"
     [eva]="${EVA_ARM64_VERSION}€${EVA_ARM64_DIR}€$EVA_GCC_NAME"
-    [nclang]="${NEUTRON_VERSION}€${NEUTRON_DIR}€$NEUTRON_CLANG_NAME"
     [pclang]="${PROTON_VERSION}€${PROTON_DIR}€$PROTON_CLANG_NAME"
+    [nclang]="${NEUTRON_VERSION}€${NEUTRON_DIR}€$NEUTRON_CLANG_NAME"
     [los]="${LOS_ARM64_VERSION}€${LOS_ARM64_DIR}€$LOS_GCC_NAME"
-    [ngcc]="${NEUTRON_GCC_NAME}€notfound€$NEUTRON_GCC_NAME"
     [pgcc]="${PROTON_GCC_NAME}€notfound€$PROTON_GCC_NAME"
+    [ngcc]="${NEUTRON_GCC_NAME}€notfound€$NEUTRON_GCC_NAME"
     [host]="${HOST_CLANG_NAME}€found€$HOST_CLANG_NAME"
   )
   local toolchains_list eva_v pt_v nt_v
-  toolchains_list=(aosp llvm eva nclang pclang los ngcc pgcc host)
+  toolchains_list=(aosp llvm eva pclang nclang los pgcc ngcc host)
   for toolchain in "${toolchains_list[@]}"; do
     IFS="€"; local tc
     tc="${toolchains_data[$toolchain]}"
@@ -662,11 +662,11 @@ _tc_version_option() {
         "$PROTON_CLANG_NAME") pt_v="${tc_version##*/}" ;;
       esac
       echo -e "${green}${tc[2]}: ${red}${tc_version##*/}$nc"
-    elif [[ -n $eva_v ]] && [[ -n $nt_v ]]; then
-      echo -e "${green}${tc[2]}: ${red}${nt_v}/${eva_v}$nc"
-      unset nt_v
     elif [[ -n $eva_v ]] && [[ -n $pt_v ]]; then
       echo -e "${green}${tc[2]}: ${red}${pt_v}/${eva_v}$nc"
+      unset pt_v
+    elif [[ -n $eva_v ]] && [[ -n $nt_v ]]; then
+      echo -e "${green}${tc[2]}: ${red}${nt_v}/${eva_v}$nc"
     fi
   done
 }
@@ -1013,8 +1013,8 @@ _ask_for_toolchain() {
   if [[ $COMPILER == default ]]; then
     _prompt "$MSG_SELECT_TC :" 2
     select COMPILER in $AOSP_CLANG_NAME $EVA_GCC_NAME \
-        $NEUTRON_CLANG_NAME $PROTON_CLANG_NAME $LOS_GCC_NAME \
-        $NEUTRON_GCC_NAME $PROTON_GCC_NAME $HOST_CLANG_NAME; do
+        $PROTON_CLANG_NAME $NEUTRON_CLANG_NAME $LOS_GCC_NAME \
+        $PROTON_GCC_NAME $NEUTRON_GCC_NAME $HOST_CLANG_NAME; do
       [[ $COMPILER ]] && break
       _error "$MSG_ERR_SELECT"
     done
