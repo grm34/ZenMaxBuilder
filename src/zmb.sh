@@ -218,7 +218,7 @@ _confirm() {
 
 _underline_prompt() {
   # ARG $1 = char to remove
-  if [[ $(tput cols) > $count ]]; then
+  if [[ $(tput cols) -gt $count ]]; then
     echo -ne "${yellow}\n==> "
     for (( char=1; char<=count-${1}; char++ )); do
       echo -ne "─"
