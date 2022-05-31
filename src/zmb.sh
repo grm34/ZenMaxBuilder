@@ -313,7 +313,7 @@ _exit() {
     fi
   done
   case $option in
-    s|u|z|p|r|d)
+    s|u|p|r|d)
       echo
       for (( second=3; second>=1; second-- )); do
         echo -ne "\r\033[K${blue}${MSG_EXIT}"\
@@ -728,7 +728,7 @@ _get_linux_tag() {
 #------------
 
 _create_zip_option() {
-  if [[ -f $OPTARG ]] && [[ ${OPTARG##*/} == *Image* ]]; then
+  if [[ -f $OPTARG ]]; then
     _zip "${OPTARG##*/}-${DATE}-$TIME" "$OPTARG" \
       "${DIR}/builds/default"
     _sign_zip \
