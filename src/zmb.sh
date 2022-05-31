@@ -488,6 +488,11 @@ _clone_toolchains() {
                 "$LLVM_ARM_DIR"
       ;;
   esac
+  case $COMPILER in # Neutron-Clang or Neutron-GCC
+    "$NEUTRON_CLANG_NAME"|"$NEUTRON_GCC_NAME")
+      _clone_tc "$NEUTRON_BRANCH" "$NEUTRON_URL" "$NEUTRON_DIR"
+      ;;
+  esac
   case $COMPILER in # Proton-Clang or Proton-GCC
     "$PROTON_CLANG_NAME"|"$PROTON_GCC_NAME")
       _clone_tc "$PROTON_BRANCH" "$PROTON_URL" "$PROTON_DIR"
@@ -788,7 +793,8 @@ _start() {
     _error "$MSG_ERR_CONF_KDIR"; _exit 1
   elif ! [[ $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
       ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|${HOST_CLANG_NAME}|\
-      ${LOS_GCC_NAME}|${AOSP_CLANG_NAME}) ]]; then
+      ${LOS_GCC_NAME}|${AOSP_CLANG_NAME}|\
+      ${NEUTRON_CLANG_NAME}) ]]; then
     _error "$MSG_ERR_COMPILER"; _exit 1
   fi
 
@@ -815,6 +821,7 @@ _start() {
   OUT_DIR="${DIR}/out/$CODENAME"
   BUILD_DIR="${DIR}/builds/$CODENAME"
   PROTON_DIR="${DIR}/toolchains/$PROTON_DIR"
+  NEUTRON_DIR="${DIR}/toolchains/$NEUTRON_DIR"
   EVA_ARM64_DIR="${DIR}/toolchains/$EVA_ARM64_DIR"
   EVA_ARM_DIR="${DIR}/toolchains/$EVA_ARM_DIR"
   AOSP_CLANG_DIR="${DIR}/toolchains/$AOSP_CLANG_DIR"
@@ -999,7 +1006,7 @@ _ask_for_toolchain() {
   if [[ $COMPILER == default ]]; then
     _prompt "$MSG_SELECT_TC :" 2
     select COMPILER in $AOSP_CLANG_NAME $EVA_GCC_NAME \
-        $PROTON_CLANG_NAME $LOS_GCC_NAME \
+        $NEUTRON_CLANG_NAME $PROTON_CLANG_NAME $LOS_GCC_NAME \
         $PROTON_GCC_NAME $HOST_CLANG_NAME; do
       [[ $COMPILER ]] && break
       _error "$MSG_ERR_SELECT"
