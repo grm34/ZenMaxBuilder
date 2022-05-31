@@ -106,7 +106,7 @@ ZMB uses prebuilts toolchains as default, in case of you already have compiled o
 
 - [AOSP-Clang](https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/) `Android Clang/LLVM Prebuilts by Google`
 - [Binutils](https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/) `Android GCC/LLVM Prebuilts by Google`
-- [Eva-GCC](https://github.com/mvaisakh/gcc-build) `Bleeding Edge Bare Metal GCC Prebuilts by mvaisakh`
+- [Eva-GCC](https://github.com/mvaisakh/gcc-build) `Bleeding Edge GCC Prebuilts by mvaisakh`
 - [Neutron-Clang](https://gitlab.com/dakkshesh07/neutron-clang) `Bleeding Edge LLVM Prebuilts by dakkshesh07`
 - [Proton-Clang](https://github.com/kdrag0n/proton-clang) `Android Clang/LLVM Prebuilts by kdrag0n`
 - [Lineage-GCC](https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9) `Android GCC Prebuilts by LineageOS`
