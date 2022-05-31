@@ -498,8 +498,8 @@ _clone_toolchains() {
       _clone_tc "$PROTON_BRANCH" "$PROTON_URL" "$PROTON_DIR"
       ;;
   esac
-  case $COMPILER in # Eva-GCC or Proton-GCC
-    "$EVA_GCC_NAME"|"$PROTON_GCC_NAME")
+  case $COMPILER in # Eva-GCC or Proton-GCC or Neutron-GCC
+    "$EVA_GCC_NAME"|"$PROTON_GCC_NAME"|"$NEUTRON_GCC_NAME")
       _clone_tc "$EVA_ARM_BRANCH" "$EVA_ARM_URL" "$EVA_ARM_DIR"
       _clone_tc "$EVA_ARM64_BRANCH" "$EVA_ARM64_URL" \
                 "$EVA_ARM64_DIR"
@@ -643,11 +643,12 @@ _tc_version_option() {
     [nclang]="${NEUTRON_VERSION}€${NEUTRON_DIR}€$NEUTRON_CLANG_NAME"
     [pclang]="${PROTON_VERSION}€${PROTON_DIR}€$PROTON_CLANG_NAME"
     [los]="${LOS_ARM64_VERSION}€${LOS_ARM64_DIR}€$LOS_GCC_NAME"
+    [ngcc]="${NEUTRON_GCC_NAME}€notfound€$NEUTRON_GCC_NAME"
     [pgcc]="${PROTON_GCC_NAME}€notfound€$PROTON_GCC_NAME"
     [host]="${HOST_CLANG_NAME}€found€$HOST_CLANG_NAME"
   )
-  local toolchains_list eva_v pt_v
-  toolchains_list=(aosp llvm eva nclang pclang los pgcc host)
+  local toolchains_list eva_v pt_v nt_v
+  toolchains_list=(aosp llvm eva nclang pclang los ngcc pgcc host)
   for toolchain in "${toolchains_list[@]}"; do
     IFS="€"; local tc
     tc="${toolchains_data[$toolchain]}"
@@ -657,9 +658,13 @@ _tc_version_option() {
       _get_tc_version "${tc[0]}"
       case ${tc[2]} in
         "$EVA_GCC_NAME") eva_v="${tc_version##*/}" ;;
+        "$NEUTRON_CLANG_NAME") nt_v="${tc_version##*/}" ;;
         "$PROTON_CLANG_NAME") pt_v="${tc_version##*/}" ;;
       esac
       echo -e "${green}${tc[2]}: ${red}${tc_version##*/}$nc"
+    elif [[ -n $eva_v ]] && [[ -n $nt_v ]]; then
+      echo -e "${green}${tc[2]}: ${red}${nt_v}/${eva_v}$nc"
+      unset nt_v
     elif [[ -n $eva_v ]] && [[ -n $pt_v ]]; then
       echo -e "${green}${tc[2]}: ${red}${pt_v}/${eva_v}$nc"
     fi
@@ -795,7 +800,7 @@ _start() {
     _error "$MSG_ERR_CONF_KDIR"; _exit 1
   elif ! [[ $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
       ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|${HOST_CLANG_NAME}|\
-      ${LOS_GCC_NAME}|${AOSP_CLANG_NAME}|\
+      ${LOS_GCC_NAME}|${AOSP_CLANG_NAME}|${NEUTRON_GCC_NAME}\
       ${NEUTRON_CLANG_NAME}) ]]; then
     _error "$MSG_ERR_COMPILER"; _exit 1
   fi
@@ -1009,7 +1014,7 @@ _ask_for_toolchain() {
     _prompt "$MSG_SELECT_TC :" 2
     select COMPILER in $AOSP_CLANG_NAME $EVA_GCC_NAME \
         $NEUTRON_CLANG_NAME $PROTON_CLANG_NAME $LOS_GCC_NAME \
-        $PROTON_GCC_NAME $HOST_CLANG_NAME; do
+        $NEUTRON_GCC_NAME $PROTON_GCC_NAME $HOST_CLANG_NAME; do
       [[ $COMPILER ]] && break
       _error "$MSG_ERR_SELECT"
     done
@@ -1254,6 +1259,19 @@ _proton_gcc_options() {
   lto_dir="$PROTON_DIR/lib"
 }
 
+_neutron_gcc_options() {
+  TC_OPTIONS=("${NEUTRON_GCC_OPTIONS[@]}")
+  _check_linker "${1}/$NEUTRON_CHECK" "${1}/$EVA_ARM64_CHECK"
+  local eva_path eva_v nt_v
+  eva_path="${EVA_ARM64_DIR}/bin:${EVA_ARM_DIR}/bin"
+  export PATH="${NEUTRON_DIR}/bin:${eva_path}:${PATH}"
+  _check_tc_path "$NEUTRON_DIR" "$EVA_ARM64_DIR" "$EVA_ARM_DIR"
+  _get_tc_version "$NEUTRON_VERSION"; nt_v="$tc_version"
+  _get_tc_version "$EVA_ARM64_VERSION"; eva_v="$tc_version"
+  TCVER="${nt_v##*/}/${eva_v##*/}"
+  lto_dir="$NEUTRON_DIR/lib"
+}
+
 _host_clang_options() {
   TC_OPTIONS=("${HOST_CLANG_OPTIONS[@]}")
   _get_tc_version "$HOST_CLANG_NAME"
@@ -1293,6 +1311,7 @@ _export_path_and_options() {
     "$AOSP_CLANG_NAME") _aosp_clang_options "$tcpath" ;;
     "$EVA_GCC_NAME") _eva_gcc_options "$tcpath" ;;
     "$LOS_GCC_NAME") _los_gcc_options "$tcpath" ;;
+    "$NEUTRON_GCC_NAME") _neutron_gcc_options "$tcpath" ;;
     "$PROTON_GCC_NAME") _proton_gcc_options "$tcpath" ;;
     "$HOST_CLANG_NAME") _host_clang_options ;;
   esac
