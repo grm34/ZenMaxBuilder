@@ -639,13 +639,14 @@ _tc_version_option() {
     [aosp]="${AOSP_CLANG_VERSION}€${AOSP_CLANG_DIR}€$AOSP_CLANG_NAME"
     [llvm]="${LLVM_ARM64_VERSION}€${LLVM_ARM64_DIR}€Binutils"
     [eva]="${EVA_ARM64_VERSION}€${EVA_ARM64_DIR}€$EVA_GCC_NAME"
+    [nclang]="${NEUTRON_VERSION}€${NEUTRON_DIR}€$NEUTRON_CLANG_NAME"
     [pclang]="${PROTON_VERSION}€${PROTON_DIR}€$PROTON_CLANG_NAME"
     [los]="${LOS_ARM64_VERSION}€${LOS_ARM64_DIR}€$LOS_GCC_NAME"
     [pgcc]="${PROTON_GCC_NAME}€notfound€$PROTON_GCC_NAME"
     [host]="${HOST_CLANG_NAME}€found€$HOST_CLANG_NAME"
   )
   local toolchains_list eva_v pt_v
-  toolchains_list=(aosp llvm eva pclang los pgcc host)
+  toolchains_list=(aosp llvm eva nclang pclang los pgcc host)
   for toolchain in "${toolchains_list[@]}"; do
     IFS="€"; local tc
     tc="${toolchains_data[$toolchain]}"
@@ -1209,6 +1210,16 @@ _eva_gcc_options() {
   lto_dir="$EVA_ARM64_DIR/lib"
 }
 
+_neutron_clang_options() {
+  TC_OPTIONS=("${NEUTRON_CLANG_OPTIONS[@]}")
+  _check_linker "${1}/$NEUTRON_CHECK"
+  export PATH="${NEUTRON_DIR}/bin:${PATH}"
+  _check_tc_path "$NEUTRON_DIR"
+  _get_tc_version "$NEUTRON_VERSION"
+  TCVER="${tc_version##*/}"
+  lto_dir="$NEUTRON_DIR/lib"
+}
+
 _proton_clang_options() {
   TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
   _check_linker "${1}/$PROTON_CHECK"
@@ -1276,6 +1287,7 @@ _export_path_and_options() {
   fi
   local tcpath; tcpath="${DIR}/toolchains"
   case $COMPILER in
+    "$NEUTRON_CLANG_NAME") _neutron_clang_options "$tcpath" ;;
     "$PROTON_CLANG_NAME") _proton_clang_options "$tcpath" ;;
     "$AOSP_CLANG_NAME") _aosp_clang_options "$tcpath" ;;
     "$EVA_GCC_NAME") _eva_gcc_options "$tcpath" ;;
