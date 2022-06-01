@@ -869,7 +869,7 @@ _start() {
 
   # Make configuration
   _make_defconfig
-  if [[ $MENUCONFIG == True ]]; then
+  if [[ $MENUCONFIG ]]; then
     _make_menuconfig
     _ask_for_save_defconfig
     if [[ $save_defconfig != False ]]; then
@@ -976,7 +976,16 @@ _ask_for_menuconfig() {
   # Return: MENUCONFIG
   _confirm "$MSG_ASK_CONF ?" "[y/N]"
   case $confirm in
-    y|Y|yes|Yes|YES) MENUCONFIG="True" ;;
+    y|Y|yes|Yes|YES)
+      _prompt "$MSG_SELECT_MENU :" 2
+      select MENUCONFIG in config menuconfig nconfig xconfig \
+          gconfig oldconfig silentoldconfig allyesconfig \
+          allmodconfig allnoconfig randconfig localmodconfig \
+          localyesconfig; do
+        [[ $MENUCONFIG ]] && break
+        _error "$MSG_ERR_SELECT"
+      done
+      ;;
   esac
 }
 
@@ -1438,7 +1447,7 @@ _make_defconfig() {
 _make_menuconfig() {
   _note "$MSG_NOTE_MENUCONFIG $DEFCONFIG [${LINUX_VERSION}]..."
   make -C "$KERNEL_DIR" O="$OUT_DIR" \
-    ARCH="$ARCH" menuconfig "${OUT_DIR}/.config"
+    ARCH="$ARCH" "$MENUCONFIG" "${OUT_DIR}/.config"
 }
 
 _save_defconfig() {
