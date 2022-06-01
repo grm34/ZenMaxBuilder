@@ -1334,7 +1334,7 @@ _export_path_and_options() {
   fi
   [[ $LLVM_FLAGS == True ]] && export LLVM LLVM_IAS
   local linuxversion; linuxversion="${LINUX_VERSION//.}"
-  if [[ $(echo "${linuxversion:0:2} > 42" | bc) == 1 ]] \
+  if [[ ${linuxversion:0:2} -gt 42 ]] \
       && [[ ${TC_OPTIONS[3]} == clang ]]; then
     TC_OPTIONS[2]="${TC_OPTIONS[2]/_ARM32=/_COMPAT=}"
   fi
