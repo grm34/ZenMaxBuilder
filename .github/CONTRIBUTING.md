@@ -15,7 +15,7 @@ If you know another language and are willing to help translate ZMB, here are the
 - Implement your translations\*
 - Create a new pull request to submit your language.
 
-\* ZMB being launched from a terminal, please respect line length (max 70).
+\* ZMB being launched from a terminal, please respect line length (max 72).
 
 | language | flag | translator | progress |
 | :------- | ---: | ---------: | -------: |
@@ -36,7 +36,7 @@ If you know another language and are willing to help translate ZMB, here are the
 - Squash your commits into a single commit with git's [interactive rebase](https://help.github.com/en/github/using-git/about-git-rebase).
 - Push your branch to your fork on Github, the remote `origin`.
 - From your fork open a pull request in the correct branch.
-  Target the project's `dev` branch!
+  Target the project's `zmb` branch!
 - Further changes are requested so just push them to your branch.
 - Once the pull request is approved and merged you can pull the changes
   from `upstream` to your local repo and delete your extra branch(es).
