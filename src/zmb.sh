@@ -797,7 +797,7 @@ _start() {
   # Prevent errors in user settings
   if [[ $KERNEL_DIR != default  ]] \
       && ! [[ -f ${KERNEL_DIR}/Makefile ]] \
-      && ! [[ -d ${KERNEL_DIR}/arch/${ARCH} ]]; then
+      && ! [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]; then
     _error "$MSG_ERR_CONF_KDIR"; _exit 1
   elif ! [[ $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
       ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|${HOST_CLANG_NAME}|\
