@@ -1492,8 +1492,8 @@ _zip() {
   _note "$MSG_NOTE_ZIP ${1}.zip..."
   _send_zip_creation_status
   _check cp "$2" "$ANYKERNEL_DIR"
-  [[ ! -f ${ANYKERNEL_DIR}/banner ]] &&
-    _check cp "${DIR}/docs/ak3/banner" "${ANYKERNEL_DIR}/banner"
+  [[ $AK3_BANNER == True ]] &&
+    _check cp "${DIR}/$AK3_BANNER_FILE" "${ANYKERNEL_DIR}/banner"
   _cd "$ANYKERNEL_DIR" "$MSG_ERR_DIR ${red}${ANYKERNEL_DIR}"
   [[ $start_time ]] && _set_ak3_conf
   _check unbuffer zip -r9 "${1}.zip" \
