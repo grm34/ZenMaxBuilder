@@ -703,14 +703,14 @@ _list_all_kernels() {
     _note "${MSG_NOTE_LISTKERNEL}:"
     for kn in "${DIR}"/out/*; do
       # shellcheck disable=SC2012
-      data="$(ls -Art "${DIR}/logs/${kn##*/}" 2>/dev/null | tail -n1)"
-      data="${DIR}/logs/${kn##*/}/$data"
-      if [[ -f $data ]]; then
-        if grep -m 1 REALCC= "$data"; then red="green"; fi
-        v="$(grep -m 1 LINUX_VERSION= "$data")"
-        d="$(grep -m 1 DATE= "$data")"
-        c="$(grep -m 1 COMPILER= "$data")"
-        t="$(grep -m 1 TCVER= "$data")"
+      x="$(ls -Art "${DIR}/logs/${kn##*/}" 2>/dev/null | tail -n1)"
+      x="${DIR}/logs/${kn##*/}/$x"
+      if [[ -f $x ]]; then
+        if grep -m 1 REALCC= "$x" &>/dev/null; then red="$green"; fi
+        v="$(grep -m 1 LINUX_VERSION= "$x")"
+        d="$(grep -m 1 DATE= "$x")"
+        c="$(grep -m 1 COMPILER= "$x")"
+        t="$(grep -m 1 TCVER= "$x")"
         echo -e "${red}${kn##*/}:$nc v${v/> LINUX_VERSION=} on"\
                 "${d/> DATE=} with ${c/> COMPILER=} ${t/> TCVER=}"
       else
