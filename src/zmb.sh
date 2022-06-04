@@ -713,6 +713,7 @@ _list_all_kernels() {
         t="$(grep -m 1 TCVER= "$x")"
         echo -e "${red}${kn##*/}:$nc v${v/> LINUX_VERSION=} on"\
                 "${d/> DATE=} with ${c/> COMPILER=} ${t/> TCVER=}"
+        red="$(tput bold setaf 1)"
       else
         echo -e "${red}${kn##*/}:$nc no log found..."
       fi
