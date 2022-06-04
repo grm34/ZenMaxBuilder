@@ -701,8 +701,22 @@ _list_all_kernels() {
   if [[ -d ${DIR}/out ]] \
       && [[ $(ls -d out/*/ 2>/dev/null) ]]; then
     _note "${MSG_NOTE_LISTKERNEL}:"
-    find out/ -mindepth 1 -maxdepth 1 -type d \
-      | cut -f2 -d'/' | cat -n
+    for kn in "${DIR}"/out/*; do
+      [[ -f ${DIR}/out/${kn##*/}/include/generated/compile.h ]] &&
+        red="$green"
+      # shellcheck disable=SC2012
+      data=$(ls -Art "${DIR}/logs/${kn##*/}" 2>/dev/null | tail -n1)
+      if [[ -f ${DIR}/logs/${kn##*/}/$data ]]; then
+        v=$(grep -m 1 LINUX_VERSION= "${DIR}/logs/${kn##*/}/$data")
+        d=$(grep -m 1 DATE= "${DIR}/logs/${kn##*/}/$data")
+        c=$(grep -m 1 COMPILER= "${DIR}/logs/${kn##*/}/$data")
+        t=$(grep -m 1 TCVER= "${DIR}/logs/${kn##*/}/$data")
+        echo -e "${red}${kn##*/}:$nc v${v/> LINUX_VERSION=} on"\
+                "${d/> DATE=} with ${c/> COMPILER=} ${t/> TCVER=}"
+      else
+        echo -e "${red}${kn##*/}:$nc no log found..."
+      fi
+    done
   else
     _error "$MSG_ERR_LISTKERNEL"
   fi
