@@ -701,8 +701,22 @@ _list_all_kernels() {
   if [[ -d ${DIR}/out ]] \
       && [[ $(ls -d out/*/ 2>/dev/null) ]]; then
     _note "${MSG_NOTE_LISTKERNEL}:"
-    find out/ -mindepth 1 -maxdepth 1 -type d \
-      | cut -f2 -d'/' | cat -n
+    for kn in "${DIR}"/out/*; do
+      # shellcheck disable=SC2012
+      x="$(ls -Art "${DIR}/logs/${kn##*/}" 2>/dev/null | tail -n1)"
+      x="${DIR}/logs/${kn##*/}/$x"
+      if [[ -f $x ]]; then
+        if grep -m 1 REALCC= "$x" &>/dev/null; then red="$green"; fi
+        v="$(grep -m 1 LINUX_VERSION= "$x")"
+        d="$(grep -m 1 DATE= "$x")"
+        c="$(grep -m 1 COMPILER= "$x")"
+        t="$(grep -m 1 TCVER= "$x")"
+        echo -e "${red}${kn##*/}:$nc v${v/> LINUX_VERSION=} on"\
+                "${d/> DATE=} with ${c/> COMPILER=} ${t/> TCVER=}"
+      else
+        echo -e "${red}${kn##*/}:$nc no log found..."
+      fi
+    done
   else
     _error "$MSG_ERR_LISTKERNEL"
   fi
@@ -900,10 +914,10 @@ _start() {
   if ! [[ -f $gen ]] || [[ $ftime < $start_time ]]; then
     _error "$MSG_ERR_MAKE"; _exit 1
   else
-    compiler="$(grep -m 1 LINUX_COMPILER "$gen")"
-    compiler="${compiler/\#define }"
+    REALCC="$(grep -m 1 LINUX_COMPILER "$gen")"
+    REALCC="${REALCC/\#define }"
     _note "$MSG_NOTE_SUCCESS $BUILD_TIME !"
-    _note "$compiler"
+    _note "$REALCC"
     _send_success_build_status
     _ask_for_flashable_zip
     if [[ $flash_zip == True ]]; then
@@ -1614,7 +1628,7 @@ _send_start_build_status() {
 _send_success_build_status() {
   if [[ $build_status == True ]]; then
     local msg
-    msg="$MSG_NOTE_SUCCESS $BUILD_TIME | ${compiler//_/-}"
+    msg="$MSG_NOTE_SUCCESS $BUILD_TIME | ${REALCC//_/-}"
     _send_msg "${KERNEL_NAME//_/-} | $msg"
   fi
 }
