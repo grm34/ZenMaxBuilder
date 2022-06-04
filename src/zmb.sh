@@ -56,7 +56,7 @@ fi
 
 # Absolute path
 DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
-if ! cd "$DIR"; then
+if ! cd "$DIR" || ! [[ -f ${DIR}/etc/settings.cfg ]]; then
   echo "ERROR: ZenMaxBuilder directory not found" >&2
   exit 2
 fi
