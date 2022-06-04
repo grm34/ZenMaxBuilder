@@ -91,7 +91,8 @@ if [[ -f "${DIR}/lang/${LANGUAGE}.cfg" ]]; then
 elif [[ -f "${DIR}/lang/${LANG:0:2}.cfg" ]]; then
   source "${DIR}/lang/${LANG:0:2}.cfg"
 else
-  source "${DIR}/lang/en.cfg"
+  source "${DIR}/lang/en.cfg" 2>/dev/null \
+    || echo "ERROR: language not found" >&2; exit 2
 fi
 
 
