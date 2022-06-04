@@ -703,17 +703,17 @@ _list_all_kernels() {
     _note "${MSG_NOTE_LISTKERNEL}:"
     for kn in "${DIR}"/out/*; do
       # shellcheck disable=SC2012
-      x="$(ls -Art "${DIR}/logs/${kn##*/}" 2>/dev/null | tail -n1)"
-      x="${DIR}/logs/${kn##*/}/$x"
-      if [[ -f $x ]]; then
-        if grep -m 1 REALCC= "$x" &>/dev/null; then red="$green"; fi
-        v="$(grep -m 1 LINUX_VERSION= "$x")"
-        d="$(grep -m 1 DATE= "$x")"
-        c="$(grep -m 1 COMPILER= "$x")"
-        t="$(grep -m 1 TCVER= "$x")"
+      dt="$(ls -Art "${DIR}/logs/${kn##*/}" 2>/dev/null | tail -n1)"
+      dt="${DIR}/logs/${kn##*/}/$dt"
+      if [[ -f $dt ]]; then
+        if grep -m 1 REALCC= "$dt" &>/dev/null; then red="$green"; fi
+        v="$(grep -m 1 LINUX_VERSION= "$dt")"
+        d="$(grep -m 1 DATE= "$dt")"
+        c="$(grep -m 1 COMPILER= "$dt")"
+        t="$(grep -m 1 TCVER= "$dt")"
         echo -e "${red}${kn##*/}:$nc v${v/> LINUX_VERSION=} on"\
                 "${d/> DATE=} with ${c/> COMPILER=} ${t/> TCVER=}"
-        red="$(tput bold setaf 1)"
+        _terminal_colors
       else
         echo -e "${red}${kn##*/}:$nc no log found..."
       fi
