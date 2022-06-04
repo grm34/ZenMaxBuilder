@@ -702,15 +702,15 @@ _list_all_kernels() {
       && [[ $(ls -d out/*/ 2>/dev/null) ]]; then
     _note "${MSG_NOTE_LISTKERNEL}:"
     for kn in "${DIR}"/out/*; do
-      [[ -f ${DIR}/out/${kn##*/}/include/generated/compile.h ]] &&
-        red="$green"
       # shellcheck disable=SC2012
-      data=$(ls -Art "${DIR}/logs/${kn##*/}" 2>/dev/null | tail -n1)
-      if [[ -f ${DIR}/logs/${kn##*/}/$data ]]; then
-        v=$(grep -m 1 LINUX_VERSION= "${DIR}/logs/${kn##*/}/$data")
-        d=$(grep -m 1 DATE= "${DIR}/logs/${kn##*/}/$data")
-        c=$(grep -m 1 COMPILER= "${DIR}/logs/${kn##*/}/$data")
-        t=$(grep -m 1 TCVER= "${DIR}/logs/${kn##*/}/$data")
+      data="$(ls -Art "${DIR}/logs/${kn##*/}" 2>/dev/null | tail -n1)"
+      data="${DIR}/logs/${kn##*/}/$data"
+      if [[ -f $data ]]; then
+        if grep -m 1 REALCC= "$data"; then red="green"; fi
+        v="$(grep -m 1 LINUX_VERSION= "$data")"
+        d="$(grep -m 1 DATE= "$data")"
+        c="$(grep -m 1 COMPILER= "$data")"
+        t="$(grep -m 1 TCVER= "$data")"
         echo -e "${red}${kn##*/}:$nc v${v/> LINUX_VERSION=} on"\
                 "${d/> DATE=} with ${c/> COMPILER=} ${t/> TCVER=}"
       else
@@ -914,10 +914,10 @@ _start() {
   if ! [[ -f $gen ]] || [[ $ftime < $start_time ]]; then
     _error "$MSG_ERR_MAKE"; _exit 1
   else
-    compiler="$(grep -m 1 LINUX_COMPILER "$gen")"
-    compiler="${compiler/\#define }"
+    REALCC="$(grep -m 1 LINUX_COMPILER "$gen")"
+    REALCC="${REALCC/\#define }"
     _note "$MSG_NOTE_SUCCESS $BUILD_TIME !"
-    _note "$compiler"
+    _note "$REALCC"
     _send_success_build_status
     _ask_for_flashable_zip
     if [[ $flash_zip == True ]]; then
@@ -1628,7 +1628,7 @@ _send_start_build_status() {
 _send_success_build_status() {
   if [[ $build_status == True ]]; then
     local msg
-    msg="$MSG_NOTE_SUCCESS $BUILD_TIME | ${compiler//_/-}"
+    msg="$MSG_NOTE_SUCCESS $BUILD_TIME | ${REALCC//_/-}"
     _send_msg "${KERNEL_NAME//_/-} | $msg"
   fi
 }
