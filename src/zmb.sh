@@ -707,7 +707,8 @@ _list_all_kernels() {
       local logfile linuxversion logdate compiler compilerversion
       logfile="$(find "${DIR}/logs/${kernel##*/}" -mindepth 1 \
         -maxdepth 1 -type f -iname "*.log" -printf "%T@ - %p\n" \
-        | sort -nr | head -n 1 | awk -F " - " '{print $2}')"
+        2>/dev/null | sort -nr | head -n 1 \
+        | awk -F " - " '{print $2}')"
       if [[ -f $logfile ]]; then
         if grep -m 1 REALCC= "$logfile" &>/dev/null; then
           local titlecolor; titlecolor="$green"
@@ -725,7 +726,7 @@ _list_all_kernels() {
                 "${compilerversion/> TCVER=}$magenta ─$nc"\
                 "${logdate/> DATE=}$lblue ${logtime/> TIME=}"
       else
-        echo -e "${red}${kernel##*/}:$nc no log found..."
+        echo -e "${red}${kernel##*/}:$nc $MSG_NO_LOG"
       fi
     done
   else
