@@ -705,7 +705,8 @@ _list_all_kernels() {
     for kernel in "${DIR}"/out/*; do
       local logfile linuxversion logdate compiler compilerversion
       logfile="$(find "${DIR}/logs/${kernel##*/}" -mindepth 1 \
-        -maxdepth 1 -type f -iname "*.log" | tail -n 1)"
+        -maxdepth 1 -type f -iname "*.log" -printf "%t - %p\n" \
+        | tail -n 1 | awk -F " - " '{print $2}')"
       if [[ -f $logfile ]]; then
         if grep -m 1 REALCC= "$logfile" &>/dev/null; then
           red="$green"
