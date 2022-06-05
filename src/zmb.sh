@@ -179,6 +179,7 @@ _terminal_colors() {
       yellow="$(tput bold setaf 3)"
       lyellow="$(tput setaf 3)"
       blue="$(tput bold setaf 4)"
+      lblue="$(tput setaf 4)"
       magenta="$(tput setaf 5)"
       cyan="$(tput bold setaf 6)"
     fi
@@ -661,12 +662,12 @@ _tc_version_option() {
         "$NEUTRON_CLANG_NAME") nt_v="${tc_version##*/}" ;;
         "$PROTON_CLANG_NAME") pt_v="${tc_version##*/}" ;;
       esac
-      echo -e "${green}${tc[2]}: ${red}${tc_version##*/}$nc"
+      echo -e "${green}${tc[2]}: ${lblue}${tc_version##*/}$nc"
     elif [[ -n $eva_v ]] && [[ -n $pt_v ]]; then
-      echo -e "${green}${tc[2]}: ${red}${pt_v}/${eva_v}$nc"
+      echo -e "${green}${tc[2]}: ${lblue}${pt_v}/${eva_v}$nc"
       unset pt_v
     elif [[ -n $eva_v ]] && [[ -n $nt_v ]]; then
-      echo -e "${green}${tc[2]}: ${red}${nt_v}/${eva_v}$nc"
+      echo -e "${green}${tc[2]}: ${lblue}${nt_v}/${eva_v}$nc"
     fi
   done
 }
@@ -701,7 +702,7 @@ _send_file_option() {
 _list_all_kernels() {
   if [[ -n $(find "${DIR}/out" \
       -mindepth 1 -maxdepth 1 -type d 2>/dev/null) ]]; then
-    _note "${MSG_NOTE_LISTKERNEL}:"
+    _note "${MSG_NOTE_LISTKERNEL}..."
     for kernel in "${DIR}"/out/*; do
       local logfile linuxversion logdate compiler compilerversion
       logfile="$(find "${DIR}/logs/${kernel##*/}" -mindepth 1 \
@@ -714,13 +715,15 @@ _list_all_kernels() {
           local titlecolor; titlecolor="$red"
         fi
         linuxversion="$(grep -m 1 LINUX_VERSION= "$logfile")"
-        logdate="$(grep -m 1 DATE= "$logfile")"
-        compiler="$(grep -m 1 COMPILER= "$logfile")"
-        compilerversion="$(grep -m 1 TCVER= "$logfile")"
-        echo -e "${titlecolor}${kernel##*/}:$nc"\
-                "v${linuxversion/> LINUX_VERSION=} on"\
-                "${logdate/> DATE=} with ${compiler/> COMPILER=}"\
-                "${compilerversion/> TCVER=}"
+        logdate="$(grep -m 1 "> DATE=" "$logfile")"
+        logtime="$(grep -m 1 "> TIME=" "$logfile")"
+        compiler="$(grep -m 1 "> COMPILER=" "$logfile")"
+        compilerversion="$(grep -m 1 "> TCVER=" "$logfile")"
+        echo -e "${titlecolor}${kernel##*/}:$lblue"\
+                "v${linuxversion/> LINUX_VERSION=}$magenta ─$nc"\
+                "${compiler/> COMPILER=}$lblue"\
+                "${compilerversion/> TCVER=}$magenta ─$nc"\
+                "${logdate/> DATE=}$lblue ${logtime/> TIME=}"
       else
         echo -e "${red}${kernel##*/}:$nc no log found..."
       fi
