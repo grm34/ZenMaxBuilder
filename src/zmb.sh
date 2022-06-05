@@ -913,7 +913,7 @@ _start() {
   _get_build_time
   local ftime gen; gen="${OUT_DIR}/include/generated/compile.h"
   ftime="$(stat -c %Z "${gen}" 2>/dev/null)"
-  if ! [[ -f $gen ]] || [[ $ftime < $start_time ]]; then
+  if ! [[ -f $gen ]] || [[ $ftime -lt $start_time ]]; then
     _error "$MSG_ERR_MAKE"; _exit 1
   else
     REALCC="$(grep -m 1 LINUX_COMPILER "$gen")"
@@ -1222,6 +1222,7 @@ _ask_for_update_aosp() {
 ###---------------------------------------------------------------###
 
 _aosp_clang_options() {
+  # ARG $1 = toolchain realpath
   TC_OPTIONS=("${AOSP_CLANG_OPTIONS[@]}")
   _check_linker "${1}/$AOSP_CLANG_CHECK" "${1}/$LLVM_ARM64_CHECK"
   local llvm_path
@@ -1234,6 +1235,7 @@ _aosp_clang_options() {
 }
 
 _eva_gcc_options() {
+  # ARG $1 = toolchain realpath
   TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
   _check_linker "${1}/$EVA_ARM64_CHECK"
   export PATH="${EVA_ARM64_DIR}/bin:${EVA_ARM_DIR}/bin:${PATH}"
@@ -1244,6 +1246,7 @@ _eva_gcc_options() {
 }
 
 _neutron_clang_options() {
+  # ARG $1 = toolchain realpath
   TC_OPTIONS=("${NEUTRON_CLANG_OPTIONS[@]}")
   _check_linker "${1}/$NEUTRON_CHECK"
   export PATH="${NEUTRON_DIR}/bin:${PATH}"
@@ -1254,6 +1257,7 @@ _neutron_clang_options() {
 }
 
 _proton_clang_options() {
+  # ARG $1 = toolchain realpath
   TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
   _check_linker "${1}/$PROTON_CHECK"
   export PATH="${PROTON_DIR}/bin:${PATH}"
@@ -1264,6 +1268,7 @@ _proton_clang_options() {
 }
 
 _los_gcc_options() {
+  # ARG $1 = toolchain realpath
   TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
   _check_linker "${1}/$LOS_ARM64_CHECK"
   export PATH="${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:${PATH}"
@@ -1274,6 +1279,7 @@ _los_gcc_options() {
 }
 
 _proton_gcc_options() {
+  # ARG $1 = toolchain realpath
   TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
   _check_linker "${1}/$PROTON_CHECK" "${1}/$EVA_ARM64_CHECK"
   local eva_path eva_v pt_v
@@ -1287,6 +1293,7 @@ _proton_gcc_options() {
 }
 
 _neutron_gcc_options() {
+  # ARG $1 = toolchain realpath
   TC_OPTIONS=("${NEUTRON_GCC_OPTIONS[@]}")
   _check_linker "${1}/$NEUTRON_CHECK" "${1}/$EVA_ARM64_CHECK"
   local eva_path eva_v nt_v
