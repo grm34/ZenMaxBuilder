@@ -308,8 +308,8 @@ _exit() {
   done
   device_folders=(out builds logs)
   for folder in "${device_folders[@]}"; do
-    if [[ -d ${DIR}/${folder}/$CODENAME ]] \
-        && [[ -z $(ls -A "${DIR}/${folder}/$CODENAME") ]]; then
+    if [[ -z $(find "${DIR}/${folder}/$CODENAME" \
+        -mindepth 1 -maxdepth 1 2>/dev/null) ]]; then
       _check rm -rf "${DIR}/${folder}/$CODENAME"
     fi
   done
@@ -699,24 +699,28 @@ _send_file_option() {
 #---------------------
 
 _list_all_kernels() {
-  if [[ -d ${DIR}/out ]] \
-      && [[ $(ls -d out/*/ 2>/dev/null) ]]; then
+  if [[ -n $(find "${DIR}/out" \
+      -mindepth 1 -maxdepth 1 -type d 2>/dev/null) ]]; then
     _note "${MSG_NOTE_LISTKERNEL}:"
-    for kn in "${DIR}"/out/*; do
-      # shellcheck disable=SC2012
-      dt="$(ls -Art "${DIR}/logs/${kn##*/}" 2>/dev/null | tail -n1)"
-      dt="${DIR}/logs/${kn##*/}/$dt"
-      if [[ -f $dt ]]; then
-        if grep -m 1 REALCC= "$dt" &>/dev/null; then red="$green"; fi
-        v="$(grep -m 1 LINUX_VERSION= "$dt")"
-        d="$(grep -m 1 DATE= "$dt")"
-        c="$(grep -m 1 COMPILER= "$dt")"
-        t="$(grep -m 1 TCVER= "$dt")"
-        echo -e "${red}${kn##*/}:$nc v${v/> LINUX_VERSION=} on"\
-                "${d/> DATE=} with ${c/> COMPILER=} ${t/> TCVER=}"
+    for kernel in "${DIR}"/out/*; do
+      local logfile linuxversion logdate compiler compilerversion
+      logfile="$(find "${DIR}/logs/${kernel##*/}" -mindepth 1 \
+        -maxdepth 1 -type f -iname "*.log" | tail -n 1)"
+      if [[ -f $logfile ]]; then
+        if grep -m 1 REALCC= "$logfile" &>/dev/null; then
+          red="$green"
+        fi
+        linuxversion="$(grep -m 1 LINUX_VERSION= "$logfile")"
+        logdate="$(grep -m 1 DATE= "$logfile")"
+        compiler="$(grep -m 1 COMPILER= "$logfile")"
+        compilerversion="$(grep -m 1 TCVER= "$logfile")"
+        echo -e "${red}${kernel##*/}:$nc"\
+                "v${linuxversion/> LINUX_VERSION=} on"\
+                "${logdate/> DATE=} with ${compiler/> COMPILER=}"\
+                "${compilerversion/> TCVER=}"
         _terminal_colors
       else
-        echo -e "${red}${kn##*/}:$nc no log found..."
+        echo -e "${red}${kernel##*/}:$nc no log found..."
       fi
     done
   else
