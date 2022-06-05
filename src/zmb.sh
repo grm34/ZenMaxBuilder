@@ -890,10 +890,8 @@ _start() {
     _ask_for_save_defconfig
     if [[ $save_defconfig != False ]]; then
       _save_defconfig
-    else
-      if [[ $original_defconfig == False ]]; then
-        _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."; _exit 0
-      fi
+    elif [[ $original_defconfig == False ]]; then
+      _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."; _exit 0
     fi
   fi
 
