@@ -23,8 +23,8 @@
 
 # [ZMB] ZenMaxBuilder...
 # -------------------------------------------------------------------
-#  0. ==>              Starting blocks...                       (RUN)
-#  1. MAIN..........:  ZenMaxBuilder main process              (FUNC)
+#  0. ==>              starting blocks                          (RUN)
+#  1. MAIN..........:  zmb main process                        (FUNC)
 #  2. MANAGER.......:  global management of the script         (FUNC)
 #  3. REQUIREMENTS..:  dependency install management           (FUNC)
 #  4. OPTIONS.......:  command line option management          (FUNC)
@@ -33,7 +33,7 @@
 #  7. MAKER.........:  everything related to the make process  (FUNC)
 #  8. ZIP...........:  everything related to the zip creation  (FUNC)
 #  9. TELEGRAM......:  kernel building feedback                (FUNC)
-# 10. ==>              run ZenMaxBuilder                        (RUN)
+# 10. ==>              run zmb                                  (RUN)
 # -------------------------------------------------------------------
 
 # Ensure proper use
@@ -97,7 +97,7 @@ fi
 
 
 ###---------------------------------------------------------------###
-###        1. MAIN => the ZenMaxBuilder main process (ZMB)        ###
+###          1. MAIN => zmb main process (ZenMaxBuilder)          ###
 ###---------------------------------------------------------------###
 
 _zenmaxbuilder() {
@@ -155,7 +155,7 @@ _zenmaxbuilder() {
 
 
 ###---------------------------------------------------------------###
-###    2. MANAGER => global management functions of the script    ###
+###         2. MANAGER => global management of the script         ###
 ###---------------------------------------------------------------###
 
 _terminal_banner() {
@@ -815,7 +815,7 @@ ${cyan}https://kernel-builder.com$nc\n"
 
 
 ###---------------------------------------------------------------###
-###      5. START => new android kernel compilation function      ###
+###          5. START => new android kernel compilation           ###
 ###---------------------------------------------------------------###
 
 _start() {
@@ -1600,7 +1600,7 @@ _sign_zip() {
 
 
 ###---------------------------------------------------------------###
-###    9. TELEGRAM => building status Telegram feedback (POST)    ###
+###        9. TELEGRAM => building status feedback (POST)         ###
 ###---------------------------------------------------------------###
 
 # Telegram API
