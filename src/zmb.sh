@@ -68,10 +68,6 @@ if ! flock -n 201; then
   exit 114
 fi
 
-# Job control
-(set -o posix; set)> "${DIR}/bashvar"
-set -m -E -o pipefail #-b -v
-
 # Shell settings
 shopt -s checkwinsize progcomp
 shopt -u autocd cdspell dirspell extglob progcomp_alias
@@ -94,6 +90,10 @@ else
   source "${DIR}/lang/en.cfg" 2>/dev/null \
     || echo "ERROR: language not found" >&2; exit 2
 fi
+
+# Job control
+(set -o posix; set)> "${DIR}/bashvar"
+set -m -E -o pipefail #debug: -u -b -v
 
 
 ###---------------------------------------------------------------###
@@ -288,10 +288,9 @@ _exit() {
   # Properly exit the script
   # ARG: $1 = exit code
   # 1. kill running PID childs on interrupt
-  # 2. get current build logs
-  # 3. remove user input files
-  # 4. remove empty device folders
-  # 5. exit with 3s timeout
+  # 2. remove user input files
+  # 3. remove empty device folders
+  # 4. exit with 3s timeout
   if [[ $1 != 0 ]]; then
     local pids; pids=(make git wget tar readelf zip java \
       apt pkg pacman yum emerge zypper dnf)
@@ -299,7 +298,6 @@ _exit() {
       if pidof "$pid"; then pkill "$pid" || sleep 0.5; fi
     done
   fi
-  _get_build_logs
   local files device_folders
   files=(bashvar buildervar linuxver wget-log \
     "${AOSP_CLANG_DIR##*/}.tar.gz" "${LLVM_ARM_DIR##*/}.gz"
@@ -937,6 +935,7 @@ _start() {
       _sign_zip "${BUILD_DIR}/${KERNEL_NAME}-$DATE" | tee -a "$log"
       _note "$MSG_NOTE_ZIPPED !"
     fi
+    _get_build_logs
     _upload_kernel_build
   fi
 }
