@@ -709,17 +709,18 @@ _list_all_kernels() {
         | sort -nr | head -n 1 | awk -F " - " '{print $2}')"
       if [[ -f $logfile ]]; then
         if grep -m 1 REALCC= "$logfile" &>/dev/null; then
-          red="$green"
+          local titlecolor; titlecolor="$green"
+        else
+          local titlecolor; titlecolor="$red"
         fi
         linuxversion="$(grep -m 1 LINUX_VERSION= "$logfile")"
         logdate="$(grep -m 1 DATE= "$logfile")"
         compiler="$(grep -m 1 COMPILER= "$logfile")"
         compilerversion="$(grep -m 1 TCVER= "$logfile")"
-        echo -e "${red}${kernel##*/}:$nc"\
+        echo -e "${titlecolor}${kernel##*/}:$nc"\
                 "v${linuxversion/> LINUX_VERSION=} on"\
                 "${logdate/> DATE=} with ${compiler/> COMPILER=}"\
                 "${compilerversion/> TCVER=}"
-        _terminal_colors
       else
         echo -e "${red}${kernel##*/}:$nc no log found..."
       fi
