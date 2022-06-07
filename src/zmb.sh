@@ -492,12 +492,11 @@ _start() {
   _ask_for_kernel_dir
   _ask_for_defconfig
   _ask_for_menuconfig 
-  _display_cross_compile 1
+  _display_cross_compile
   _ask_for_edit_makefile
   _ask_for_toolchain
   _clone_toolchains
   _export_path_and_options
-  _check_makefile
   _ask_for_cores
 
   # Make kernel version
@@ -596,7 +595,7 @@ _check_tc_path() {
 
 _display_cross_compile() {
   # Get and display CROSS_COMPILE and CC from Makefile
-  [[ $1 ]] && _note "$MSG_NOTE_CC"
+  ! [[ $1 ]] && _note "$MSG_NOTE_CC"
   local cross cc
   cross="$(sed -n "/^CROSS_COMPILE\s.*?=.*/{p;}" \
     "${KERNEL_DIR}/Makefile")"
@@ -605,6 +604,34 @@ _display_cross_compile() {
     _error "$MSG_ERR_CC"; _exit 1
   else
     echo "$cross"; echo "$cc"
+  fi
+}
+
+_check_makefile() {
+  # Verification of CROSS_COMPILE and CC
+  # 1. warn the user while they not seems correctly set
+  # 2. ask to modify them in the kernel Makefile
+  # 3. edit the kernel Makefile (SED) while True
+  # ?  DEBUG MODE: display edited Makefile values
+  local cross cc r1 r2 check1 check2
+  cross="${TC_OPTIONS[1]/CROSS_COMPILE=}"
+  cc="${TC_OPTIONS[3]/CC=}"
+  r1=("^CROSS_COMPILE\s.*?=.*" "CROSS_COMPILE\ ?=\ ${cross}")
+  r2=("^CC\s.*=.*" "CC\ =\ ${cc}\ -I${KERNEL_DIR}")
+  check1="$(grep -m 1 "${r1[0]}" "${KERNEL_DIR}/Makefile")"
+  check2="$(grep -m 1 "${r2[0]}" "${KERNEL_DIR}/Makefile")"
+  if [[ -n ${check1##*"${cross}"*} ]] \
+      || [[ -n ${check2##*"${cc}"*} ]]; then
+    _error warn "$MSG_WARN_CC"
+    _ask_for_edit_cross_compile
+    if [[ $EDIT_CC != False ]]; then
+      _check sed -i "s|${r1[0]}|${r1[1]}|g" "${KERNEL_DIR}/Makefile"
+      _check sed -i "s|${r2[0]}|${r2[1]}|g" "${KERNEL_DIR}/Makefile"
+      if [[ $DEBUG == True ]]; then
+        echo -e "\n${blue}${MSG_DEBUG_CC}:$nc" >&2
+        _display_cross_compile 1; sleep 0.5
+      fi
+    fi
   fi
 }
 
@@ -738,6 +765,7 @@ _export_path_and_options() {
     "$PROTON_GCC_NAME") _proton_gcc_options "$tcpath" ;;
     "$HOST_CLANG_NAME") _host_clang_options ;;
   esac
+  _check_makefile
   if [[ $LTO == True ]]; then
     export LD_LIBRARY_PATH="$lto_dir"
     TC_OPTIONS[7]="LD=$LTO_LIBRARY"
@@ -759,34 +787,6 @@ _export_path_and_options() {
       echo -e "${lyellow}${opt}$nc" >&2
     done
     echo -e "\n${blue}PATH: ${nc}${lyellow}${PATH}$nc" >&2
-  fi
-}
-
-_check_makefile() {
-  # Verification of CROSS_COMPILE and CC
-  # 1. warn the user while they not seems correctly set
-  # 2. ask to modify them in the kernel Makefile
-  # 3. edit the kernel Makefile (SED) while True
-  # ?  DEBUG MODE: display edited Makefile values
-  local cross cc r1 r2 check1 check2
-  cross="${TC_OPTIONS[1]/CROSS_COMPILE=}"
-  cc="${TC_OPTIONS[3]/CC=}"
-  r1=("^CROSS_COMPILE\s.*?=.*" "CROSS_COMPILE\ ?=\ ${cross}")
-  r2=("^CC\s.*=.*" "CC\ =\ ${cc}\ -I${KERNEL_DIR}")
-  check1="$(grep -m 1 "${r1[0]}" "${KERNEL_DIR}/Makefile")"
-  check2="$(grep -m 1 "${r2[0]}" "${KERNEL_DIR}/Makefile")"
-  if [[ -n ${check1##*"${cross}"*} ]] \
-      || [[ -n ${check2##*"${cc}"*} ]]; then
-    _error warn "$MSG_WARN_CC"
-    _ask_for_edit_cross_compile
-    if [[ $EDIT_CC != False ]]; then
-      _check sed -i "s|${r1[0]}|${r1[1]}|g" "${KERNEL_DIR}/Makefile"
-      _check sed -i "s|${r2[0]}|${r2[1]}|g" "${KERNEL_DIR}/Makefile"
-      if [[ $DEBUG == True ]]; then
-        echo -e "\n${blue}${MSG_DEBUG_CC}:$nc" >&2
-        _display_cross_compile; sleep 0.5
-      fi
-    fi
   fi
 }
 
@@ -1048,7 +1048,7 @@ _ask_for_edit_makefile() {
   # Return: EDIT_CC
   _confirm "$MSG_ASK_MAKEFILE ?" "[y/N]"
   case $confirm in
-    y|Y|yes|Yes|YES) vi "${KERNEL_DIR}/Makefile" ;;
+    y|Y|yes|Yes|YES) $EDITOR "${KERNEL_DIR}/Makefile" ;;
   esac
 }
 
