@@ -24,17 +24,23 @@
 # [ZMB] ZenMaxBuilder...
 # -------------------------------------------------------------------
 #  0. ==>              starting blocks                          (RUN)
-#  1. MAIN..........:  zmb main process                        (FUNC)
+#  1. MAIN..........:  zmb main processus                      (FUNC)
 #  2. MANAGER.......:  global management of the script         (FUNC)
 #  3. COLLECTOR.....:  functions to grab something             (FUNC)
-#  4. START.........:  start new android kernel compilation    (FUNC)
-#  5. MAKER.........:  everything related to the make process  (FUNC)
-#  6. ZIP...........:  everything related to the zip creation  (FUNC)
-#  7. QUESTIONER....:  questions asked to the user             (FUNC)
-#  8. TELEGRAM......:  kernel building feedback                (FUNC)
-#  9. OPTIONS.......:  command line option management          (FUNC)
-# 10. REQUIREMENTS..:  dependency install management           (FUNC)
-# 11. ==>              run zmb                                  (RUN)
+#  4. STARTER.......:  starts new android kernel compilation   (FUNC)
+#  5. CHECKER.......:  checks linker, path and Makefile        (FUNC)
+#  6. COMPILER......:  toolchain compiler settings             (FUNC)
+#  7. MAKER.........:  everything related to the make process  (FUNC)
+#  8. PACKER........:  everything related to the zip creation  (FUNC)
+#  9. QUESTIONER....:  questions asked to the user             (FUNC)
+# 10. TELEGRAMER....:  kernel building feedback                (FUNC)
+# 11. VERSIONER.....:  displays the toolchains versions        (FUNC)
+# 12. READER........:  displays the compiled kernels           (FUNC)
+# 13. PATCHER.......:  patch/revert patches to a kernel        (FUNC)
+# 14. INSTALLER.....:  dependency install management           (FUNC)
+# 15. UPDATER.......:  updates script and toolchains           (FUNC)
+# 16. HELPER........:  displays zmb  help and usage            (FUNC)
+# 17. ==>              run zmb                                  (RUN)
 # -------------------------------------------------------------------
 
 # Ensure proper use
@@ -139,7 +145,7 @@ _zenmaxbuilder() {
       f)  _install_dep; _patterns; _send_file_option; _exit 0 ;;
       z)  _install_dep; _create_zip_option; _exit 0 ;;
       l)  _install_dep; _list_all_kernels; _exit 0 ;;
-      t)  _install_dep; _latest_linux_tag; _exit 0 ;;
+      t)  _install_dep; _get_latest_linux_tag; _exit 0 ;;
       p)  _install_dep; _patch patch; _exit 0 ;;
       r)  _install_dep; _patch revert; _exit 0 ;;
       s)  _install_dep; _patterns; _start; _exit 0 ;;
@@ -435,9 +441,36 @@ _get_android_platform_version() {
   ptv="${ptv/PLATFORM_VERSION=}"
 }
 
+_get_cross_compile() {
+  # Get and display CROSS_COMPILE and CC from Makefile
+  ! [[ $1 ]] && _note "$MSG_NOTE_CC"
+  local cross cc
+  cross="$(sed -n "/^CROSS_COMPILE\s.*?=.*/{p;}" \
+    "${KERNEL_DIR}/Makefile")"
+  cc="$(sed -n "/^CC\s.*=.*/{p;}" "${KERNEL_DIR}/Makefile")"
+  if [[ -z $cross ]] || [[ -z $cc ]]; then
+    _error "$MSG_ERR_CC"; _exit 1
+  else
+    echo "$cross"; echo "$cc"
+  fi
+}
+
+_get_latest_linux_tag() {
+  _note "${MSG_NOTE_LTAG}..."
+  [[ $OPTARG != v* ]] && OPTARG="v$OPTARG"
+  local ltag; ltag="$(git ls-remote --refs --sort='v:refname' \
+    --tags "$LINUX_STABLE" | grep "$OPTARG" | tail --lines=1 \
+    | cut --delimiter='/' --fields=3)"
+  if [[ $ltag == ${OPTARG}* ]]; then
+    _note "${MSG_SUCCESS_LTAG}: ${red}$ltag"
+  else
+    _error "$MSG_ERR_LTAG ${red}$OPTARG"
+  fi
+}
+
 
 ###---------------------------------------------------------------###
-###          4. START => new android kernel compilation           ###
+###         4. STARTER => new android kernel compilation          ###
 ###---------------------------------------------------------------###
 
 _start() {
@@ -492,7 +525,7 @@ _start() {
   _ask_for_kernel_dir
   _ask_for_defconfig
   _ask_for_menuconfig 
-  _display_cross_compile
+  _get_cross_compile
   _ask_for_edit_makefile
   _ask_for_toolchain
   _clone_toolchains
@@ -563,7 +596,7 @@ _start() {
 
 
 ###---------------------------------------------------------------###
-###      5. MAKER => everything related to the make process       ###
+###        5. CHECKER => checks linker, path and Makefile         ###
 ###---------------------------------------------------------------###
 
 _check_linker() {
@@ -593,19 +626,6 @@ _check_tc_path() {
   done
 }
 
-_display_cross_compile() {
-  # Get and display CROSS_COMPILE and CC from Makefile
-  ! [[ $1 ]] && _note "$MSG_NOTE_CC"
-  local cross cc
-  cross="$(sed -n "/^CROSS_COMPILE\s.*?=.*/{p;}" \
-    "${KERNEL_DIR}/Makefile")"
-  cc="$(sed -n "/^CC\s.*=.*/{p;}" "${KERNEL_DIR}/Makefile")"
-  if [[ -z $cross ]] || [[ -z $cc ]]; then
-    _error "$MSG_ERR_CC"; _exit 1
-  else
-    echo "$cross"; echo "$cc"
-  fi
-}
 
 _check_makefile() {
   # Verification of CROSS_COMPILE and CC
@@ -629,11 +649,16 @@ _check_makefile() {
       _check sed -i "s|${r2[0]}|${r2[1]}|g" "${KERNEL_DIR}/Makefile"
       if [[ $DEBUG == True ]]; then
         echo -e "\n${blue}${MSG_DEBUG_CC}:$nc" >&2
-        _display_cross_compile 1; sleep 0.5
+        _get_cross_compile 1; sleep 0.5
       fi
     fi
   fi
 }
+
+
+###---------------------------------------------------------------###
+###          6. COMPILER => toolchain compiler settings           ###
+###---------------------------------------------------------------###
 
 _aosp_clang_options() {
   # ARG $1 = toolchain realpath
@@ -725,6 +750,11 @@ _host_clang_options() {
   _get_tc_version "$HOST_CLANG_NAME"
   TCVER="$tc_version"
 }
+
+
+###---------------------------------------------------------------###
+###      7. MAKER => everything related to the make process       ###
+###---------------------------------------------------------------###
 
 _export_path_and_options() {
   # Set compiler options
@@ -837,7 +867,7 @@ _make_build() {
 
 
 ###---------------------------------------------------------------###
-###    6. ZIP => everything related to the signed zip creation    ###
+###      8. PACKER => everything related to the zip creation      ###
 ###---------------------------------------------------------------###
 
 _zip() {
@@ -930,9 +960,21 @@ _sign_zip() {
   fi
 }
 
+_create_zip_option() {
+  if [[ -f $OPTARG ]]; then
+    _zip "${OPTARG##*/}-${DATE}-$TIME" "$OPTARG" \
+      "${DIR}/builds/default"
+    _sign_zip \
+      "${DIR}/builds/default/${OPTARG##*/}-${DATE}-$TIME"
+    _note "$MSG_NOTE_ZIPPED !"
+  else
+    _error "$MSG_ERR_IMG ${red}$OPTARG"
+  fi
+}
+
 
 ###---------------------------------------------------------------###
-###     7. QUESTIONER => all the questions asked to the user      ###
+###     9. QUESTIONER => all the questions asked to the user      ###
 ###---------------------------------------------------------------###
 
 _ask_for_codename() {
@@ -1224,11 +1266,8 @@ _ask_for_update_aosp() {
 
 
 ###---------------------------------------------------------------###
-###        8. TELEGRAM => building status feedback (POST)         ###
+###       10. TELEGRAMER => building status feedback (POST)       ###
 ###---------------------------------------------------------------###
-
-# Telegram API
-#--------------
 
 _send_msg() {
   # ARG $1 = message
@@ -1258,9 +1297,6 @@ _send_file() {
     -F disable_web_page_preview=true \
     "${TELEGRAM_API}/bot${TELEGRAM_BOT_TOKEN}/$tg"
 }
-
-# Kernel build status
-#--------------------
 
 _send_start_build_status() {
   [[ $build_status == True ]] && _send_msg "${status_msg//_/-}"
@@ -1320,85 +1356,31 @@ _set_html_status_msg() {
 <b>${MSG_TG_HTML[8]} :</b>  <code>${android_version}</code>"
 }
 
-
-###---------------------------------------------------------------###
-###         9. OPTIONS => command-line options management         ###
-###---------------------------------------------------------------###
-
-# Update option
-#---------------
-
-_update_git() {
-  # ARG $1 = repo branch
-  # 1. ALL: checkout and reset to main branch
-  # 2. ZMB: check if settings.cfg was updated
-  # 3. ZMB: warn the user while settings changed
-  # 4. ZMB: rename etc/user.cfg to etc/old.cfg
-  # 5. ALL: pull changes
-  git checkout "$1"; git reset --hard HEAD
-  if [[ $1 == "$ZMB_BRANCH" ]] \
-      && [[ -f ${DIR}/etc/user.cfg ]]; then
-    local d
-    d="$(git diff origin/"$ZMB_BRANCH" "${DIR}/etc/settings.cfg")"
-    if [[ -n $d ]]; then
-      _error warn "${MSG_CONF}"; echo
-      _check mv "${DIR}/etc/user.cfg" "${DIR}/etc/old.cfg"
-    fi
+_send_msg_option() {
+  if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
+    _note "${MSG_NOTE_SEND}..."; _send_msg "${OPTARG//_/-}"
+  else
+    _error "$MSG_ERR_API"
   fi
-  _check unbuffer git pull
 }
 
-_full_upgrade() {
-  # 1. set ZMB and AK3 and TC data
-  # 2. upgrade existing stuff...
-  local tp up_list; tp="${DIR}/toolchains"
-  declare -A up_data=(
-    [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
-    [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}"
-    [t1]="${tp}/${PROTON_DIR}€${PROTON_BRANCH}"
-    [t2]="${tp}/${NEUTRON_DIR}€${NEUTRON_BRANCH}"
-    [t3]="${tp}/${EVA_ARM64_DIR}€${EVA_ARM64_BRANCH}"
-    [t4]="${tp}/${EVA_ARM_DIR}€${EVA_ARM_BRANCH}"
-    [t5]="${tp}/${LOS_ARM64_DIR}€${LOS_ARM64_BRANCH}"
-    [t6]="${tp}/${LOS_ARM_DIR}€${LOS_ARM_BRANCH}"
-    [t7]="${tp}/${AOSP_CLANG_DIR}€${AOSP_CLANG_URL}€$AOSP_CLANG_VERSION"
-    [t8]="${tp}/${LLVM_ARM64_DIR}€${LLVM_ARM64_URL}€$LLVM_ARM64_VERSION"
-    [t9]="${tp}/${LLVM_ARM_DIR}€${LLVM_ARM_URL}€$LLVM_ARM_VERSION"
-  )
-  up_list=(zmb ak3 t1 t2 t3 t4 t5 t6 t7 t8 t9)
-  for repository in "${up_list[@]}"; do
-    IFS="€"; local repo
-    repo="${up_data[$repository]}"
-    read -ra repo <<< "$repo"
-    unset IFS
-    if [[ -d ${repo[0]} ]]; then
-      _note "$MSG_UP ${repo[0]##*/}..."
-      case $repository in
-        t7|t8|t9)
-          _get_local_aosp_tag "${repo[0]}" "${repo[2]}"
-          _get_latest_aosp_tag "${repo[1]}" "${repo[0]}"
-          if [[ $tag != "${latest/clang-}" ]]; then
-            _ask_for_update_aosp "${repo[0]##*/}"
-            if [[ $update_aosp == True ]]; then
-              _check mv "${repo[0]}" "${repo[0]}-${tag/llvm-}"
-              _install_aosp_tgz "${repo[0]}" "${repo[2]}"
-            fi
-          else
-            echo "${MSG_ALREADY_UP}: $latest"
-          fi
-          ;;
-        *)
-          _cd "${repo[0]}" "$MSG_ERR_DIR ${red}${repo[0]}"
-          _update_git "${repo[1]}"
-          _cd "$DIR" "$MSG_ERR_DIR ${red}$DIR"
-          ;;
-      esac
+_send_file_option() {
+  if [[ -f $OPTARG ]]; then
+    if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
+      _note "${MSG_NOTE_UPLOAD}: ${OPTARG##*/}..."
+      _send_file "$OPTARG"
+    else
+      _error "$MSG_ERR_API"
     fi
-  done
+  else
+    _error "$MSG_ERR_FILE ${red}$OPTARG"
+  fi
 }
 
-# Toolchains versions option
-# ---------------------------
+
+###---------------------------------------------------------------###
+###       11. VERSIONER => displays the toolchains versions       ###
+###---------------------------------------------------------------###
 
 _tc_version_option() {
   _note "${MSG_SCAN_TC}..."
@@ -1437,32 +1419,10 @@ _tc_version_option() {
   done
 }
 
-# Telegram options
-#------------------
 
-_send_msg_option() {
-  if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
-    _note "${MSG_NOTE_SEND}..."; _send_msg "${OPTARG//_/-}"
-  else
-    _error "$MSG_ERR_API"
-  fi
-}
-
-_send_file_option() {
-  if [[ -f $OPTARG ]]; then
-    if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
-      _note "${MSG_NOTE_UPLOAD}: ${OPTARG##*/}..."
-      _send_file "$OPTARG"
-    else
-      _error "$MSG_ERR_API"
-    fi
-  else
-    _error "$MSG_ERR_FILE ${red}$OPTARG"
-  fi
-}
-
-# List kernels option
-#---------------------
+###---------------------------------------------------------------###
+###          12. READER => displays the compiled kernels          ###
+###---------------------------------------------------------------###
 
 _list_all_kernels() {
   if [[ -n $(find "${DIR}/out" \
@@ -1499,39 +1459,10 @@ _list_all_kernels() {
   fi
 }
 
-# Linux tag option
-#------------------
 
-_latest_linux_tag() {
-  _note "${MSG_NOTE_LTAG}..."
-  [[ $OPTARG != v* ]] && OPTARG="v$OPTARG"
-  local ltag; ltag="$(git ls-remote --refs --sort='v:refname' \
-    --tags "$LINUX_STABLE" | grep "$OPTARG" | tail --lines=1 \
-    | cut --delimiter='/' --fields=3)"
-  if [[ $ltag == ${OPTARG}* ]]; then
-    _note "${MSG_SUCCESS_LTAG}: ${red}$ltag"
-  else
-    _error "$MSG_ERR_LTAG ${red}$OPTARG"
-  fi
-}
-
-# Zip option
-#------------
-
-_create_zip_option() {
-  if [[ -f $OPTARG ]]; then
-    _zip "${OPTARG##*/}-${DATE}-$TIME" "$OPTARG" \
-      "${DIR}/builds/default"
-    _sign_zip \
-      "${DIR}/builds/default/${OPTARG##*/}-${DATE}-$TIME"
-    _note "$MSG_NOTE_ZIPPED !"
-  else
-    _error "$MSG_ERR_IMG ${red}$OPTARG"
-  fi
-}
-
-# Patch Option
-#-------------
+###---------------------------------------------------------------###
+###        13. PATCHER => patch/revert patches to a kernel        ###
+###---------------------------------------------------------------###
 
 _patch() {
   # ARG $1 = patch mode (patch or revert)
@@ -1551,37 +1482,9 @@ _patch() {
   fi
 }
 
-# Help option
-#-------------
-
-_usage() {
-  echo -e "
-${bold}Usage:$nc ${green}bash zmb \
-${nc}[${lyellow}OPTION${nc}] [${lyellow}ARGUMENT${nc}] \
-(e.g. ${magenta}bash zmb --start${nc})
-
-  ${bold}Options$nc
-    -h, --help                      $MSG_HELP_H
-    -s, --start                     $MSG_HELP_S
-    -u, --update                    $MSG_HELP_U
-    -v, --version                   $MSG_HELP_V
-    -l, --list                      $MSG_HELP_L
-    -t, --tag            [v4.19]    $MSG_HELP_T
-    -m, --msg          [message]    $MSG_HELP_M
-    -f, --file            [file]    $MSG_HELP_F
-    -z, --zip     [Image.gz-dtb]    $MSG_HELP_Z
-    -p, --patch                     $MSG_HELP_P
-    -r, --revert                    $MSG_HELP_R
-    -d, --debug                     $MSG_HELP_D
-
-${bold}${MSG_HELP_INFO}: \
-${cyan}https://kernel-builder.com$nc\n"
-}
-
-
 
 ###---------------------------------------------------------------###
-###    10. REQUIREMENTS => dependency installation management     ###
+###      14. INSTALLER => dependency installation management      ###
 ###---------------------------------------------------------------###
 
 _install_dep() {
@@ -1715,7 +1618,110 @@ _clone_anykernel() {
 
 
 ###---------------------------------------------------------------###
-###        11. Run the ZenMaxBuilder (ZMB) main process...        ###
+###      15. UPDATER => update the script and the toolchains      ###
+###---------------------------------------------------------------###
+
+_update_git() {
+  # ARG $1 = repo branch
+  # 1. ALL: checkout and reset to main branch
+  # 2. ZMB: check if settings.cfg was updated
+  # 3. ZMB: warn the user while settings changed
+  # 4. ZMB: rename etc/user.cfg to etc/old.cfg
+  # 5. ALL: pull changes
+  git checkout "$1"; git reset --hard HEAD
+  if [[ $1 == "$ZMB_BRANCH" ]] \
+      && [[ -f ${DIR}/etc/user.cfg ]]; then
+    local d
+    d="$(git diff origin/"$ZMB_BRANCH" "${DIR}/etc/settings.cfg")"
+    if [[ -n $d ]]; then
+      _error warn "${MSG_CONF}"; echo
+      _check mv "${DIR}/etc/user.cfg" "${DIR}/etc/old.cfg"
+    fi
+  fi
+  _check unbuffer git pull
+}
+
+_full_upgrade() {
+  # 1. set ZMB and AK3 and TC data
+  # 2. upgrade existing stuff...
+  local tp up_list; tp="${DIR}/toolchains"
+  declare -A up_data=(
+    [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
+    [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}"
+    [t1]="${tp}/${PROTON_DIR}€${PROTON_BRANCH}"
+    [t2]="${tp}/${NEUTRON_DIR}€${NEUTRON_BRANCH}"
+    [t3]="${tp}/${EVA_ARM64_DIR}€${EVA_ARM64_BRANCH}"
+    [t4]="${tp}/${EVA_ARM_DIR}€${EVA_ARM_BRANCH}"
+    [t5]="${tp}/${LOS_ARM64_DIR}€${LOS_ARM64_BRANCH}"
+    [t6]="${tp}/${LOS_ARM_DIR}€${LOS_ARM_BRANCH}"
+    [t7]="${tp}/${AOSP_CLANG_DIR}€${AOSP_CLANG_URL}€$AOSP_CLANG_VERSION"
+    [t8]="${tp}/${LLVM_ARM64_DIR}€${LLVM_ARM64_URL}€$LLVM_ARM64_VERSION"
+    [t9]="${tp}/${LLVM_ARM_DIR}€${LLVM_ARM_URL}€$LLVM_ARM_VERSION"
+  )
+  up_list=(zmb ak3 t1 t2 t3 t4 t5 t6 t7 t8 t9)
+  for repository in "${up_list[@]}"; do
+    IFS="€"; local repo
+    repo="${up_data[$repository]}"
+    read -ra repo <<< "$repo"
+    unset IFS
+    if [[ -d ${repo[0]} ]]; then
+      _note "$MSG_UP ${repo[0]##*/}..."
+      case $repository in
+        t7|t8|t9)
+          _get_local_aosp_tag "${repo[0]}" "${repo[2]}"
+          _get_latest_aosp_tag "${repo[1]}" "${repo[0]}"
+          if [[ $tag != "${latest/clang-}" ]]; then
+            _ask_for_update_aosp "${repo[0]##*/}"
+            if [[ $update_aosp == True ]]; then
+              _check mv "${repo[0]}" "${repo[0]}-${tag/llvm-}"
+              _install_aosp_tgz "${repo[0]}" "${repo[2]}"
+            fi
+          else
+            echo "${MSG_ALREADY_UP}: $latest"
+          fi
+          ;;
+        *)
+          _cd "${repo[0]}" "$MSG_ERR_DIR ${red}${repo[0]}"
+          _update_git "${repo[1]}"
+          _cd "$DIR" "$MSG_ERR_DIR ${red}$DIR"
+          ;;
+      esac
+    fi
+  done
+}
+
+
+###---------------------------------------------------------------###
+###            16. HELPER => zmb global help and usage            ###
+###---------------------------------------------------------------###
+
+_usage() {
+  echo -e "
+${bold}Usage:$nc ${green}bash zmb \
+${nc}[${lyellow}OPTION${nc}] [${lyellow}ARGUMENT${nc}] \
+(e.g. ${magenta}bash zmb --start${nc})
+
+  ${bold}Options$nc
+    -h, --help                      $MSG_HELP_H
+    -s, --start                     $MSG_HELP_S
+    -u, --update                    $MSG_HELP_U
+    -v, --version                   $MSG_HELP_V
+    -l, --list                      $MSG_HELP_L
+    -t, --tag            [v4.19]    $MSG_HELP_T
+    -m, --msg          [message]    $MSG_HELP_M
+    -f, --file            [file]    $MSG_HELP_F
+    -z, --zip     [Image.gz-dtb]    $MSG_HELP_Z
+    -p, --patch                     $MSG_HELP_P
+    -r, --revert                    $MSG_HELP_R
+    -d, --debug                     $MSG_HELP_D
+
+${bold}${MSG_HELP_INFO}: \
+${cyan}https://kernel-builder.com$nc\n"
+}
+
+
+###---------------------------------------------------------------###
+###        17. Run the ZenMaxBuilder (ZMB) main process...        ###
 ###---------------------------------------------------------------###
 _zenmaxbuilder "$@"
 
