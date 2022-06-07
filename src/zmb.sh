@@ -733,6 +733,7 @@ _export_path_and_options() {
   # 3. ensure compiler is system supported (verify linker)
   # 4. append toolchains to the $PATH, export and verify
   # 5. get the toolchain compiler version
+  # 6. check Makefile and warn/edit while required
   # 6. set Link Time Optimization (LTO)
   # 7. set additional Clang/LLVM flags
   # 8. CLANG: CROSS_COMPILE_ARM32 -> CROSS_COMPILE_COMPAT (> v4.2)
