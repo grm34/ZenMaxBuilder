@@ -39,7 +39,7 @@
 # 13. PATCHER.......:  patch/revert patches to a kernel        (FUNC)
 # 14. INSTALLER.....:  dependency install management           (FUNC)
 # 15. UPDATER.......:  updates script and toolchains           (FUNC)
-# 16. HELPER........:  displays zmb  help and usage            (FUNC)
+# 16. HELPER........:  displays zmb help and usage             (FUNC)
 # 17. ==>              run zmb                                  (RUN)
 # -------------------------------------------------------------------
 
