@@ -373,7 +373,7 @@ _get_build_logs() {
   # 3. remove ANSI sequences (colors) from logfile
   # 4. send logfile on Telegram when the build fail
   if [[ -f $log ]] \
-      && [[ -z $(grep -m 1 "### ZMB SETTINGS ###" $log) ]]; then
+      && ! grep -sqm 1 "### ZMB SETTINGS ###" "$log"; then
     local null; null="$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")"
     unset IFS; (set -o posix; set | grep -v "${null//|/\\|}")> \
       "${DIR}/buildervar"
@@ -1441,7 +1441,7 @@ _list_all_kernels() {
         2>/dev/null | sort -nr | head -n 1 \
         | awk -F " - " '{print $2}')"
       if [[ -f $logfile ]]; then
-        if grep -m 1 REALCC= "$logfile" &>/dev/null; then
+        if grep -sqm 1 REALCC= "$logfile"; then
           local titlecolor; titlecolor="$green"
         else
           local titlecolor; titlecolor="$red"
