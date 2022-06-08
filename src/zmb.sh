@@ -537,6 +537,9 @@ _start() {
   make -C "$KERNEL_DIR" kernelversion \
     | grep -v make > linuxver & wait $!
   LINUX_VERSION="$(head -n 1 linuxver)"
+  if [[ -z $LINUX_VERSION ]]; then
+    _error "$MSG_ERR_LINUXVER"; _exit 1
+  fi
   KERNEL_NAME="${TAG}-${CODENAME}-$LINUX_VERSION"
 
   # Make clean
