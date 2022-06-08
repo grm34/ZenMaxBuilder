@@ -302,9 +302,10 @@ _exit() {
   # Properly exit the script
   # ARG: $1 = exit code
   # 1. kill running PID childs on interrupt
-  # 2. remove user input files
-  # 3. remove empty device folders
-  # 4. exit with 3s timeout
+  # 2. add user inputs to logs
+  # 3. remove user input files
+  # 4. remove empty device folders
+  # 5. exit with 3s timeout
   if [[ $1 != 0 ]]; then
     local pids; pids=(make git wget tar readelf zip java \
       apt pkg pacman yum emerge zypper dnf)
@@ -312,6 +313,7 @@ _exit() {
       if pidof "$pid"; then pkill "$pid" || sleep 0.5; fi
     done
   fi
+  _get_build_logs
   local files device_folders
   files=(bashvar buildervar linuxver wget-log \
     "${AOSP_CLANG_DIR##*/}.tar.gz" "${LLVM_ARM_DIR##*/}.gz"
@@ -370,7 +372,8 @@ _get_build_logs() {
   # 2. diff bash/user inputs and add them to logfile
   # 3. remove ANSI sequences (colors) from logfile
   # 4. send logfile on Telegram when the build fail
-  if [[ -f $log ]]; then
+  if [[ -f $log ]] \
+      && ! grep -sqm 1 "### ZMB SETTINGS ###" "$log"; then
     local null; null="$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")"
     unset IFS; (set -o posix; set | grep -v "${null//|/\\|}")> \
       "${DIR}/buildervar"
@@ -1438,7 +1441,7 @@ _list_all_kernels() {
         2>/dev/null | sort -nr | head -n 1 \
         | awk -F " - " '{print $2}')"
       if [[ -f $logfile ]]; then
-        if grep -m 1 REALCC= "$logfile" &>/dev/null; then
+        if grep -sqm 1 REALCC= "$logfile"; then
           local titlecolor; titlecolor="$green"
         else
           local titlecolor; titlecolor="$red"
