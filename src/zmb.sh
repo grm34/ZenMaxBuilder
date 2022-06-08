@@ -199,7 +199,6 @@ _patterns() {
   source "${DIR}/etc/patterns.cfg"
 }
 
-
 _cd() {
   # ARG $1 = the location to go
   # ARG $2 = the error message
@@ -631,7 +630,6 @@ _check_tc_path() {
     fi
   done
 }
-
 
 _check_makefile() {
   # Verification of CROSS_COMPILE and CC
