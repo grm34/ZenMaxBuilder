@@ -40,7 +40,7 @@
 # 14. INSTALLER.....:  dependency install management           (FUNC)
 # 15. UPDATER.......:  updates script and toolchains           (FUNC)
 # 16. HELPER........:  displays zmb help and usage             (FUNC)
-# 17. ==>              run zmb                                  (RUN)
+# 00. ==>              run zmb                                  (RUN)
 # -------------------------------------------------------------------
 
 # Ensure proper use
@@ -1003,7 +1003,7 @@ _ask_for_codename() {
 }
 
 _ask_for_kernel_dir() {
-  # Question: device codename
+  # Question: kernel directory
   # NOTE: we are working here from HOME (auto completion)
   # Validation checks: presence of <configs> folder (ARM)
   # Return: KERNEL_DIR CONF_DIR
@@ -1105,7 +1105,7 @@ _ask_for_edit_makefile() {
 }
 
 _ask_for_edit_cross_compile() {
-  # Confirmation: auto edit makefile?
+  # Confirmation: auto edit makefile cross_compile?
   # Return: EDIT_CC
   _confirm "$MSG_ASK_CC $COMPILER ?" "[Y/n]"
   case $confirm in
@@ -1201,7 +1201,7 @@ _ask_for_run_again() {
 }
 
 _ask_for_install_pkg() {
-  # Confirmation: install missing packages?
+  # Confirmation: install missing package?
   # Warn the user that the script may crash while NO
   # Return: install_pkg
   _confirm "${MSG_ASK_PKG}: $1 ?" "[Y/n]"
@@ -1213,7 +1213,7 @@ _ask_for_install_pkg() {
 }
 
 _ask_for_clone_toolchain() {
-  # Confirmation: clone missing toolchains?
+  # Confirmation: clone missing toolchain?
   # Warn the user and exit the script while NO
   # Return: clone_tc
   _confirm "${MSG_ASK_CLONE_TC}: $1 ?" "[Y/n]"
@@ -1239,7 +1239,7 @@ _ask_for_clone_anykernel() {
 
 _ask_for_patch() {
   # Selection: kernel patch
-  # Choices: all patch files located in <patches>
+  # Choices: all patches from <patches>
   # Return: kpatch
   _cd "${DIR}/patches" "$MSG_ERR_DIR ${red}${DIR}/patches"
   _prompt "$MSG_ASK_PATCH :" 2
@@ -1730,7 +1730,7 @@ ${cyan}https://kernel-builder.com$nc\n"
 
 
 ###---------------------------------------------------------------###
-###        17. Run the ZenMaxBuilder (ZMB) main process...        ###
+###        00. Run the ZenMaxBuilder (ZMB) main process...        ###
 ###---------------------------------------------------------------###
 _zenmaxbuilder "$@"
 
