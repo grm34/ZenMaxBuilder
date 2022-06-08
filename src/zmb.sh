@@ -110,8 +110,9 @@ set -m -E -o pipefail #debug: -u -b -v
 _zenmaxbuilder() {
   # 1. set shell colors
   # 2. trap interrupt signals
-  # 3. transform long options to short
-  # 4. handle general options
+  # 3. set date and time
+  # 4. transform long options to short
+  # 5. handle general options
   _terminal_colors
   trap '_error $MSG_ERR_KBOARD; _exit 1' INT QUIT TSTP CONT HUP
   [[ $TIMEZONE == default ]] && _get_user_timezone
@@ -264,7 +265,7 @@ _check() {
   # ?  DEBUG MODE: display command
   # 1. run command as child and wait
   # 2. notify function and file on ERR
-  # 3. get failed build logs (+TG feedback)
+  # 3. add to the logs on command error
   # 4. ask to run again last failed command
   local cmd_err line func file; cmd_err="${*}"
   if [[ $DEBUG == True ]]; then
@@ -301,7 +302,7 @@ _exit() {
   # Properly exit the script
   # ARG: $1 = exit code
   # 1. kill running PID childs on interrupt
-  # 2. add user inputs to logs
+  # 2. add user inputs to the logs
   # 3. remove user input files
   # 4. remove empty device folders
   # 5. exit with 3s timeout
@@ -385,9 +386,9 @@ _get_build_logs() {
 }
 
 _get_latest_aosp_tag() {
-  # ARG $1 = url
-  # ARG $2 = dir
-  # Return: latest tgz
+  # ARG $1 = toolchain url (from settings.cfg)
+  # ARG $2 = toolchain folder (from settings.cfg)
+  # Return: tgz latest
   local url regex rep
   case ${2##*/} in
     "${AOSP_CLANG_DIR##*/}")
@@ -404,8 +405,8 @@ _get_latest_aosp_tag() {
 }
 
 _get_local_aosp_tag() {
-  # ARG $1 = dir
-  # ARG $2 = version
+  # ARG $1 = toolchain folder (from settings.cfg)
+  # ARG $2 = toolchain version (from settings.cfg)
   # Return: tag
   local regex
   case ${1##*/} in
@@ -417,7 +418,7 @@ _get_local_aosp_tag() {
 }
 
 _get_tc_version() {
-  # ARG: $1 = toolchain VERSION (from settings.cfg)
+  # ARG: $1 = toolchain version (from settings.cfg)
   case $1 in
     "$AOSP_CLANG_VERSION"|"$LLVM_ARM64_VERSION"|\
     "$LLVM_ARM_VERSION")
@@ -435,7 +436,7 @@ _get_tc_version() {
 }
 
 _get_android_platform_version() {
-  # Get PLATFORM_VERSION from Makefile
+  # Get PLATFORM_VERSION from the kernel Makefile
   # Return: amv ptv
   amv="$(grep -m 1 ANDROID_MAJOR_VERSION= "${KERNEL_DIR}/Makefile")"
   ptv="$(grep -m 1 PLATFORM_VERSION= "${KERNEL_DIR}/Makefile")"
@@ -444,7 +445,8 @@ _get_android_platform_version() {
 }
 
 _get_cross_compile() {
-  # Get and display CROSS_COMPILE and CC from Makefile
+  # Get CROSS_COMPILE and CC from the kernel Makefile
+  # Return: display on the terminal
   ! [[ $1 ]] && _note "$MSG_NOTE_CC"
   local cross cc
   cross="$(sed -n "/^CROSS_COMPILE\s.*?=.*/{p;}" \
@@ -458,6 +460,7 @@ _get_cross_compile() {
 }
 
 _get_latest_linux_tag() {
+  # OPTARG: $1 = the tag number to scan
   _note "${MSG_NOTE_LTAG}..."
   [[ $OPTARG != v* ]] && OPTARG="v$OPTARG"
   local ltag; ltag="$(git ls-remote --refs --sort='v:refname' \
@@ -470,45 +473,7 @@ _get_latest_linux_tag() {
   fi
 }
 
-
-###---------------------------------------------------------------###
-###         4. STARTER => new android kernel compilation          ###
-###---------------------------------------------------------------###
-
-_start() {
-
-  # Prevent errors in user settings
-  if [[ $KERNEL_DIR != default  ]] \
-      && ! [[ -f ${KERNEL_DIR}/Makefile ]] \
-      && ! [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]; then
-    _error "$MSG_ERR_CONF_KDIR"; _exit 1
-  elif ! [[ $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
-      ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|${HOST_CLANG_NAME}|\
-      ${LOS_GCC_NAME}|${AOSP_CLANG_NAME}|${NEUTRON_GCC_NAME}\
-      ${NEUTRON_CLANG_NAME}) ]]; then
-    _error "$MSG_ERR_COMPILER"; _exit 1
-  fi
-
-  # Start
-  clear; _terminal_banner
-  _note "$MSG_NOTE_START $DATE"
-  [[ $termux ]] && _error warn "${MSG_WARN_TERMUX}...?"
-
-  # Device codename
-  _ask_for_codename
-
-  # Create device folders
-  local folders; folders=(builds logs toolchains out)
-  for folder in "${folders[@]}"; do
-    if ! [[ -d ${DIR}/${folder}/$CODENAME ]] \
-        && [[ $folder != toolchains ]]; then
-      _check mkdir -p "${DIR}/${folder}/$CODENAME"
-    elif ! [[ -d ${DIR}/$folder ]]; then
-      _check mkdir "${DIR}/$folder"
-    fi
-  done
-
-  # Get realpath working folders
+_get_realpath_working_folders() {
   OUT_DIR="${DIR}/out/$CODENAME"
   BUILD_DIR="${DIR}/builds/$CODENAME"
   PROTON_DIR="${DIR}/toolchains/$PROTON_DIR"
@@ -522,8 +487,35 @@ _start() {
   LOS_ARM_DIR="${DIR}/toolchains/$LOS_ARM_DIR"
   ANYKERNEL_DIR="${DIR}/$ANYKERNEL_DIR"
   BOOT_DIR="${DIR}/out/${CODENAME}/arch/${ARCH}/boot"
+}
 
-  # Ask questions to the user
+
+###---------------------------------------------------------------###
+###         4. STARTER => new android kernel compilation          ###
+###---------------------------------------------------------------###
+
+_start() {
+
+  # Display banner
+  _check_user_settings
+  clear; _terminal_banner
+  _note "$MSG_NOTE_START $DATE"
+  [[ $termux ]] && _error warn "${MSG_WARN_TERMUX}...?"
+
+  # Get device codename and create folders
+  _ask_for_codename
+  local folders; folders=(builds logs toolchains out)
+  for folder in "${folders[@]}"; do
+    if ! [[ -d ${DIR}/${folder}/$CODENAME ]] \
+        && [[ $folder != toolchains ]]; then
+      _check mkdir -p "${DIR}/${folder}/$CODENAME"
+    elif ! [[ -d ${DIR}/$folder ]]; then
+      _check mkdir "${DIR}/$folder"
+    fi
+  done
+  _get_realpath_working_folders
+
+   # Ask questions to the user
   _ask_for_kernel_dir
   _ask_for_defconfig
   _ask_for_menuconfig 
@@ -601,8 +593,21 @@ _start() {
 
 
 ###---------------------------------------------------------------###
-###        5. CHECKER => checks linker, path and Makefile         ###
+###   5. CHECKER => checks settings, linker, path and Makefile    ###
 ###---------------------------------------------------------------###
+
+_check_user_settings() {
+  if [[ $KERNEL_DIR != default ]] \
+      && ! [[ -f ${KERNEL_DIR}/Makefile ]] \
+      && ! [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]; then
+    _error "$MSG_ERR_CONF_KDIR"; _exit 1
+  elif ! [[ $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
+      ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|${HOST_CLANG_NAME}|\
+      ${LOS_GCC_NAME}|${AOSP_CLANG_NAME}|${NEUTRON_GCC_NAME}\
+      ${NEUTRON_CLANG_NAME}) ]]; then
+    _error "$MSG_ERR_COMPILER"; _exit 1
+  fi
+}
 
 _check_linker() {
   # Ensure compiler is system supported
@@ -761,7 +766,7 @@ _host_clang_options() {
 ###---------------------------------------------------------------###
 
 _export_path_and_options() {
-  # Set compiler options
+  # Get toolchain compiler options
   # 1. export target variables (CFG)
   # 2. define PLATFORM_VERSION & ANDROID_MAJOR_VERSION
   # 3. ensure compiler is system supported (verify linker)
