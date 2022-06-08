@@ -39,7 +39,7 @@ _get_string_data() {
   unset IFS
 }
 
-echo "Running ZenMaxBuilder language script..."
+echo "Running ZenMaxBuilder translate script..."
 mapfile -t base_strings < lang/en.cfg
 _sort_strings "${base_strings[@]}"
 
