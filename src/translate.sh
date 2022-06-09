@@ -21,13 +21,13 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# For the moment this script automatically adds the base language
-# strings to the various translations but without translating them.
-# While new strings are added, it rearranges them alphabetically.
-
 shopt -s checkwinsize progcomp
 shopt -u autocd cdspell dirspell extglob progcomp_alias
 set -u
+
+# For the moment this script automatically adds the base language
+# strings to the various translations but without translating them.
+# While new strings are added, it rearranges them alphabetically.
 
 _sort_strings() {
   # shellcheck disable=SC2207
