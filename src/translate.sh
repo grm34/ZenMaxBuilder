@@ -26,44 +26,70 @@ shopt -u autocd cdspell dirspell extglob progcomp_alias
 set -u
 
 # For the moment this script automatically adds the base language
-# strings to the various translations but without translating them.
-# While new strings are added, it rearranges them alphabetically.
+# strings into the various translations, but without translating them.
+# It also removes duplicate strings and rearranges them alphabetically.
 
 _sort_strings() {
+  # Remove duplicate strings from an array
+  # Sort the strings alphabetically
+  # ARG $@ = array of strings
+  # Return: sorted_strings (array)
+  declare -A strings
+  for string in "${@}"; do
+    [[ $string ]] && IFS=" " strings["${string:- }"]=1
+  done
   # shellcheck disable=SC2207
-  IFS=$'\n' sorted_strings=($(sort -d <<< "${*}"))
+  IFS=$'\n' sorted_strings=($(sort -d <<< "${!strings[*]}"))
   unset IFS
 }
 
+_clean_cfg_files() {
+  # Remove duplicates lines and sort them alphabetically
+  # ARG $@ = array of files
+  for file in "$@"; do
+    mapfile -t strings < "$file"
+    _sort_strings "${strings[@]}"
+    printf "%s\n" "${sorted_strings[@]}" > "$file"
+  done
+}
+
+_get_strings_from_cfg() {
+  # Get strings from CFG files
+  # ARG $@ = array of files
+  # Return: <language_code>_strings (array)
+  #         cfg_list (array of the languages found)
+  for file in "$@"; do
+    name=${file##*/}; name="${name/.cfg}_strings"
+    mapfile -t "$name" < "$file"
+    [[ $name != en_strings ]] && cfg_list+=("$name")
+  done
+}
+
 _get_string_data() {
+  # Get string name and string value
   IFS=$'\n' read -d "" -ra data <<< "${1//=/$'\n'}"
   unset IFS
 }
 
-echo "Running ZMB translate (this could take a while)..."
-mapfile -t base_strings < lang/en.cfg
-_sort_strings "${base_strings[@]}"
-
-for line in "${sorted_strings[@]}"; do
-  _get_string_data "$line"
-  for file in lang/*.cfg; do
-    if [[ $file != lang/en.cfg ]]; then
-      if ! grep -sqm 1 "${data[0]}=" "$file"; then
-        echo "=> ${data[0]} added into ${file##*/}"
-        echo "$line" >> "$file"
+_add_missing_strings_into_cfg() {
+  # Write missing strings from base language (en.cfg)
+  # into the various translation files (from cfg_list)
+  for line in "${en_strings[@]:?}"; do
+    _get_string_data "$line"
+    for language in "${cfg_list[@]}"; do
+      declare -n trad_strings="$language"
+      if [[ "${trad_strings[*]}" != *"${data[0]}"* ]]; then
+        trad_strings+=("$line"); file="${language/_strings/.cfg}"
+        printf "%s\n" "${trad_strings[@]}" > "lang/$file"
+        echo "=> ${data[0]} added into $file"
       fi
-    fi
-  done
-done
-
-for file in lang/*.cfg; do
-  mapfile -t strings < "$file"
-  _sort_strings "${strings[@]}"
-  if [[ ${strings[*]} != "${sorted_strings[*]}" ]]; then
-    rm -f "$file"; touch "$file"
-    for line in "${sorted_strings[@]}"; do
-      echo "$line" >> "$file"
     done
-  fi
-done
+  done
+}
+
+echo "Running ZMB translate (this could take a while)..."
+_clean_cfg_files lang/*.cfg
+_get_strings_from_cfg lang/*.cfg
+_add_missing_strings_into_cfg
+_clean_cfg_files lang/*.cfg
 
