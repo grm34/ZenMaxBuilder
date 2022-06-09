@@ -30,7 +30,8 @@ shopt -u autocd cdspell dirspell extglob progcomp_alias
 set -u
 
 _sort_strings() {
-  IFS=$'\n' sorted_strings=("$(sort -d <<< "${*}")")
+  # shellcheck disable=SC2207
+  IFS=$'\n' sorted_strings=($(sort -d <<< "${*}"))
   unset IFS
 }
 
@@ -39,7 +40,7 @@ _get_string_data() {
   unset IFS
 }
 
-echo "Running ZenMaxBuilder translate script..."
+echo "Running ZMB translate (this could take a while)..."
 mapfile -t base_strings < lang/en.cfg
 _sort_strings "${base_strings[@]}"
 
@@ -47,7 +48,8 @@ for line in "${sorted_strings[@]}"; do
   _get_string_data "$line"
   for file in lang/*.cfg; do
     if [[ $file != lang/en.cfg ]]; then
-      if ! grep -sqm 1 "${data[0]}" "$file"; then
+      if ! grep -sqm 1 "${data[0]}=" "$file"; then
+        echo "=> ${data[0]} added into ${file##*/}"
         echo "$line" >> "$file"
       fi
     fi
