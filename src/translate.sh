@@ -88,10 +88,14 @@ _add_missing_strings_into_cfg() {
 }
 
 _translate_string() {
+  # ARG: $1 = string to translate
+  # ARG: $2 = language code (uppercase string)
+  # Return: translated (translated string)
   translated="$(curl -s https://api-free.deepl.com/v2/translate \
     -d auth_key=f1414922-db81-5454-67bd-9608cdca44b3:fx \
     -d "text=$1"  -d "target_lang=$2" \
     | grep -o '"text":"[^"]*' | grep -o '[^"]*$')"
+  echo "$translated" # TESTING: disable SC Warning
 }
 
 echo "Running ZMB translate (this could take a while)..."
