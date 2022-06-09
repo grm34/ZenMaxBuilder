@@ -57,9 +57,9 @@ _get_strings_from_cfg() {
   # Get strings from CFG files
   # ARG $@ = array of files
   # Return: <language_code>_strings (array)
-  #         cfg_list (array of the languages found)
+  #         cfg_list (array of the CFG found)
   for file in "$@"; do
-    name=${file##*/}; name="${name/.cfg}_strings"
+    name=${file##*/}; name="${name/.cfg/_strings}"
     mapfile -t "$name" < "$file"
     [[ $name != en_strings ]] && cfg_list+=("$name")
   done
