@@ -87,6 +87,13 @@ _add_missing_strings_into_cfg() {
   done
 }
 
+_translate_string() {
+  translated="$(curl -s https://api-free.deepl.com/v2/translate \
+    -d auth_key=f1414922-db81-5454-67bd-9608cdca44b3:fx \
+    -d "text=$1"  -d "target_lang=$2" \
+    | grep -o '"text":"[^"]*' | grep -o '[^"]*$')"
+}
+
 echo "Running ZMB translate (this could take a while)..."
 _clean_cfg_files lang/*.cfg
 _get_strings_from_cfg lang/*.cfg
