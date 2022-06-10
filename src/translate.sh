@@ -25,8 +25,8 @@ shopt -s checkwinsize progcomp
 shopt -u autocd cdspell dirspell extglob progcomp_alias
 #set -u -v -b -x
 
-# For the moment this script automatically adds the base language
-# strings into the various translations, but without translating them.
+# This script automatically translates base language strings and adds
+# them into the various translations (original will be used on error).
 # It also removes duplicate strings and rearranges them alphabetically.
 
 _sort_strings() {
@@ -83,7 +83,7 @@ _translate_string() {
 }
 
 _translate_and_add_missing_strings_into_cfg() {
-  # Write missing strings from base language (en.cfg)
+  # Translate then write missing strings from base language
   # into the various translation files (from cfg_list)
   for line in "${en_strings[@]:?}"; do
     _get_string_data "$line"
