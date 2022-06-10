@@ -68,10 +68,21 @@ _get_strings_from_cfg() {
 _get_string_data() {
   # Get string name and string value
   IFS=$'\n' read -d "" -ra data <<< "${1//=/$'\n'}"
+  data[1]=${data[1]//\"}
   unset IFS
 }
 
-_add_missing_strings_into_cfg() {
+_translate_string() {
+  # ARG: $1 = string to translate
+  # ARG: $2 = language code (string)
+  # Return: translated (translated string)
+  translated="$(curl -s https://api-free.deepl.com/v2/translate \
+    -d auth_key=f1414922-db81-5454-67bd-9608cdca44b3:fx \
+    -d "text=$1" -d "target_lang=${2^^}" \
+    | grep -o '"text":"[^"]*' | grep -o '[^"]*$')"
+}
+
+_translate_and_add_missing_strings_into_cfg() {
   # Write missing strings from base language (en.cfg)
   # into the various translation files (from cfg_list)
   for line in "${en_strings[@]:?}"; do
@@ -79,6 +90,8 @@ _add_missing_strings_into_cfg() {
     for language in "${cfg_list[@]}"; do
       declare -n trad_strings="$language"
       if [[ "${trad_strings[*]}" != *"${data[0]}"* ]]; then
+        _translate_string "${data[1]}" "${language/_strings}"
+        [[ -n $translated ]] && line="${data[0]}=\"${translated}\""
         trad_strings+=("$line"); file="${language/_strings/.cfg}"
         printf "%s\n" "${trad_strings[@]}" > "lang/$file"
         echo "=> ${data[0]} added into $file"
@@ -87,20 +100,9 @@ _add_missing_strings_into_cfg() {
   done
 }
 
-_translate_string() {
-  # ARG: $1 = string to translate
-  # ARG: $2 = language code (uppercase string)
-  # Return: translated (translated string)
-  translated="$(curl -s https://api-free.deepl.com/v2/translate \
-    -d auth_key=f1414922-db81-5454-67bd-9608cdca44b3:fx \
-    -d "text=$1" -d "target_lang=$2" \
-    | grep -o '"text":"[^"]*' | grep -o '[^"]*$')"
-  echo "$translated" # TESTING: disable SC Warning
-}
-
 echo "Running ZMB translate (this could take a while)..."
 _clean_cfg_files lang/*.cfg
 _get_strings_from_cfg lang/*.cfg
-_add_missing_strings_into_cfg
+_translate_and_add_missing_strings_into_cfg
 _clean_cfg_files lang/*.cfg
 
