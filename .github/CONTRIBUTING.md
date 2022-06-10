@@ -6,7 +6,7 @@ If you want to contribute to ZenMaxBuilder (ZMB) project and make it better, you
 
 ### Important
 
-ZenMaxBuilder being translated into several languages, all translations are assigned as variables from a CFG file. You don't have to worry about the different translations, just add your variables in `lang/en.cfg` (which is the main language file) and run the dedicated script that will add the new variables in the different translation files.
+ZenMaxBuilder being translated into several languages, all translations are assigned as variables from a CFG file. You don't have to worry about the different translations, just add your variables in `lang/en.cfg` (which is the main language file) and run the dedicated script that will translate and add the new variables in the different translation files.
 
     bash src/translate.sh
 
@@ -33,8 +33,15 @@ If you know another language and are willing to help translate ZMB, here are the
 - Follow pull request guidelines as described above.
 - Create a new file for your language in `lang` folder.
 - Name this file with the code of your language.
-- Copy all the content of `lang/en.cfg` in to it.
-- Implement your translations\*
+
+`MANUAL TRANSLATION`
+- Copy all the content of `lang/en.cfg` into it.
+- Implement your translations. \*
+- Create a new pull request to submit your language.
+
+`AUTO TRANSLATION`
+- run `bash src/translate.sh`
+- Check for errors/typo. \*
 - Create a new pull request to submit your language.
 
 \* ZMB being launched from a terminal, please respect line length (max 72).

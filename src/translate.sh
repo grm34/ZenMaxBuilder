@@ -23,16 +23,16 @@
 
 shopt -s checkwinsize progcomp
 shopt -u autocd cdspell dirspell extglob progcomp_alias
-set -u
+#set -u -v -b -x
 
-# For the moment this script automatically adds the base language
-# strings into the various translations, but without translating them.
+# This script automatically translates base language strings and adds
+# them into the various translations (original will be used on error).
 # It also removes duplicate strings and rearranges them alphabetically.
 
 _sort_strings() {
   # Remove duplicate strings from an array
   # Sort the strings alphabetically
-  # ARG $@ = array of strings
+  # ARG: $@ = array of strings
   # Return: sorted_strings (array)
   declare -A strings
   for string in "${@}"; do
@@ -45,7 +45,7 @@ _sort_strings() {
 
 _clean_cfg_files() {
   # Remove duplicates lines and sort them alphabetically
-  # ARG $@ = array of files
+  # ARG: $@ = array of files
   for file in "$@"; do
     mapfile -t strings < "$file"
     _sort_strings "${strings[@]}"
@@ -55,7 +55,7 @@ _clean_cfg_files() {
 
 _get_strings_from_cfg() {
   # Get strings from CFG files
-  # ARG $@ = array of files
+  # ARG: $@ = array of files
   # Return: <language_code>_strings (array)
   #         cfg_list (array of the CFG found)
   for file in "$@"; do
@@ -68,20 +68,34 @@ _get_strings_from_cfg() {
 _get_string_data() {
   # Get string name and string value
   IFS=$'\n' read -d "" -ra data <<< "${1//=/$'\n'}"
+  data[1]=${data[1]//\"}
   unset IFS
 }
 
-_add_missing_strings_into_cfg() {
-  # Write missing strings from base language (en.cfg)
+_translate_string() {
+  # ARG: $1 = string to translate
+  # ARG: $2 = language code (string)
+  # Return: translated (translated string)
+  translated="$(curl -s https://api-free.deepl.com/v2/translate \
+    -d auth_key=f1414922-db81-5454-67bd-9608cdca44b3:fx \
+    -d "text=$1" -d "target_lang=${2^^}" \
+    | grep -o '"text":"[^"]*' | grep -o '[^"]*$')"
+}
+
+_translate_and_add_missing_strings_into_cfg() {
+  # Translate then write missing strings from base language
   # into the various translation files (from cfg_list)
   for line in "${en_strings[@]:?}"; do
     _get_string_data "$line"
     for language in "${cfg_list[@]}"; do
       declare -n trad_strings="$language"
       if [[ "${trad_strings[*]}" != *"${data[0]}"* ]]; then
+        _translate_string "${data[1]}" "${language/_strings}"
+        [[ -n $translated ]] && line="${data[0]}=\"${translated}\""
+        [[ -n $translated ]] && note="translated" || note="original"
         trad_strings+=("$line"); file="${language/_strings/.cfg}"
         printf "%s\n" "${trad_strings[@]}" > "lang/$file"
-        echo "=> ${data[0]} added into $file"
+        echo "=> ${data[0]} (${note}) added into $file"
       fi
     done
   done
@@ -90,6 +104,7 @@ _add_missing_strings_into_cfg() {
 echo "Running ZMB translate (this could take a while)..."
 _clean_cfg_files lang/*.cfg
 _get_strings_from_cfg lang/*.cfg
-_add_missing_strings_into_cfg
+_translate_and_add_missing_strings_into_cfg
 _clean_cfg_files lang/*.cfg
+[[ $note ]] && echo "==> done" || echo "==> nothing to translate"
 
