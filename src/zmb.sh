@@ -253,9 +253,9 @@ _error() {
   # ARG $1 = <warn> for warning (ignore $1 for error)
   # ARG $* = the error or warning message
   if [[ $1 == warn ]]; then
-    echo -e "\n${blue}${MSG_WARN}:${nc}${lyellow}${*/warn/}$nc" >&2
+    echo -e "\n${blue}${MSG_WARN}${nc}${lyellow}${*/warn/}$nc" >&2
   else
-    echo -e "\n${red}${MSG_ERROR}: ${nc}${lyellow}${*}$nc" >&2
+    echo -e "\n${red}$MSG_ERROR ${nc}${lyellow}${*}$nc" >&2
   fi
 }
 
@@ -279,7 +279,7 @@ _check() {
     file="${BASH_SOURCE[$i+1]##*/}"
     _error "${cmd_err/unbuffer } ${red}${MSG_ERR_LINE}"\
            "${line}:${nc}${lyellow} ${func}"\
-           "${red}${MSG_ERR_FROM}:"\
+           "${red}${MSG_ERR_FROM}"\
            "${nc}${lyellow}${file##*/}"
     _get_build_logs
     _ask_for_run_again
@@ -461,13 +461,13 @@ _get_cross_compile() {
 
 _get_latest_linux_tag() {
   # OPTARG: $1 = the tag number to scan
-  _note "${MSG_NOTE_LTAG}..."
+  _note "$MSG_NOTE_LTAG"
   [[ $OPTARG != v* ]] && OPTARG="v$OPTARG"
   local ltag; ltag="$(git ls-remote --refs --sort='v:refname' \
     --tags "$LINUX_STABLE" | grep "$OPTARG" | tail --lines=1 \
     | cut --delimiter='/' --fields=3)"
   if [[ $ltag == ${OPTARG}* ]]; then
-    _note "${MSG_SUCCESS_LTAG}: ${red}$ltag"
+    _note "$MSG_SUCCESS_LTAG ${red}$ltag"
   else
     _error "$MSG_ERR_LTAG ${red}$OPTARG"
   fi
@@ -500,7 +500,7 @@ _start() {
   _check_user_settings
   clear; _terminal_banner
   _note "$MSG_NOTE_START $DATE"
-  [[ $termux ]] && _error warn "${MSG_WARN_TERMUX}...?"
+  [[ $termux ]] && _error warn "$MSG_WARN_TERMUX"
 
   # Get device codename and create folders
   _ask_for_codename
@@ -527,7 +527,7 @@ _start() {
   _ask_for_cores
 
   # Make kernel version
-  _note "${MSG_NOTE_LINUXVER}..."
+  _note "$MSG_NOTE_LINUXVER"
   make -C "$KERNEL_DIR" kernelversion \
     | grep -v make > linuxver & wait $!
   LINUX_VERSION="$(head -n 1 linuxver)"
@@ -550,14 +550,14 @@ _start() {
     if [[ $save_defconfig != False ]]; then
       _save_defconfig
     elif [[ $original_defconfig == False ]]; then
-      _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."; _exit 0
+      _note "$MSG_NOTE_CANCEL ${KERNEL_NAME}..."; _exit 0
     fi
   fi
 
   # Make the kernel
   _ask_for_new_build
   if [[ $new_build == False ]]; then
-    _note "${MSG_NOTE_CANCEL}: ${KERNEL_NAME}..."; _exit 0
+    _note "$MSG_NOTE_CANCEL ${KERNEL_NAME}..."; _exit 0
   else
     _ask_for_telegram
     start_time="$(TZ=$TIMEZONE date +%s)"
@@ -584,7 +584,7 @@ _start() {
       _zip "${KERNEL_NAME}-$DATE" "$K_IMG" \
            "$BUILD_DIR" | tee -a "$log"
       _sign_zip "${BUILD_DIR}/${KERNEL_NAME}-$DATE" | tee -a "$log"
-      _note "$MSG_NOTE_ZIPPED !"
+      _note "$MSG_NOTE_ZIPPED"
     fi
     _get_build_logs
     _upload_kernel_build
@@ -657,7 +657,7 @@ _check_makefile() {
       _check sed -i "s|${r1[0]}|${r1[1]}|g" "${KERNEL_DIR}/Makefile"
       _check sed -i "s|${r2[0]}|${r2[1]}|g" "${KERNEL_DIR}/Makefile"
       if [[ $DEBUG == True ]]; then
-        echo -e "\n${blue}${MSG_DEBUG_CC}:$nc" >&2
+        echo -e "\n${blue}${MSG_DEBUG_CC}$nc" >&2
         _get_cross_compile 1; sleep 0.5
       fi
     fi
@@ -867,7 +867,7 @@ _make_build() {
   # 1. set Telegram HTML message
   # 2. send build status on Telegram
   # 3. make new android kernel build
-  _note "${MSG_NOTE_MAKE}: ${KERNEL_NAME}..."
+  _note "$MSG_NOTE_MAKE ${KERNEL_NAME}..."
   _set_html_status_msg
   _send_start_build_status
   _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
@@ -941,7 +941,7 @@ _set_ak3_conf() {
 }
 
 _clean_anykernel() {
-  _note "${MSG_NOTE_CLEAN_AK3}..."
+  _note "$MSG_NOTE_CLEAN_AK3"
   for file in "${INCLUDED[@]}"; do
     [[ -f ${ANYKERNEL_DIR}/$file ]] &&
       _check rm -rf "${ANYKERNEL_DIR}/${file}"
@@ -960,7 +960,7 @@ _sign_zip() {
   # 1. send signing status on Telegram
   # 2. sign ZIP with AOSP Keys (JAVA)
   if which java &>/dev/null; then
-    _note "${MSG_NOTE_SIGN}..."
+    _note "$MSG_NOTE_SIGN"
     _send_zip_signing_status
     _check unbuffer java -jar "${DIR}/bin/zipsigner-3.0-dexed.jar" \
       "${1}.zip" "${1}-signed.zip" 2>&1
@@ -975,7 +975,7 @@ _create_zip_option() {
       "${DIR}/builds/default"
     _sign_zip \
       "${DIR}/builds/default/${OPTARG##*/}-${DATE}-$TIME"
-    _note "$MSG_NOTE_ZIPPED !"
+    _note "$MSG_NOTE_ZIPPED"
   else
     _error "$MSG_ERR_IMG ${red}$OPTARG"
   fi
@@ -991,12 +991,12 @@ _ask_for_codename() {
   # Validation checks: REGEX to prevent invalid string
   # Return: CODENAME
   if [[ $CODENAME == default ]]; then
-    _prompt "$MSG_ASK_DEV :" 1
+    _prompt "$MSG_ASK_CODENAME" 1
     read -r CODENAME
     local regex; regex="^[a-zA-Z0-9][a-zA-Z0-9_-]{2,19}$"
     until [[ $CODENAME =~ $regex ]]; do
-      _error "$MSG_ERR_DEV ${red}$CODENAME"
-      _prompt "$MSG_ASK_DEV :" 1
+      _error "$MSG_ERR_CODENAME ${red}$CODENAME"
+      _prompt "$MSG_ASK_CODENAME" 1
       read -r CODENAME
     done
   fi
@@ -1009,11 +1009,11 @@ _ask_for_kernel_dir() {
   # Return: KERNEL_DIR CONF_DIR
   if [[ $KERNEL_DIR == default ]]; then
     _cd "$HOME" "$MSG_ERR_DIR ${red}HOME"
-    _prompt "$MSG_ASK_KDIR :" 1
+    _prompt "$MSG_ASK_KDIR" 1
     read -r -e KERNEL_DIR
     until [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]; do
       _error "$MSG_ERR_KDIR ${red}$KERNEL_DIR"
-      _prompt "$MSG_ASK_KDIR :" 1
+      _prompt "$MSG_ASK_KDIR" 1
       read -r -e KERNEL_DIR
     done
     KERNEL_DIR="$(realpath "$KERNEL_DIR")"
@@ -1027,7 +1027,7 @@ _ask_for_defconfig() {
   # Choices: all defconfig files located in <configs> (ARM)
   # Return: DEFCONFIG
   _cd "$CONF_DIR" "$MSG_ERR_DIR ${red}$CONF_DIR"
-  _prompt "$MSG_ASK_DEF :" 2
+  _prompt "$MSG_SELECT_DEF" 2
   select DEFCONFIG in *_defconfig; do
     [[ $DEFCONFIG ]] && break
     _error "$MSG_ERR_SELECT"
@@ -1038,10 +1038,10 @@ _ask_for_defconfig() {
 _ask_for_menuconfig() {
   # Confirmation: make menuconfig?
   # Return: MENUCONFIG
-  _confirm "$MSG_ASK_CONF ?" "[y/N]"
+  _confirm "$MSG_CONFIRM_CONF" "[y/N]"
   case $confirm in
     y|Y|yes|Yes|YES)
-      _prompt "$MSG_SELECT_MENU :" 2
+      _prompt "$MSG_SELECT_MENU" 2
       select MENUCONFIG in config menuconfig nconfig xconfig \
           gconfig oldconfig silentoldconfig allyesconfig \
           allmodconfig allnoconfig randconfig localmodconfig \
@@ -1058,22 +1058,22 @@ _ask_for_save_defconfig() {
   # Otherwise request to continue with the original one
   # Validation checks: REGEX to prevent invalid string
   # Return: DEFCONFIG
-  _confirm "${MSG_ASK_SAVE_DEF} ?" "[Y/n]"
+  _confirm "$MSG_CONFIRM_SAVE_DEF" "[Y/n]"
   case $confirm in
     n|N|no|No|NO)
       save_defconfig="False"
-      _confirm "${MSG_ASK_USE_DEF}: $DEFCONFIG ?" "[Y/n]"
+      _confirm "$MSG_CONFIRM_USE_DEF $DEFCONFIG ?" "[Y/n]"
       case $confirm in
         n|N|no|No|NO) original_defconfig="False" ;;
       esac
       ;;
     *)
-      _prompt "$MSG_ASK_DEF_NAME :" 1
+      _prompt "$MSG_ASK_DEF_NAME" 1
       read -r DEFCONFIG
       local regex; regex="^[a-zA-Z0-9][a-zA-Z0-9_-]{2,25}$"
       until [[ $DEFCONFIG =~ $regex ]]; do
         _error "$MSG_ERR_DEF_NAME ${red}$DEFCONFIG"
-        _prompt "$MSG_ASK_DEF_NAME :" 1
+        _prompt "$MSG_ASK_DEF_NAME" 1
         read -r DEFCONFIG
       done
       DEFCONFIG="${DEFCONFIG}_defconfig"
@@ -1085,7 +1085,7 @@ _ask_for_toolchain() {
   # Selection: toolchain compiler
   # Return: COMPILER
   if [[ $COMPILER == default ]]; then
-    _prompt "$MSG_SELECT_TC :" 2
+    _prompt "$MSG_SELECT_TC" 2
     select COMPILER in $AOSP_CLANG_NAME $EVA_GCC_NAME \
         $PROTON_CLANG_NAME $NEUTRON_CLANG_NAME $LOS_GCC_NAME \
         $PROTON_GCC_NAME $NEUTRON_GCC_NAME $HOST_CLANG_NAME; do
@@ -1098,7 +1098,7 @@ _ask_for_toolchain() {
 _ask_for_edit_makefile() {
   # Confirmation: edit makefile?
   # Return: EDIT_CC
-  _confirm "$MSG_ASK_MAKEFILE ?" "[y/N]"
+  _confirm "$MSG_CONFIRM_MAKEFILE" "[y/N]"
   case $confirm in
     y|Y|yes|Yes|YES) $EDITOR "${KERNEL_DIR}/Makefile" ;;
   esac
@@ -1107,7 +1107,7 @@ _ask_for_edit_makefile() {
 _ask_for_edit_cross_compile() {
   # Confirmation: auto edit makefile cross_compile?
   # Return: EDIT_CC
-  _confirm "$MSG_ASK_CC $COMPILER ?" "[Y/n]"
+  _confirm "$MSG_CONFIRM_CC $COMPILER ?" "[Y/n]"
   case $confirm in
     n|N|no|No|NO) EDIT_CC="False" ;;
   esac
@@ -1118,15 +1118,15 @@ _ask_for_cores() {
   # Validation checks: amount of available cores (no limits here)
   # Return: CORES
   local cpu; cpu="$(nproc --all)"
-  _confirm "$MSG_ASK_CPU ?" "[Y/n]"
+  _confirm "$MSG_CONFIRM_CPU" "[Y/n]"
   case $confirm in
     n|N|no|No|NO)
-      _prompt "$MSG_ASK_CORES :" 1
+      _prompt "$MSG_ASK_CORES" 1
       read -r CORES
       until (( 1<=CORES && CORES<=cpu )); do
         _error "$MSG_ERR_CORES ${red}${CORES}"\
-               "${yellow}(${MSG_ERR_TOTAL}: ${cpu})"
-        _prompt "$MSG_ASK_CORES :" 1
+               "${yellow}($MSG_ERR_TOTAL ${cpu})"
+        _prompt "$MSG_ASK_CORES" 1
         read -r CORES
       done ;;
     *) CORES="$cpu" ;;
@@ -1136,7 +1136,7 @@ _ask_for_cores() {
 _ask_for_make_clean() {
   # Confirmation: make clean and mrproprer?
   # Return: MAKE_CLEAN
-  _confirm "${MSG_ASK_MCLEAN}: v$LINUX_VERSION ?" "[y/N]"
+  _confirm "$MSG_CONFIRM_MCLEAN v$LINUX_VERSION ?" "[y/N]"
   case $confirm in
     y|Y|yes|Yes|YES) MAKE_CLEAN="True" ;;
   esac
@@ -1146,7 +1146,7 @@ _ask_for_new_build() {
   # Confirmation: make new build?
   # Return: new_build
   _confirm \
-    "$MSG_START ${TAG}-${CODENAME}-$LINUX_VERSION ?" "[Y/n]"
+    "$MSG_CONFIRM_START ${TAG}-${CODENAME}-$LINUX_VERSION ?" "[Y/n]"
   case $confirm in
     n|N|no|No|NO) new_build="False" ;;
   esac
@@ -1156,7 +1156,7 @@ _ask_for_telegram() {
   # Confirmation: send build status on telegram?
   # Return: build_status
   if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
-    _confirm "$MSG_ASK_TG ?" "[y/N]"
+    _confirm "$MSG_CONFIRM_TG" "[y/N]"
     case $confirm in
       y|Y|yes|Yes|YES) build_status="True" ;;
     esac
@@ -1167,7 +1167,7 @@ _ask_for_flashable_zip() {
   # Confirmation: create flashable zip?
   # Return: flash_zip
   _confirm \
-    "$MSG_ASK_ZIP ${TAG}-${CODENAME}-$LINUX_VERSION ?" "[y/N]"
+    "$MSG_CONFIRM_ZIP ${TAG}-${CODENAME}-$LINUX_VERSION ?" "[y/N]"
   case $confirm in
     y|Y|yes|Yes|YES) flash_zip="True" ;;
   esac
@@ -1179,7 +1179,7 @@ _ask_for_kernel_image() {
   # Validation checks: presence of this file
   # Return: K_IMG
   _cd "$BOOT_DIR" "$MSG_ERR_DIR ${red}$BOOT_DIR"
-  _prompt "$MSG_ASK_IMG :" 1
+  _prompt "$MSG_ASK_IMG" 1
   read -r -e K_IMG
   until [[ -f $K_IMG ]]; do
     _error "$MSG_ERR_IMG ${red}$K_IMG"
@@ -1194,7 +1194,7 @@ _ask_for_run_again() {
   # Confirmation: run again failed command?
   # Return: run_again
   run_again="False"
-  _confirm "$MSG_RUN_AGAIN ?" "[y/N]"
+  _confirm "$MSG_CONFIRM_RUN_AGAIN" "[y/N]"
   case $confirm in
     y|Y|yes|Yes|YES) run_again="True" ;;
   esac
@@ -1204,10 +1204,10 @@ _ask_for_install_pkg() {
   # Confirmation: install missing package?
   # Warn the user that the script may crash while NO
   # Return: install_pkg
-  _confirm "${MSG_ASK_PKG}: $1 ?" "[Y/n]"
+  _confirm "${MSG_CONFIRM_PKG} $1 ?" "[Y/n]"
   case $confirm in
     n|N|no|No|NO)
-      _error warn "${MSG_WARN_DEP}: ${red}${dep}"; sleep 2 ;;
+      _error warn "${MSG_WARN_DEP} ${red}${dep}"; sleep 2 ;;
     *) install_pkg="True" ;;
   esac
 }
@@ -1216,10 +1216,10 @@ _ask_for_clone_toolchain() {
   # Confirmation: clone missing toolchain?
   # Warn the user and exit the script while NO
   # Return: clone_tc
-  _confirm "${MSG_ASK_CLONE_TC}: $1 ?" "[Y/n]"
+  _confirm "${MSG_CONFIRM_CLONE_TC} $1 ?" "[Y/n]"
   case $confirm in
     n|N|no|No|NO)
-      _error "${MSG_ERR_CLONE}: ${red}$1"; _exit 1 ;;
+      _error "${MSG_ERR_CLONE} ${red}$1"; _exit 1 ;;
     *) clone_tc="True" ;;
   esac
 }
@@ -1228,10 +1228,10 @@ _ask_for_clone_anykernel() {
   # Confirmation: clone AK3?
   # Warn the user and exit the script while NO
   # Return: clone_ak
-  _confirm "${MSG_ASK_CLONE_AK3}: AK3 ?" "[Y/n]"
+  _confirm "${MSG_CONFIRM_CLONE_AK3} AK3 ?" "[Y/n]"
   case $confirm in
     n|N|no|No|NO)
-      _error "${MSG_ERR_CLONE}: ${red}${ANYKERNEL_DIR}"; _exit 1
+      _error "${MSG_ERR_CLONE} ${red}${ANYKERNEL_DIR}"; _exit 1
       ;;
     *) clone_ak="True" ;;
   esac
@@ -1242,7 +1242,7 @@ _ask_for_patch() {
   # Choices: all patches from <patches>
   # Return: kpatch
   _cd "${DIR}/patches" "$MSG_ERR_DIR ${red}${DIR}/patches"
-  _prompt "$MSG_ASK_PATCH :" 2
+  _prompt "$MSG_SELECT_PATCH" 2
   select kpatch in *.patch; do
     [[ $kpatch ]] && break
     _error "$MSG_ERR_SELECT"

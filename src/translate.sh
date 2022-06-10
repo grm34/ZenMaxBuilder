@@ -39,7 +39,7 @@ _sort_strings() {
     [[ $string ]] && IFS=" " strings["${string:- }"]=1
   done
   # shellcheck disable=SC2207
-  IFS=$'\n' sorted_strings=($(sort -d <<< "${!strings[*]}"))
+  IFS=$'\n' sorted_strings=($(sort <<< "${!strings[*]}"))
   unset IFS
 }
 
