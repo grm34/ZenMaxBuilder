@@ -1204,10 +1204,10 @@ _ask_for_install_pkg() {
   # Confirmation: install missing package?
   # Warn the user that the script may crash while NO
   # Return: install_pkg
-  _confirm "${MSG_CONFIRM_PKG} $1 ?" "[Y/n]"
+  _confirm "$MSG_CONFIRM_PKG $1 ?" "[Y/n]"
   case $confirm in
     n|N|no|No|NO)
-      _error warn "${MSG_WARN_DEP} ${red}${dep}"; sleep 2 ;;
+      _error warn "$MSG_WARN_DEP ${red}${dep}"; sleep 2 ;;
     *) install_pkg="True" ;;
   esac
 }
@@ -1216,10 +1216,10 @@ _ask_for_clone_toolchain() {
   # Confirmation: clone missing toolchain?
   # Warn the user and exit the script while NO
   # Return: clone_tc
-  _confirm "${MSG_CONFIRM_CLONE_TC} $1 ?" "[Y/n]"
+  _confirm "$MSG_CONFIRM_CLONE_TC $1 ?" "[Y/n]"
   case $confirm in
     n|N|no|No|NO)
-      _error "${MSG_ERR_CLONE} ${red}$1"; _exit 1 ;;
+      _error "$MSG_ERR_CLONE ${red}$1"; _exit 1 ;;
     *) clone_tc="True" ;;
   esac
 }
@@ -1228,10 +1228,10 @@ _ask_for_clone_anykernel() {
   # Confirmation: clone AK3?
   # Warn the user and exit the script while NO
   # Return: clone_ak
-  _confirm "${MSG_CONFIRM_CLONE_AK3} AK3 ?" "[Y/n]"
+  _confirm "$MSG_CONFIRM_CLONE_AK3" "[Y/n]"
   case $confirm in
     n|N|no|No|NO)
-      _error "${MSG_ERR_CLONE} ${red}${ANYKERNEL_DIR}"; _exit 1
+      _error "$MSG_ERR_CLONE ${red}${ANYKERNEL_DIR}"; _exit 1
       ;;
     *) clone_ak="True" ;;
   esac
@@ -1343,9 +1343,9 @@ _upload_kernel_build() {
     local file caption
     file="${BUILD_DIR}/${KERNEL_NAME}-${DATE}-signed.zip"
     [[ ! -f $file ]] && file="${file/-signed}"
-    _note "${MSG_NOTE_UPLOAD}: ${file##*/}..."
+    _note "$MSG_NOTE_UPLOAD ${file##*/}..."
     MD5="$(md5sum "$file" | cut -d' ' -f1)"
-    caption="${MSG_TG_CAPTION}: $BUILD_TIME"
+    caption="$MSG_TG_CAPTION $BUILD_TIME"
     _send_file "$file" "$caption | MD5 Checksum: ${MD5//_/-}"
   fi
 }
@@ -1354,20 +1354,20 @@ _set_html_status_msg() {
   local android_version; android_version="AOSP $PLATFORM_VERSION"
   status_msg="
 
-<b>${MSG_TG_HTML[0]} :</b>  <code>${CODENAME}</code>
-<b>${MSG_TG_HTML[1]} :</b>  <code>v${LINUX_VERSION}</code>
-<b>${MSG_TG_HTML[2]} :</b>  <code>${KERNEL_VARIANT}</code>
-<b>${MSG_TG_HTML[3]} :</b>  <code>${BUILDER}</code>
-<b>${MSG_TG_HTML[4]} :</b>  <code>${CORES} Core(s)</code>
-<b>${MSG_TG_HTML[5]} :</b>  <code>${COMPILER} ${TCVER}</code>
-<b>${MSG_TG_HTML[6]} :</b>  <code>${HOST}</code>
-<b>${MSG_TG_HTML[7]} :</b>  <code>${TAG}</code>
-<b>${MSG_TG_HTML[8]} :</b>  <code>${android_version}</code>"
+<b>${MSG_TG_HTML[0]}</b>  <code>${CODENAME}</code>
+<b>${MSG_TG_HTML[1]}</b>  <code>v${LINUX_VERSION}</code>
+<b>${MSG_TG_HTML[2]}</b>  <code>${KERNEL_VARIANT}</code>
+<b>${MSG_TG_HTML[3]}</b>  <code>${BUILDER}</code>
+<b>${MSG_TG_HTML[4]}</b>  <code>${CORES} Core(s)</code>
+<b>${MSG_TG_HTML[5]}</b>  <code>${COMPILER} ${TCVER}</code>
+<b>${MSG_TG_HTML[6]}</b>  <code>${HOST}</code>
+<b>${MSG_TG_HTML[7]}</b>  <code>${TAG}</code>
+<b>${MSG_TG_HTML[8]}</b>  <code>${android_version}</code>"
 }
 
 _send_msg_option() {
   if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
-    _note "${MSG_NOTE_SEND}..."; _send_msg "${OPTARG//_/-}"
+    _note "$MSG_NOTE_SEND"; _send_msg "${OPTARG//_/-}"
   else
     _error "$MSG_ERR_API"
   fi
@@ -1376,7 +1376,7 @@ _send_msg_option() {
 _send_file_option() {
   if [[ -f $OPTARG ]]; then
     if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
-      _note "${MSG_NOTE_UPLOAD}: ${OPTARG##*/}..."
+      _note "$MSG_NOTE_UPLOAD ${OPTARG##*/}..."
       _send_file "$OPTARG"
     else
       _error "$MSG_ERR_API"
@@ -1392,7 +1392,7 @@ _send_file_option() {
 ###---------------------------------------------------------------###
 
 _tc_version_option() {
-  _note "${MSG_NOTE_SCAN_TC}..."
+  _note "$MSG_NOTE_SCAN_TC"
   declare -A toolchains_data=(
     [aosp]="${AOSP_CLANG_VERSION}€${AOSP_CLANG_DIR}€$AOSP_CLANG_NAME"
     [llvm]="${LLVM_ARM64_VERSION}€${LLVM_ARM64_DIR}€Binutils"
@@ -1436,7 +1436,7 @@ _tc_version_option() {
 _list_all_kernels() {
   if [[ -n $(find "${DIR}/out" \
       -mindepth 1 -maxdepth 1 -type d 2>/dev/null) ]]; then
-    _note "${MSG_NOTE_LISTKERNEL}..."
+    _note "$MSG_NOTE_LISTKERNEL"
     for kernel in "${DIR}"/out/*; do
       local logfile linuxversion logdate compiler compilerversion
       logfile="$(find "${DIR}/logs/${kernel##*/}" -mindepth 1 \
@@ -1484,7 +1484,7 @@ _patch() {
   _ask_for_kernel_dir
   _ask_for_apply_patch "${1}"
   if [[ $apply_patch == True ]]; then
-    _note "${MSG_NOTE_PATCH}: $kpatch > ${KERNEL_DIR##*/}"
+    _note "$MSG_NOTE_PATCH $kpatch > ${KERNEL_DIR##*/}"
     _cd "$KERNEL_DIR" "$MSG_ERR_DIR ${red}$KERNEL_DIR"
     patch "${pargs[@]}" -i "${DIR}/patches/$kpatch"
     _cd "$DIR" "$MSG_ERR_DIR ${red}$DIR"
@@ -1686,7 +1686,7 @@ _full_upgrade() {
               _install_aosp_tgz "${repo[0]}" "${repo[2]}"
             fi
           else
-            echo "${MSG_UP_ALREADY_UP}: $latest"
+            echo "$MSG_UP_ALREADY_UP $latest"
           fi
           ;;
         *)
@@ -1724,7 +1724,7 @@ ${nc}[${lyellow}OPTION${nc}] [${lyellow}ARGUMENT${nc}] \
     -r, --revert                    $MSG_HELP_R
     -d, --debug                     $MSG_HELP_D
 
-${bold}${MSG_HELP_INFO}: \
+${bold}$MSG_HELP_INFO \
 ${cyan}https://kernel-builder.com$nc\n"
 }
 
