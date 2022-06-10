@@ -23,7 +23,7 @@
 
 shopt -s checkwinsize progcomp
 shopt -u autocd cdspell dirspell extglob progcomp_alias
-set -u
+#set -u -v -b -x
 
 # For the moment this script automatically adds the base language
 # strings into the various translations, but without translating them.
@@ -92,9 +92,10 @@ _translate_and_add_missing_strings_into_cfg() {
       if [[ "${trad_strings[*]}" != *"${data[0]}"* ]]; then
         _translate_string "${data[1]}" "${language/_strings}"
         [[ -n $translated ]] && line="${data[0]}=\"${translated}\""
+        [[ -n $translated ]] && note="translated" || note="original"
         trad_strings+=("$line"); file="${language/_strings/.cfg}"
         printf "%s\n" "${trad_strings[@]}" > "lang/$file"
-        echo "=> ${data[0]} added into $file"
+        echo "=> ${data[0]} (${note}) added into $file"
       fi
     done
   done
@@ -105,4 +106,5 @@ _clean_cfg_files lang/*.cfg
 _get_strings_from_cfg lang/*.cfg
 _translate_and_add_missing_strings_into_cfg
 _clean_cfg_files lang/*.cfg
+[[ $note ]] && echo "==> done" || echo "==> nothing to translate"
 
