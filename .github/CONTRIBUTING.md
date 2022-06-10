@@ -36,12 +36,12 @@ If you know another language and are willing to help translate ZMB, here are the
 
 `MANUAL TRANSLATION`
 - Copy all the content of `lang/en.cfg` into it.
-- Implement your translations\*.
+- Implement your translations. \*
 - Create a new pull request to submit your language.
 
 `AUTO TRANSLATION`
 - run `bash src/translate.sh`
-- Check for errors/typo\*.
+- Check for errors/typo. \*
 - Create a new pull request to submit your language.
 
 \* ZMB being launched from a terminal, please respect line length (max 72).
