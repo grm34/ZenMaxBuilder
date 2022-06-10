@@ -1266,7 +1266,7 @@ _ask_for_update_aosp() {
   # Confirmation: update AOSP toolchains?
   # ARG $1 = name
   # Return: update_aosp
-  _error warn "$1 $MSG_TAG $tag => ${latest/clang-}"
+  _error warn "$1 $MSG_ERR_LTAG $tag => ${latest/clang-}"
   _confirm "$MSG_CONFIRM_UP $1 ?" "[y/N]"
   case $confirm in
     y|Y|yes|Yes|YES) update_aosp="True" ;;
@@ -1392,7 +1392,7 @@ _send_file_option() {
 ###---------------------------------------------------------------###
 
 _tc_version_option() {
-  _note "${MSG_SCAN_TC}..."
+  _note "${MSG_NOTE_SCAN_TC}..."
   declare -A toolchains_data=(
     [aosp]="${AOSP_CLANG_VERSION}€${AOSP_CLANG_DIR}€$AOSP_CLANG_NAME"
     [llvm]="${LLVM_ARM64_VERSION}€${LLVM_ARM64_DIR}€Binutils"
@@ -1460,7 +1460,7 @@ _list_all_kernels() {
                 "${compilerversion/> TCVER=}$magenta ─$nc"\
                 "${logdate/> DATE=}$lblue ${logtime/> TIME=}"
       else
-        echo -e "${red}${kernel##*/}:$nc $MSG_NO_LOG"
+        echo -e "${red}${kernel##*/}:$nc $MSG_WARN_NO_LOG"
       fi
     done
   else
@@ -1571,7 +1571,7 @@ _install_aosp_tgz() {
   # ARG $2 = version
   _check mkdir "$1"
   _check unbuffer wget -O "${1##*/}.tar.gz" "$tgz"
-  _note "$MSG_TAR_AOSP ${1##*/}.tar.gz > toolchains/${1##*/}"
+  _note "$MSG_NOTE_TAR_AOSP ${1##*/}.tar.gz > toolchains/${1##*/}"
   _check unbuffer tar -xvf "${1##*/}.tar.gz" -C "$1"
   [[ ! -f ${DIR}/toolchains/$2 ]] &&
     echo "$latest" > "${DIR}/toolchains/$2"
@@ -1643,7 +1643,7 @@ _update_git() {
     local d
     d="$(git diff origin/"$ZMB_BRANCH" "${DIR}/etc/settings.cfg")"
     if [[ -n $d ]]; then
-      _error warn "${MSG_CONF}"; echo
+      _error warn "$MSG_UP_CONF"; echo
       _check mv "${DIR}/etc/user.cfg" "${DIR}/etc/old.cfg"
     fi
   fi
@@ -1686,7 +1686,7 @@ _full_upgrade() {
               _install_aosp_tgz "${repo[0]}" "${repo[2]}"
             fi
           else
-            echo "${MSG_ALREADY_UP}: $latest"
+            echo "${MSG_UP_ALREADY_UP}: $latest"
           fi
           ;;
         *)
