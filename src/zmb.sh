@@ -348,15 +348,14 @@ _exit() {
 ###---------------------------------------------------------------###
 
 _get_user_timezone() {
-  TIMEZONE="$( # linux
-    (timedatectl | grep -m 1 'Time zone' \
-      | xargs | cut -d' ' -f3) 2>/dev/null
-  )"
-  [[ ! $TIMEZONE ]] &&
-    TIMEZONE="$( # termux
-      (getprop | grep -m 1 timezone | cut -d' ' -f2 \
-        | sed 's/\[//g' | sed 's/\]//g') 2>/dev/null
-    )"
+  if which timedatectl &>/dev/null; then
+    TIMEZONE="$(timedatectl | grep -sm 1 'Time zone' \
+      | awk -F" " '{print $3}')"
+  elif which getprop &>/dev/null; then
+    local tz
+    tz="$(getprop | grep -sm 1 timezone | awk -F": " '{print $2}')"
+    tz=${tz/\[}; TIMEZONE=${tz/\]}
+  fi
 }
 
 _get_build_time() {
@@ -426,7 +425,7 @@ _get_tc_version() {
       ;;
     "$HOST_CLANG_NAME")
       tc_version="$(clang --version | grep -m 1 "clang\|version" \
-        | awk -F " " '{print $NF}')"
+        | awk -F" " '{print $NF}')"
       ;;
     *)
       tc_version="$(find "${DIR}/toolchains/$1" \
@@ -616,7 +615,7 @@ _check_linker() {
     local r; r="^\s*\[\w{1,}\s\w{1,}\s\w{1,}:\s|\[*\\w{1,}:\s"
     for linker in "$@"; do
       linker="$(readelf --program-headers "$linker" \
-        | grep -m 1 -E "${r}" | awk -F ": " '{print $NF}')"
+        | grep -m 1 -E "${r}" | awk -F": " '{print $NF}')"
       linker="${linker/]}"
       if ! [[ -f $linker ]]; then
         _error warn "$MSG_WARN_LINKER ${red}${linker}$nc"
@@ -1442,7 +1441,7 @@ _list_all_kernels() {
       logfile="$(find "${DIR}/logs/${kernel##*/}" -mindepth 1 \
         -maxdepth 1 -type f -iname "*.log" -printf "%T@ - %p\n" \
         2>/dev/null | sort -nr | head -n 1 \
-        | awk -F " - " '{print $2}')"
+        | awk -F" - " '{print $2}')"
       if [[ -f $logfile ]]; then
         if grep -sqm 1 REALCC= "$logfile"; then
           local titlecolor; titlecolor="$green"
