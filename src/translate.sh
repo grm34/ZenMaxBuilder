@@ -32,7 +32,7 @@ set -u
 _sort_strings() {
   # Remove duplicate strings from an array
   # Sort the strings alphabetically
-  # ARG $@ = array of strings
+  # ARG: $@ = array of strings
   # Return: sorted_strings (array)
   declare -A strings
   for string in "${@}"; do
@@ -45,7 +45,7 @@ _sort_strings() {
 
 _clean_cfg_files() {
   # Remove duplicates lines and sort them alphabetically
-  # ARG $@ = array of files
+  # ARG: $@ = array of files
   for file in "$@"; do
     mapfile -t strings < "$file"
     _sort_strings "${strings[@]}"
@@ -55,7 +55,7 @@ _clean_cfg_files() {
 
 _get_strings_from_cfg() {
   # Get strings from CFG files
-  # ARG $@ = array of files
+  # ARG: $@ = array of files
   # Return: <language_code>_strings (array)
   #         cfg_list (array of the CFG found)
   for file in "$@"; do
@@ -93,7 +93,7 @@ _translate_string() {
   # Return: translated (translated string)
   translated="$(curl -s https://api-free.deepl.com/v2/translate \
     -d auth_key=f1414922-db81-5454-67bd-9608cdca44b3:fx \
-    -d "text=$1"  -d "target_lang=$2" \
+    -d "text=$1" -d "target_lang=$2" \
     | grep -o '"text":"[^"]*' | grep -o '[^"]*$')"
   echo "$translated" # TESTING: disable SC Warning
 }
