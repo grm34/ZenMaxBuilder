@@ -42,6 +42,15 @@
 # 16. HELPER........:  displays zmb help and usage             (FUNC)
 # 00. ==>              run zmb                                  (RUN)
 # -------------------------------------------------------------------
+# [!] Code Style | Naming Convention :
+#
+# - Variable : uppercase only while needs to be exported or logged
+# - Function : always lowercase and starts with an underscore
+# - Condition : always use the power of the double brackets
+# - Command : prefer the use of _check() function to handle ERR
+# - Exit : always use _exit() function to remove working files
+# - Language : see Contributing Guidelines...
+# -------------------------------------------------------------------
 
 # Ensure proper use
 if [[ ${BASH_SOURCE[0]} != "$0" ]]; then
