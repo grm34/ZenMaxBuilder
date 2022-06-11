@@ -27,8 +27,8 @@
 # 01. MAIN..........:  zmb main processus                      (FUNC)
 # 02. MANAGER.......:  global management of the script         (FUNC)
 # 03. COLLECTOR.....:  functions to grab something             (FUNC)
-# 04. STARTER.......:  starts new android kernel compilation   (FUNC)
-# 05. CHECKER.......:  checks linker, path and Makefile        (FUNC)
+# 04. CHECKER.......:  checks linker, path and Makefile        (FUNC)
+# 05. STARTER.......:  starts new android kernel compilation   (FUNC)
 # 06. COMPILER......:  toolchain compiler settings             (FUNC)
 # 07. MAKER.........:  everything related to the make process  (FUNC)
 # 08. PACKER........:  everything related to the zip creation  (FUNC)
@@ -44,7 +44,7 @@
 # -------------------------------------------------------------------
 # [!] Code Style | Naming Convention :
 #
-# - Line: max 78px
+# - Line length: max 78
 # - Variable: uppercase only while needs to be exported or logged
 # - Function: always lowercase and starts with an underscore
 # - Condition: always use the power of the double brackets
@@ -494,7 +494,80 @@ _get_realpath_working_folders() {
 
 
 ###---------------------------------------------------------------###
-###         04. STARTER => new android kernel compilation         ###
+###   04. CHECKER => checks settings, linker, path and Makefile   ###
+###---------------------------------------------------------------###
+
+_check_user_settings() {
+  if [[ $KERNEL_DIR != default ]] \
+      && ! [[ -f ${KERNEL_DIR}/Makefile ]] \
+      && ! [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]; then
+    _error "$MSG_ERR_CONF_KDIR"; _exit 1
+  elif ! [[ $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
+      ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|${HOST_CLANG_NAME}|\
+      ${LOS_GCC_NAME}|${AOSP_CLANG_NAME}|${NEUTRON_GCC_NAME}\
+      ${NEUTRON_CLANG_NAME}) ]]; then
+    _error "$MSG_ERR_COMPILER"; _exit 1
+  fi
+}
+
+_check_linker() {
+  # Ensure compiler is system supported
+  # ARG: $@ = toolchain check (from settings.cfg)
+  if [[ $HOST_LINKER == True ]]; then
+    local r; r="^\s*\[\w{1,}\s\w{1,}\s\w{1,}:\s|\[*\\w{1,}:\s"
+    for linker in "$@"; do
+      linker="$(readelf --program-headers "$linker" \
+        | grep -m 1 -E "${r}" | awk -F": " '{print $NF}')"
+      linker="${linker/]}"
+      if ! [[ -f $linker ]]; then
+        _error warn "$MSG_WARN_LINKER ${red}${linker}$nc"
+        _error "$MSG_ERR_LINKER $COMPILER"; _exit 1; break
+      fi
+    done
+  fi
+}
+
+_check_tc_path() {
+  # Ensure $PATH has been correctly set
+  # ARG: $@ = toolchains DIR
+  for toolchain_path in "$@"; do
+    if [[ $PATH != *${toolchain_path}/bin* ]]; then
+      _error "$MSG_ERR_PATH"; echo "$PATH"; _exit 1
+    fi
+  done
+}
+
+_check_makefile() {
+  # Verification of CROSS_COMPILE and CC
+  # 1. warn the user while they not seems correctly set
+  # 2. ask to modify them in the kernel Makefile
+  # 3. edit the kernel Makefile (SED) while True
+  # ?  DEBUG MODE: display edited Makefile values
+  local cross cc r1 r2 check1 check2
+  cross="${TC_OPTIONS[1]/CROSS_COMPILE=}"
+  cc="${TC_OPTIONS[3]/CC=}"
+  r1=("^CROSS_COMPILE\s.*?=.*" "CROSS_COMPILE\ ?=\ ${cross}")
+  r2=("^CC\s.*=.*" "CC\ =\ ${cc}\ -I${KERNEL_DIR}")
+  check1="$(grep -m 1 "${r1[0]}" "${KERNEL_DIR}/Makefile")"
+  check2="$(grep -m 1 "${r2[0]}" "${KERNEL_DIR}/Makefile")"
+  if [[ -n ${check1##*"${cross}"*} ]] \
+      || [[ -n ${check2##*"${cc}"*} ]]; then
+    _error warn "$MSG_WARN_CC"
+    _ask_for_edit_cross_compile
+    if [[ $EDIT_CC != False ]]; then
+      _check sed -i "s|${r1[0]}|${r1[1]}|g" "${KERNEL_DIR}/Makefile"
+      _check sed -i "s|${r2[0]}|${r2[1]}|g" "${KERNEL_DIR}/Makefile"
+      if [[ $DEBUG == True ]]; then
+        echo -e "\n${blue}${MSG_DEBUG_CC}$nc" >&2
+        _get_cross_compile 1; sleep 0.5
+      fi
+    fi
+  fi
+}
+
+
+###---------------------------------------------------------------###
+###         05. STARTER => new android kernel compilation         ###
 ###---------------------------------------------------------------###
 
 _start() {
@@ -591,79 +664,6 @@ _start() {
     fi
     _get_build_logs
     _upload_kernel_build
-  fi
-}
-
-
-###---------------------------------------------------------------###
-###   05. CHECKER => checks settings, linker, path and Makefile   ###
-###---------------------------------------------------------------###
-
-_check_user_settings() {
-  if [[ $KERNEL_DIR != default ]] \
-      && ! [[ -f ${KERNEL_DIR}/Makefile ]] \
-      && ! [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]; then
-    _error "$MSG_ERR_CONF_KDIR"; _exit 1
-  elif ! [[ $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
-      ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|${HOST_CLANG_NAME}|\
-      ${LOS_GCC_NAME}|${AOSP_CLANG_NAME}|${NEUTRON_GCC_NAME}\
-      ${NEUTRON_CLANG_NAME}) ]]; then
-    _error "$MSG_ERR_COMPILER"; _exit 1
-  fi
-}
-
-_check_linker() {
-  # Ensure compiler is system supported
-  # ARG: $@ = toolchain check (from settings.cfg)
-  if [[ $HOST_LINKER == True ]]; then
-    local r; r="^\s*\[\w{1,}\s\w{1,}\s\w{1,}:\s|\[*\\w{1,}:\s"
-    for linker in "$@"; do
-      linker="$(readelf --program-headers "$linker" \
-        | grep -m 1 -E "${r}" | awk -F": " '{print $NF}')"
-      linker="${linker/]}"
-      if ! [[ -f $linker ]]; then
-        _error warn "$MSG_WARN_LINKER ${red}${linker}$nc"
-        _error "$MSG_ERR_LINKER $COMPILER"; _exit 1; break
-      fi
-    done
-  fi
-}
-
-_check_tc_path() {
-  # Ensure $PATH has been correctly set
-  # ARG: $@ = toolchains DIR
-  for toolchain_path in "$@"; do
-    if [[ $PATH != *${toolchain_path}/bin* ]]; then
-      _error "$MSG_ERR_PATH"; echo "$PATH"; _exit 1
-    fi
-  done
-}
-
-_check_makefile() {
-  # Verification of CROSS_COMPILE and CC
-  # 1. warn the user while they not seems correctly set
-  # 2. ask to modify them in the kernel Makefile
-  # 3. edit the kernel Makefile (SED) while True
-  # ?  DEBUG MODE: display edited Makefile values
-  local cross cc r1 r2 check1 check2
-  cross="${TC_OPTIONS[1]/CROSS_COMPILE=}"
-  cc="${TC_OPTIONS[3]/CC=}"
-  r1=("^CROSS_COMPILE\s.*?=.*" "CROSS_COMPILE\ ?=\ ${cross}")
-  r2=("^CC\s.*=.*" "CC\ =\ ${cc}\ -I${KERNEL_DIR}")
-  check1="$(grep -m 1 "${r1[0]}" "${KERNEL_DIR}/Makefile")"
-  check2="$(grep -m 1 "${r2[0]}" "${KERNEL_DIR}/Makefile")"
-  if [[ -n ${check1##*"${cross}"*} ]] \
-      || [[ -n ${check2##*"${cc}"*} ]]; then
-    _error warn "$MSG_WARN_CC"
-    _ask_for_edit_cross_compile
-    if [[ $EDIT_CC != False ]]; then
-      _check sed -i "s|${r1[0]}|${r1[1]}|g" "${KERNEL_DIR}/Makefile"
-      _check sed -i "s|${r2[0]}|${r2[1]}|g" "${KERNEL_DIR}/Makefile"
-      if [[ $DEBUG == True ]]; then
-        echo -e "\n${blue}${MSG_DEBUG_CC}$nc" >&2
-        _get_cross_compile 1; sleep 0.5
-      fi
-    fi
   fi
 }
 
