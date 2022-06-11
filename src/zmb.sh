@@ -24,15 +24,15 @@
 # [ZMB] ZenMaxBuilder...
 # -------------------------------------------------------------------
 #  0. ==>              starting blocks                          (RUN)
-#  1. MAIN..........:  zmb main processus                      (FUNC)
-#  2. MANAGER.......:  global management of the script         (FUNC)
-#  3. COLLECTOR.....:  functions to grab something             (FUNC)
-#  4. STARTER.......:  starts new android kernel compilation   (FUNC)
-#  5. CHECKER.......:  checks linker, path and Makefile        (FUNC)
-#  6. COMPILER......:  toolchain compiler settings             (FUNC)
-#  7. MAKER.........:  everything related to the make process  (FUNC)
-#  8. PACKER........:  everything related to the zip creation  (FUNC)
-#  9. QUESTIONER....:  questions asked to the user             (FUNC)
+# 01. MAIN..........:  zmb main processus                      (FUNC)
+# 02. MANAGER.......:  global management of the script         (FUNC)
+# 03. COLLECTOR.....:  functions to grab something             (FUNC)
+# 04. STARTER.......:  starts new android kernel compilation   (FUNC)
+# 05. CHECKER.......:  checks linker, path and Makefile        (FUNC)
+# 06. COMPILER......:  toolchain compiler settings             (FUNC)
+# 07. MAKER.........:  everything related to the make process  (FUNC)
+# 08. PACKER........:  everything related to the zip creation  (FUNC)
+# 09. QUESTIONER....:  questions asked to the user             (FUNC)
 # 10. TELEGRAMER....:  kernel building feedback                (FUNC)
 # 11. VERSIONER.....:  displays the toolchains versions        (FUNC)
 # 12. READER........:  displays the compiled kernels           (FUNC)
@@ -44,12 +44,13 @@
 # -------------------------------------------------------------------
 # [!] Code Style | Naming Convention :
 #
-# - Variable : uppercase only while needs to be exported or logged
-# - Function : always lowercase and starts with an underscore
-# - Condition : always use the power of the double brackets
-# - Command : prefer the use of _check() function to handle ERR
-# - Exit : always use _exit() function to remove working files
-# - Language : see Contributing Guidelines...
+# - Line: max 78px
+# - Variable: uppercase only while needs to be exported or logged
+# - Function: always lowercase and starts with an underscore
+# - Condition: always use the power of the double brackets
+# - Command: prefer the use of _check() function to handle ERR
+# - Exit: always use _exit() function to rm temp files and get logs
+# - Language: see Contributing Guidelines...
 # -------------------------------------------------------------------
 
 # Ensure proper use
@@ -113,7 +114,7 @@ set -m -E -o pipefail #debug: -u -b -v
 
 
 ###---------------------------------------------------------------###
-###          1. MAIN => zmb main process (ZenMaxBuilder)          ###
+###         01. MAIN => zmb main process (ZenMaxBuilder)          ###
 ###---------------------------------------------------------------###
 
 _zenmaxbuilder() {
@@ -172,7 +173,7 @@ _zenmaxbuilder() {
 
 
 ###---------------------------------------------------------------###
-###         2. MANAGER => global management of the script         ###
+###        02. MANAGER => global management of the script         ###
 ###---------------------------------------------------------------###
 
 _terminal_banner() {
@@ -353,7 +354,7 @@ _exit() {
 
 
 ###---------------------------------------------------------------###
-###          3. COLLECTOR => functions to grab something          ###
+###         03. COLLECTOR => functions to grab something          ###
 ###---------------------------------------------------------------###
 
 _get_user_timezone() {
@@ -499,7 +500,7 @@ _get_realpath_working_folders() {
 
 
 ###---------------------------------------------------------------###
-###         4. STARTER => new android kernel compilation          ###
+###         04. STARTER => new android kernel compilation         ###
 ###---------------------------------------------------------------###
 
 _start() {
@@ -601,7 +602,7 @@ _start() {
 
 
 ###---------------------------------------------------------------###
-###   5. CHECKER => checks settings, linker, path and Makefile    ###
+###   05. CHECKER => checks settings, linker, path and Makefile   ###
 ###---------------------------------------------------------------###
 
 _check_user_settings() {
@@ -674,7 +675,7 @@ _check_makefile() {
 
 
 ###---------------------------------------------------------------###
-###          6. COMPILER => toolchain compiler settings           ###
+###         06. COMPILER => toolchain compiler settings           ###
 ###---------------------------------------------------------------###
 
 _aosp_clang_options() {
@@ -770,7 +771,7 @@ _host_clang_options() {
 
 
 ###---------------------------------------------------------------###
-###      7. MAKER => everything related to the make process       ###
+###     07. MAKER => everything related to the make process       ###
 ###---------------------------------------------------------------###
 
 _export_path_and_options() {
@@ -884,7 +885,7 @@ _make_build() {
 
 
 ###---------------------------------------------------------------###
-###      8. PACKER => everything related to the zip creation      ###
+###     08. PACKER => everything related to the zip creation      ###
 ###---------------------------------------------------------------###
 
 _zip() {
@@ -991,7 +992,7 @@ _create_zip_option() {
 
 
 ###---------------------------------------------------------------###
-###     9. QUESTIONER => all the questions asked to the user      ###
+###     09. QUESTIONER => all the questions asked to the user     ###
 ###---------------------------------------------------------------###
 
 _ask_for_codename() {
