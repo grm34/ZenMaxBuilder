@@ -26,21 +26,21 @@
 #  0. ==>              starting blocks                          (RUN)
 # 01. MAIN..........:  zmb main processus                      (FUNC)
 # 02. MANAGER.......:  global management of the script         (FUNC)
-# 03. COLLECTOR.....:  functions to grab something             (FUNC)
-# 04. CHECKER.......:  checks linker, path and Makefile        (FUNC)
-# 05. STARTER.......:  starts new android kernel compilation   (FUNC)
-# 06. COMPILER......:  toolchain compiler settings             (FUNC)
-# 07. MAKER.........:  everything related to the make process  (FUNC)
-# 08. PACKER........:  everything related to the zip creation  (FUNC)
+# 03. COLLECTER.....:  functions to grab something             (FUNC)
+# 04. CONTROLLER....:  functions to check something            (FUNC)
+# 05. STARTER.......:  starts a new kernel compilation         (FUNC)
+# 06. TOOLCHAINER...:  functions for the toolchains setting    (FUNC)
+# 07. MAKER.........:  exports settings and run make           (FUNC)
+# 08. PACKER........:  functions for the zip creation          (FUNC)
 # 09. QUESTIONER....:  questions asked to the user             (FUNC)
 # 10. TELEGRAMER....:  kernel building feedback                (FUNC)
 # 11. VERSIONER.....:  displays the toolchains versions        (FUNC)
 # 12. READER........:  displays the compiled kernels           (FUNC)
 # 13. PATCHER.......:  patch/revert patches to a kernel        (FUNC)
 # 14. INSTALLER.....:  dependency install management           (FUNC)
-# 15. UPDATER.......:  updates script and toolchains           (FUNC)
+# 15. UPDATER.......:  updates the script and toolchains       (FUNC)
 # 16. HELPER........:  displays zmb help and usage             (FUNC)
-# 00. ==>              run zmb                                  (RUN)
+# 00. ==>              run zmb main processus                   (RUN)
 # -------------------------------------------------------------------
 # [!] Code Style | Naming Convention :
 #
@@ -348,7 +348,7 @@ _exit() {
 
 
 ###---------------------------------------------------------------###
-###         03. COLLECTOR => functions to grab something          ###
+###         03. COLLECTER => functions to grab something          ###
 ###---------------------------------------------------------------###
 
 _get_user_timezone() {
@@ -494,7 +494,7 @@ _get_realpath_working_folders() {
 
 
 ###---------------------------------------------------------------###
-###   04. CHECKER => checks settings, linker, path and Makefile   ###
+###        04. CONTROLLER => functions to check something         ###
 ###---------------------------------------------------------------###
 
 _check_user_settings() {
@@ -567,7 +567,7 @@ _check_makefile() {
 
 
 ###---------------------------------------------------------------###
-###         05. STARTER => new android kernel compilation         ###
+###        05. STARTER => starts a new kernel compilation         ###
 ###---------------------------------------------------------------###
 
 _start() {
@@ -669,7 +669,7 @@ _start() {
 
 
 ###---------------------------------------------------------------###
-###         06. COMPILER => toolchain compiler settings           ###
+###    06. TOOLCHAINER => functions for the toolchains setting    ###
 ###---------------------------------------------------------------###
 
 _aosp_clang_options() {
@@ -765,7 +765,7 @@ _host_clang_options() {
 
 
 ###---------------------------------------------------------------###
-###     07. MAKER => everything related to the make process       ###
+###          07. MAKER => exports settings and run make           ###
 ###---------------------------------------------------------------###
 
 _export_path_and_options() {
@@ -879,7 +879,7 @@ _make_build() {
 
 
 ###---------------------------------------------------------------###
-###     08. PACKER => everything related to the zip creation      ###
+###         08. PACKER => functions for the zip creation          ###
 ###---------------------------------------------------------------###
 
 _zip() {
@@ -986,7 +986,7 @@ _create_zip_option() {
 
 
 ###---------------------------------------------------------------###
-###     09. QUESTIONER => all the questions asked to the user     ###
+###         09. QUESTIONER => questions asked to the user         ###
 ###---------------------------------------------------------------###
 
 _ask_for_codename() {
@@ -1278,7 +1278,7 @@ _ask_for_update_aosp() {
 
 
 ###---------------------------------------------------------------###
-###       10. TELEGRAMER => building status feedback (POST)       ###
+###          10. TELEGRAMER => kernel building feedback           ###
 ###---------------------------------------------------------------###
 
 _send_msg() {
@@ -1632,7 +1632,7 @@ _clone_anykernel() {
 
 
 ###---------------------------------------------------------------###
-###      15. UPDATER => update the script and the toolchains      ###
+###        15. UPDATER => update the script and toolchains        ###
 ###---------------------------------------------------------------###
 
 _update_git() {
@@ -1706,7 +1706,7 @@ _full_upgrade() {
 
 
 ###---------------------------------------------------------------###
-###            16. HELPER => zmb global help and usage            ###
+###           16. HELPER => displays zmb help and usage           ###
 ###---------------------------------------------------------------###
 
 _usage() {
