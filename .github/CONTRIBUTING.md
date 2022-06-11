@@ -10,6 +10,13 @@ ZenMaxBuilder being translated into several languages, all translations are assi
 
     bash src/translate.sh
 
+In case you'll add some language strings, please respect naming convention :
+
+    # Note:      MSG_NOTE_*
+    # Warning:   MSG_WARN_*
+    # Error:     MSG_ERR_*
+    # ...
+
 ### How to make a clean pull request
 
 - Create a personal fork of the project on Github.
