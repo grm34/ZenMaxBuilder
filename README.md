@@ -66,7 +66,9 @@ Find all your compilations and working folders in one place, update and maintain
 - A minimum of knowledge in kernel compilation
 - Patience
 
-The installation of the missing dependencies will be offered by ZenMaxBuilder but you can also install them manually with your favorite package manager:
+The installation of the missing dependencies will be offered by ZenMaxBuilder, asking you first one by one, no packages are installed without your prior consent.
+
+You can also install them manually with your favorite package manager :
 
     bash sed wget git curl zip tar expect make cmake automake autoconf llvm lld lldb clang gcc binutils bison perl gperf gawk flex bc python3 zstd openssl
 
@@ -74,17 +76,17 @@ The optional flashable zip signature with AOSP Keys requires java (JDK) which is
 
 ## Usage
 
-Clone and enter ZMB repository
+Clone and enter ZMB repository :
 
     git clone https://github.com/grm34/ZenMaxBuilder;
     cd ZenMaxBuilder
 
-Create a copy of [settings.cfg](https://github.com/grm34/ZenMaxBuilder/blob/zmb/etc/settings.cfg) to set your settings (optional)
+Create a copy of [settings.cfg](https://github.com/grm34/ZenMaxBuilder/blob/zmb/etc/settings.cfg) to set your settings (optional) :
 
     cp etc/settings.cfg etc/user.cfg;
     vi etc/user.cfg
 
-Start ZMB and follow instructions
+Start ZMB and follow instructions :
 
     bash zmb --start
 
@@ -150,7 +152,7 @@ ZMB uses prebuilts toolchains by default, in case you have already compiled or d
 
 ZMB is a tool to facilitate the compilation of an Android kernel, it does not modify the source, does not adds possible patchset and does not fixes specific drivers or compilation warnings.
 
-The only change made is the addition of the selected toolchain compiler in the main Makefile, all others options from ZMB settings will be passed directly to make as command-line argument:
+The only change made is the addition of the selected toolchain compiler in the main Makefile, all others options from ZMB settings will be passed directly to make as command-line arguments :
 
     # AOSP-Clang
     CROSS_COMPILE ?= aarch64-linux-android-

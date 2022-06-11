@@ -14,7 +14,7 @@
 
 | File   | blank | comment | code |
 | :----- | ----: | ------: | ---: |
-| zmb.sh |   148 |     294 | 1294 |
+| zmb.sh |   147 |     294 | 1299 |
 
 ZMB has been coded largely on a smartphone, so the length of the lines is greatly reduced for better visibility to ensure the best support and maintenance, which explains such a large number of lines.
 
