@@ -153,7 +153,7 @@ _zenmaxbuilder() {
       u)  _install_dep; _full_upgrade; _exit 0 ;;
       v)  _install_dep; _tc_version_option; _exit 0 ;;
       m)  _install_dep; _send_msg_option; _exit 0 ;;
-      f)  _install_dep; _patterns; _send_file_option; _exit 0 ;;
+      f)  _install_dep; _send_file_option; _exit 0 ;;
       z)  _install_dep; _create_zip_option; _exit 0 ;;
       l)  _install_dep; _list_all_kernels; _exit 0 ;;
       t)  _install_dep; _get_latest_linux_tag; _exit 0 ;;
@@ -202,12 +202,6 @@ _terminal_colors() {
       cyan="$(tput bold setaf 6)"
     fi
   fi
-}
-
-_patterns() {
-  # Return: EXCLUDED_VARS PHOTO_F AUDIO_F VIDEO_F VOICE_F ANIM_F
-  # shellcheck source=/dev/null
-  source "${DIR}/etc/patterns.cfg"
 }
 
 _cd() {
@@ -568,7 +562,7 @@ _start() {
   if [[ $new_build == False ]]; then
     _note "$MSG_NOTE_CANCEL ${KERNEL_NAME}..."; _exit 0
   else
-    _ask_for_telegram; [[ $build_status ]] && _patterns
+    _ask_for_telegram
     start_time="$(TZ=$TIMEZONE date +%s)"
     log="${DIR}/logs/${CODENAME}/${KERNEL_NAME}_${DATE}_${TIME}.log"
     _terminal_banner > "$log"
@@ -1299,6 +1293,8 @@ _send_file() {
   # ARG $2 = caption
   local tg sendtype extension
   extension=${1##*/*.}
+# shellcheck source=/dev/null
+  source "${DIR}/etc/patterns.cfg"
   if [[ ${#extension} -lt 3 ]] \
     && [[ $extension != ai ]]; then tg="sendDocument"
   elif [[ ${PHOTO_F} =~ ${extension} ]]; then tg="sendPhoto"
