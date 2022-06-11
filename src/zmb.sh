@@ -466,7 +466,7 @@ _get_latest_linux_tag() {
     --tags "$LINUX_STABLE" | grep "$OPTARG" | tail --lines=1 \
     | cut --delimiter='/' --fields=3)"
   if [[ $ltag == ${OPTARG}* ]]; then
-    _note "$MSG_SUCCESS_LTAG ${red}$ltag"
+    _note "$MSG_NOTE_SUCCESS_LTAG ${red}$ltag"
   else
     _error "$MSG_ERR_LTAG ${red}$OPTARG"
   fi
@@ -1673,7 +1673,7 @@ _full_upgrade() {
     read -ra repo <<< "$repo"
     unset IFS
     if [[ -d ${repo[0]} ]]; then
-      _note "$MSG_UP ${repo[0]##*/}..."
+      _note "$MSG_UPDATE ${repo[0]##*/}..."
       case $repository in
         t7|t8|t9)
           _get_local_aosp_tag "${repo[0]}" "${repo[2]}"
