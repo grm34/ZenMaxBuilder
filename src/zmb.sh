@@ -159,8 +159,8 @@ _zenmaxbuilder() {
       t)  _install_dep; _get_latest_linux_tag; _exit 0 ;;
       p)  _install_dep; _patch patch; _exit 0 ;;
       r)  _install_dep; _patch revert; _exit 0 ;;
-      s)  _install_dep; _patterns; _start; _exit 0 ;;
-      d)  DEBUG="True"; _install_dep; _patterns; _start; _exit 0 ;;
+      s)  _install_dep; _start; _exit 0 ;;
+      d)  DEBUG="True"; _install_dep; _start; _exit 0 ;;
       :)  _error "$MSG_ERR_MARG ${red}-$OPTARG"; _exit 1 ;;
       \?) _error "$MSG_ERR_IOPT ${red}-$OPTARG"; _exit 1 ;;
     esac
@@ -568,7 +568,7 @@ _start() {
   if [[ $new_build == False ]]; then
     _note "$MSG_NOTE_CANCEL ${KERNEL_NAME}..."; _exit 0
   else
-    _ask_for_telegram
+    _ask_for_telegram; [[ $build_status ]] && _patterns
     start_time="$(TZ=$TIMEZONE date +%s)"
     log="${DIR}/logs/${CODENAME}/${KERNEL_NAME}_${DATE}_${TIME}.log"
     _terminal_banner > "$log"
