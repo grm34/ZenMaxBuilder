@@ -119,9 +119,9 @@ set -m -E -o pipefail #debug: -u -b -v
 
 _zenmaxbuilder() {
   # main processus
-  # > sets shell colors
+  # > defines shell colors
   # > traps interrupt signals
-  # > sets date and time
+  # > defines date and time
   # > transforms long options to short
   # > handles general options
   _terminal_colors
