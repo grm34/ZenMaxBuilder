@@ -130,7 +130,6 @@ _zenmaxbuilder() {
   trap '_error $MSG_ERR_KBOARD; _exit 1' INT QUIT TSTP CONT HUP
   [[ $TIMEZONE == default ]] && _get_user_timezone
   (set)> "${DIR}/bashvar"
-  _get_bash_variables bashvar ZenMaxBuilder
   DATE="$(TZ=$TIMEZONE date +%Y-%m-%d)"
   TIME="$(TZ=$TIMEZONE date +%Hh%Mm%Ss)"
   local option
