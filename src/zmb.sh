@@ -220,7 +220,7 @@ _cd() {
 _prompt() {
   # > asks some information (question or selection)
   # ARG: $1 = the question to ask
-  # ARG: $2 = number (question=1 and selection=2)
+  # ARG: $2 = number (1 for question and 2 for selection)
   local length; length="$*"; length="$(( ${#length} - 2 ))"
   echo -ne "\n${yellow}==> ${green}${1}$nc"
   _underline_prompt; [[ $2 == 1 ]] &&
@@ -245,7 +245,8 @@ _confirm() {
 }
 
 _underline_prompt() {
-  # ? underlines only while terminal window is large enough
+  # ? underlines only while the terminal window is large
+  #   enough to display the prompt on a single line
   if [[ $(tput cols) -gt $length ]]; then
     local char; echo -ne "${yellow}\n==> "
     for (( char=1; char<=length; char++ )); do
@@ -314,9 +315,8 @@ _check() {
 _exit() {
   # ARG: $1 = exit code
   # > kills running PID childs on interrupt
-  # > adds builder inputs to the logs
-  # > removes user input files
-  # > removes empty device folders
+  # > grabs the logs (if the build started)
+  # > removes temp files and device folders
   # > exits with 3s timeout
   local pid pids file files folder folders second
   if [[ $1 != 0 ]]; then
@@ -383,10 +383,10 @@ _get_build_time() {
 }
 
 _get_build_logs() {
-  # > grabs builder inputs (without excluded from CFG)
-  # > diffs bash/builder inputs and adds them to the logs
-  # > removes ANSI sequences (colors) from logs
-  # > sends logfile on Telegram while the build fail
+  # > grabs builder vars (without $EXCLUDED_VARS)
+  # > diffs bash/builder vars and adds them to the logs
+  # > removes ANSI sequences (color codes) from the logs
+  # > sends logfile on telegram while the build fail
   if [[ -f $log ]] \
       && ! grep -sqm 1 "### ZMB SETTINGS ###" "$log"; then
     local null; null="$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")"
@@ -462,7 +462,7 @@ _get_android_platform_version() {
 
 _get_cross_compile() {
   # > grabs CROSS_COMPILE and CC from the kernel Makefile
-  # > displays them on the terminal (TERM)
+  # > displays the outputs found on the terminal
   ! [[ $1 ]] && _note "$MSG_NOTE_CC"
   local cross cc
   cross="$(sed -n "/^CROSS_COMPILE\s.*?=.*/{p;}" \
@@ -476,8 +476,8 @@ _get_cross_compile() {
 }
 
 _get_latest_linux_tag() {
-  # > displays latest linux tag
-  # ARG: $1 = the tag number to scan (v4)
+  # > displays the latest linux tag
+  # ARG: $1 = tag number to scan (e.g. v4)
   _note "$MSG_NOTE_LTAG"
   [[ $OPTARG != v* ]] && OPTARG="v$OPTARG"
   local ltag; ltag="$(git ls-remote --refs --sort='v:refname' \
@@ -513,7 +513,7 @@ _get_realpath_working_folders() {
 
 _check_user_settings() {
   # > kernel dir: checks the presence of <configs> folder
-  # > compiler : checks for a valid compiler name
+  # > compiler: checks for a valid compiler name
   if [[ $KERNEL_DIR != default ]] \
       && ! [[ -f ${KERNEL_DIR}/Makefile ]] \
       && ! [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]; then
@@ -527,8 +527,8 @@ _check_user_settings() {
 }
 
 _check_linker() {
-  # > ensures compiler is system supported
-  # ARG: $@ = toolchain check (from settings.cfg)
+  # > ensures the compiler is system supported
+  # ARG: $@ = some toolchain *_CHECK (from settings.cfg)
   if [[ $HOST_LINKER == True ]]; then
     local regex linker
     regex="^\s*\[\w{1,}\s\w{1,}\s\w{1,}:\s|\[*\\w{1,}:\s"
@@ -546,7 +546,7 @@ _check_linker() {
 
 _check_tc_path() {
   # > ensures $PATH has been correctly set
-  # ARG: $@ = toolchains paths
+  # ARG: $@ = some toolchain paths
   local toolchain_path
   for toolchain_path in "$@"; do
     if [[ $PATH != *${toolchain_path}/bin* ]]; then
@@ -796,16 +796,16 @@ _host_clang_options() {
 ###---------------------------------------------------------------###
 
 _export_path_and_options() {
-  # > exports target variables (CFG)
+  # > exports target variables (from settings.cfg)
   # > defines PLATFORM_VERSION & ANDROID_MAJOR_VERSION
   # > ensures compiler is system supported (checks linker)
   # > appends toolchains to the $PATH, exports and checks
   # > grabs the toolchain compiler version
   # > checks Makefile and warns/edits while required
-  # > defines Link Time Optimization (LTO)
-  # > defines additional Clang/LLVM flags
+  # > defines link time optimization (LTO)
+  # > defines additional clang/llvm flags
   # > clang: CROSS_COMPILE_ARM32 -> CROSS_COMPILE_COMPAT (> v4.2)
-  # > adds CONFIG_DEBUG_SECTION_MISMATCH=y in DEBUG Mode
+  # > adds CONFIG_DEBUG_SECTION_MISMATCH=y in debug mode
   # ? DEBUG MODE: displays compiler, options and path
   # RETURNS: $PATH $TC_OPTIONS $TCVER
   local tcpath linuxversion option
@@ -884,7 +884,7 @@ _make_menuconfig() {
 
 _save_defconfig() {
   # NOTE: while an existing defconfig file is modified
-  # the original will be saved as <example_defconfig_bak>
+  #       the original will be saved as <*_defconfig_bak>
   _note "$MSG_NOTE_SAVE $DEFCONFIG (arch/${ARCH}/configs)..."
   [[ -f "${CONF_DIR}/$DEFCONFIG" ]] &&
     _check cp "${CONF_DIR}/$DEFCONFIG" \
@@ -916,9 +916,9 @@ _zip() {
   # > sends status on Telegram
   # > copies image into <AnyKernel> folder
   # > CD into <AnyKernel> folder
-  # > writes AK3 configuration (anykernel.sh)
-  # > creates flashable ZIP
-  # > moves the ZIP into <builds> folder
+  # > writes ak3 configuration (anykernel.sh)
+  # > creates new kernel zip
+  # > moves the zip into <builds> folder
   [[ $start_time ]] && _clean_anykernel
   _note "$MSG_NOTE_ZIP ${1}.zip..."
   _send_zip_creation_status
@@ -937,7 +937,7 @@ _zip() {
 
 _set_ak3_conf() {
   # NOTE: we are working here from <AnyKernel> folder
-  # > copies included files into AK3 (in their dedicated folder)
+  # > copies included files into ak3 (in their dedicated folder)
   # > edits <anykernel.sh> to append device infos (SED)
   local file inc_dir string strings
   for file in "${INCLUDED[@]}"; do
@@ -987,7 +987,7 @@ _clean_anykernel() {
 _sign_zip() {
   # ARG: $1 = kernel name
   # > sends signing status on Telegram
-  # > signs ZIP with AOSP Keys (java)
+  # > signs the zip with aosp keys (java)
   if which java &>/dev/null; then
     _note "$MSG_NOTE_SIGN"
     _send_zip_signing_status
@@ -1034,7 +1034,7 @@ _ask_for_codename() {
 
 _ask_for_kernel_dir() {
   # ? question
-  # NOTE: we are working here from <HOME> (auto completion)
+  # NOTE: we are working here from $HOME (auto completion)
   # > checks the presence of <configs> folder (ARM)
   # RETURNS: $KERNEL_DIR $CONF_DIR
   if [[ $KERNEL_DIR == default ]]; then
@@ -1054,7 +1054,7 @@ _ask_for_kernel_dir() {
 
 _ask_for_defconfig() {
   # ? selection
-  # > choices are all defconfig files located in <configs> (ARM)
+  # > all defconfig files located in <configs> (ARM)
   # RETURNS: $DEFCONFIG
   _cd "$CONF_DIR" "$MSG_ERR_DIR ${red}$CONF_DIR"
   _prompt "$MSG_SELECT_DEF" 2
@@ -1269,7 +1269,7 @@ _ask_for_clone_anykernel() {
 
 _ask_for_patch() {
   # ? selection
-  # > choices are all patches from <patches>
+  # > all patches from <patches>
   # RETURNS: $kpatch
   _cd "${DIR}/patches" "$MSG_ERR_DIR ${red}${DIR}/patches"
   _prompt "$MSG_SELECT_PATCH" 2
@@ -1472,7 +1472,7 @@ _tc_version_option() {
 _list_all_kernels() {
   # > success: displays device codename in green
   # > fail: displays device codename in red
-  # > grabs linuxversion, date, time and compiler used from logs
+  # > grabs linuxversion, date, time and compiler from the logs
   if [[ -n $(find "${DIR}/out" \
       -mindepth 1 -maxdepth 1 -type d 2>/dev/null) ]]; then
     _note "$MSG_NOTE_LISTKERNEL"
@@ -1537,10 +1537,10 @@ _patch() {
 ###---------------------------------------------------------------###
 
 _install_dep() {
-  # > defines the package managers install command
-  # > grabs the current Linux package manager
-  # > installs the missing dependencies...
-  # NOTE: GCC will not be installed on TERMUX (not fully supported)
+  # > defines the install command of some package managers
+  # > grabs the current linux package manager
+  # > checks and installs the missing dependencies...
+  # NOTE: gcc will not be installed on termux (not fully supported)
   if [[ $AUTO_DEPENDENCIES == True ]]; then
     local pm_install_cmd pm_list manager pm dep
     declare -A pm_install_cmd=(
@@ -1675,7 +1675,7 @@ _update_git() {
   # > all: checkouts and resets to main branch
   # > zmb: checks if settings.cfg was updated
   # > zmb: warns the user while settings changed
-  # > zmb: renames etc/user.cfg to etc/old.cfg
+  # > zmb: renames <user.cfg> to <user.cfg_bak>
   # > all: pulls the changes
   git checkout "$1"; git reset --hard HEAD
   if [[ $1 == "$ZMB_BRANCH" ]] \
@@ -1684,14 +1684,14 @@ _update_git() {
     mod="$(git diff origin/"$ZMB_BRANCH" "${DIR}/etc/settings.cfg")"
     if [[ -n $mod ]]; then
       _error warn "$MSG_UP_CONF"; echo
-      _check mv "${DIR}/etc/user.cfg" "${DIR}/etc/old.cfg"
+      _check mv "${DIR}/etc/user.cfg" "${DIR}/etc/user.cfg_bak"
     fi
   fi
   _check unbuffer git pull
 }
 
 _full_upgrade() {
-  # > defines ZMB and AK3 and TC data
+  # > defines zmb and ak3 and toolchains data
   # > upgrades existing stuff...
   local tp up_list up_data repository repo
   tp="${DIR}/toolchains"
