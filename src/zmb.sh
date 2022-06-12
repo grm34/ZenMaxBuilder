@@ -91,6 +91,9 @@ fi
 shopt -s checkwinsize progcomp
 shopt -u autocd cdspell dirspell extglob progcomp_alias
 
+# job control
+set -m -o pipefail
+
 # user configuration
 # shellcheck source=/dev/null
 if [[ -f ${DIR}/etc/user.cfg ]]; then
@@ -110,10 +113,6 @@ else
     || echo "ERROR: language not found" >&2; exit 2
 fi
 
-# job control
-(set -o posix; set)> "${DIR}/bashvar"
-set -m -E -o pipefail #debug: -u -b -v
-
 
 ###---------------------------------------------------------------###
 ###         01. MAIN => zmb main process (ZenMaxBuilder)          ###
@@ -124,12 +123,14 @@ _zenmaxbuilder() {
   # > defines shell colors
   # > traps interrupt signals
   # > defines date and time
+  # > grabs shell variables (bashvar)
   # > transforms long options to short
   # > handles general options
   # RETURNS: $zmb_option $DEBUG
   _terminal_colors
   trap '_error $MSG_ERR_KBOARD; _exit 1' INT QUIT TSTP CONT HUP
   [[ $TIMEZONE == default ]] && _get_user_timezone
+  _get_bash_variables bashvar ZenMaxBuilder
   DATE="$(TZ=$TIMEZONE date +%Y-%m-%d)"
   TIME="$(TZ=$TIMEZONE date +%Hh%Mm%Ss)"
   local option
@@ -373,6 +374,12 @@ _get_user_timezone() {
   fi
 }
 
+_get_bash_variables() {
+  # ARG: $1 = tempfile (bashvar or buildervar)
+  # ARG: $2 = $EXCLUDED_VARS (from patterns.cfg)
+  (set | grep -v "$2")> "${DIR}/$1"
+}
+
 _get_build_time() {
   # RETURNS: $BUILD_TIME
   local end_time diff_time min sec
@@ -389,12 +396,12 @@ _get_build_logs() {
   # > sends logfile on telegram while the build fail
   if [[ -f $log ]] \
       && ! grep -sqm 1 "### ZMB SETTINGS ###" "$log"; then
-    local null; null="$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")"
-    unset IFS; (set -o posix; set | grep -v "${null//|/\\|}")> \
-      "${DIR}/buildervar"
+    local excluded
+    excluded="$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")"; unset IFS
+    _get_bash_variables buildervar "${excluded//|/\\|}"
     printf "\n\n### ZMB SETTINGS ###\n" >> "$log"
-    diff bashvar buildervar | grep -E \
-      "^> [A-Z0-9_]{3,32}=" >> "$log" || sleep 0.5
+    diff bashvar buildervar \
+      | grep -E "^> [A-Z0-9_]{3,32}=" >> "$log" || sleep 0.5
     sed -ri "s/\x1b\[[0-9;]*[mGKHF]//g" "$log"
     _send_failed_build_logs
   fi
