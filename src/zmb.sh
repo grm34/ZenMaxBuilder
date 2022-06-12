@@ -126,14 +126,16 @@ _zenmaxbuilder() {
   # > defines date and time
   # > transforms long options to short
   # > handles general options
+  # RETURNS: $zmb_option $DEBUG
   _terminal_colors
   trap '_error $MSG_ERR_KBOARD; _exit 1' INT QUIT TSTP CONT HUP
   [[ $TIMEZONE == default ]] && _get_user_timezone
   DATE="$(TZ=$TIMEZONE date +%Y-%m-%d)"
   TIME="$(TZ=$TIMEZONE date +%Hh%Mm%Ss)"
-  for opt in "$@"; do
+  local option
+  for option in "$@"; do
     shift
-    case $opt in
+    case $option in
       "--help")    set -- "$@" "-h"; break ;;
       "--start")   set -- "$@" "-s" ;;
       "--update")  set -- "$@" "-u" ;;
@@ -146,12 +148,12 @@ _zenmaxbuilder() {
       "--patch")   set -- "$@" "-p" ;;
       "--revert")  set -- "$@" "-r" ;;
       "--debug")   set -- "$@" "-d" ;;
-      *)           set -- "$@" "$opt" ;;
+      *)           set -- "$@" "$option" ;;
     esac
   done
   if [[ $# -eq 0 ]]; then _error "$MSG_ERR_EOPT"; _exit 1; fi
-  while getopts ':hsuvldprt:m:f:z:' option; do
-    case $option in
+  while getopts ':hsuvldprt:m:f:z:' zmb_option; do
+    case $zmb_option in
       h)  clear; _terminal_banner; _usage; _exit 0 ;;
       u)  _install_dep; _full_upgrade; _exit 0 ;;
       v)  _install_dep; _tc_version_option; _exit 0 ;;
@@ -245,7 +247,7 @@ _confirm() {
 _underline_prompt() {
   # ? underlines only while terminal window is large enough
   if [[ $(tput cols) -gt $length ]]; then
-    echo -ne "${yellow}\n==> "
+    local char; echo -ne "${yellow}\n==> "
     for (( char=1; char<=length; char++ )); do
       echo -ne "─"
     done
@@ -316,29 +318,29 @@ _exit() {
   # > removes user input files
   # > removes empty device folders
   # > exits with 3s timeout
+  local pid pids file files folder folders second
   if [[ $1 != 0 ]]; then
-    local pids; pids=(make git wget tar readelf zip java \
-      apt pkg pacman yum emerge zypper dnf)
+    pids=(make git wget tar readelf zip \
+      java apt pkg pacman yum emerge zypper dnf)
     for pid in "${pids[@]}"; do
       if pidof "$pid"; then pkill "$pid" || sleep 0.5; fi
     done
   fi
   _get_build_logs
-  local files device_folders
   files=(bashvar buildervar linuxver wget-log \
     "${AOSP_CLANG_DIR##*/}.tar.gz" "${LLVM_ARM_DIR##*/}.gz"
     "${LLVM_ARM64_DIR##*/}.tar.gz")
   for file in "${files[@]}"; do
     [[ -f $file ]] && _check rm -f "${DIR}/$file"
   done
-  device_folders=(out builds logs)
-  for folder in "${device_folders[@]}"; do
+  folders=(out builds logs)
+  for folder in "${folders[@]}"; do
     if [[ -z $(find "${DIR}/${folder}/$CODENAME" \
         -mindepth 1 -maxdepth 1 2>/dev/null) ]]; then
       _check rm -rf "${DIR}/${folder}/$CODENAME"
     fi
   done
-  case $option in
+  case $zmb_option in
     s|u|p|r|d)
       echo
       for (( second=3; second>=1; second-- )); do
@@ -401,7 +403,7 @@ _get_build_logs() {
 _get_latest_aosp_tag() {
   # ARG: $1 = toolchain url (from settings.cfg)
   # ARG: $2 = toolchain folder (from settings.cfg)
-  # RETURNS: $tgz $latest
+  # RETURNS: $latest $tgz
   local url regex rep
   case ${2##*/} in
     "${AOSP_CLANG_DIR##*/}")
@@ -528,10 +530,11 @@ _check_linker() {
   # > ensures compiler is system supported
   # ARG: $@ = toolchain check (from settings.cfg)
   if [[ $HOST_LINKER == True ]]; then
-    local r; r="^\s*\[\w{1,}\s\w{1,}\s\w{1,}:\s|\[*\\w{1,}:\s"
+    local regex linker
+    regex="^\s*\[\w{1,}\s\w{1,}\s\w{1,}:\s|\[*\\w{1,}:\s"
     for linker in "$@"; do
       linker="$(readelf --program-headers "$linker" \
-        | grep -m 1 -E "${r}" | awk -F": " '{print $NF}')"
+        | grep -m 1 -E "${regex}" | awk -F": " '{print $NF}')"
       linker="${linker/]}"
       if ! [[ -f $linker ]]; then
         _error warn "$MSG_WARN_LINKER ${red}${linker}$nc"
@@ -543,7 +546,8 @@ _check_linker() {
 
 _check_tc_path() {
   # > ensures $PATH has been correctly set
-  # ARG: $@ = toolchains DIR
+  # ARG: $@ = toolchains paths
+  local toolchain_path
   for toolchain_path in "$@"; do
     if [[ $PATH != *${toolchain_path}/bin* ]]; then
       _error "$MSG_ERR_PATH"; echo "$PATH"; _exit 1
@@ -594,7 +598,7 @@ _start() {
 
   # grabs device codename and creates folders
   _ask_for_codename
-  local folders; folders=(builds logs toolchains out)
+  local folder folders; folders=(builds logs toolchains out)
   for folder in "${folders[@]}"; do
     if ! [[ -d ${DIR}/${folder}/$CODENAME ]] \
         && [[ $folder != toolchains ]]; then
@@ -803,6 +807,7 @@ _export_path_and_options() {
   # > adds CONFIG_DEBUG_SECTION_MISMATCH=y in DEBUG Mode
   # ? DEBUG MODE: displays compiler, options and path
   # RETURNS: $PATH $TC_OPTIONS $TCVER
+  local tcpath linuxversion option
   [[ $BUILDER == default ]] && BUILDER="$(whoami)"
   [[ $HOST == default ]] && HOST="$(uname -n)"
   export KBUILD_BUILD_USER="${BUILDER}"
@@ -818,7 +823,7 @@ _export_path_and_options() {
   elif [[ -n $ptv ]]; then
     PLATFORM_VERSION="$ptv"
   fi
-  local tcpath; tcpath="${DIR}/toolchains"
+  tcpath="${DIR}/toolchains"
   case $COMPILER in
     "$NEUTRON_CLANG_NAME") _neutron_clang_options "$tcpath" ;;
     "$PROTON_CLANG_NAME") _proton_clang_options "$tcpath" ;;
@@ -835,7 +840,7 @@ _export_path_and_options() {
     TC_OPTIONS[7]="LD=$LTO_LIBRARY"
   fi
   [[ $LLVM_FLAGS == True ]] && export LLVM LLVM_IAS
-  local linuxversion; linuxversion="${LINUX_VERSION//.}"
+  linuxversion="${LINUX_VERSION//.}"
   if [[ ${linuxversion:0:2} -gt 42 ]] \
       && [[ ${TC_OPTIONS[3]} == clang ]]; then
     TC_OPTIONS[2]="${TC_OPTIONS[2]/_ARM32=/_COMPAT=}"
@@ -847,8 +852,8 @@ _export_path_and_options() {
             "${nc}${lyellow}${COMPILER} ${TCVER}$nc" >&2
     echo -e "\n${blue}COMPILER OPTIONS:$nc" >&2
     echo -e "${lyellow}ARCH=${ARCH}$nc" >&2
-    for opt in "${TC_OPTIONS[@]}"; do
-      echo -e "${lyellow}${opt}$nc" >&2
+    for option in "${TC_OPTIONS[@]}"; do
+      echo -e "${lyellow}${option}$nc" >&2
     done
     echo -e "\n${blue}PATH: ${nc}${lyellow}${PATH}$nc" >&2
   fi
@@ -933,9 +938,9 @@ _set_ak3_conf() {
   # NOTE: we are working here from <AnyKernel> folder
   # > copies included files into AK3 (in their dedicated folder)
   # > edits <anykernel.sh> to append device infos (SED)
+  local file inc_dir string strings
   for file in "${INCLUDED[@]}"; do
     if [[ -f ${BOOT_DIR}/$file ]]; then
-      local inc_dir
       if [[ ${file##*/} == *erofs.dtb ]]; then
         _check mkdir erofs; inc_dir="erofs/"
       elif [[ ${file##*/} != *Image* ]] \
@@ -948,7 +953,7 @@ _set_ak3_conf() {
       _check cp -af "${BOOT_DIR}/$file" "${inc_dir}${file##*/}"
     fi
   done
-  local strings; strings=(
+  strings=(
     "s/kernel.string=.*/kernel.string=${TAG}-${CODENAME}/g"
     "s/kernel.for=.*/kernel.for=${KERNEL_VARIANT}/g"
     "s/kernel.compiler=.*/kernel.compiler=${COMPILER}/g"
@@ -965,6 +970,7 @@ _set_ak3_conf() {
 _clean_anykernel() {
   # > removes unwanted files and folders
   _note "$MSG_NOTE_CLEAN_AK3"
+  local file
   for file in "${INCLUDED[@]}"; do
     [[ -f ${ANYKERNEL_DIR}/$file ]] &&
       _check rm -rf "${ANYKERNEL_DIR}/${file}"
@@ -1422,6 +1428,7 @@ _send_file_option() {
 _tc_version_option() {
   # > displays the installed toolchains versions
   _note "$MSG_NOTE_SCAN_TC"
+  local toolchains_data toolchains_list toolchain eva_v pt_v nt_v tc
   declare -A toolchains_data=(
     [aosp]="${AOSP_CLANG_VERSION}€${AOSP_CLANG_DIR}€$AOSP_CLANG_NAME"
     [llvm]="${LLVM_ARM64_VERSION}€${LLVM_ARM64_DIR}€Binutils"
@@ -1433,10 +1440,9 @@ _tc_version_option() {
     [ngcc]="${NEUTRON_GCC_NAME}€notfound€$NEUTRON_GCC_NAME"
     [host]="${HOST_CLANG_NAME}€found€$HOST_CLANG_NAME"
   )
-  local toolchains_list eva_v pt_v nt_v
   toolchains_list=(aosp llvm eva pclang nclang los pgcc ngcc host)
   for toolchain in "${toolchains_list[@]}"; do
-    IFS="€"; local tc
+    IFS="€"
     tc="${toolchains_data[$toolchain]}"
     read -ra tc <<< "$tc"
     unset IFS
@@ -1469,17 +1475,18 @@ _list_all_kernels() {
   if [[ -n $(find "${DIR}/out" \
       -mindepth 1 -maxdepth 1 -type d 2>/dev/null) ]]; then
     _note "$MSG_NOTE_LISTKERNEL"
+    local kernel logfile linuxversion logdate compiler \
+      compilerversion titlecolor
     for kernel in "${DIR}"/out/*; do
-      local logfile linuxversion logdate compiler compilerversion
       logfile="$(find "${DIR}/logs/${kernel##*/}" -mindepth 1 \
         -maxdepth 1 -type f -iname "*.log" -printf "%T@ - %p\n" \
         2>/dev/null | sort -nr | head -n 1 \
         | awk -F" - " '{print $2}')"
       if [[ -f $logfile ]]; then
         if grep -sqm 1 REALCC= "$logfile"; then
-          local titlecolor; titlecolor="$green"
+          titlecolor="$green"
         else
-          local titlecolor; titlecolor="$red"
+          titlecolor="$red"
         fi
         linuxversion="$(grep -m 1 LINUX_VERSION= "$logfile")"
         logdate="$(grep -m 1 "> DATE=" "$logfile")"
@@ -1534,6 +1541,7 @@ _install_dep() {
   # > installs the missing dependencies...
   # NOTE: GCC will not be installed on TERMUX (not fully supported)
   if [[ $AUTO_DEPENDENCIES == True ]]; then
+    local pm_install_cmd pm_list manager pm dep
     declare -A pm_install_cmd=(
       [apt]="sudo apt install -y"
       [pkg]="_ pkg install -y"
@@ -1543,10 +1551,10 @@ _install_dep() {
       [zypper]="sudo zypper install -y"
       [dnf]="sudo dnf install -y"
     )
-    local pm_list; pm_list=(pacman yum emerge zypper dnf pkg apt)
+    pm_list=(pacman yum emerge zypper dnf pkg apt)
     for manager in "${pm_list[@]}"; do
       if which "$manager" &>/dev/null; then
-        IFS=" "; local pm; pm="${pm_install_cmd[$manager]}"
+        IFS=" "; pm="${pm_install_cmd[$manager]}"
         read -ra pm <<< "$pm"
         unset IFS; break
       fi
@@ -1671,9 +1679,9 @@ _update_git() {
   git checkout "$1"; git reset --hard HEAD
   if [[ $1 == "$ZMB_BRANCH" ]] \
       && [[ -f ${DIR}/etc/user.cfg ]]; then
-    local d
-    d="$(git diff origin/"$ZMB_BRANCH" "${DIR}/etc/settings.cfg")"
-    if [[ -n $d ]]; then
+    local mod
+    mod="$(git diff origin/"$ZMB_BRANCH" "${DIR}/etc/settings.cfg")"
+    if [[ -n $mod ]]; then
       _error warn "$MSG_UP_CONF"; echo
       _check mv "${DIR}/etc/user.cfg" "${DIR}/etc/old.cfg"
     fi
@@ -1684,7 +1692,8 @@ _update_git() {
 _full_upgrade() {
   # > defines ZMB and AK3 and TC data
   # > upgrades existing stuff...
-  local tp up_list; tp="${DIR}/toolchains"
+  local tp up_list up_data repository repo
+  tp="${DIR}/toolchains"
   declare -A up_data=(
     [zmb]="${DIR}€${ZMB_BRANCH}€$MSG_UP_ZMB"
     [ak3]="${ANYKERNEL_DIR}€${ANYKERNEL_BRANCH}"
@@ -1700,7 +1709,7 @@ _full_upgrade() {
   )
   up_list=(zmb ak3 t1 t2 t3 t4 t5 t6 t7 t8 t9)
   for repository in "${up_list[@]}"; do
-    IFS="€"; local repo
+    IFS="€"
     repo="${up_data[$repository]}"
     read -ra repo <<< "$repo"
     unset IFS
