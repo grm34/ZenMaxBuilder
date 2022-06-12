@@ -42,8 +42,9 @@
 # 16. HELPER........:  displays zmb help and usage             (FUNC)
 # 00. ==>              runs zmb main processus                  (RUN)
 # -------------------------------------------------------------------
-# [!] Code Style | Naming Convention :
-#
+
+# [!] Code Style, Naming Convention...
+# -------------------------------------------------------------------
 # - Line length: max 78
 # - Variable: uppercase only while needs to be exported or logged
 # - Function: always lowercase and starts with an underscore
@@ -52,6 +53,7 @@
 # - Exit: always use _exit() function to rm temp files and get logs
 # - Language: see Contributing Guidelines...
 # -------------------------------------------------------------------
+
 
 # ensures proper use
 if [[ ${BASH_SOURCE[0]} != "$0" ]]; then
@@ -188,7 +190,7 @@ _terminal_banner() {
 }
 
 _terminal_colors() {
-  # ? uses colors only while they are supported by TERM
+  # ? uses colors only while they are terminal supported
   # RETURNS: some colorized variables
   if [[ -t 1 ]]; then
     local ncolors; ncolors="$(tput colors)"
@@ -241,7 +243,7 @@ _confirm() {
 }
 
 _underline_prompt() {
-  # ? underlines only while TERM window is large enough
+  # ? underlines only while terminal window is large enough
   if [[ $(tput cols) -gt $length ]]; then
     echo -ne "${yellow}\n==> "
     for (( char=1; char<=length; char++ )); do
@@ -308,7 +310,6 @@ _check() {
 }
 
 _exit() {
-  # properly exits the script
   # ARG: $1 = exit code
   # > kills running PID childs on interrupt
   # > adds builder inputs to the logs
@@ -510,7 +511,7 @@ _get_realpath_working_folders() {
 
 _check_user_settings() {
   # > kernel dir: checks the presence of <configs> folder
-  # > compiler : checks for valid name
+  # > compiler : checks for a valid compiler name
   if [[ $KERNEL_DIR != default ]] \
       && ! [[ -f ${KERNEL_DIR}/Makefile ]] \
       && ! [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]; then
@@ -604,7 +605,7 @@ _start() {
   done
   _get_realpath_working_folders
 
-   # asks questions to the user
+   # asks questions to the user and exports settings
   _ask_for_kernel_dir
   _ask_for_defconfig
   _ask_for_menuconfig 
@@ -1375,6 +1376,7 @@ _upload_kernel_build() {
 }
 
 _set_html_status_msg() {
+  # RETURNS: $status_msg
   local android_version; android_version="AOSP $PLATFORM_VERSION"
   status_msg="
 
@@ -1461,10 +1463,9 @@ _tc_version_option() {
 ###---------------------------------------------------------------###
 
 _list_all_kernels() {
-  # displays the started compilations by parsing their logfile
   # > success: displays device codename in green
   # > fail: displays device codename in red
-  # > grabs linuxversion, date, time and the compiler used
+  # > grabs linuxversion, date, time and compiler used from logs
   if [[ -n $(find "${DIR}/out" \
       -mindepth 1 -maxdepth 1 -type d 2>/dev/null) ]]; then
     _note "$MSG_NOTE_LISTKERNEL"
