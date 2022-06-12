@@ -357,8 +357,8 @@ _exit() {
 ###---------------------------------------------------------------###
 
 _get_user_timezone() {
-  # linux: uses <timedatectl>
-  # termux: uses <getprop>
+  # > linux: uses <timedatectl>
+  # > termux: uses <getprop>
   # RETURNS: $TIMEZONE
   if which timedatectl &>/dev/null; then
     TIMEZONE="$(timedatectl | grep -sm 1 'Time zone' \
@@ -549,7 +549,7 @@ _check_tc_path() {
 }
 
 _check_makefile() {
-  # > verification of CROSS_COMPILE and CC
+  # > checks CROSS_COMPILE and CC
   # > warns the user while they not seems correctly set
   # > asks to modify them in the kernel Makefile
   # > edits the kernel Makefile (SED) while True
@@ -796,7 +796,7 @@ _export_path_and_options() {
   # > checks Makefile and warns/edits while required
   # > defines Link Time Optimization (LTO)
   # > defines additional Clang/LLVM flags
-  # > CLANG: CROSS_COMPILE_ARM32 -> CROSS_COMPILE_COMPAT (> v4.2)
+  # > clang: CROSS_COMPILE_ARM32 -> CROSS_COMPILE_COMPAT (> v4.2)
   # > adds CONFIG_DEBUG_SECTION_MISMATCH=y in DEBUG Mode
   # ? DEBUG MODE: displays compiler, options and path
   # RETURNS: $PATH $TC_OPTIONS $TCVER
@@ -874,8 +874,8 @@ _make_menuconfig() {
 }
 
 _save_defconfig() {
-  # NOTE: while an existing defconfig file is modified with menuconfig
-  # the original defconfig will be saved as <example_defconfig_bak>
+  # NOTE: while an existing defconfig file is modified
+  # the original will be saved as <example_defconfig_bak>
   _note "$MSG_NOTE_SAVE $DEFCONFIG (arch/${ARCH}/configs)..."
   [[ -f "${CONF_DIR}/$DEFCONFIG" ]] &&
     _check cp "${CONF_DIR}/$DEFCONFIG" \
@@ -929,7 +929,7 @@ _zip() {
 _set_ak3_conf() {
   # NOTE: we are working here from <AnyKernel> folder
   # > copies included files into AK3 (in their dedicated folder)
-  # > edits anykernel.sh to append device infos (SED)
+  # > edits <anykernel.sh> to append device infos (SED)
   for file in "${INCLUDED[@]}"; do
     if [[ -f ${BOOT_DIR}/$file ]]; then
       local inc_dir
