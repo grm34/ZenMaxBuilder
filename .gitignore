@@ -7,7 +7,7 @@ bashvar
 buildervar
 linuxver
 etc/user.cfg
-etc/old.cfg
+etc/user.cfg_bak
 zmb.lock
 wget-log
 aosp-clang.tar.gz
