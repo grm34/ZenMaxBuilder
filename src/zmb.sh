@@ -54,7 +54,6 @@
 # - Language: see Contributing Guidelines...
 # -------------------------------------------------------------------
 
-
 # ensures proper use
 if [[ ${BASH_SOURCE[0]} != "$0" ]]; then
   echo "ERROR: ZenMaxBuilder cannot be sourced" >&2
@@ -130,6 +129,7 @@ _zenmaxbuilder() {
   _terminal_colors
   trap '_error $MSG_ERR_KBOARD; _exit 1' INT QUIT TSTP CONT HUP
   [[ $TIMEZONE == default ]] && _get_user_timezone
+  (set)> "${DIR}/bashvar"
   _get_bash_variables bashvar ZenMaxBuilder
   DATE="$(TZ=$TIMEZONE date +%Y-%m-%d)"
   TIME="$(TZ=$TIMEZONE date +%Hh%Mm%Ss)"
@@ -374,12 +374,6 @@ _get_user_timezone() {
   fi
 }
 
-_get_bash_variables() {
-  # ARG: $1 = tempfile (bashvar or buildervar)
-  # ARG: $2 = $EXCLUDED_VARS (from patterns.cfg)
-  (set | grep -v "$2")> "${DIR}/$1"
-}
-
 _get_build_time() {
   # RETURNS: $BUILD_TIME
   local end_time diff_time min sec
@@ -398,7 +392,7 @@ _get_build_logs() {
       && ! grep -sqm 1 "### ZMB SETTINGS ###" "$log"; then
     local excluded
     excluded="$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")"; unset IFS
-    _get_bash_variables buildervar "${excluded//|/\\|}"
+    (set | grep -v "${excluded//|/\\|}")> "${DIR}/buildervar"
     printf "\n\n### ZMB SETTINGS ###\n" >> "$log"
     diff bashvar buildervar \
       | grep -E "^> [A-Z0-9_]{3,32}=" >> "$log" || sleep 0.5
