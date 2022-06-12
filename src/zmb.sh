@@ -589,6 +589,7 @@ _check_makefile() {
 ###---------------------------------------------------------------###
 
 _start() {
+  local folder folders ftime gen
 
   # displays banner
   _check_user_settings
@@ -598,7 +599,7 @@ _start() {
 
   # grabs device codename and creates folders
   _ask_for_codename
-  local folder folders; folders=(builds logs toolchains out)
+  folders=(builds logs toolchains out)
   for folder in "${folders[@]}"; do
     if ! [[ -d ${DIR}/${folder}/$CODENAME ]] \
         && [[ $folder != toolchains ]]; then
@@ -662,7 +663,7 @@ _start() {
 
   # grabs status -> creates zip -> uploads the build
   _get_build_time
-  local ftime gen; gen="${OUT_DIR}/include/generated/compile.h"
+  gen="${OUT_DIR}/include/generated/compile.h"
   ftime="$(stat -c %Z "${gen}" 2>/dev/null)"
   if ! [[ -f $gen ]] || [[ $ftime -lt $start_time ]]; then
     _error "$MSG_ERR_MAKE"; _exit 1
