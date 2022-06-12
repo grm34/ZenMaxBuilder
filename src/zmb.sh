@@ -509,6 +509,8 @@ _get_realpath_working_folders() {
 ###---------------------------------------------------------------###
 
 _check_user_settings() {
+  # > kernel dir: checks the presence of <configs> folder
+  # > compiler : checks for valid name
   if [[ $KERNEL_DIR != default ]] \
       && ! [[ -f ${KERNEL_DIR}/Makefile ]] \
       && ! [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]; then
@@ -960,6 +962,7 @@ _set_ak3_conf() {
 }
 
 _clean_anykernel() {
+  # > removes unwanted files and folders
   _note "$MSG_NOTE_CLEAN_AK3"
   for file in "${INCLUDED[@]}"; do
     [[ -f ${ANYKERNEL_DIR}/$file ]] &&
@@ -988,6 +991,7 @@ _sign_zip() {
 }
 
 _create_zip_option() {
+  # ARG: $1 = kernel image
   if [[ -f $OPTARG ]]; then
     _zip "${OPTARG##*/}-${DATE}-$TIME" "$OPTARG" \
       "${DIR}/builds/default"
@@ -1386,6 +1390,7 @@ _set_html_status_msg() {
 }
 
 _send_msg_option() {
+  # ARG: $1 = the message to send
   if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
     _note "$MSG_NOTE_SEND"; _send_msg "${OPTARG//_/-}"
   else
@@ -1394,6 +1399,7 @@ _send_msg_option() {
 }
 
 _send_file_option() {
+  # ARG: $1 = the file to send
   if [[ -f $OPTARG ]]; then
     if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
       _note "$MSG_NOTE_UPLOAD ${OPTARG##*/}..."
@@ -1412,6 +1418,7 @@ _send_file_option() {
 ###---------------------------------------------------------------###
 
 _tc_version_option() {
+  # > displays the installed toolchains versions
   _note "$MSG_NOTE_SCAN_TC"
   declare -A toolchains_data=(
     [aosp]="${AOSP_CLANG_VERSION}€${AOSP_CLANG_DIR}€$AOSP_CLANG_NAME"
@@ -1454,6 +1461,10 @@ _tc_version_option() {
 ###---------------------------------------------------------------###
 
 _list_all_kernels() {
+  # displays the started compilations by parsing their logfile
+  # > success: displays device codename in green
+  # > fail: displays device codename in red
+  # > grabs linuxversion, date, time and the compiler used
   if [[ -n $(find "${DIR}/out" \
       -mindepth 1 -maxdepth 1 -type d 2>/dev/null) ]]; then
     _note "$MSG_NOTE_LISTKERNEL"
@@ -1599,7 +1610,7 @@ _install_aosp_tgz() {
 }
 
 _clone_toolchains() {
-  case $COMPILER in # AOSP-Clang
+  case $COMPILER in # aosp-clang
     "$AOSP_CLANG_NAME")
       _clone_tc "$AOSP_CLANG_VERSION" "$AOSP_CLANG_URL" \
                 "$AOSP_CLANG_DIR"
@@ -1609,24 +1620,24 @@ _clone_toolchains() {
                 "$LLVM_ARM_DIR"
       ;;
   esac
-  case $COMPILER in # Neutron-Clang or Neutron-GCC
+  case $COMPILER in # neutron-clang or neutron-gcc
     "$NEUTRON_CLANG_NAME"|"$NEUTRON_GCC_NAME")
       _clone_tc "$NEUTRON_BRANCH" "$NEUTRON_URL" "$NEUTRON_DIR"
       ;;
   esac
-  case $COMPILER in # Proton-Clang or Proton-GCC
+  case $COMPILER in # proton-Clang or proton-gcc
     "$PROTON_CLANG_NAME"|"$PROTON_GCC_NAME")
       _clone_tc "$PROTON_BRANCH" "$PROTON_URL" "$PROTON_DIR"
       ;;
   esac
-  case $COMPILER in # Eva-GCC or Proton-GCC or Neutron-GCC
+  case $COMPILER in # eva-gcc or proton-gcc or neutron-gcc
     "$EVA_GCC_NAME"|"$PROTON_GCC_NAME"|"$NEUTRON_GCC_NAME")
       _clone_tc "$EVA_ARM_BRANCH" "$EVA_ARM_URL" "$EVA_ARM_DIR"
       _clone_tc "$EVA_ARM64_BRANCH" "$EVA_ARM64_URL" \
                 "$EVA_ARM64_DIR"
       ;;
   esac
-  case $COMPILER in # Lineage-GCC
+  case $COMPILER in # lineage-gcc
     "$LOS_GCC_NAME")
       _clone_tc "$LOS_ARM_BRANCH" "$LOS_ARM_URL" "$LOS_ARM_DIR"
       _clone_tc "$LOS_ARM64_BRANCH" "$LOS_ARM64_URL" \
@@ -1655,7 +1666,7 @@ _update_git() {
   # > zmb: checks if settings.cfg was updated
   # > zmb: warns the user while settings changed
   # > zmb: renames etc/user.cfg to etc/old.cfg
-  # > all: pulls changes
+  # > all: pulls the changes
   git checkout "$1"; git reset --hard HEAD
   if [[ $1 == "$ZMB_BRANCH" ]] \
       && [[ -f ${DIR}/etc/user.cfg ]]; then
