@@ -389,11 +389,13 @@ _get_build_logs() {
   # > sends logfile on telegram while the build fail
   if [[ -f $log ]] \
       && ! grep -sqm 1 "### ZMB SETTINGS ###" "$log"; then
-    local excluded
+    local excluded EXCLUDED_VARS
+    # shellcheck source=/dev/null
+    source "${DIR}/etc/excluded.cfg"
     excluded="$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")"; unset IFS
     (set | grep -v "${excluded//|/\\|}")> "${DIR}/buildervar"
     printf "\n\n### ZMB SETTINGS ###\n" >> "$log"
-    diff bashvar buildervar \
+    diff "${DIR}/bashvar" "${DIR}/buildervar" \
       | grep -E "^> [A-Z0-9_]{3,32}=" >> "$log" || sleep 0.5
     sed -ri "s/\x1b\[[0-9;]*[mGKHF]//g" "$log"
     _send_failed_build_logs
@@ -1318,10 +1320,10 @@ _send_msg() {
 _send_file() {
   # ARG: $1 = file
   # ARG: $2 = caption
-  local tg sendtype extension
+  local tg mode extension PHOTO_F AUDIO_F VIDEO_F ANIM_F VOICE_F
   extension=${1##*/*.}
   # shellcheck source=/dev/null
-  source "${DIR}/etc/patterns.cfg"
+  source "${DIR}/etc/telegram.cfg"
   if [[ ${#extension} -lt 3 ]] \
     && [[ $extension != ai ]]; then tg="sendDocument"
   elif [[ ${PHOTO_F} =~ ${extension} ]]; then tg="sendPhoto"
@@ -1331,9 +1333,9 @@ _send_file() {
   elif [[ ${VOICE_F} =~ ${extension} ]]; then tg="sendVoice"
   else tg="sendDocument"
   fi
-  sendtype="${tg/send}"
+  mode="${tg/send}"
   curl --progress-bar -o /dev/null -fL -X POST \
-    -F "${sendtype,}"=@"$1" -F caption="$2" \
+    -F "${mode,}"=@"$1" -F caption="$2" \
     -F chat_id="$TELEGRAM_CHAT_ID" \
     -F disable_web_page_preview=true \
     "${TELEGRAM_API}/bot${TELEGRAM_BOT_TOKEN}/$tg"
