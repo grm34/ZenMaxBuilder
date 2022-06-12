@@ -33,7 +33,7 @@
 <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/y/grm34/zenmaxbuilder?label=commits&logo=github">
 </a>
 
-<a href="">
+<a href="https://github.com/grm34/ZenMaxBuilder/commits">
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/grm34/ZenMaxBuilder?style=flat-square&logo=Github">
 </a>
 
