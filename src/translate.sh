@@ -34,6 +34,7 @@ _sort_strings() {
   # > sorts the strings alphabetically
   # ARG: $@ = array of strings
   # RETURNS: sorted_strings (array)
+  local string strings
   declare -A strings
   for string in "${@}"; do
     [[ $string ]] && IFS=" " strings["${string:- }"]=1
@@ -46,6 +47,7 @@ _sort_strings() {
 _clean_cfg_files() {
   # > removes duplicates lines and sorts them alphabetically
   # ARG: $@ = array of files
+  local file
   for file in "$@"; do
     mapfile -t strings < "$file"
     _sort_strings "${strings[@]}"
@@ -57,7 +59,8 @@ _get_strings_from_cfg() {
   # > grabs strings from CFG files
   # ARG: $@ = array of files
   # RETURNS: <language_code>_strings (array)
-  #          cfg_list (array of the CFG found)
+  #          cfg_list (array)
+  local file name
   for file in "$@"; do
     name=${file##*/}; name="${name/.cfg/_strings}"
     mapfile -t "$name" < "$file"
@@ -67,6 +70,7 @@ _get_strings_from_cfg() {
 
 _get_string_data() {
   # > grabs string name and string value
+  # RETURNS: data (array)
   IFS=$'\n' read -d "" -ra data <<< "${1//=/$'\n'}"
   data[1]=${data[1]//\"}
   unset IFS
@@ -75,7 +79,7 @@ _get_string_data() {
 _translate_string() {
   # ARG: $1 = string to translate
   # ARG: $2 = language code (string)
-  # RETURNS: translated (translated string)
+  # RETURNS: translated (string)
   translated="$(curl -s https://api-free.deepl.com/v2/translate \
     -d auth_key=f1414922-db81-5454-67bd-9608cdca44b3:fx \
     -d "text=$1" -d "target_lang=${2^^}" \
@@ -85,6 +89,7 @@ _translate_string() {
 _translate_and_add_missing_strings_into_cfg() {
   # > translates then write missing strings from base language
   #   into the various translation files (from cfg_list)
+  local line language trad_strings
   for line in "${en_strings[@]:?}"; do
     _get_string_data "$line"
     for language in "${cfg_list[@]}"; do
