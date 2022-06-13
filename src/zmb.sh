@@ -383,10 +383,10 @@ _get_build_time() {
 }
 
 _get_build_logs() {
-  # > grabs builder vars (without $EXCLUDED_VARS)
-  # > diffs bash/builder vars and adds them to the logs
-  # > removes ANSI sequences (color codes) from the logs
-  # > sends logfile on telegram while the build fail
+  # > grabs builder vars (without EXCLUDED_VARS)
+  # > diffs bash/builder vars and adds the output
+  # > removes ANSI sequences (color codes)
+  # > sends logfile on telegram (while the build fail)
   if [[ -f $log ]] \
       && ! grep -sqm 1 "### ZMB SETTINGS ###" "$log"; then
     local excluded EXCLUDED_VARS
