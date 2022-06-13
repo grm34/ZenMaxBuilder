@@ -29,10 +29,10 @@ shopt -u autocd cdspell dirspell extglob progcomp_alias
 # It also removes duplicate strings and rearranges them alphabetically.
 
 _sort_strings() {
-  # > removes duplicate strings from an array
-  # > sorts the strings alphabetically
-  # ARG: $@ = array of strings
-  # RETURNS: sorted_strings (array)
+  # removes duplicate strings from an array
+  # sorts the strings alphabetically
+  # $@ = array of strings
+  # returns => sorted_strings (array)
   local string strings
   declare -A strings
   for string in "${@}"; do
@@ -44,8 +44,8 @@ _sort_strings() {
 }
 
 _clean_cfg_files() {
-  # > removes duplicates lines and sorts them alphabetically
-  # ARG: $@ = array of files
+  # removes duplicates lines and sorts them alphabetically
+  # $@ = array of files
   local file
   for file in "$@"; do
     mapfile -t strings < "$file"
@@ -55,10 +55,9 @@ _clean_cfg_files() {
 }
 
 _get_strings_from_cfg() {
-  # > grabs strings from CFG files
-  # ARG: $@ = array of files
-  # RETURNS: <language_code>_strings (array)
-  #          cfg_list (array)
+  # grabs strings from CFG files
+  # $@ = array of files
+  # returns => <language_code>_strings cfg_list (arrays)
   local file name
   for file in "$@"; do
     name=${file##*/}; name="${name/.cfg/_strings}"
@@ -68,17 +67,17 @@ _get_strings_from_cfg() {
 }
 
 _get_string_data() {
-  # > grabs string name and string value
-  # RETURNS: data (array)
+  # grabs string name and string value
+  # returns => data (array)
   IFS=$'\n' read -d "" -ra data <<< "${1//=/$'\n'}"
   data[1]=${data[1]//\"}
   unset IFS
 }
 
 _translate_string() {
-  # ARG: $1 = string to translate
-  # ARG: $2 = language code (string)
-  # RETURNS: translated (string)
+  # $1 = string to translate
+  # $2 = language code (string)
+  # returns => translated (string)
   translated="$(curl -s https://api-free.deepl.com/v2/translate \
     -d auth_key=f1414922-db81-5454-67bd-9608cdca44b3:fx \
     -d "text=$1" -d "target_lang=${2^^}" \
@@ -86,8 +85,8 @@ _translate_string() {
 }
 
 _translate_and_add_missing_strings_into_cfg() {
-  # > translates then write missing strings from base language
-  #   into the various translation files (from cfg_list)
+  # translates then write missing strings from base language
+  # into the various translation files (from cfg_list)
   local line language trad_strings
   for line in "${en_strings[@]:?}"; do
     _get_string_data "$line"
