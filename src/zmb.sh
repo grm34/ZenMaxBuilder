@@ -121,15 +121,15 @@ _zenmaxbuilder() {
   # main processus
   # > defines shell colors
   # > traps interrupt signals
-  # > defines date and time
   # > grabs shell variables (bashvar)
+  # > defines date and time
   # > transforms long options to short
   # > handles general options
   # RETURNS: $zmb_option $DEBUG
   _terminal_colors
   trap '_error $MSG_ERR_KBOARD; _exit 1' INT QUIT TSTP CONT HUP
-  [[ $TIMEZONE == default ]] && _get_user_timezone
   set > "${DIR}/bashvar"
+  [[ $TIMEZONE == default ]] && _get_user_timezone
   DATE="$(TZ=$TIMEZONE date +%Y-%m-%d)"
   TIME="$(TZ=$TIMEZONE date +%Hh%Mm%Ss)"
   local option
