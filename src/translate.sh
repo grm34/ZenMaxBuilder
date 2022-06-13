@@ -23,7 +23,6 @@
 
 shopt -s checkwinsize progcomp
 shopt -u autocd cdspell dirspell extglob progcomp_alias
-#set -u -v -b -x
 
 # This script automatically translates base language strings and adds
 # them into the various translations (original will be used on error).

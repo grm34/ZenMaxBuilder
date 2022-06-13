@@ -54,7 +54,6 @@
 # - Language: see Contributing Guidelines...
 # -------------------------------------------------------------------
 
-
 # ensures proper use
 if [[ ${BASH_SOURCE[0]} != "$0" ]]; then
   echo "ERROR: ZenMaxBuilder cannot be sourced" >&2
@@ -91,6 +90,9 @@ fi
 shopt -s checkwinsize progcomp
 shopt -u autocd cdspell dirspell extglob progcomp_alias
 
+# job control
+set -m -o pipefail
+
 # user configuration
 # shellcheck source=/dev/null
 if [[ -f ${DIR}/etc/user.cfg ]]; then
@@ -110,10 +112,6 @@ else
     || echo "ERROR: language not found" >&2; exit 2
 fi
 
-# job control
-(set -o posix; set)> "${DIR}/bashvar"
-set -m -E -o pipefail #debug: -u -b -v
-
 
 ###---------------------------------------------------------------###
 ###         01. MAIN => zmb main process (ZenMaxBuilder)          ###
@@ -124,12 +122,14 @@ _zenmaxbuilder() {
   # > defines shell colors
   # > traps interrupt signals
   # > defines date and time
+  # > grabs shell variables (bashvar)
   # > transforms long options to short
   # > handles general options
   # RETURNS: $zmb_option $DEBUG
   _terminal_colors
   trap '_error $MSG_ERR_KBOARD; _exit 1' INT QUIT TSTP CONT HUP
   [[ $TIMEZONE == default ]] && _get_user_timezone
+  (set)> "${DIR}/bashvar"
   DATE="$(TZ=$TIMEZONE date +%Y-%m-%d)"
   TIME="$(TZ=$TIMEZONE date +%Hh%Mm%Ss)"
   local option
@@ -389,12 +389,14 @@ _get_build_logs() {
   # > sends logfile on telegram while the build fail
   if [[ -f $log ]] \
       && ! grep -sqm 1 "### ZMB SETTINGS ###" "$log"; then
-    local null; null="$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")"
-    unset IFS; (set -o posix; set | grep -v "${null//|/\\|}")> \
-      "${DIR}/buildervar"
+    local excluded EXCLUDED_VARS
+    # shellcheck source=/dev/null
+    source "${DIR}/etc/excluded.cfg"
+    excluded="$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")"; unset IFS
+    (set | grep -v "${excluded//|/\\|}")> "${DIR}/buildervar"
     printf "\n\n### ZMB SETTINGS ###\n" >> "$log"
-    diff bashvar buildervar | grep -E \
-      "^> [A-Z0-9_]{3,32}=" >> "$log" || sleep 0.5
+    diff "${DIR}/bashvar" "${DIR}/buildervar" \
+      | grep -E "^> [A-Z0-9_]{3,32}=" >> "$log" || sleep 0.5
     sed -ri "s/\x1b\[[0-9;]*[mGKHF]//g" "$log"
     _send_failed_build_logs
   fi
@@ -1318,10 +1320,10 @@ _send_msg() {
 _send_file() {
   # ARG: $1 = file
   # ARG: $2 = caption
-  local tg sendtype extension
+  local tg mode extension PHOTO_F AUDIO_F VIDEO_F ANIM_F VOICE_F
   extension=${1##*/*.}
   # shellcheck source=/dev/null
-  source "${DIR}/etc/patterns.cfg"
+  source "${DIR}/etc/telegram.cfg"
   if [[ ${#extension} -lt 3 ]] \
     && [[ $extension != ai ]]; then tg="sendDocument"
   elif [[ ${PHOTO_F} =~ ${extension} ]]; then tg="sendPhoto"
@@ -1331,9 +1333,9 @@ _send_file() {
   elif [[ ${VOICE_F} =~ ${extension} ]]; then tg="sendVoice"
   else tg="sendDocument"
   fi
-  sendtype="${tg/send}"
+  mode="${tg/send}"
   curl --progress-bar -o /dev/null -fL -X POST \
-    -F "${sendtype,}"=@"$1" -F caption="$2" \
+    -F "${mode,}"=@"$1" -F caption="$2" \
     -F chat_id="$TELEGRAM_CHAT_ID" \
     -F disable_web_page_preview=true \
     "${TELEGRAM_API}/bot${TELEGRAM_BOT_TOKEN}/$tg"
