@@ -129,7 +129,7 @@ _zenmaxbuilder() {
   _terminal_colors
   trap '_error $MSG_ERR_KBOARD; _exit 1' INT QUIT TSTP CONT HUP
   [[ $TIMEZONE == default ]] && _get_user_timezone
-  (set)> "${DIR}/bashvar"
+  set > "${DIR}/bashvar"
   DATE="$(TZ=$TIMEZONE date +%Y-%m-%d)"
   TIME="$(TZ=$TIMEZONE date +%Hh%Mm%Ss)"
   local option
@@ -393,7 +393,7 @@ _get_build_logs() {
     # shellcheck source=/dev/null
     source "${DIR}/etc/excluded.cfg"
     excluded="$(IFS=$'|'; echo "${EXCLUDED_VARS[*]}")"; unset IFS
-    (set | grep -v "${excluded//|/\\|}")> "${DIR}/buildervar"
+    set | grep -v "${excluded//|/\\|}" > "${DIR}/buildervar"
     printf "\n\n### ZMB SETTINGS ###\n" >> "$log"
     diff "${DIR}/bashvar" "${DIR}/buildervar" \
       | grep -E "^> [A-Z0-9_]{3,32}=" >> "$log" || sleep 0.5
