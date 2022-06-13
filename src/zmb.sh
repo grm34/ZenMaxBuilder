@@ -64,7 +64,7 @@ elif ! [[ -t 0 ]]; then
 elif [[ $(tput cols) -lt 80 ]] || [[ $(tput lines) -lt 12 ]]; then
   echo "ERROR: terminal window is too small (min 80x12)" >&2
   exit 68
-elif [[ $(uname) != Linux ]]; then
+elif ! [[ $(uname -s) =~ ^(Linux|GNU*)$ ]]; then
   echo "ERROR: run ZenMaxBuilder on Linux" >&2
   exit 1
 elif [[ $(whoami) == root ]]; then
@@ -237,8 +237,8 @@ _confirm() {
   _underline_prompt; confirm="False"
   echo -ne "${yellow}\n==> $nc"
   read -r confirm
-  until [[ -z $confirm ]] \
-      || [[ $confirm =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO) ]]; do
+  until [[ $confirm =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO)$ ]] \
+      || [[ -z $confirm ]]; do
     _error "$MSG_ERR_CONFIRM"
     _confirm "$@"
   done
@@ -523,7 +523,7 @@ _check_user_settings() {
   elif ! [[ $COMPILER =~ ^(default|${PROTON_GCC_NAME}|\
       ${PROTON_CLANG_NAME}|${EVA_GCC_NAME}|${HOST_CLANG_NAME}|\
       ${LOS_GCC_NAME}|${AOSP_CLANG_NAME}|${NEUTRON_GCC_NAME}\
-      ${NEUTRON_CLANG_NAME}) ]]; then
+      ${NEUTRON_CLANG_NAME})$ ]]; then
     _error "$MSG_ERR_COMPILER"; _exit 1
   fi
 }
