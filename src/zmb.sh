@@ -151,7 +151,7 @@ _zenmaxbuilder() {
       *)           set -- "$@" "$option" ;;
     esac
   done
-  if [[ $# -eq 0 ]]; then _error "$MSG_ERR_EOPT"; _exit 1; fi
+  [[ $# -eq 0 ]] && (_error "$MSG_ERR_EOPT"; _exit 1)
   while getopts ':hsuvldprt:m:f:z:' zmb_option; do
     case $zmb_option in
       h)  clear; _terminal_banner; _usage; _exit 0 ;;
@@ -170,9 +170,7 @@ _zenmaxbuilder() {
       \?) _error "$MSG_ERR_IOPT ${red}-$OPTARG"; _exit 1 ;;
     esac
   done
-  if [[ $OPTIND -eq 1 ]]; then
-    _error "$MSG_ERR_IOPT ${red}$1"; _exit 1
-  fi
+  [[ $OPTIND -eq 1 ]] && (_error "$MSG_ERR_IOPT ${red}$1"; _exit 1)
   shift $(( OPTIND - 1 ))
 }
 
@@ -335,10 +333,9 @@ _exit() {
   done
   folders=(out builds logs)
   for folder in "${folders[@]}"; do
-    if [[ -z $(find "${DIR}/${folder}/$CODENAME" \
-        -mindepth 1 -maxdepth 1 2>/dev/null) ]]; then
+    [[ -z $(find "${DIR}/${folder}/$CODENAME" \
+        -mindepth 1 -maxdepth 1 2>/dev/null) ]] &&
       _check rm -rf "${DIR}/${folder}/$CODENAME"
-    fi
   done
   case $zmb_option in
     s|u|p|r|d)
@@ -551,9 +548,8 @@ _check_tc_path() {
   # $@ = some toolchain paths
   local toolchain_path
   for toolchain_path in "$@"; do
-    if [[ $PATH != *${toolchain_path}/bin* ]]; then
-      _error "$MSG_ERR_PATH"; echo "$PATH"; _exit 1
-    fi
+    [[ $PATH != *${toolchain_path}/bin* ]] &&
+      (_error "$MSG_ERR_PATH"; echo "$PATH"; _exit 1)
   done
 }
 
@@ -628,9 +624,8 @@ _start() {
   make -C "$KERNEL_DIR" kernelversion \
     | grep -v make > linuxver & wait $!
   LINUX_VERSION="$(head -n 1 linuxver)"
-  if [[ -z $LINUX_VERSION ]]; then
-    _error "$MSG_ERR_LINUXVER"; _exit 1
-  fi
+  [[ -z $LINUX_VERSION ]] &&
+    (_error "$MSG_ERR_LINUXVER"; _exit 1)
   KERNEL_NAME="${TAG}-${CODENAME}-$LINUX_VERSION"
 
   # makes clean
@@ -1135,7 +1130,8 @@ _ask_for_cores() {
       _prompt "$MSG_ASK_CORES" 1
       read -r CORES
     done
-  else CORES="$cpu"
+  else
+    CORES="$cpu"
   fi
 }
 
@@ -1195,7 +1191,8 @@ _ask_for_install_pkg() {
   _confirm "$MSG_CONFIRM_PKG $1 ?" "[Y/n]"
   if [[ $confirm =~ (n|N|no|No|NO) ]]; then
     _error warn "$MSG_WARN_DEP ${red}${dep}"; sleep 2
-  else install_pkg="True"
+  else
+    install_pkg="True"
   fi
 }
 
@@ -1205,7 +1202,8 @@ _ask_for_clone_toolchain() {
   _confirm "$MSG_CONFIRM_CLONE_TC $1 ?" "[Y/n]"
   if [[ $confirm =~ (n|N|no|No|NO) ]]; then
     _error "$MSG_ERR_CLONE ${red}$1"; _exit 1
-  else clone_tc="True"
+  else
+    clone_tc="True"
   fi
 }
 
@@ -1215,7 +1213,8 @@ _ask_for_clone_anykernel() {
   _confirm "$MSG_CONFIRM_CLONE_AK3" "[Y/n]"
   if [[ $confirm =~ (n|N|no|No|NO) ]]; then
     _error "$MSG_ERR_CLONE ${red}${ANYKERNEL_DIR}"; _exit 1
-  else clone_ak="True"
+  else
+    clone_ak="True"
   fi
 }
 
@@ -1428,10 +1427,8 @@ _list_all_kernels() {
         2>/dev/null | sort -nr | head -n 1 \
         | awk -F" - " '{print $2}')"
       if [[ -f $logfile ]]; then
-        if grep -sqm 1 REALCC= "$logfile"; then
-          titlecolor="$green"
-        else
-          titlecolor="$red"
+        if grep -sqm 1 REALCC= "$logfile"; then titlecolor="$green"
+        else titlecolor="$red"
         fi
         linuxversion="$(grep -m 1 LINUX_VERSION= "$logfile")"
         logdate="$(grep -m 1 "> DATE=" "$logfile")"
