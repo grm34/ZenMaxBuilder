@@ -233,8 +233,7 @@ _confirm() {
   local length; length="$*"; length="${#length}"
   echo -ne "${yellow}\n==> ${green}${1} ${red}${2}$nc"
   _underline_prompt; confirm="False"
-  echo -ne "${yellow}\n==> $nc"
-  read -r confirm
+  echo -ne "${yellow}\n==> $nc"; read -r confirm
   until [[ $confirm =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO)$ ]] \
       || [[ -z $confirm ]]; do
     _error "$MSG_ERR_CONFIRM"
