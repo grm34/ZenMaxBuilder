@@ -384,7 +384,7 @@ _get_build_time() {
 
 _get_build_logs() {
   # > grabs builder vars (without EXCLUDED_VARS)
-  # > diffs bash/builder vars and adds them
+  # > diffs bash/builder vars and adds the output
   # > removes ANSI sequences (color codes)
   # > sends logfile on telegram (while the build fail)
   if [[ -f $log ]] \
