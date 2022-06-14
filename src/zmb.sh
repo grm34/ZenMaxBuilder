@@ -54,7 +54,7 @@
 # - Language: see Contributing Guidelines...
 # -------------------------------------------------------------------
 
-# ensures proper use
+# Ensures proper use
 if ! [[ $(uname -s) =~ ^(Linux|GNU*)$ ]]; then
   echo "ERROR: run ZenMaxBuilder on Linux" >&2
   exit 1
@@ -72,28 +72,28 @@ elif [[ ${BASH_SOURCE[0]} != "$0" ]]; then
   return 1
 fi
 
-# absolute path
+# Absolute path
 DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 if ! cd "$DIR" || ! [[ -f ${DIR}/etc/settings.cfg ]]; then
   echo "ERROR: ZenMaxBuilder directory not found" >&2
   exit 2
 fi
 
-# lockfile
+# Lockfile
 exec 201> "$(basename "$0").lock"
 if ! flock -n 201; then
   echo "ERROR: ZenMaxBuilder is already running" >&2
   exit 114
 fi
 
-# shell settings
+# Shell settings
 shopt -s checkwinsize progcomp
 shopt -u autocd cdspell dirspell extglob progcomp_alias
 
-# job control
+# Job control
 set -m -o pipefail
 
-# user configuration
+# User configuration
 # shellcheck source=/dev/null
 if [[ -f ${DIR}/etc/user.cfg ]]; then
   source "${DIR}/etc/user.cfg"
@@ -101,7 +101,7 @@ else
   source "${DIR}/etc/settings.cfg"
 fi
 
-# user language
+# User language
 # shellcheck source=/dev/null
 if [[ -f "${DIR}/lang/${LANGUAGE}.cfg" ]]; then
   source "${DIR}/lang/${LANGUAGE}.cfg"
@@ -118,14 +118,14 @@ fi
 ###---------------------------------------------------------------###
 
 _zenmaxbuilder() {
-  # main processus
+  # Main processus...
   # > defines shell colors
   # > traps interrupt signals
   # > grabs shell variables (bashvar)
   # > defines date and time
   # > transforms long options to short
   # > handles general options
-  # returns => $zmb_option $DEBUG
+  # Returns: $zmb_option $DEBUG
   _terminal_colors
   trap '_error $MSG_ERR_KBOARD; _exit 1' INT QUIT TSTP CONT HUP
   set > "${DIR}/bashvar"
@@ -190,8 +190,8 @@ _terminal_banner() {
 }
 
 _terminal_colors() {
-  # uses colors only while they are terminal supported
-  # returns => some colorized variables
+  # Uses colors only while they are terminal supported
+  # Returns: some colorized variables
   if [[ -t 1 ]]; then
     local ncolors; ncolors="$(tput colors)"
     if [[ -n $ncolors ]] && [[ $ncolors -ge 8 ]]; then
@@ -210,15 +210,14 @@ _terminal_colors() {
 }
 
 _cd() {
-  # $1 = the location to go
-  # $2 = the error message
+  # Usage: _cd "path" "error msg"
   cd "$1" || (_error "$2"; _exit 1)
 }
 
 _prompt() {
-  # asks some information (question or selection)
-  # $1 = the question to ask
-  # $2 = number (1 for question and 2 for selection)
+  # Asks some information (question or selection)
+  # Usage: _prompt "question" "mode"
+  # Mode: "1" for question and "2" for selection
   local length; length="$*"; length="$(( ${#length} - 2 ))"
   echo -ne "\n${yellow}==> ${green}${1}$nc"
   _underline_prompt; [[ $2 == 1 ]] &&
@@ -226,10 +225,9 @@ _prompt() {
 }
 
 _confirm() {
-  # asks confirmation (yes/no)
-  # $1 = the question to ask
-  # $2 = [Y/n] (to set default <ENTER> behavior)
-  # returns => $confirm
+  # Asks confirmation (yes/no)
+  # Usage: _confirm "question" "[Y/n]" (<ENTER> behavior)
+  # Returns: $confirm
   local length; length="$*"; length="${#length}"
   echo -ne "${yellow}\n==> ${green}${1} ${red}${2}$nc"
   _underline_prompt; confirm="False"
@@ -242,7 +240,7 @@ _confirm() {
 }
 
 _underline_prompt() {
-  # underlines only while the terminal window is large
+  # Underlines only while the terminal window is large
   # enough to display the prompt on a single line
   if [[ $(tput cols) -gt $length ]]; then
     local char; echo -ne "${yellow}\n==> "
@@ -253,31 +251,31 @@ _underline_prompt() {
 }
 
 _note() {
-  # displays some notes (with timestamp)
-  # $1 = the note to display
+  # Displays an information message (with timestamp)
+  # Usage: _note "message"
   echo -e "${yellow}\n[$(TZ=$TIMEZONE date +%T)] ${cyan}${1}$nc"
-  sleep 1
+}
+
+_warn() {
+  # Displays a warning
+  # Usage: _warn "message"
+  echo -e "\n${blue}$MSG_WARN ${nc}${lyellow}${*}$nc" >&2
 }
 
 _error() {
-  # displays warning or error
-  # $1 = <warn> for warning (ignore $1 for error)
-  # $* = the error or warning message
-  if [[ $1 == warn ]]; then
-    echo -e "\n${blue}${MSG_WARN}${nc}${lyellow}${*/warn/}$nc" >&2
-  else
-    echo -e "\n${red}$MSG_ERROR ${nc}${lyellow}${*}$nc" >&2
-  fi
+  # Displays an error
+  # Usage: _error "message"
+  echo -e "\n${red}$MSG_ERROR ${nc}${lyellow}${*}$nc" >&2
 }
 
 _check() {
-  # handles shell command
-  # $@ = the command to run
-  # DEBUG MODE: displays the command
-  # runs the command as child and waits
-  # notifies function and file on ERR
-  # grabs logs on command error
-  # asks to run again last failed command
+  # Handles shell command
+  # Usage: _check "$@" (the command to run)
+  # Debug: displays the command
+  # > runs the command as child and waits
+  # > notifies function and file on ERR
+  # > grabs logs on command error
+  # > asks to run again last failed command
   local cmd_err line func file; cmd_err="${*}"
   if [[ $DEBUG == True ]]; then
     echo -e "\n${blue}Command:"\
@@ -310,17 +308,17 @@ _check() {
 }
 
 _exit() {
-  # $1 = exit code
-  # kills running PID childs on interrupt
-  # grabs the logs (if the build started)
-  # removes temp files and device folders
-  # exits with 3s timeout
+  # Usage: _exit "exit code"
+  # > kills running PID childs on interrupt
+  # > grabs the logs (if the build started)
+  # > removes temp files and device folders
+  # > exits with 3s timeout
   local pid pids file files folder folders second
   if [[ $1 != 0 ]]; then
     pids=(make git wget tar readelf zip \
       java apt pkg pacman yum emerge zypper dnf)
     for pid in "${pids[@]}"; do
-      if pidof "$pid"; then pkill "$pid" || sleep 0.5; fi
+      if pidof "$pid"; then pkill "$pid" || sleep 0.1; fi
     done
   fi
   _get_build_logs
@@ -356,9 +354,8 @@ _exit() {
 ###---------------------------------------------------------------###
 
 _get_user_timezone() {
-  # linux: uses <timedatectl>
-  # termux: uses <getprop>
-  # returns => $TIMEZONE
+  # Linux: uses <timedatectl> | Termux: uses <getprop>
+  # Returns: $TIMEZONE
   if which timedatectl &>/dev/null; then
     TIMEZONE="$(timedatectl | grep -sm 1 'Time zone' \
       | awk -F" " '{print $3}')"
@@ -370,7 +367,7 @@ _get_user_timezone() {
 }
 
 _get_build_time() {
-  # returns => $BUILD_TIME
+  # Returns: $BUILD_TIME
   local end_time diff_time min sec
   end_time="$(TZ=$TIMEZONE date +%s)"
   diff_time="$(( end_time - start_time ))"
@@ -379,10 +376,11 @@ _get_build_time() {
 }
 
 _get_build_logs() {
-  # grabs builder vars (without EXCLUDED_VARS)
-  # diffs bash/builder vars and adds the output
-  # removes ANSI sequences (color codes)
-  # sends logfile on telegram (while the build fail)
+  # Creates logfile of the build
+  # > grabs builder vars (without EXCLUDED_VARS)
+  # > diffs bash/builder vars and adds the output
+  # > removes ANSI sequences (color codes)
+  # > sends logfile on telegram (while the build fail)
   if [[ -f $log ]] \
       && ! grep -sqm 1 "### ZMB SETTINGS ###" "$log"; then
     local excluded EXCLUDED_VARS
@@ -392,16 +390,15 @@ _get_build_logs() {
     set | grep -v "${excluded//|/\\|}" > "${DIR}/buildervar"
     printf "\n\n### ZMB SETTINGS ###\n" >> "$log"
     diff "${DIR}/bashvar" "${DIR}/buildervar" \
-      | grep -E "^> [A-Z0-9_]{3,32}=" >> "$log" || sleep 0.5
+      | grep -E "^> [A-Z0-9_]{3,32}=" >> "$log" || sleep 0.1
     sed -ri "s/\x1b\[[0-9;]*[mGKHF]//g" "$log"
     _send_failed_build_logs
   fi
 }
 
 _get_latest_aosp_tag() {
-  # $1 = toolchain url (from settings.cfg)
-  # $2 = toolchain folder (from settings.cfg)
-  # returns => $latest $tgz
+  # Usage: _get_latest_aosp_tag "url" "path" (from settings.cfg)
+  # Returns: $latest $tgz
   local url regex rep
   case ${2##*/} in
     "${AOSP_CLANG_DIR##*/}")
@@ -418,9 +415,8 @@ _get_latest_aosp_tag() {
 }
 
 _get_local_aosp_tag() {
-  # $1 = toolchain folder (from settings.cfg)
-  # $2 = toolchain version (from settings.cfg)
-  # returns => $tag
+  # Usage: _get_local_aosp_tag "path" "version" (from settings.cfg)
+  # Returns: $tag
   local regex
   case ${1##*/} in
     "${AOSP_CLANG_DIR##*/}") regex="r\d+[a-z]{1}" ;;
@@ -431,8 +427,8 @@ _get_local_aosp_tag() {
 }
 
 _get_tc_version() {
-  # $1 = toolchain version (from settings.cfg)
-  # returns => $tc_version
+  # Usage: _get_tc_version "version" (from settings.cfg)
+  # Returns: $tc_version
   case $1 in
     "$AOSP_CLANG_VERSION"|"$LLVM_ARM64_VERSION"|\
     "$LLVM_ARM_VERSION")
@@ -450,8 +446,8 @@ _get_tc_version() {
 }
 
 _get_android_platform_version() {
-  # grabs PLATFORM_VERSION from the kernel Makefile
-  # returns => $amv $ptv
+  # Grabs PLATFORM_VERSION from the kernel Makefile
+  # Returns: $amv $ptv
   amv="$(grep -m 1 ANDROID_MAJOR_VERSION= "${KERNEL_DIR}/Makefile")"
   ptv="$(grep -m 1 PLATFORM_VERSION= "${KERNEL_DIR}/Makefile")"
   amv="${amv/ANDROID_MAJOR_VERSION=}"
@@ -459,8 +455,9 @@ _get_android_platform_version() {
 }
 
 _get_cross_compile() {
-  # grabs CROSS_COMPILE and CC from the kernel Makefile
-  # displays the outputs found on the terminal
+  # Grabs CROSS_COMPILE and CC from the kernel Makefile
+  # and displays the outputs found on the terminal
+  # Usage: _get_cross_compile "1" (use arg to bypass note)
   ! [[ $1 ]] && _note "$MSG_NOTE_CC"
   local cross cc
   cross="$(sed -n "/^CROSS_COMPILE\s.*?=.*/{p;}" \
@@ -474,8 +471,8 @@ _get_cross_compile() {
 }
 
 _get_latest_linux_tag() {
-  # displays the latest linux tag
-  # $1 = tag number to scan (e.g. v4)
+  # Displays the latest linux tag
+  # Usage: _get_latest_linux_ "tag" (e.g. v4)
   _note "$MSG_NOTE_LTAG"
   [[ $OPTARG != v* ]] && OPTARG="v$OPTARG"
   local ltag; ltag="$(git ls-remote --refs --sort='v:refname' \
@@ -510,8 +507,8 @@ _get_realpath_working_folders() {
 ###---------------------------------------------------------------###
 
 _check_user_settings() {
-  # kernel dir: checks the presence of <configs> folder
-  # compiler: checks for a valid compiler name
+  # Kernel dir: checks the presence of <configs> folder
+  # Compiler: checks for a valid compiler name
   if [[ $KERNEL_DIR != default ]] \
       && ! [[ -f ${KERNEL_DIR}/Makefile ]] \
       && ! [[ -d ${KERNEL_DIR}/arch/${ARCH}/configs ]]; then
@@ -525,8 +522,8 @@ _check_user_settings() {
 }
 
 _check_linker() {
-  # ensures the compiler is system supported
-  # $@ = some toolchain *_CHECK (from settings.cfg)
+  # Ensures the compiler is system supported
+  # Usage: _check_linker "$@" (toolchain *_CHECK from settings.cfg)
   if [[ $HOST_LINKER == True ]]; then
     local regex linker
     regex="^\s*\[\w{1,}\s\w{1,}\s\w{1,}:\s|\[*\\w{1,}:\s"
@@ -535,7 +532,7 @@ _check_linker() {
         | grep -m 1 -E "${regex}" | awk -F": " '{print $NF}')"
       linker="${linker/]}"
       if ! [[ -f $linker ]]; then
-        _error warn "$MSG_WARN_LINKER ${red}${linker}$nc"
+        _warn "$MSG_WARN_LINKER ${red}${linker}$nc"
         _error "$MSG_ERR_LINKER $COMPILER"; _exit 1; break
       fi
     done
@@ -543,8 +540,8 @@ _check_linker() {
 }
 
 _check_tc_path() {
-  # ensures $PATH has been correctly set
-  # $@ = some toolchain paths
+  # Ensures $PATH has been correctly set
+  # _check_tc_path "$@" (some toolchain paths)
   local toolchain_path
   for toolchain_path in "$@"; do
     [[ $PATH != *${toolchain_path}/bin* ]] &&
@@ -553,11 +550,11 @@ _check_tc_path() {
 }
 
 _check_makefile() {
-  # checks CROSS_COMPILE and CC
-  # warns the user while they not seems correctly set
-  # asks to modify them in the kernel Makefile
-  # edits the kernel Makefile (SED) while True
-  # DEBUG MODE: displays edited Makefile values
+  # Checks CROSS_COMPILE and CC
+  # > warns the user while they not seems correctly set
+  # > asks to modify them in the kernel Makefile
+  # > edits the kernel Makefile (SED) while True
+  # Debug: displays edited Makefile values
   local cross cc r1 r2 check1 check2
   cross="${TC_OPTIONS[1]/CROSS_COMPILE=}"
   cc="${TC_OPTIONS[3]/CC=}"
@@ -567,14 +564,14 @@ _check_makefile() {
   check2="$(grep -m 1 "${r2[0]}" "${KERNEL_DIR}/Makefile")"
   if [[ -n ${check1##*"${cross}"*} ]] \
       || [[ -n ${check2##*"${cc}"*} ]]; then
-    _error warn "$MSG_WARN_CC"
+    _warn "$MSG_WARN_CC"
     _ask_for_edit_cross_compile
     if [[ $EDIT_CC != False ]]; then
       _check sed -i "s|${r1[0]}|${r1[1]}|g" "${KERNEL_DIR}/Makefile"
       _check sed -i "s|${r2[0]}|${r2[1]}|g" "${KERNEL_DIR}/Makefile"
       if [[ $DEBUG == True ]]; then
         echo -e "\n${blue}${MSG_DEBUG_CC}$nc" >&2
-        _get_cross_compile 1; sleep 0.5
+        _get_cross_compile 1
       fi
     fi
   fi
@@ -588,13 +585,13 @@ _check_makefile() {
 _start() {
   local folder folders ftime gen
 
-  # displays banner
+  # Displays banner
   _check_user_settings
   clear; _terminal_banner
   _note "$MSG_NOTE_START $DATE"
-  [[ $termux ]] && _error warn "$MSG_WARN_TERMUX"
+  [[ $termux ]] && _warn "$MSG_WARN_TERMUX"
 
-  # grabs device codename and creates folders
+  # Grabs device codename and creates folders
   _ask_for_codename
   folders=(builds logs toolchains out)
   for folder in "${folders[@]}"; do
@@ -607,7 +604,7 @@ _start() {
   done
   _get_realpath_working_folders
 
-   # asks questions to the user and exports settings
+   # Asks questions to the user and exports settings
   _ask_for_kernel_dir
   _ask_for_defconfig
   _ask_for_menuconfig 
@@ -618,7 +615,7 @@ _start() {
   _export_path_and_options
   _ask_for_cores
 
-  # makes kernel version
+  # Makes kernel version
   _note "$MSG_NOTE_LINUXVER"
   make -C "$KERNEL_DIR" kernelversion \
     | grep -v make > linuxver & wait $!
@@ -627,13 +624,13 @@ _start() {
     (_error "$MSG_ERR_LINUXVER"; _exit 1)
   KERNEL_NAME="${TAG}-${CODENAME}-$LINUX_VERSION"
 
-  # makes clean
+  # Makes clean
   _ask_for_make_clean
   if [[ $MAKE_CLEAN == True ]]; then
     _make_clean; _make_mrproper; rm -rf "$OUT_DIR"
   fi
 
-  # makes configuration
+  # Makes configuration
   _make_defconfig
   if [[ $MENUCONFIG ]]; then
     _make_menuconfig
@@ -645,7 +642,7 @@ _start() {
     fi
   fi
 
-  # makes the kernel
+  # Makes the kernel
   _ask_for_new_build
   if [[ $new_build == False ]]; then
     _note "$MSG_NOTE_CANCEL ${KERNEL_NAME}..."; _exit 0
@@ -657,7 +654,7 @@ _start() {
     _make_build | tee -a "$log"
   fi
 
-  # grabs status -> creates zip -> uploads the build
+  # Grabs status -> creates zip -> uploads the build
   _get_build_time
   gen="${OUT_DIR}/include/generated/compile.h"
   ftime="$(stat -c %Z "${gen}" 2>/dev/null)"
@@ -688,8 +685,8 @@ _start() {
 ###---------------------------------------------------------------###
 
 _aosp_clang_options() {
-  # $1 = toolchain realpath
-  # returns => $TC_OPTIONS $PATH $TCVER $lto_dir
+  # Usage: _aosp_clang_options "realpath"
+  # Returns: $TC_OPTIONS $PATH $TCVER $lto_dir
   TC_OPTIONS=("${AOSP_CLANG_OPTIONS[@]}")
   _check_linker "${1}/$AOSP_CLANG_CHECK" "${1}/$LLVM_ARM64_CHECK"
   local llvm_path
@@ -702,8 +699,8 @@ _aosp_clang_options() {
 }
 
 _eva_gcc_options() {
-  # $1 = toolchain realpath
-  # returns => $TC_OPTIONS $PATH $TCVER $lto_dir
+  # Usage: _eva_gcc_options "realpath"
+  # Returns: $TC_OPTIONS $PATH $TCVER $lto_dir
   TC_OPTIONS=("${EVA_GCC_OPTIONS[@]}")
   _check_linker "${1}/$EVA_ARM64_CHECK"
   export PATH="${EVA_ARM64_DIR}/bin:${EVA_ARM_DIR}/bin:${PATH}"
@@ -714,8 +711,8 @@ _eva_gcc_options() {
 }
 
 _neutron_clang_options() {
-  # $1 = toolchain realpath
-  # returns => $TC_OPTIONS $PATH $TCVER $lto_dir
+  # Usage: _neutron_clang_options "realpath"
+  # Returns: $TC_OPTIONS $PATH $TCVER $lto_dir
   TC_OPTIONS=("${NEUTRON_CLANG_OPTIONS[@]}")
   _check_linker "${1}/$NEUTRON_CHECK"
   export PATH="${NEUTRON_DIR}/bin:${PATH}"
@@ -726,8 +723,8 @@ _neutron_clang_options() {
 }
 
 _proton_clang_options() {
-  # $1 = toolchain realpath
-  # returns => $TC_OPTIONS $PATH $TCVER $lto_dir
+  # Usage: _proton_clang_options "realpath"
+  # Returns: $TC_OPTIONS $PATH $TCVER $lto_dir
   TC_OPTIONS=("${PROTON_CLANG_OPTIONS[@]}")
   _check_linker "${1}/$PROTON_CHECK"
   export PATH="${PROTON_DIR}/bin:${PATH}"
@@ -738,8 +735,8 @@ _proton_clang_options() {
 }
 
 _los_gcc_options() {
-  # $1 = toolchain realpath
-  # returns => $TC_OPTIONS $PATH $TCVER $lto_dir
+  # Usage: _los_gcc_options "realpath"
+  # Returns: $TC_OPTIONS $PATH $TCVER $lto_dir
   TC_OPTIONS=("${LOS_GCC_OPTIONS[@]}")
   _check_linker "${1}/$LOS_ARM64_CHECK"
   export PATH="${LOS_ARM64_DIR}/bin:${LOS_ARM_DIR}/bin:${PATH}"
@@ -750,8 +747,8 @@ _los_gcc_options() {
 }
 
 _proton_gcc_options() {
-  # $1 = toolchain realpath
-  # returns => $TC_OPTIONS $PATH $TCVER $lto_dir
+  # Usage: _proton_gcc_options "realpath"
+  # Returns: $TC_OPTIONS $PATH $TCVER $lto_dir
   TC_OPTIONS=("${PROTON_GCC_OPTIONS[@]}")
   _check_linker "${1}/$PROTON_CHECK" "${1}/$EVA_ARM64_CHECK"
   local eva_path eva_v pt_v
@@ -765,8 +762,8 @@ _proton_gcc_options() {
 }
 
 _neutron_gcc_options() {
-  # $1 = toolchain realpath
-  # returns => $TC_OPTIONS $PATH $TCVER $lto_dir
+  # Usage: _neutron_gcc_options "realpath"
+  # Returns: $TC_OPTIONS $PATH $TCVER $lto_dir
   TC_OPTIONS=("${NEUTRON_GCC_OPTIONS[@]}")
   _check_linker "${1}/$NEUTRON_CHECK" "${1}/$EVA_ARM64_CHECK"
   local eva_path eva_v nt_v
@@ -780,7 +777,7 @@ _neutron_gcc_options() {
 }
 
 _host_clang_options() {
-  # returns => $TC_OPTIONS $TCVER
+  # Returns: $TC_OPTIONS $TCVER
   TC_OPTIONS=("${HOST_CLANG_OPTIONS[@]}")
   _get_tc_version "$HOST_CLANG_NAME"
   TCVER="$tc_version"
@@ -792,18 +789,19 @@ _host_clang_options() {
 ###---------------------------------------------------------------###
 
 _export_path_and_options() {
-  # exports target variables (from settings.cfg)
-  # defines PLATFORM_VERSION & ANDROID_MAJOR_VERSION
-  # ensures compiler is system supported (checks linker)
-  # appends toolchains to the $PATH, exports and checks
-  # grabs the toolchain compiler version
-  # checks Makefile and warns/edits while required
-  # defines link time optimization (LTO)
-  # defines additional clang/llvm flags
-  # clang: CROSS_COMPILE_ARM32 -> CROSS_COMPILE_COMPAT (> v4.2)
-  # adds CONFIG_DEBUG_SECTION_MISMATCH=y in debug mode
-  # DEBUG MODE: displays compiler, options and path
-  # returns => $PATH $TC_OPTIONS $TCVER
+  # Defines the PATH and the toolchain options and checks
+  # > exports target variables (from settings.cfg)
+  # > defines PLATFORM_VERSION & ANDROID_MAJOR_VERSION
+  # > ensures compiler is system supported (checks linker)
+  # > appends toolchains to the $PATH, exports and checks
+  # > grabs the toolchain compiler version
+  # > checks Makefile and warns/edits while required
+  # > defines link time optimization (LTO)
+  # > defines additional clang/llvm flags
+  # > clang: CROSS_COMPILE_ARM32 -> CROSS_COMPILE_COMPAT (> v4.2)
+  # > adds CONFIG_DEBUG_SECTION_MISMATCH=y in debug mode
+  # Debug: displays compiler, options and PATH
+  # Returns: $PATH $TC_OPTIONS $TCVER
   local tcpath linuxversion option
   [[ $BUILDER == default ]] && BUILDER="$(whoami)"
   [[ $HOST == default ]] && HOST="$(uname -n)"
@@ -879,7 +877,7 @@ _make_menuconfig() {
 }
 
 _save_defconfig() {
-  # while an existing defconfig file is modified
+  # While an existing defconfig file is modified
   # the original will be saved as <*_defconfig_bak>
   _note "$MSG_NOTE_SAVE $DEFCONFIG (arch/${ARCH}/configs)..."
   [[ -f "${CONF_DIR}/$DEFCONFIG" ]] &&
@@ -889,7 +887,8 @@ _save_defconfig() {
 }
 
 _make_build() {
-  # TG: defines HTML message and sends build status
+  # Makes new kernel build
+  # > defines HTML msg and sends build status while TG is True
   _note "$MSG_NOTE_MAKE ${KERNEL_NAME}..."
   _set_html_status_msg
   _send_start_build_status
@@ -903,16 +902,14 @@ _make_build() {
 ###---------------------------------------------------------------###
 
 _zip() {
-  # kernel zip creation
-  # $1 = kernel name
-  # $2 = kernel image
-  # $3 = build folder
-  # sends status on Telegram
-  # copies image into <AnyKernel> folder
-  # CD into <AnyKernel> folder
-  # writes ak3 configuration (anykernel.sh)
-  # creates new kernel zip
-  # moves the zip into <builds> folder
+  # Kernel zip creation
+  # Usage: _zip "name" "image" "path"
+  # > sends status on Telegram
+  # > copies image into <AnyKernel> folder
+  # > CD into <AnyKernel> folder
+  # > writes ak3 configuration (anykernel.sh)
+  # > creates new kernel zip
+  # > moves the zip into <builds> folder
   [[ $start_time ]] && _clean_anykernel
   _note "$MSG_NOTE_ZIP ${1}.zip..."
   _send_zip_creation_status
@@ -930,9 +927,9 @@ _zip() {
 }
 
 _set_ak3_conf() {
-  # NOTE: we are working here from <AnyKernel> folder
-  # copies included files into ak3 (in their dedicated folder)
-  # edits <anykernel.sh> to append device infos (SED)
+  # Note: we are working here from <AnyKernel> folder
+  # > copies included files into ak3 (in their dedicated folder)
+  # > edits <anykernel.sh> to append device infos (SED)
   local file inc_dir string strings
   for file in "${INCLUDED[@]}"; do
     if [[ -f ${BOOT_DIR}/$file ]]; then
@@ -963,7 +960,7 @@ _set_ak3_conf() {
 }
 
 _clean_anykernel() {
-  # removes unwanted files and folders
+  # Removes unwanted files and folders
   _note "$MSG_NOTE_CLEAN_AK3"
   local file
   for file in "${INCLUDED[@]}"; do
@@ -979,21 +976,21 @@ _clean_anykernel() {
 }
 
 _sign_zip() {
-  # $1 = kernel name
-  # sends signing status on Telegram
-  # signs the zip with aosp keys (java)
+  # Usage: _sign_zip "file"
+  # > sends signing status on Telegram
+  # > signs the zip with aosp keys (java)
   if which java &>/dev/null; then
     _note "$MSG_NOTE_SIGN"
     _send_zip_signing_status
     _check unbuffer java -jar "${DIR}/bin/zipsigner-3.0-dexed.jar" \
       "${1}.zip" "${1}-signed.zip" 2>&1
   else
-    _error warn "$MSG_WARN_JAVA"
+    _warn "$MSG_WARN_JAVA"
   fi
 }
 
 _create_zip_option() {
-  # $1 = kernel image
+  # Usage: _create_zip_option "image"
   if [[ -f $OPTARG ]]; then
     _zip "${OPTARG##*/}-${DATE}-$TIME" "$OPTARG" \
       "${DIR}/builds/default"
@@ -1011,8 +1008,8 @@ _create_zip_option() {
 ###---------------------------------------------------------------###
 
 _ask_for_codename() {
-  # matchs regex to prevent invalid string
-  # returns => $CODENAME
+  # Matchs regex to prevent invalid string
+  # Returns: $CODENAME
   if [[ $CODENAME == default ]]; then
     _prompt "$MSG_ASK_CODENAME" 1; read -r CODENAME
     local regex; regex="^[a-zA-Z0-9][a-zA-Z0-9_-]{2,19}$"
@@ -1025,9 +1022,9 @@ _ask_for_codename() {
 }
 
 _ask_for_kernel_dir() {
-  # NOTE: we are working here from $HOME (auto completion)
-  # checks the presence of <configs> folder (ARM)
-  # returns => $KERNEL_DIR $CONF_DIR
+  # Note: we are working here from $HOME (auto completion)
+  # > checks the presence of <configs> folder (ARM)
+  # Returns: $KERNEL_DIR $CONF_DIR
   if [[ $KERNEL_DIR == default ]]; then
     _cd "$HOME" "$MSG_ERR_DIR ${red}HOME"
     _prompt "$MSG_ASK_KDIR" 1; read -r -e KERNEL_DIR
@@ -1043,8 +1040,8 @@ _ask_for_kernel_dir() {
 }
 
 _ask_for_defconfig() {
-  # defconfig files located in <configs> (ARM)
-  # returns => $DEFCONFIG
+  # Defconfig files located in <configs> (ARM)
+  # Returns: $DEFCONFIG
   _cd "$CONF_DIR" "$MSG_ERR_DIR ${red}$CONF_DIR"
   _prompt "$MSG_SELECT_DEF" 2
   select DEFCONFIG in *_defconfig; do
@@ -1055,7 +1052,7 @@ _ask_for_defconfig() {
 }
 
 _ask_for_menuconfig() {
-  # returns => $MENUCONFIG
+  # Returns: $MENUCONFIG
   _confirm "$MSG_CONFIRM_CONF" "[y/N]"
   if [[ $confirm =~ (y|Y|yes|Yes|YES) ]]; then
     _prompt "$MSG_SELECT_MENU" 2
@@ -1070,9 +1067,9 @@ _ask_for_menuconfig() {
 }
 
 _ask_for_save_defconfig() {
-  # otherwise request to continue with the unmodified
-  # matchs regex to prevent invalid string
-  # returns => $DEFCONFIG
+  # Otherwise request to continue with the original
+  # > matchs regex to prevent invalid string
+  # Returns: $DEFCONFIG
   _confirm "$MSG_CONFIRM_SAVE_DEF" "[Y/n]"
   if [[ $confirm =~ (n|N|no|No|NO) ]]; then
     save_defconfig="False"
@@ -1091,7 +1088,7 @@ _ask_for_save_defconfig() {
 }
 
 _ask_for_toolchain() {
-  # returns => $COMPILER
+  # Returns: $COMPILER
   if [[ $COMPILER == default ]]; then
     _prompt "$MSG_SELECT_TC" 2
     select COMPILER in $AOSP_CLANG_NAME $EVA_GCC_NAME \
@@ -1104,21 +1101,21 @@ _ask_for_toolchain() {
 }
 
 _ask_for_edit_makefile() {
-  # returns => $EDIT_CC
+  # Returns: $EDIT_CC
   _confirm "$MSG_CONFIRM_MAKEFILE" "[y/N]"
   [[ $confirm =~ (y|Y|yes|Yes|YES) ]] &&
     $EDITOR "${KERNEL_DIR}/Makefile"
 }
 
 _ask_for_edit_cross_compile() {
-  # returns => $EDIT_CC
+  # Returns: $EDIT_CC
   _confirm "$MSG_CONFIRM_CC $COMPILER ?" "[Y/n]"
   [[ $confirm =~ (n|N|no|No|NO) ]] && EDIT_CC="False"
 }
 
 _ask_for_cores() {
-  # checks the amount of available cores (no limits here)
-  # returns => $CORES
+  # Checks the amount of available cores (no limits here)
+  # Returns: $CORES
   local cpu; cpu="$(nproc --all)"
   _confirm "$MSG_CONFIRM_CPU" "[Y/n]"
   if [[ $confirm =~ (n|N|no|No|NO) ]]; then
@@ -1135,13 +1132,13 @@ _ask_for_cores() {
 }
 
 _ask_for_make_clean() {
-  # returns => $MAKE_CLEAN
+  # Returns: $MAKE_CLEAN
   _confirm "$MSG_CONFIRM_MCLEAN v$LINUX_VERSION ?" "[y/N]"
   [[ $confirm =~ (y|Y|yes|Yes|YES) ]] && MAKE_CLEAN="True"
 }
 
 _ask_for_new_build() {
-  # returns => $new_build
+  # Returns: $new_build
   _confirm \
     "$MSG_CONFIRM_START ${TAG}-${CODENAME}-$LINUX_VERSION ?" \
     "[Y/n]"
@@ -1149,7 +1146,7 @@ _ask_for_new_build() {
 }
 
 _ask_for_telegram() {
-  # returns => $build_status
+  # Returns: $build_status
   if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
     _confirm "$MSG_CONFIRM_TG" "[y/N]"
     [[ $confirm =~ (y|Y|yes|Yes|YES) ]] && build_status="True"
@@ -1157,16 +1154,16 @@ _ask_for_telegram() {
 }
 
 _ask_for_flashable_zip() {
-  # returns => $flash_zip
+  # Returns: $flash_zip
   _confirm \
     "$MSG_CONFIRM_ZIP ${TAG}-${CODENAME}-$LINUX_VERSION ?" "[y/N]"
   [[ $confirm =~ (y|Y|yes|Yes|YES) ]] && flash_zip="True"
 }
 
 _ask_for_kernel_image() {
-  # NOTE: we are working here from <boot> folder (auto completion)
-  # checks the presence of this file
-  # returns => $K_IMG
+  # Note: we are working here from <boot> folder (auto completion)
+  # > checks the presence of this file
+  # Returns: $K_IMG
   _cd "$BOOT_DIR" "$MSG_ERR_DIR ${red}$BOOT_DIR"
   _prompt "$MSG_ASK_IMG" 1; read -r -e K_IMG
   until [[ -f $K_IMG ]]; do
@@ -1178,26 +1175,26 @@ _ask_for_kernel_image() {
 }
 
 _ask_for_run_again() {
-  # returns => $run_again
+  # Returns: $run_again
   run_again="False"
   _confirm "$MSG_CONFIRM_RUN_AGAIN" "[y/N]"
   [[ $confirm =~ (y|Y|yes|Yes|YES) ]] && run_again="True"
 }
 
 _ask_for_install_pkg() {
-  # warns the user that the script may crash while NO
-  # returns => $install_pkg
+  # Warns the user that the script may crash while NO
+  # Returns: $install_pkg
   _confirm "$MSG_CONFIRM_PKG $1 ?" "[Y/n]"
   if [[ $confirm =~ (n|N|no|No|NO) ]]; then
-    _error warn "$MSG_WARN_DEP ${red}${dep}"; sleep 2
+    _warn "$MSG_WARN_DEP ${red}${dep}"; sleep 2
   else
     install_pkg="True"
   fi
 }
 
 _ask_for_clone_toolchain() {
-  # warns the user and exits the script while NO
-  # returns => $clone_tc
+  # Warns the user and exits the script while NO
+  # Returns: $clone_tc
   _confirm "$MSG_CONFIRM_CLONE_TC $1 ?" "[Y/n]"
   if [[ $confirm =~ (n|N|no|No|NO) ]]; then
     _error "$MSG_ERR_CLONE ${red}$1"; _exit 1
@@ -1207,8 +1204,8 @@ _ask_for_clone_toolchain() {
 }
 
 _ask_for_clone_anykernel() {
-  # warns the user and exits the script while NO
-  # returns => $clone_ak
+  # Warns the user and exits the script while NO
+  # Returns: $clone_ak
   _confirm "$MSG_CONFIRM_CLONE_AK3" "[Y/n]"
   if [[ $confirm =~ (n|N|no|No|NO) ]]; then
     _error "$MSG_ERR_CLONE ${red}${ANYKERNEL_DIR}"; _exit 1
@@ -1218,8 +1215,8 @@ _ask_for_clone_anykernel() {
 }
 
 _ask_for_patch() {
-  # patches from <patches>
-  # returns => $kpatch
+  # Patches from <patches>
+  # Returns: $kpatch
   _cd "${DIR}/patches" "$MSG_ERR_DIR ${red}${DIR}/patches"
   _prompt "$MSG_SELECT_PATCH" 2
   select kpatch in *.patch; do
@@ -1230,17 +1227,17 @@ _ask_for_patch() {
 }
 
 _ask_for_apply_patch() {
-  # $1 = mode (patch or revert)
-  # returns => $apply_patch
-  _error warn "$kpatch => ${KERNEL_DIR##*/}"
+  # Usage: _ask_for_apply_patch "mode" (patch or revert)
+  # Returns: $apply_patch
+  _warn "$kpatch => ${KERNEL_DIR##*/}"
   _confirm "$MSG_CONFIRM_PATCH (${1^^}) ?" "[Y/n]"
   [[ $confirm =~ (n|N|no|No|NO) ]] && _exit 0 || apply_patch="True"
 }
 
 _ask_for_update_aosp() {
-  # $1 = name
-  # returns => $update_aosp
-  _error warn "$1 $MSG_ERR_LTAG $tag => ${latest/clang-}"
+  # Usage: _ask_for_update_aosp "path" (e.g. llvm-arm64)
+  # Returns: $update_aosp
+  _warn "$1 $MSG_ERR_LTAG $tag => ${latest/clang-}"
   _confirm "$MSG_CONFIRM_UP $1 ?" "[y/N]"
   [[ $confirm =~ (y|Y|yes|Yes|YES) ]] && update_aosp="True"
 }
@@ -1251,15 +1248,14 @@ _ask_for_update_aosp() {
 ###---------------------------------------------------------------###
 
 _send_msg() {
-  # $1 = message
+  # Usage: _send_msg "message"
   curl --progress-bar -o /dev/null -fL -X POST -d text="$1" \
     -d parse_mode=html -d chat_id="$TELEGRAM_CHAT_ID" \
     "${TELEGRAM_API}/bot${TELEGRAM_BOT_TOKEN}/sendMessage"
 }
 
 _send_file() {
-  # $1 = file
-  # $2 = caption
+  # Usage: _send_file "file" "caption"
   local tg mode extension PHOTO_F AUDIO_F VIDEO_F ANIM_F VOICE_F
   extension=${1##*/*.}
   # shellcheck source=/dev/null
@@ -1325,7 +1321,7 @@ _upload_kernel_build() {
 }
 
 _set_html_status_msg() {
-  # returns => $status_msg
+  # Returns: $status_msg
   local android_version; android_version="AOSP $PLATFORM_VERSION"
   status_msg="
 
@@ -1341,7 +1337,7 @@ _set_html_status_msg() {
 }
 
 _send_msg_option() {
-  # $1 = the message to send
+  # Usage: _send_msg_option "message"
   if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
     _note "$MSG_NOTE_SEND"; _send_msg "${OPTARG//_/-}"
   else
@@ -1350,7 +1346,7 @@ _send_msg_option() {
 }
 
 _send_file_option() {
-  # $1 = the file to send
+  # Usage: _send_file_option "file"
   if [[ -f $OPTARG ]]; then
     if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
       _note "$MSG_NOTE_UPLOAD ${OPTARG##*/}..."
@@ -1369,7 +1365,7 @@ _send_file_option() {
 ###---------------------------------------------------------------###
 
 _tc_version_option() {
-  # displays the installed toolchains versions
+  # Displays the installed toolchains versions
   _note "$MSG_NOTE_SCAN_TC"
   local toolchains_data toolchains_list toolchain eva_v pt_v nt_v tc
   declare -A toolchains_data=(
@@ -1412,9 +1408,9 @@ _tc_version_option() {
 ###---------------------------------------------------------------###
 
 _list_all_kernels() {
-  # success: displays device codename in green
-  # fail: displays device codename in red
-  # grabs linuxversion, date, time and compiler from the logs
+  # Success: displays device codename in green
+  # Fail: displays device codename in red
+  # > grabs linuxversion, date, time and compiler from the logs
   if [[ -n $(find "${DIR}/out" \
       -mindepth 1 -maxdepth 1 -type d 2>/dev/null) ]]; then
     _note "$MSG_NOTE_LISTKERNEL"
@@ -1454,7 +1450,7 @@ _list_all_kernels() {
 ###---------------------------------------------------------------###
 
 _patch() {
-  # $1 = mode (patch or revert)
+  # Usage: _patch "mode" (patch or revert)
   local pargs
   case $1 in
     patch) pargs=(-p1) ;;
@@ -1477,10 +1473,10 @@ _patch() {
 ###---------------------------------------------------------------###
 
 _install_dep() {
-  # defines the install command of some package managers
-  # grabs the current linux package manager
-  # checks and installs the missing dependencies...
-  # NOTE: gcc will not be installed on termux (not fully supported)
+  # Note: gcc will not be installed on termux (not fully supported)
+  # > defines the install command of some package managers
+  # > grabs the current linux package manager
+  # > checks and installs the missing dependencies...
   if [[ $AUTO_DEPENDENCIES == True ]]; then
     local pm_install_cmd pm_list manager pm dep
     declare -A pm_install_cmd=(
@@ -1527,9 +1523,7 @@ _install_dep() {
 }
 
 _clone_tc() {
-  # $1 = branch/version
-  # $2 = url
-  # $3 = dir
+  # Usage: _clone_tc "branch/version" "url" "path"
   if ! [[ -d $3 ]]; then
     _ask_for_clone_toolchain "${3##*/}"
     if [[ $clone_tc == True ]]; then
@@ -1547,8 +1541,7 @@ _clone_tc() {
 }
 
 _install_aosp_tgz() {
-  # $1 = dir
-  # $2 = version
+  # Usage: _install_aosp_tgz "dir" "version"
   _check mkdir "$1"
   _check unbuffer wget -O "${1##*/}.tar.gz" "$tgz"
   _note "$MSG_NOTE_TAR_AOSP ${1##*/}.tar.gz > toolchains/${1##*/}"
@@ -1611,19 +1604,19 @@ _clone_anykernel() {
 ###---------------------------------------------------------------###
 
 _update_git() {
-  # $1 = repo branch
-  # all: checkouts and resets to main branch
-  # zmb: checks if settings.cfg was updated
-  # zmb: warns the user while settings changed
-  # zmb: renames <user.cfg> to <user.cfg_bak>
-  # all: pulls the changes
+  # Usage: _update_git "branch"
+  # > checkouts and resets to the main branch
+  # > checks if settings.cfg was updated (zmb only)
+  # > warns the user while settings changed (zmb only)
+  # > renames <user.cfg> to <user.cfg_bak> (zmb only)
+  # > pulls the changes
   git checkout "$1"; git reset --hard HEAD
   if [[ $1 == "$ZMB_BRANCH" ]] \
       && [[ -f ${DIR}/etc/user.cfg ]]; then
     local mod
     mod="$(git diff origin/"$ZMB_BRANCH" "${DIR}/etc/settings.cfg")"
     if [[ -n $mod ]]; then
-      _error warn "$MSG_UP_CONF"; echo
+      _warn "$MSG_UP_CONF"; echo
       _check mv "${DIR}/etc/user.cfg" "${DIR}/etc/user.cfg_bak"
     fi
   fi
@@ -1631,8 +1624,7 @@ _update_git() {
 }
 
 _full_upgrade() {
-  # defines zmb and ak3 and toolchains data
-  # upgrades existing stuff...
+  # Defines zmb and ak3 and toolchains data, then upgrades...
   local tp up_list up_data repository repo
   tp="${DIR}/toolchains"
   declare -A up_data=(
