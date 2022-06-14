@@ -654,7 +654,7 @@ _start() {
     _make_build | tee -a "$log"
   fi
 
-  # Grabs status -> creates zip -> uploads the build
+  # Grabs status -> creates zip -> uploads the build (while True)
   _get_build_time
   gen="${OUT_DIR}/include/generated/compile.h"
   ftime="$(stat -c %Z "${gen}" 2>/dev/null)"
@@ -793,7 +793,7 @@ _export_path_and_options() {
   # > exports target variables (from settings.cfg)
   # > defines PLATFORM_VERSION & ANDROID_MAJOR_VERSION
   # > ensures compiler is system supported (checks linker)
-  # > appends toolchains to the $PATH, exports and checks
+  # > appends toolchains to the PATH, exports and checks
   # > grabs the toolchain compiler version
   # > checks Makefile and warns/edits while required
   # > defines link time optimization (LTO)
@@ -888,7 +888,7 @@ _save_defconfig() {
 
 _make_build() {
   # Makes new kernel build
-  # > defines HTML msg and sends build status while TG is True
+  # > defines HTML msg and sends build status (while True)
   _note "$MSG_NOTE_MAKE ${KERNEL_NAME}..."
   _set_html_status_msg
   _send_start_build_status
@@ -904,7 +904,7 @@ _make_build() {
 _zip() {
   # Kernel zip creation
   # Usage: _zip "name" "image" "path"
-  # > sends status on Telegram
+  # > sends status on Telegram (while True)
   # > copies image into <AnyKernel> folder
   # > CD into <AnyKernel> folder
   # > writes ak3 configuration (anykernel.sh)
@@ -977,7 +977,7 @@ _clean_anykernel() {
 
 _sign_zip() {
   # Usage: _sign_zip "file"
-  # > sends signing status on Telegram
+  # > sends signing status on Telegram (while True)
   # > signs the zip with aosp keys (java)
   if which java &>/dev/null; then
     _note "$MSG_NOTE_SIGN"
