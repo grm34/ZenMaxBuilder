@@ -8,6 +8,7 @@ buildervar
 linuxver
 etc/user.cfg
 etc/user.cfg_bak
+translate.lock
 zmb.lock
 wget-log
 aosp-clang.tar.gz
