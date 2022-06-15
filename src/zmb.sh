@@ -1237,7 +1237,7 @@ _ask_for_apply_patch() {
 _ask_for_update_aosp() {
   # Usage: _ask_for_update_aosp "path" (e.g. llvm-arm64)
   # Returns: $update_aosp
-  _warn "$1 $MSG_ERR_LTAG $tag => ${latest/clang-}"
+  _warn "$1 $MSG_WARN_TAG $tag => ${latest/clang-}"
   _confirm "$MSG_CONFIRM_UP $1 ?" "[y/N]"
   [[ $confirm =~ (y|Y|yes|Yes|YES) ]] && update_aosp="True"
 }
@@ -1616,7 +1616,7 @@ _update_git() {
     local mod
     mod="$(git diff origin/"$ZMB_BRANCH" "${DIR}/etc/settings.cfg")"
     if [[ -n $mod ]]; then
-      _warn "$MSG_UP_CONF"; echo
+      _warn "$MSG_WARN_UP_CONF"; echo
       _check mv "${DIR}/etc/user.cfg" "${DIR}/etc/user.cfg_bak"
     fi
   fi
