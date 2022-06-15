@@ -35,9 +35,6 @@ if ! [[ $(uname -s) =~ ^(Linux|GNU*)$ ]]; then
 elif ! [[ -t 0 ]]; then
   echo "ERROR: run ZMB Translate from a terminal" >&2
   exit 1
-elif [[ $(tput cols) -lt 80 ]] || [[ $(tput lines) -lt 12 ]]; then
-  echo "ERROR: terminal window is too small (min 80x12)" >&2
-  exit 68
 elif [[ $(whoami) == root ]]; then
   echo "ERROR: do not run ZMB Translate as root" >&2
   exit 1
