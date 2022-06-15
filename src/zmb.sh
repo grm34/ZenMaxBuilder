@@ -193,8 +193,8 @@ _terminal_colors() {
   # Uses colors only while they are terminal supported
   # Returns: some colorized variables
   if [[ -t 1 ]]; then
-    local ncolors; ncolors="$(tput colors)"
-    if [[ -n $ncolors ]] && [[ $ncolors -ge 8 ]]; then
+    local colors; colors="$(tput colors)"
+    if [[ -n $colors ]] && [[ $colors -ge 8 ]]; then
       bold="$(tput bold)"
       nc="\e[0m"
       red="$(tput bold setaf 1)"
