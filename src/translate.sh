@@ -47,8 +47,8 @@ elif [[ ${BASH_SOURCE[0]} != "$0" ]]; then
 fi
 
 # Absolute path
-DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
-if ! cd "$DIR" || ! [[ -f ${DIR}/etc/settings.cfg ]]; then
+dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+if ! cd "$dir" || ! [[ -f ${dir}/lang/en.cfg ]]; then
   echo "ERROR: ZenMaxBuilder directory not found" >&2
   exit 2
 fi
@@ -141,10 +141,10 @@ _translate_and_add_missing_strings_into_cfg() {
 # Run ZMB Translate
 if [[ $1 == zmb ]]; then
   echo "Running ZMB translate (this could take a while)..."
-  _clean_cfg_files lang/*.cfg
-  _get_strings_from_cfg lang/*.cfg
+  _clean_cfg_files "${dir}"/lang/*.cfg
+  _get_strings_from_cfg "${dir}"/lang/*.cfg
   _translate_and_add_missing_strings_into_cfg
-  _clean_cfg_files lang/*.cfg
+  _clean_cfg_files "${dir}"/lang/*.cfg
   [[ $note ]] && echo "==> done" || echo "==> nothing to translate"
 else
   echo "ERROR: you must specify one argument"
