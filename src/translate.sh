@@ -21,12 +21,48 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-shopt -s checkwinsize progcomp
-shopt -u autocd cdspell dirspell extglob progcomp_alias
-
+# [!] ZMB Translate...
+# -------------------------------------------------------------------
 # This script automatically translates base language strings and adds
 # them into the various translations (original will be used on error).
 # It also removes duplicate strings and rearranges them alphabetically.
+# -------------------------------------------------------------------
+
+# Ensures proper use
+if ! [[ $(uname -s) =~ ^(Linux|GNU*)$ ]]; then
+  echo "ERROR: run ZMB Translate on Linux" >&2
+  exit 1
+elif ! [[ -t 0 ]]; then
+  echo "ERROR: run ZMB Translate from a terminal" >&2
+  exit 1
+elif [[ $(tput cols) -lt 80 ]] || [[ $(tput lines) -lt 12 ]]; then
+  echo "ERROR: terminal window is too small (min 80x12)" >&2
+  exit 68
+elif [[ $(whoami) == root ]]; then
+  echo "ERROR: do not run ZMB Translate as root" >&2
+  exit 1
+elif [[ ${BASH_SOURCE[0]} != "$0" ]]; then
+  echo "ERROR: ZMB Translate cannot be sourced" >&2
+  return 1
+fi
+
+# Absolute path
+DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+if ! cd "$DIR" || ! [[ -f ${DIR}/etc/settings.cfg ]]; then
+  echo "ERROR: ZenMaxBuilder directory not found" >&2
+  exit 2
+fi
+
+# Lockfile
+exec 201> "$(basename "$0").lock"
+if ! flock -n 201; then
+  echo "ERROR: ZMB Translate is already running" >&2
+  exit 114
+fi
+
+# Shell settings
+shopt -s checkwinsize progcomp
+shopt -u autocd cdspell dirspell extglob progcomp_alias
 
 _sort_strings() {
   # RM duplicate strings from an array and sorts them alphabetically
@@ -102,10 +138,15 @@ _translate_and_add_missing_strings_into_cfg() {
   done
 }
 
-echo "Running ZMB translate (this could take a while)..."
-_clean_cfg_files lang/*.cfg
-_get_strings_from_cfg lang/*.cfg
-_translate_and_add_missing_strings_into_cfg
-_clean_cfg_files lang/*.cfg
-[[ $note ]] && echo "==> done" || echo "==> nothing to translate"
+# Run ZMB Translate
+if [[ $1 == zmb ]]; then
+  echo "Running ZMB translate (this could take a while)..."
+  _clean_cfg_files lang/*.cfg
+  _get_strings_from_cfg lang/*.cfg
+  _translate_and_add_missing_strings_into_cfg
+  _clean_cfg_files lang/*.cfg
+  [[ $note ]] && echo "==> done" || echo "==> nothing to translate"
+else
+  echo "ERROR: you must specify one argument"
+fi
 
