@@ -166,7 +166,7 @@ _zenmaxbuilder() {
       t)  _install_dep; _get_latest_linux_tag; _exit 0 ;;
       p)  _install_dep; _patch patch; _exit 0 ;;
       r)  _install_dep; _patch revert; _exit 0 ;;
-      i)  _install_dep; _search_devices "$@"; _exit 0 ;;
+      i)  _install_dep; _device_specs_option "$@"; _exit 0 ;;
       s)  _install_dep; _start; _exit 0 ;;
       d)  DEBUG="True"; _install_dep; _start; _exit 0 ;;
       :)  _error "$MSG_ERR_MARG ${red}-$OPTARG"; _exit 1 ;;
@@ -1692,8 +1692,8 @@ _full_upgrade() {
 ###     16. FINDER => displays android device specifications      ###
 ###---------------------------------------------------------------###
 
-_get_devices_specs() {
-  # Usage: _get_devices_specs "$@"
+_find_devices() {
+  # Usage: _find_devices "$@"
   local key value
   for key in "$@"; do
     value="$(grep -o '"'"$key"'":"[^"]*' \
@@ -1715,7 +1715,7 @@ _deep_search() {
        "select(.key == \"$3\").val[0]}"
 }
 
-_return_device_specs() {
+_find_device_specs() {
   local device_specs key value order; echo
   declare -A device_specs=(
     [brand]="{brand: .data.brand}"
@@ -1759,14 +1759,14 @@ _return_device_specs() {
   done
 }
 
-_search_devices() {
-  # Usage: _search_devices "search"
+_device_specs_option() {
+  # Usage: _device_specs_option "device name"
   _note "$MSG_NOTE_DEVICE_SEARCH"
   local search; search="${*/$1}"
   curl -s -L "${PHONE_API}${search// /%20}" -o query.json
   if grep -sqm 1 "phone_name" query.json; then
     local device index
-    _get_devices_specs "brand" "phone_name" "detail"; echo
+    _find_devices "brand" "phone_name" "detail"; echo
     # shellcheck disable=SC2154
     for device in "${!phone_name[@]}"; do
       _print_devices "$(( device + 1 ))" \
@@ -1778,7 +1778,7 @@ _search_devices() {
     # shellcheck disable=SC2154
     curl -s -L "${detail[index]}" -o device.json
     if grep -sqm 1 phone_name device.json; then
-      _return_device_specs
+      _find_device_specs
     else
       _error "$MSG_ERR_DEVICE_SPECS ${red}${phone_name[index]}$nc"
       _exit 1
