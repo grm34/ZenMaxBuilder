@@ -159,7 +159,7 @@ _zenmaxbuilder() {
       h)  clear; _terminal_banner; _usage; _exit 0 ;;
       u)  _install_dep; _full_upgrade; _exit 0 ;;
       v)  _install_dep; _tc_version_option; _exit 0 ;;
-      m)  _install_dep; _send_msg_option; _exit 0 ;;
+      m)  _install_dep; _send_msg_option "$@"; _exit 0 ;;
       f)  _install_dep; _send_file_option; _exit 0 ;;
       z)  _install_dep; _create_zip_option; _exit 0 ;;
       l)  _install_dep; _list_all_kernels; _exit 0 ;;
@@ -1353,9 +1353,10 @@ _set_html_status_msg() {
 }
 
 _send_msg_option() {
-  # Usage: _send_msg_option "message"
+  # Usage: _send_msg_option "$@"
   if [[ $TELEGRAM_CHAT_ID ]] && [[ $TELEGRAM_BOT_TOKEN ]]; then
-    _note "$MSG_NOTE_SEND"; _send_msg "${OPTARG//_/-}"
+    _note "$MSG_NOTE_SEND"; local msg; msg="${*/$1}" 
+    _send_msg "${msg//_/-}"
   else
     _error "$MSG_ERR_API"
   fi
