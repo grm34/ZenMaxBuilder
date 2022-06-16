@@ -1751,9 +1751,10 @@ _return_device_specs() {
   for key in "${order[@]}"; do
     value="${device_specs[$key]}"
     value="$(jq -c "$value" device.json)"
-    if [[ -n $value ]]; then
+    if [[ -n ${value} ]]; then
       IFS=":" read -r value value <<< "$value"; unset IFS
-      echo -e "${green}${key^}${nc}: ${value::-1}"
+      [[ ${value::-1} != "\"\"" ]] &&
+        echo -e "${green}${key^}${nc}: ${value::-1}"
     fi
   done
 }
