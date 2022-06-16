@@ -70,7 +70,7 @@ The installation of the missing dependencies will be offered by ZenMaxBuilder, a
 
 You can also install them manually with your favorite package manager :
 
-    bash sed wget git curl zip tar expect make cmake automake autoconf llvm lld lldb clang gcc binutils bison perl gperf gawk flex bc python3 zstd openssl
+    bash sed wget git curl zip tar jq expect make cmake automake autoconf llvm lld lldb clang gcc binutils bison perl gperf gawk flex bc python3 zstd openssl
 
 The optional flashable zip signature with AOSP Keys requires java (JDK) which is not proposed to install by ZenMaxBuilder (openjdk recommended).
 
@@ -100,10 +100,11 @@ Start ZMB and follow instructions :
         -u, --update                    update script and toolchains
         -v, --version                   show toolchains versions
         -l, --list                      show list of your kernels
-        -t, --tag            [v4.19]    show the latest Linux tag
-        -m, --msg          [message]    send message on Telegram
-        -f, --file            [file]    send file on Telegram
-        -z, --zip     [Image.gz-dtb]    create flashable zip
+        -t, --tag          [v4.19]      show the latest Linux tag
+        -i, --info        [device]      android device specifications
+        -m, --msg        [message]      send message on Telegram
+        -f, --file          [file]      send file on Telegram
+        -z, --zip          [image]      create new kernel zip
         -p, --patch                     apply a patch to a kernel
         -r, --revert                    revert a patch to a kernel
         -d, --debug                     start compilation in debug mode
@@ -145,6 +146,7 @@ ZMB uses prebuilts toolchains by default, in case you have already compiled or d
 
   ![screenshot](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/screenshot.png)
   ![help](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/help.png)
+  ![devices](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/devices.png)
   ![telegram](https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/telegram.png)
 </details>
 

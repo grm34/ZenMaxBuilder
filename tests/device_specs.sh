@@ -12,8 +12,7 @@ blue="$(tput bold setaf 4)"
 
 url="https://api-mobilespecs.azharimm.site/v2/search?query="
 
-_get_devices_specs() {
-  # Usage: _get_devices_specs "$@"
+_find_devices() {
   local key value
   for key in "$@"; do
     value="$(grep -o '"'"$key"'":"[^"]*' \
@@ -24,7 +23,6 @@ _get_devices_specs() {
 }
 
 _print_devices() {
-  # Usage: _print_devices "index" "name" "brand"
   echo -e \
     "${yellow}${1}${nc} => ${green}$2 ${nc}(${blue}${3}${nc})"
 }
@@ -35,7 +33,7 @@ _deep_search() {
        "select(.key == \"$3\").val[0]}"
 }
 
-_return_device_specs() {
+_find_device_specs() {
   local device_specs key value order; echo
   declare -A device_specs=(
     [brand]="{brand: .data.brand}"
@@ -79,11 +77,10 @@ _return_device_specs() {
 }
 
 _search_devices() {
-  # Usage: _search_devices "search"
   curl -s -L "${url}${2// /%20}" -o temp/query.json
   if grep -sqm 1 "phone_name" temp/query.json; then
     local device index
-    _get_devices_specs "brand" "phone_name" "detail"
+    _find_devices "brand" "phone_name" "detail"
     # shellcheck disable=SC2154
     for device in "${!phone_name[@]}"; do
       _print_devices "$(( device + 1 ))" \
@@ -95,7 +92,7 @@ _search_devices() {
     # shellcheck disable=SC2154
     curl -s -L "${detail[index]}" -o temp/device.json
     if grep -sqm 1 phone_name temp/device.json; then
-      _return_device_specs
+      _find_device_specs
     else
       echo "ERROR: nothing found about ${phone_name[index]}"
     fi

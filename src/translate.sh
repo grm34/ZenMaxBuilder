@@ -123,7 +123,7 @@ _translate_and_add_missing_strings_into_cfg() {
     _get_string_data "$line"
     for language in "${cfg_list[@]}"; do
       declare -n trad_strings="$language"
-      if [[ "${trad_strings[*]}" != *"${data[0]}"* ]]; then
+      if [[ "${trad_strings[*]}" != *"${data[0]}="* ]]; then
         _translate_string "${data[1]}" "${language/_strings}"
         [[ -n $translated ]] && line="${data[0]}=\"${translated}\""
         [[ -n $translated ]] && note="translated" || note="original"
