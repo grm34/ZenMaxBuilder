@@ -1802,10 +1802,11 @@ ${nc}[${lyellow}OPTION${nc}] [${lyellow}ARGUMENT${nc}] \
     -u, --update                    $MSG_HELP_U
     -v, --version                   $MSG_HELP_V
     -l, --list                      $MSG_HELP_L
-    -t, --tag            [v4.19]    $MSG_HELP_T
-    -m, --msg          [message]    $MSG_HELP_M
-    -f, --file            [file]    $MSG_HELP_F
-    -z, --zip     [Image.gz-dtb]    $MSG_HELP_Z
+    -t, --tag          [v4.19]      $MSG_HELP_T
+    -i, --info        [device]      $MSG_HELP_I
+    -m, --msg        [message]      $MSG_HELP_M
+    -f, --file          [file]      $MSG_HELP_F
+    -z, --zip          [image]      $MSG_HELP_Z
     -p, --patch                     $MSG_HELP_P
     -r, --revert                    $MSG_HELP_R
     -d, --debug                     $MSG_HELP_D
