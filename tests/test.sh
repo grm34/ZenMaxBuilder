@@ -2,8 +2,6 @@
 
 set -u
 
-
-
 nc="\e[0m"
 #red="$(tput bold setaf 1)"
 green="$(tput bold setaf 2)"
