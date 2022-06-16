@@ -39,7 +39,8 @@
 # 13. PATCHER.......:  patchs/reverts patches to a kernel      (FUNC)
 # 14. INSTALLER.....:  dependency install management           (FUNC)
 # 15. UPDATER.......:  updates the script and toolchains       (FUNC)
-# 16. HELPER........:  displays zmb help and usage             (FUNC)
+# 16. FINDER........:  displays android device specifications  (FUNC)
+# 17. HELPER........:  displays zmb help and usage             (FUNC)
 # 00. ==>              runs zmb main processus                  (RUN)
 # -------------------------------------------------------------------
 
@@ -1688,7 +1689,7 @@ _full_upgrade() {
 }
 
 ###---------------------------------------------------------------###
-###         16. FINDER => displays device specifications          ###
+###     16. FINDER => displays android device specifications      ###
 ###---------------------------------------------------------------###
 
 _get_devices_specs() {
@@ -1787,7 +1788,7 @@ _search_devices() {
 }
 
 ###---------------------------------------------------------------###
-###           16. HELPER => displays zmb help and usage           ###
+###           17. HELPER => displays zmb help and usage           ###
 ###---------------------------------------------------------------###
 
 _usage() {
