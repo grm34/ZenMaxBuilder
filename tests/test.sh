@@ -29,8 +29,14 @@ _print_devices() {
     "${yellow}${1}${nc} => ${green}$2 ${nc}(${blue}${3}${nc})"
 }
 
+_deep_search() {
+  echo "{$1: .data.specifications[] | " \
+       "select(.title == \"$2\").specs[] | " \
+       "select(.key == \"$3\").val[0]}"
+}
+
 _return_device_specs() {
-  local device_specs order key spec; echo
+  local device_specs key value order; echo
   declare -A device_specs=(
     [brand]="{brand: .data.brand}"
     [name]="{name: .data.phone_name}"
@@ -38,15 +44,36 @@ _return_device_specs() {
     [dimension]="{dimension: .data.dimension}"
     [os]="{os: .data.os}"
     [storage]="{storage: .data.storage}"
-    [price]="{price: .data.specifications[] | select(.title == \"Misc\").specs[] | select(.key == \"Price\").val[0]}"
-)
-  order=(brand name date dimension os storage price)
+    [screen]="$(_deep_search screen Body Build)"
+    [size]="$(_deep_search size Display Size)"
+    [resolution]="$(_deep_search resolution Display Resolution)"
+    [chipset]="$(_deep_search chipset Platform Chipset)"
+    [cpu]="$(_deep_search cpu Platform CPU)"
+    [gpu]="$(_deep_search gpu Platform GPU)"
+    [ram]="$(_deep_search ram Memory Internal)"
+    [network]="$(_deep_search network Network Technology)"
+    [speed]="$(_deep_search speed Network Speed)"
+    [wlan]="$(_deep_search wlan Comms WLAN)"
+    [bluetooth]="$(_deep_search bluetooth Comms Bluetooth)"
+    [gps]="$(_deep_search gps Comms GPS)"
+    [nfc]="$(_deep_search nfc Comms NFC)"
+    [radio]="$(_deep_search radio Comms Radio)"
+    [usb]="$(_deep_search usb Comms USB)"
+    [battery]="$(_deep_search battery Battery Type)"
+    [sensors]="$(_deep_search sensors Features Sensors)"
+    [models]="$(_deep_search models Misc Models)"
+    [price]="$(_deep_search price Misc Price)"
+    [sim]="$(_deep_search sim Body SIM)"
+  )
+  order=(brand name os chipset cpu gpu storage ram screen size \
+    resolution dimension usb network speed wlan bluetooth gps nfc \
+    radio sim battery sensors models date price)
   for key in "${order[@]}"; do
-    spec="${device_specs[$key]}"
-    spec="$(jq -c "$spec" temp/device.json)"
-    if [[ -n $spec ]]; then
-      IFS=":" read -r spec spec <<< "$spec"; unset IFS
-      echo -e "${green}${key^}${nc}: ${spec::-1}"
+    value="${device_specs[$key]}"
+    value="$(jq -c "$value" temp/device.json)"
+    if [[ -n $value ]]; then
+      IFS=":" read -r value value <<< "$value"; unset IFS
+      echo -e "${green}${key^}${nc}: ${value::-1}"
     fi
   done
 }
