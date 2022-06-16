@@ -1244,6 +1244,19 @@ _ask_for_update_aosp() {
   [[ $confirm =~ (y|Y|yes|Yes|YES) ]] && update_aosp="True"
 }
 
+_ask_for_device_index() {
+  # Usage: _ask_for_device_index "number of devices found"
+  # Checks for a valid index (matching the number of devices)
+  # Returns: $device_index
+  _prompt "$MSG_ASK_DEVICE_INDEX" 1; read -r device_index
+  until (( 1<=device_index && device_index<=$1 )); do
+    _error "$MSG_ERR_DEVICE_INDEX ${red}${device_index}"\
+           "${yellow}($MSG_ERR_TOTAL $1)"
+    _prompt "$MSG_ASK_DEVICE_INDEX" 1
+    read -r device_index
+  done
+}
+
 
 ###---------------------------------------------------------------###
 ###          10. TELEGRAMER => kernel building feedback           ###
@@ -1746,29 +1759,30 @@ _return_device_specs() {
 
 _search_devices() {
   # Usage: _search_devices "search"
+  _note "$MSG_NOTE_DEVICE_SEARCH"
   local search; search="${*/$1}"
   curl -s -L "${PHONE_API}${search// /%20}" -o query.json
   if grep -sqm 1 "phone_name" query.json; then
     local device index
-    _get_devices_specs "brand" "phone_name" "detail"
+    _get_devices_specs "brand" "phone_name" "detail"; echo
     # shellcheck disable=SC2154
     for device in "${!phone_name[@]}"; do
       _print_devices "$(( device + 1 ))" \
         "${phone_name[device]}" "${brand[device]}"
     done
-    echo "Enter the phone number to check : "
-    read -r device_number
-    index="$(( device_number - 1 ))"
+    _ask_for_device_index "${#phone_name[@]}"
+    _note "$MSG_NOTE_DEVICE_SPECS"
+    index="$(( device_index - 1 ))"
     # shellcheck disable=SC2154
     curl -s -L "${detail[index]}" -o device.json
     if grep -sqm 1 phone_name device.json; then
       _return_device_specs
     else
-      echo "ERROR: nothing found about ${phone_name[index]}"
+      _error "$MSG_ERR_DEVICE_SPECS ${red}${phone_name[index]}$nc"
+      _exit 1
     fi
   else
-    echo "ERROR: device not found"
-    exit 1
+    _error "$MSG_ERR_DEVICE_SEARCH ${red}${search/ }$nc"; _exit 1
   fi
 }
 
