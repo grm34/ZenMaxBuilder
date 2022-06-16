@@ -8,6 +8,7 @@ buildervar
 linuxver
 etc/user.cfg
 etc/user.cfg_bak
+tests/temp
 translate.lock
 zmb.lock
 wget-log
