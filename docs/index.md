@@ -124,6 +124,7 @@ ZMB uses prebuilts toolchains by default, in case you have already compiled or d
   <summary>Clic to expand</summary>
   <p><img alt="screenshot" src="https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/screenshot.png"></p>
   <p><img alt="help" src="https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/help.png"></p>
+  <p><img alt="devices" src="https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/devices.png"></p>
   <p><img alt="telegram" src="https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/docs/assets/images/telegram.png"></p>
 </details>
 
