@@ -28,19 +28,19 @@
 <br>
 ## Overview
 
-ZenMaxBuilder (ZMB) is an Android Kernel Builder written in Bash, which can be launched on any compatible Linux system (feel free to Pull Request for Windows support). By default it uses AOSP-Clang, Eva-GCC, Proton-Clang, Neutron-Clang or Lineage-GCC but you can use any Clang or GCC toolchain you like (with LLVM and binutils included).
+ZenMaxBuilder (ZMB) is a Linux kernel builder written in Bash and oriented for android devices but as well compatible for other platforms. It can be launched on any compatible Linux system (feel free to Pull Request for Windows support). By default it uses AOSP-Clang, Eva-GCC, Proton-Clang, Neutron-Clang or Lineage-GCC but you can use any Clang or GCC toolchain you like (with LLVM and binutils included).
 
-Find all your compilations and working folders in one place, update and maintain your kernels faster. Full logs with the possibility to restart the build after error. Automatic creation of a flashable signed ZIP (with AK3 and AOSP Keys). Real time status feedback with build sending on any group or Telegram channel. And more. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
+Find all your compilations and working folders in one place, update and maintain your kernels faster. Full logs with the possibility to restart the build after error. Automatic creation of a flashable signed ZIP for android devices (with AK3 and AOSP Keys). Real time status feedback with build sending on any group or Telegram channel. And more. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
 
 <br>
 ## Requirements
 
 - A compatible Linux system
-- The kernel source code of your device
+- The kernel source code of your device/os
 - A minimum of knowledge in kernel compilation
 - Patience
 
-The installation of the missing dependencies will be offered by ZenMaxBuilder, asking you first one by one, no packages are installed without your prior consent.
+The installation of the missing dependencies will be offered by ZenMaxBuilder, asking you first one by one (no packages are installed without your prior consent).
 
 You can also install them manually with your favorite package manager :
 
@@ -77,7 +77,7 @@ Start ZMB and follow instructions :
         -v, --version                   show toolchains versions
         -l, --list                      show list of your kernels
         -t, --tag          [v4.19]      show the latest Linux tag
-        -i, --info        [device]      android device specifications
+        -i, --info        [device]      mobile device specifications
         -m, --msg        [message]      send message on Telegram
         -f, --file          [file]      send file on Telegram
         -z, --zip          [image]      create nex kernel zip
@@ -131,7 +131,7 @@ ZMB uses prebuilts toolchains by default, in case you have already compiled or d
 <br>
 ## Warning
 
-ZMB is a tool to facilitate the compilation of an Android kernel, it does not modify the source, does not adds possible patchset and does not fixes specific drivers or compilation warnings.
+ZMB is a tool to facilitate the compilation of the Linux kernel, it does not modify the source, does not adds possible patchset and does not fixes specific drivers or compilation warnings.
 
 The only change made is the addition of the selected toolchain compiler in the main Makefile, all others options from ZMB settings will be passed directly to make as command-line arguments :
 
