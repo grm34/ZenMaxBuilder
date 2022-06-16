@@ -1710,6 +1710,7 @@ _print_devices() {
 }
 
 _deep_search() {
+  # Usage: _deep_search "key name" "parent" "key"
   echo "{$1: .data.specifications[] | " \
        "select(.title == \"$2\").specs[] | " \
        "select(.key == \"$3\").val[0]}"
