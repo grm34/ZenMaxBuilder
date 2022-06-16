@@ -147,12 +147,13 @@ _zenmaxbuilder() {
       "--tag")     set -- "$@" "-t" ;;
       "--patch")   set -- "$@" "-p" ;;
       "--revert")  set -- "$@" "-r" ;;
+      "--info")    set -- "$@" "-i" ;;
       "--debug")   set -- "$@" "-d" ;;
       *)           set -- "$@" "$option" ;;
     esac
   done
   [[ $# -eq 0 ]] && (_error "$MSG_ERR_EOPT"; _exit 1)
-  while getopts ':hsuvldprt:m:f:z:' zmb_option; do
+  while getopts ':hsuvldprt:m:i:f:z:' zmb_option; do
     case $zmb_option in
       h)  clear; _terminal_banner; _usage; _exit 0 ;;
       u)  _install_dep; _full_upgrade; _exit 0 ;;
@@ -164,6 +165,7 @@ _zenmaxbuilder() {
       t)  _install_dep; _get_latest_linux_tag; _exit 0 ;;
       p)  _install_dep; _patch patch; _exit 0 ;;
       r)  _install_dep; _patch revert; _exit 0 ;;
+      i)  _install_dep; _search_devices "$@"; _exit 0 ;;
       s)  _install_dep; _start; _exit 0 ;;
       d)  DEBUG="True"; _install_dep; _start; _exit 0 ;;
       :)  _error "$MSG_ERR_MARG ${red}-$OPTARG"; _exit 1 ;;
@@ -322,9 +324,9 @@ _exit() {
     done
   fi
   _get_build_logs
-  files=(bashvar buildervar linuxver wget-log \
-    "${AOSP_CLANG_DIR##*/}.tar.gz" "${LLVM_ARM_DIR##*/}.gz"
-    "${LLVM_ARM64_DIR##*/}.tar.gz")
+  files=(bashvar buildervar linuxver wget-log query.json
+    device.json "${AOSP_CLANG_DIR##*/}.tar.gz"
+    "${LLVM_ARM_DIR##*/}.gz" "${LLVM_ARM64_DIR##*/}.tar.gz")
   for file in "${files[@]}"; do
     [[ -f $file ]] && _check rm -f "${DIR}/$file"
   done
@@ -1672,6 +1674,103 @@ _full_upgrade() {
   done
 }
 
+###---------------------------------------------------------------###
+###         16. FINDER => displays device specifications          ###
+###---------------------------------------------------------------###
+
+_get_devices_specs() {
+  # Usage: _get_devices_specs "$@"
+  local key value
+  for key in "$@"; do
+    value="$(grep -o '"'"$key"'":"[^"]*' \
+      "query.json" | grep -o '[^"]*$')"
+    IFS=$'\n' read -d "" -ra "$key" <<< "$value"
+    unset IFS
+  done
+}
+
+_print_devices() {
+  # Usage: _print_devices "index" "name" "brand"
+  echo -e \
+    "${yellow}${1}${nc} => ${green}$2 ${nc}(${blue}${3}${nc})"
+}
+
+_deep_search() {
+  echo "{$1: .data.specifications[] | " \
+       "select(.title == \"$2\").specs[] | " \
+       "select(.key == \"$3\").val[0]}"
+}
+
+_return_device_specs() {
+  local device_specs key value order; echo
+  declare -A device_specs=(
+    [brand]="{brand: .data.brand}"
+    [name]="{name: .data.phone_name}"
+    [date]="{date: .data.release_date}"
+    [dimension]="{dimension: .data.dimension}"
+    [os]="{os: .data.os}"
+    [storage]="{storage: .data.storage}"
+    [screen]="$(_deep_search screen Body Build)"
+    [size]="$(_deep_search size Display Size)"
+    [resolution]="$(_deep_search resolution Display Resolution)"
+    [chipset]="$(_deep_search chipset Platform Chipset)"
+    [cpu]="$(_deep_search cpu Platform CPU)"
+    [gpu]="$(_deep_search gpu Platform GPU)"
+    [ram]="$(_deep_search ram Memory Internal)"
+    [network]="$(_deep_search network Network Technology)"
+    [speed]="$(_deep_search speed Network Speed)"
+    [wlan]="$(_deep_search wlan Comms WLAN)"
+    [bluetooth]="$(_deep_search bluetooth Comms Bluetooth)"
+    [gps]="$(_deep_search gps Comms GPS)"
+    [nfc]="$(_deep_search nfc Comms NFC)"
+    [radio]="$(_deep_search radio Comms Radio)"
+    [usb]="$(_deep_search usb Comms USB)"
+    [battery]="$(_deep_search battery Battery Type)"
+    [sensors]="$(_deep_search sensors Features Sensors)"
+    [models]="$(_deep_search models Misc Models)"
+    [price]="$(_deep_search price Misc Price)"
+    [sim]="$(_deep_search sim Body SIM)"
+  )
+  order=(brand name os chipset cpu gpu storage ram screen size \
+    resolution dimension usb network speed wlan bluetooth gps nfc \
+    radio sim battery sensors models date price)
+  for key in "${order[@]}"; do
+    value="${device_specs[$key]}"
+    value="$(jq -c "$value" device.json)"
+    if [[ -n $value ]]; then
+      IFS=":" read -r value value <<< "$value"; unset IFS
+      echo -e "${green}${key^}${nc}: ${value::-1}"
+    fi
+  done
+}
+
+_search_devices() {
+  # Usage: _search_devices "search"
+  local search; search="${*/$1}"
+  curl -s -L "${PHONE_API}${search// /%20}" -o query.json
+  if grep -sqm 1 "phone_name" query.json; then
+    local device index
+    _get_devices_specs "brand" "phone_name" "detail"
+    # shellcheck disable=SC2154
+    for device in "${!phone_name[@]}"; do
+      _print_devices "$(( device + 1 ))" \
+        "${phone_name[device]}" "${brand[device]}"
+    done
+    echo "Enter the phone number to check : "
+    read -r device_number
+    index="$(( device_number - 1 ))"
+    # shellcheck disable=SC2154
+    curl -s -L "${detail[index]}" -o device.json
+    if grep -sqm 1 phone_name device.json; then
+      _return_device_specs
+    else
+      echo "ERROR: nothing found about ${phone_name[index]}"
+    fi
+  else
+    echo "ERROR: device not found"
+    exit 1
+  fi
+}
 
 ###---------------------------------------------------------------###
 ###           16. HELPER => displays zmb help and usage           ###
