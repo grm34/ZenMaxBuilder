@@ -80,7 +80,7 @@ Start ZMB and follow instructions :
         -i, --info        [device]      android device specifications
         -m, --msg        [message]      send message on Telegram
         -f, --file          [file]      send file on Telegram
-        -z, --zip          [image]      create flashable zip
+        -z, --zip          [image]      create nex kernel zip
         -p, --patch                     apply a patch to a kernel
         -r, --revert                    revert a patch to a kernel
         -d, --debug                     start compilation in debug mode
