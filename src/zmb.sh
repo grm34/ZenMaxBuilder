@@ -143,7 +143,7 @@ _zenmaxbuilder() {
       "--version") set -- "$@" "-v"; break ;;
       "--msg")     set -- "$@" "-m" ;;
       "--file")    set -- "$@" "-f" ;;
-      "--zip")     set -- "$@" "-z";;
+      "--zip")     set -- "$@" "-z" ;;
       "--list")    set -- "$@" "-l"; break ;;
       "--tag")     set -- "$@" "-t" ;;
       "--patch")   set -- "$@" "-p"; break ;;
