@@ -1779,7 +1779,7 @@ _device_specs_option() {
     index="$(( device_index - 1 ))"
     # shellcheck disable=SC2154
     curl -s -L "${detail[index]}" -o device.json
-    if grep -sqm 1 phone_name device.json; then
+    if grep -sqm 1 "phone_name" device.json; then
       _find_device_specs
     else
       _error "$MSG_ERR_DEVICE_SPECS ${red}${phone_name[index]}$nc"
