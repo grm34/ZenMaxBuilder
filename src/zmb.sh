@@ -138,18 +138,18 @@ _zenmaxbuilder() {
     shift
     case $option in
       "--help")    set -- "$@" "-h"; break ;;
-      "--start")   set -- "$@" "-s" ;;
-      "--update")  set -- "$@" "-u" ;;
-      "--version") set -- "$@" "-v" ;;
+      "--start")   set -- "$@" "-s"; break ;;
+      "--update")  set -- "$@" "-u"; break ;;
+      "--version") set -- "$@" "-v"; break ;;
       "--msg")     set -- "$@" "-m" ;;
       "--file")    set -- "$@" "-f" ;;
-      "--zip")     set -- "$@" "-z" ;;
-      "--list")    set -- "$@" "-l" ;;
+      "--zip")     set -- "$@" "-z";;
+      "--list")    set -- "$@" "-l"; break ;;
       "--tag")     set -- "$@" "-t" ;;
-      "--patch")   set -- "$@" "-p" ;;
-      "--revert")  set -- "$@" "-r" ;;
+      "--patch")   set -- "$@" "-p"; break ;;
+      "--revert")  set -- "$@" "-r"; break ;;
       "--info")    set -- "$@" "-i" ;;
-      "--debug")   set -- "$@" "-d" ;;
+      "--debug")   set -- "$@" "-d"; break ;;
       *)           set -- "$@" "$option" ;;
     esac
   done
