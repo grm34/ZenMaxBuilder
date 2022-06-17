@@ -562,7 +562,7 @@ _check_makefile() {
   local cross cc r1 r2 check1 check2
   cross="${TC_OPTIONS[1]/CROSS_COMPILE=}"
   cc="${TC_OPTIONS[3]/CC=}"
-  r1=("^CROSS_COMPILE\s.*?=.*" "CROSS_COMPILE\ ?=\ ${cross}")
+  r1=("^CROSS_COMPILE\s.*=.*" "CROSS_COMPILE\ ?=\ ${cross}")
   r2=("^CC\s.*=.*" "CC\ =\ ${cc}\ -I${KERNEL_DIR}")
   check1="$(grep -m 1 "${r1[0]}" "${KERNEL_DIR}/Makefile")"
   check2="$(grep -m 1 "${r2[0]}" "${KERNEL_DIR}/Makefile")"
