@@ -464,9 +464,9 @@ _get_cross_compile() {
   # Usage: _get_cross_compile "1" (use arg to bypass note)
   ! [[ $1 ]] && _note "$MSG_NOTE_CC"
   local cross cc
-  cross="$(grep -sm 1 "^CROSS_COMPILE.*=" \
+  cross="$(grep -m 1 "^CROSS_COMPILE.*=" \
     "${KERNEL_DIR}/Makefile")"
-  cc="$(grep -sm 1 "^CC.*=" "${KERNEL_DIR}/Makefile")"
+  cc="$(grep -m 1 "^CC.*=" "${KERNEL_DIR}/Makefile")"
   if [[ -z $cross ]] || [[ -z $cc ]]; then
     _error "$MSG_ERR_CC"; _exit 1
   else
