@@ -360,11 +360,11 @@ _get_user_timezone() {
   # Linux: uses <timedatectl> | Termux: uses <getprop>
   # Returns: $TIMEZONE
   if which timedatectl &>/dev/null; then
-    TIMEZONE="$(timedatectl | grep -sm 1 'Time zone' \
+    TIMEZONE="$(timedatectl | grep -sm 1 "Time zone" \
       | awk -F" " '{print $3}')"
   elif which getprop &>/dev/null; then
     local tz
-    tz="$(getprop | grep -sm 1 timezone | awk -F": " '{print $2}')"
+    tz="$(getprop | grep -sm 1 "timezone" | awk -F": " '{print $2}')"
     tz=${tz/\[}; TIMEZONE=${tz/\]}
   fi
 }
@@ -451,8 +451,9 @@ _get_tc_version() {
 _get_android_platform_version() {
   # Grabs PLATFORM_VERSION from the kernel Makefile
   # Returns: $amv $ptv
-  amv="$(grep -m 1 ANDROID_MAJOR_VERSION= "${KERNEL_DIR}/Makefile")"
-  ptv="$(grep -m 1 PLATFORM_VERSION= "${KERNEL_DIR}/Makefile")"
+  amv="$(grep -m 1 "ANDROID_MAJOR_VERSION=" \
+    "${KERNEL_DIR}/Makefile")"
+  ptv="$(grep -m 1 "PLATFORM_VERSION=" "${KERNEL_DIR}/Makefile")"
   amv="${amv/ANDROID_MAJOR_VERSION=}"
   ptv="${ptv/PLATFORM_VERSION=}"
 }
