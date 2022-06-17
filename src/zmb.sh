@@ -1495,6 +1495,7 @@ _install_dep() {
   # > defines the install command of some package managers
   # > grabs the current linux package manager
   # > checks and installs the missing dependencies...
+  # Returns: $termux (only used to warn termux users)
   if [[ $AUTO_DEPENDENCIES == True ]]; then
     local pm_install_cmd pm_list manager pm dep
     declare -A pm_install_cmd=(
@@ -1566,8 +1567,6 @@ _install_aosp_tgz() {
   _check unbuffer tar -xvf "${1##*/}.tar.gz" -C "$1"
   [[ ! -f ${DIR}/toolchains/$2 ]] &&
     echo "$latest" > "${DIR}/toolchains/$2"
-  _check rm "${1##*/}.tar.gz"
-  [[ -f wget-log ]] && _check rm wget-log
 }
 
 _clone_toolchains() {
