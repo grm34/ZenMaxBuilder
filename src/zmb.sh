@@ -469,7 +469,11 @@ _get_cross_compile() {
     "${KERNEL_DIR}/Makefile")"
   cc="$(grep -m 1 -E "^CC(\s)?=" "${KERNEL_DIR}/Makefile")"
   if [[ -z $cross ]] || [[ -z $cc ]]; then
-    _error "$MSG_ERR_CC"; _exit 1
+    if [[ $MAKE_CMD_ARGS != True ]]; then
+      _error "$MSG_WARN_MAKEFILE $MSG_ERR_CMD_ARGS"; _exit 1
+    else
+      _warn "$MSG_WARN_MAKEFILE"
+    fi
   else
     echo "$cross"; echo "$cc"
   fi
