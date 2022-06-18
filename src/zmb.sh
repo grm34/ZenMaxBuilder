@@ -50,7 +50,7 @@
 # - Variable: uppercase only while needs to be exported or logged
 # - Function: always lowercase and starts with an underscore
 # - Condition: always use the power of the double brackets
-# - Command: prefer the use of _check() function to handle ERR
+# - Command: prefer the use of _command() function to handle ERR
 # - Exit: always use _exit() function to rm temp files and get logs
 # - Language: see Contributing Guidelines...
 # -------------------------------------------------------------------
@@ -271,9 +271,9 @@ _error() {
   echo -e "\n${red}$MSG_ERROR ${nc}${lyellow}${*}$nc" >&2
 }
 
-_check() {
+_command() {
   # Handles shell command
-  # Usage: _check "$@" (the command to run)
+  # Usage: _command "$@" (the command to run)
   # Debug: displays the command
   # > runs the command as child and waits
   # > notifies function and file on ERR
@@ -329,13 +329,13 @@ _exit() {
     device.json "${AOSP_CLANG_DIR##*/}.tar.gz"
     "${LLVM_ARM_DIR##*/}.gz" "${LLVM_ARM64_DIR##*/}.tar.gz")
   for file in "${files[@]}"; do
-    [[ -f $file ]] && _check rm -f "${DIR}/$file"
+    [[ -f $file ]] && _command rm -f "${DIR}/$file"
   done
   folders=(out builds logs)
   for folder in "${folders[@]}"; do
     [[ -z $(find "${DIR}/${folder}/$CODENAME" \
         -mindepth 1 -maxdepth 1 2>/dev/null) ]] &&
-      _check rm -rf "${DIR}/${folder}/$CODENAME"
+      _command rm -rf "${DIR}/${folder}/$CODENAME"
   done
   case $zmb_option in
     s|u|p|r|d)
@@ -576,8 +576,8 @@ _check_makefile() {
     _warn "$MSG_WARN_CC"
     _ask_for_edit_cross_compile
     if [[ $EDIT_CC != False ]]; then
-      _check sed -ri "s|${r1[0]}|${r1[1]}|g" "${KERNEL_DIR}/Makefile"
-      _check sed -ri "s|${r2[0]}|${r2[1]}|g" "${KERNEL_DIR}/Makefile"
+      _command sed -ri "s|${r1[0]}|${r1[1]}|g" "${KERNEL_DIR}/Makefile"
+      _command sed -ri "s|${r2[0]}|${r2[1]}|g" "${KERNEL_DIR}/Makefile"
       if [[ $DEBUG == True ]]; then
         echo -e "\n${blue}${MSG_DEBUG_CC}$nc" >&2
         _get_cross_compile 1
@@ -606,9 +606,9 @@ _start() {
   for folder in "${folders[@]}"; do
     if ! [[ -d ${DIR}/${folder}/$CODENAME ]] \
         && [[ $folder != toolchains ]]; then
-      _check mkdir -p "${DIR}/${folder}/$CODENAME"
+      _command mkdir -p "${DIR}/${folder}/$CODENAME"
     elif ! [[ -d ${DIR}/$folder ]]; then
-      _check mkdir "${DIR}/$folder"
+      _command mkdir "${DIR}/$folder"
     fi
   done
   _get_realpath_working_folders
@@ -865,17 +865,17 @@ _export_path_and_options() {
 
 _make_clean() {
   _note "$MSG_NOTE_MAKE_CLEAN [${LINUX_VERSION}]..."
-  _check unbuffer make -C "$KERNEL_DIR" clean 2>&1
+  _command unbuffer make -C "$KERNEL_DIR" clean 2>&1
 }
 
 _make_mrproper() {
   _note "$MSG_NOTE_MRPROPER [${LINUX_VERSION}]..."
-  _check unbuffer make -C "$KERNEL_DIR" mrproper 2>&1
+  _command unbuffer make -C "$KERNEL_DIR" mrproper 2>&1
 }
 
 _make_defconfig() {
   _note "$MSG_NOTE_DEFCONFIG $DEFCONFIG [${LINUX_VERSION}]..."
-  _check unbuffer make -C "$KERNEL_DIR" \
+  _command unbuffer make -C "$KERNEL_DIR" \
     O="$OUT_DIR" ARCH="$ARCH" "$DEFCONFIG" 2>&1
 }
 
@@ -890,9 +890,9 @@ _save_defconfig() {
   # the original will be saved as <*_defconfig_bak>
   _note "$MSG_NOTE_SAVE $DEFCONFIG (arch/${ARCH}/configs)..."
   [[ -f "${CONF_DIR}/$DEFCONFIG" ]] &&
-    _check cp "${CONF_DIR}/$DEFCONFIG" \
+    _command cp "${CONF_DIR}/$DEFCONFIG" \
               "${CONF_DIR}/${DEFCONFIG}_bak"
-  _check cp "${OUT_DIR}/.config" "${CONF_DIR}/$DEFCONFIG"
+  _command cp "${OUT_DIR}/.config" "${CONF_DIR}/$DEFCONFIG"
 }
 
 _make_build() {
@@ -901,7 +901,7 @@ _make_build() {
   _note "$MSG_NOTE_MAKE ${KERNEL_NAME}..."
   _set_html_status_msg
   _send_start_build_status
-  _check unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
+  _command unbuffer make -C "$KERNEL_DIR" -j"$CORES" \
     O="$OUT_DIR" ARCH="$ARCH" "${TC_OPTIONS[*]}" 2>&1
 }
 
@@ -922,15 +922,15 @@ _zip() {
   [[ $start_time ]] && _clean_anykernel
   _note "$MSG_NOTE_ZIP ${1}.zip..."
   _send_zip_creation_status
-  _check cp "$2" "$ANYKERNEL_DIR"
+  _command cp "$2" "$ANYKERNEL_DIR"
   [[ $AK3_BANNER == True ]] &&
-    _check cp "${DIR}/$AK3_BANNER_FILE" "${ANYKERNEL_DIR}/banner"
+    _command cp "${DIR}/$AK3_BANNER_FILE" "${ANYKERNEL_DIR}/banner"
   _cd "$ANYKERNEL_DIR" "$MSG_ERR_DIR ${red}${ANYKERNEL_DIR}"
   [[ $start_time ]] && _set_ak3_conf
-  _check unbuffer zip -r9 "${1}.zip" \
+  _command unbuffer zip -r9 "${1}.zip" \
     ./* -x .git README.md ./*placeholder 2>&1
-  [[ ! -d $3 ]] && _check mkdir "$3"
-  _check mv "${1}.zip" "$3"
+  [[ ! -d $3 ]] && _command mkdir "$3"
+  _command mv "${1}.zip" "$3"
   _cd "$DIR" "$MSG_ERR_DIR ${red}$DIR"
   _clean_anykernel
 }
@@ -943,15 +943,15 @@ _set_ak3_conf() {
   for file in "${INCLUDED[@]}"; do
     if [[ -f ${BOOT_DIR}/$file ]]; then
       if [[ ${file##*/} == *erofs.dtb ]]; then
-        _check mkdir erofs; inc_dir="erofs/"
+        _command mkdir erofs; inc_dir="erofs/"
       elif [[ ${file##*/} != *Image* ]] \
           && [[ ${file##*/} != *erofs.dtb ]] \
           && [[ ${file##*/} == *.dtb ]]; then
-        _check mkdir dtb; inc_dir="dtb/";
+        _command mkdir dtb; inc_dir="dtb/";
       else
         inc_dir=""
       fi
-      _check cp -af "${BOOT_DIR}/$file" "${inc_dir}${file##*/}"
+      _command cp -af "${BOOT_DIR}/$file" "${inc_dir}${file##*/}"
     fi
   done
   strings=(
@@ -964,7 +964,7 @@ _set_ak3_conf() {
     "s/build.date=.*/build.date=${DATE}/g"
     "s/device.name1=.*/device.name1=${CODENAME}/g")
   for string in "${strings[@]}"; do
-    _check sed -i "$string" anykernel.sh
+    _command sed -i "$string" anykernel.sh
   done
 }
 
@@ -974,12 +974,12 @@ _clean_anykernel() {
   local file
   for file in "${INCLUDED[@]}"; do
     [[ -f ${ANYKERNEL_DIR}/$file ]] &&
-      _check rm -rf "${ANYKERNEL_DIR}/${file}"
+      _command rm -rf "${ANYKERNEL_DIR}/${file}"
   done
   for file in "${ANYKERNEL_DIR}"/*; do
     case $file in
       *.zip*|*Image*|*erofs*|*dtb*|*spectrum.rc*)
-        _check rm -rf "${file}" ;;
+        _command rm -rf "${file}" ;;
     esac
   done
 }
@@ -991,7 +991,7 @@ _sign_zip() {
   if which java &>/dev/null; then
     _note "$MSG_NOTE_SIGN"
     _send_zip_signing_status
-    _check unbuffer java -jar "${DIR}/bin/zipsigner-3.0-dexed.jar" \
+    _command unbuffer java -jar "${DIR}/bin/zipsigner-3.0-dexed.jar" \
       "${1}.zip" "${1}-signed.zip" 2>&1
   else
     _warn "$MSG_WARN_JAVA"
@@ -1557,7 +1557,7 @@ _clone_tc() {
           _install_aosp_tgz "$3" "$1"
           ;;
         *)
-          _check unbuffer git clone --depth=1 -b "$1" "$2" "$3"
+          _command unbuffer git clone --depth=1 -b "$1" "$2" "$3"
           ;;
       esac
     fi
@@ -1566,10 +1566,10 @@ _clone_tc() {
 
 _install_aosp_tgz() {
   # Usage: _install_aosp_tgz "dir" "version"
-  _check mkdir "$1"
-  _check unbuffer wget -O "${1##*/}.tar.gz" "$tgz"
+  _command mkdir "$1"
+  _command unbuffer wget -O "${1##*/}.tar.gz" "$tgz"
   _note "$MSG_NOTE_TAR_AOSP ${1##*/}.tar.gz > toolchains/${1##*/}"
-  _check unbuffer tar -xvf "${1##*/}.tar.gz" -C "$1"
+  _command unbuffer tar -xvf "${1##*/}.tar.gz" -C "$1"
   [[ ! -f ${DIR}/toolchains/$2 ]] &&
     echo "$latest" > "${DIR}/toolchains/$2"
 }
@@ -1615,7 +1615,7 @@ _clone_anykernel() {
   if ! [[ -d $ANYKERNEL_DIR ]]; then
     _ask_for_clone_anykernel
     [[ $clone_ak == True ]] &&
-      _check unbuffer git clone -b "$ANYKERNEL_BRANCH" \
+      _command unbuffer git clone -b "$ANYKERNEL_BRANCH" \
         "$ANYKERNEL_URL" "$ANYKERNEL_DIR"
   fi
 }
@@ -1639,10 +1639,10 @@ _update_git() {
     mod="$(git diff origin/"$ZMB_BRANCH" "${DIR}/etc/settings.cfg")"
     if [[ -n $mod ]]; then
       _warn "$MSG_WARN_UP_CONF"; echo
-      _check mv "${DIR}/etc/user.cfg" "${DIR}/etc/user.cfg_bak"
+      _command mv "${DIR}/etc/user.cfg" "${DIR}/etc/user.cfg_bak"
     fi
   fi
-  _check unbuffer git pull
+  _command unbuffer git pull
 }
 
 _full_upgrade() {
@@ -1677,7 +1677,7 @@ _full_upgrade() {
           if [[ $tag != "${latest/clang-}" ]]; then
             _ask_for_update_aosp "${repo[0]##*/}"
             if [[ $update_aosp == True ]]; then
-              _check mv "${repo[0]}" "${repo[0]}-${tag/llvm-}"
+              _command mv "${repo[0]}" "${repo[0]}-${tag/llvm-}"
               _install_aosp_tgz "${repo[0]}" "${repo[2]}"
             fi
           else
