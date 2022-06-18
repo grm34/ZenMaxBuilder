@@ -451,9 +451,9 @@ _get_tc_version() {
 _get_android_platform_version() {
   # Grabs PLATFORM_VERSION from the kernel Makefile
   # Returns: $amv $ptv
-  amv="$(grep -m 1 -E "ANDROID_MAJOR_VERSION(\s)?=" \
+  amv="$(grep -m 1 -E "ANDROID_MAJOR_VERSION(\s*)?(\t*)?=" \
     "${KERNEL_DIR}/Makefile")"
-  ptv="$(grep -m 1 -E "PLATFORM_VERSION(\s)?=" \
+  ptv="$(grep -m 1 -E "PLATFORM_VERSION(\s*)?(\t*)?=" \
     "${KERNEL_DIR}/Makefile")"
   amv="${amv/ANDROID_MAJOR_VERSION=}"
   ptv="${ptv/PLATFORM_VERSION=}"
@@ -465,9 +465,9 @@ _get_cross_compile() {
   # Usage: _get_cross_compile "1" (use arg to bypass note)
   ! [[ $1 ]] && _note "$MSG_NOTE_CC"
   local cross cc
-  cross="$(grep -m 1 -E "^CROSS_COMPILE(\s)?(\?)?=" \
+  cross="$(grep -m 1 -E "^CROSS_COMPILE(\s*)?(\t*)?(\?)?=" \
     "${KERNEL_DIR}/Makefile")"
-  cc="$(grep -m 1 -E "^CC(\s)?=" "${KERNEL_DIR}/Makefile")"
+  cc="$(grep -m 1 -E "^CC(\s*)?(\t*)?=" "${KERNEL_DIR}/Makefile")"
   if [[ -z $cross ]] || [[ -z $cc ]]; then
     if [[ $MAKE_CMD_ARGS != True ]]; then
       _error "$MSG_WARN_MAKEFILE $MSG_ERR_CMD_ARGS"; _exit 1
@@ -567,8 +567,8 @@ _check_makefile() {
   local cross cc r1 r2 check1 check2
   cross="${TC_OPTIONS[1]/CROSS_COMPILE=}"
   cc="${TC_OPTIONS[3]/CC=}"
-  r1=("^CROSS_COMPILE(\s)?(\?)?=.*" "CROSS_COMPILE\ ?=\ ${cross}")
-  r2=("^CC(\s)?=.*" "CC\ =\ ${cc}\ -I${KERNEL_DIR}")
+  r1=("^CROSS_COMPILE(\s*)?(\t*)?(\?)?=.*" "CROSS_COMPILE\ ?=\ ${cross}")
+  r2=("^CC(\s*)?(\t*)?=.*" "CC\ =\ ${cc}\ -I${KERNEL_DIR}")
   check1="$(grep -m 1 -E "${r1[0]}" "${KERNEL_DIR}/Makefile")"
   check2="$(grep -m 1 -E "${r2[0]}" "${KERNEL_DIR}/Makefile")"
   if [[ -n ${check1##*"${cross}"*} ]] \
