@@ -1686,7 +1686,7 @@ _full_upgrade() {
           ;;
         *)
           _cd "${repo[0]}" "$MSG_ERR_DIR ${red}${repo[0]}"
-          _update_git "${repo[1]}"
+          [[ -d .git ]] && _update_git "${repo[1]}"
           _cd "$DIR" "$MSG_ERR_DIR ${red}$DIR"
           ;;
       esac

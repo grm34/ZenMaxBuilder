@@ -111,7 +111,7 @@ Start ZMB and follow instructions :
 <br>
 ## Toolchains
 
-ZMB uses prebuilts toolchains by default and compiled for x86-64 (`interpreter: lib64/ld-linux-x86-64.so.2`).
+ZMB uses prebuilts toolchains by default (built on x86-64 `interpreter: lib64/ld-linux-x86-64.so.2`).
 
 In case you need others or have already compiled/downloaded some, just move them to the `toolchains` folder and name them `aosp-clang` for example (see [settings.cfg](https://github.com/grm34/ZenMaxBuilder/blob/zmb/etc/settings.cfg)).
 
