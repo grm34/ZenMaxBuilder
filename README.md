@@ -38,58 +38,66 @@
 </a>
 <br><br>
 
-<a href="https://mit-license.org/">
+<a href="https://github.com/grm34/ZenMaxBuilder">
   <img src="https://img.shields.io/badge/Ubuntu-✅-blue.svg?logo=ubuntu" alt="distro">
 </a>
 
-<a href="https://mit-license.org/">
+<a href="https://github.com/grm34/ZenMaxBuilder">
   <img src="https://img.shields.io/badge/ArchLinux-✅-blue.svg?logo=archlinux" alt="distro">
 </a>
 
-<a href="https://mit-license.org/">
+<a href="https://github.com/grm34/ZenMaxBuilder">
   <img src="https://img.shields.io/badge/Debian-✅-blue.svg?logo=debian" alt="distro">
 </a>
 
-<a href="https://mit-license.org/">
+<a href="https://github.com/grm34/ZenMaxBuilder">
   <img src="https://img.shields.io/badge/Fedora-✅-blue.svg?logo=fedora" alt="distro">
 </a>
 
-<a href="https://mit-license.org/">
+<a href="https://github.com/grm34/ZenMaxBuilder">
   <img src="https://img.shields.io/badge/Manjaro-✅-blue.svg?logo=manjaro" alt="distro">
 </a>
 <br>
 
-<a href="https://mit-license.org/">
+<a href="https://github.com/grm34/ZenMaxBuilder">
   <img src="https://img.shields.io/badge/Linux Mint-✅-blue.svg?logo=linuxmint" alt="distro">
 </a>
 
-<a href="https://mit-license.org/">
+<a href="https://github.com/grm34/ZenMaxBuilder">
   <img src="https://img.shields.io/badge/RedHat-❔-blue.svg?logo=redhat" alt="distro">
 </a>
 
-<a href="https://mit-license.org/">
+<a href="https://github.com/grm34/ZenMaxBuilder">
   <img src="https://img.shields.io/badge/Gentoo-❔-blue.svg?logo=gentoo" alt="distro">
 </a>
 
-<a href="https://mit-license.org/">
+<a href="https://github.com/grm34/ZenMaxBuilder">
   <img src="https://img.shields.io/badge/CentOS-❔-blue.svg?logo=centos" alt="distro">
 </a>
 
-<a href="https://mit-license.org/">
+<a href="https://github.com/grm34/ZenMaxBuilder">
   <img src="https://img.shields.io/badge/OpenSuse-❔-blue.svg?logo=opensuse" alt="distro">
 </a>
 <br>
 
-<a href="https://mit-license.org/">
+<a href="https://github.com/grm34/ZenMaxBuilder">
   <img src="https://img.shields.io/badge/Kali Linux-✅-blue.svg?logo=kalilinux" alt="distro">
 </a>
 
-<a href="https://mit-license.org/">
+<a href="https://github.com/grm34/ZenMaxBuilder">
   <img src="https://img.shields.io/badge/BlackArch-✅-blue.svg?logo=archlinux" alt="distro">
 </a>
 
-<a href="https://mit-license.org/">
+<a href="https://github.com/grm34/ZenMaxBuilder">
   <img src="https://img.shields.io/badge/Termux-✅-blue.svg?logo=android" alt="distro">
+</a>
+
+<a href="https://github.com/grm34/ZenMaxBuilder">
+  <img src="https://img.shields.io/badge/Windows-❌-blue.svg?logo=windows" alt="distro">
+</a>
+
+<a href="https://github.com/grm34/ZenMaxBuilder">
+  <img src="https://img.shields.io/badge/MacOS-❌-blue.svg?logo=macos" alt="distro">
 </a>
 
 ## Table of Contents

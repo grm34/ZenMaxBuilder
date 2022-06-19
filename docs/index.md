@@ -12,7 +12,7 @@
 <br>
 <img src="https://img.shields.io/badge/Linux Mint-✅-blue.svg?logo=linuxmint" alt="distro"><img src="https://img.shields.io/badge/RedHat-❔-blue.svg?logo=redhat" alt="distro"><img src="https://img.shields.io/badge/Gentoo-❔-blue.svg?logo=gentoo" alt="distro"><img src="https://img.shields.io/badge/CentOS-❔-blue.svg?logo=centos" alt="distro"><img src="https://img.shields.io/badge/OpenSuse-❔-blue.svg?logo=opensuse" alt="distro">
 <br>
-<img src="https://img.shields.io/badge/Kali Linux-✅-blue.svg?logo=kalilinux" alt="distro"><img src="https://img.shields.io/badge/BlackArch-✅-blue.svg?logo=archlinux" alt="distro"><img src="https://img.shields.io/badge/Termux-✅-blue.svg?logo=android" alt="distro">
+<img src="https://img.shields.io/badge/Kali Linux-✅-blue.svg?logo=kalilinux" alt="distro"><img src="https://img.shields.io/badge/BlackArch-✅-blue.svg?logo=archlinux" alt="distro"><img src="https://img.shields.io/badge/Termux-✅-blue.svg?logo=android" alt="distro"><img src="https://img.shields.io/badge/Windows-❌-blue.svg?logo=windows" alt="distro"><img src="https://img.shields.io/badge/MacOS-❌-blue.svg?logo=macos" alt="distro">
 
 <br>
 ## Table of Contents
