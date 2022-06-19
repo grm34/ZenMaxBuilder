@@ -363,11 +363,12 @@ _get_user_timezone() {
   # Linux: uses <timedatectl> | Termux: uses <getprop>
   # Returns: $TIMEZONE
   if which timedatectl &>/dev/null; then
-    TIMEZONE="$(timedatectl | grep -sm 1 "Time zone" \
+    TIMEZONE="$(timedatectl 2>/dev/null | grep -sm 1 "Time zone" \
       | awk -F" " '{print $3}')"
   elif which getprop &>/dev/null; then
     local tz
-    tz="$(getprop | grep -sm 1 "timezone" | awk -F": " '{print $2}')"
+    tz="$(getprop 2>/dev/null | grep -sm 1 "timezone" \
+      | awk -F": " '{print $2}')"
     tz=${tz/\[}; TIMEZONE=${tz/\]}
   fi
 }
