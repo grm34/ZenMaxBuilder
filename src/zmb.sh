@@ -54,6 +54,7 @@
 # - Exit: always use _exit() function to rm temp files and get logs
 # - Language: see Contributing Guidelines...
 # -------------------------------------------------------------------
+echo "-> zmb is starting..." >&2
 
 # Ensures proper use
 if ! [[ $(uname -s) =~ ^(Linux|GNU*)$ ]]; then
@@ -153,7 +154,9 @@ _zenmaxbuilder() {
       *)           set -- "$@" "$option" ;;
     esac
   done
-  [[ $# -eq 0 ]] && (_error "$MSG_ERR_EOPT"; _exit 1)
+  if [[ $# -eq 0 ]] || [[ $* == "--" ]]; then
+    _error "$MSG_ERR_EOPT"; _exit 1
+  fi
   while getopts ':hsuvldprt:m:i:f:z:' zmb_option; do
     case $zmb_option in
       h)  clear; _terminal_banner; _usage; _exit 0 ;;
