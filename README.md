@@ -182,7 +182,9 @@ Start ZMB and follow instructions :
 
 ## Toolchains
 
-ZMB uses prebuilts toolchains by default and compiled for x86-64 (`interpreter: lib64/ld-linux-x86-64.so.2`). In case you need others or have already compiled/downloaded some, just move them to the `toolchains` folder and name them `aosp-clang` for example (see [settings.cfg](https://github.com/grm34/ZenMaxBuilder/blob/zmb/etc/settings.cfg)).
+ZMB uses prebuilts toolchains by default and compiled for x86-64 (`interpreter: lib64/ld-linux-x86-64.so.2`).
+
+In case you need others or have already compiled/downloaded some, just move them to the `toolchains` folder and name them `aosp-clang` for example (see [settings.cfg](https://github.com/grm34/ZenMaxBuilder/blob/zmb/etc/settings.cfg)).
 
 - [AOSP-Clang](https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/) `Android Clang/LLVM Prebuilts by Google`
 - [Binutils](https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/) `Android GCC/LLVM Prebuilts by Google`
