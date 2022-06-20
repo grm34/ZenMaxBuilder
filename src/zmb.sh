@@ -184,25 +184,6 @@ _zenmaxbuilder() {
 ###        02. MANAGER => global management of the script         ###
 ###---------------------------------------------------------------###
 
-_terminal_banner() {
-  local g b; g="$green"; b="$blue"
-  echo -e "
- ${g}M'''''''''M${b}                   ${g}M''''''''''''M${b}
- ${g}Mmmmmm   .M${b}                   ${g}M  mm.  mm.  M${b}
- ${g}MMMMP  .MMM${b} .d8888b. 88d888b. ${g}M  MMM  MMM  M${b}"\
-   ".d8888b. dP.  .dP
- ${g}MMP  .MMMMM${b} 88ooood8 88'  '88 ${g}M  MMM  MMM  M${b}"\
-   "88'  '88  '8bd8'
- ${g}M' .MMMMMMM${b} 88.  ... 88    88 ${g}M  MMM  MMM  M${b}"\
-   "88.  .88  .d88b.
- ${g}M         M${b} '88888P' dP    dP ${g}M  MMM  MMM  M${b}"\
-   "'88888P8 dP'  'dP
- ${g}MMMMMMMMMMM                   MMMMMMMMMMMMMM${nc}
-
-ZenMaxBuilder (ZMB) Kernel Builder by @darkmaster Neternels Team
-----------------------------------------------------------------"
-}
-
 _terminal_colors() {
   # Uses colors only while they are terminal supported
   # Returns: some colorized variables
@@ -1810,6 +1791,25 @@ _device_specs_option() {
 ###---------------------------------------------------------------###
 ###           17. HELPER => displays zmb help and usage           ###
 ###---------------------------------------------------------------###
+
+_terminal_banner() {
+  local g b; g="$green"; b="$blue"
+  echo -e "
+ ${g}M'''''''''M${b}                   ${g}M''''''''''''M${b}
+ ${g}Mmmmmm   .M${b}                   ${g}M  mm.  mm.  M${b}
+ ${g}MMMMP  .MMM${b} .d8888b. 88d888b. ${g}M  MMM  MMM  M${b}"\
+   ".d8888b. dP.  .dP
+ ${g}MMP  .MMMMM${b} 88ooood8 88'  '88 ${g}M  MMM  MMM  M${b}"\
+   "88'  '88  '8bd8'
+ ${g}M' .MMMMMMM${b} 88.  ... 88    88 ${g}M  MMM  MMM  M${b}"\
+   "88.  .88  .d88b.
+ ${g}M         M${b} '88888P' dP    dP ${g}M  MMM  MMM  M${b}"\
+   "'88888P8 dP'  'dP
+ ${g}MMMMMMMMMMM                   MMMMMMMMMMMMMM${nc}
+
+ZenMaxBuilder (ZMB) Kernel Builder by @darkmaster Neternels Team
+----------------------------------------------------------------"
+}
 
 _usage() {
   echo -e "
