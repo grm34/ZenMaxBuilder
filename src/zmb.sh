@@ -350,7 +350,7 @@ _exit() {
 
 _get_user_timezone() {
   # Linux: uses <timedatectl> | Termux: uses <getprop>
-  # Returns: $TIMEZONE
+  # Returns: $TIMEZONE $termux
   if which timedatectl &>/dev/null; then
     TIMEZONE="$(timedatectl 2>/dev/null | grep -sm 1 "Time zone" \
       | awk -F" " '{print $3}')"
