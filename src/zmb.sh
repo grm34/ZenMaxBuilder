@@ -355,7 +355,7 @@ _get_user_timezone() {
     TIMEZONE="$(timedatectl 2>/dev/null | grep -sm 1 "Time zone" \
       | awk -F" " '{print $3}')"
   elif which getprop &>/dev/null; then
-    local tz
+    local tz; termux=1
     tz="$(getprop 2>/dev/null | grep -sm 1 "timezone" \
       | awk -F": " '{print $2}')"
     tz=${tz/\[}; TIMEZONE=${tz/\]}
@@ -1493,7 +1493,6 @@ _install_dep() {
   # > defines the install command of some package managers
   # > grabs the current linux package manager
   # > checks and installs the missing dependencies...
-  # Returns: $termux (only used to warn termux users)
   if [[ $AUTO_DEPENDENCIES == True ]]; then
     local pm_install_cmd pm_list manager pm dep
     declare -A pm_install_cmd=(
@@ -1513,10 +1512,9 @@ _install_dep() {
         unset IFS; break
       fi
     done
-    [[ ${pm[0]} == _ ]] && termux=1
     if [[ ${pm[3]} ]]; then
       for dep in "${DEPENDENCIES[@]}"; do
-        if [[ ${pm[0]} == _ ]] && [[ $dep == gcc ]]; then
+        if [[ $termux ]] && [[ $dep == gcc ]]; then
           continue
         else
           [[ $dep == llvm ]] && dep="llvm-ar"
