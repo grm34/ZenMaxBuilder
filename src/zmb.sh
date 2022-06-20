@@ -48,7 +48,7 @@
 # -------------------------------------------------------------------
 # - Line length: max 78
 # - Variable: uppercase only while needs to be exported or logged
-# - Function: always lowercase and starts with an underscore
+# - Function: without function keyword and starts with an underscore
 # - Condition: always use the power of the double brackets
 # - Command: prefer the use of _command() function to handle ERR
 # - Exit: always use _exit() function to rm temp files and get logs
