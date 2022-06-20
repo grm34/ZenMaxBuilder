@@ -36,7 +36,10 @@
 <a href="https://github.com/grm34/ZenMaxBuilder/commits">
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/grm34/ZenMaxBuilder?&logo=Github">
 </a>
-<br><br>
+<br>
+
+<details>
+  <summary>Some tested distros</summary>
 
 <a href="https://ubuntu.com">
   <img src="https://img.shields.io/badge/Ubuntu-✅-blue.svg?logo=ubuntu" alt="distro">
@@ -104,6 +107,7 @@
 <a href="https://www.apple.com/macos">
   <img src="https://img.shields.io/badge/MacOS-❌-blue.svg?logo=macos" alt="distro">
 </a>
+</details>
 
 ## Table of Contents
 
