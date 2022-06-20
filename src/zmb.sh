@@ -110,8 +110,9 @@ if [[ -f "${DIR}/lang/${LANGUAGE}.cfg" ]]; then
 elif [[ -f "${DIR}/lang/${LANG:0:2}.cfg" ]]; then
   source "${DIR}/lang/${LANG:0:2}.cfg"
 else
-  source "${DIR}/lang/en.cfg" 2>/dev/null \
-    || echo "ERROR: language not found" >&2; exit 2
+  if ! source "${DIR}/lang/en.cfg" 2>/dev/null; then
+    echo "ERROR: language not found" >&2; exit 2
+  fi
 fi
 
 
@@ -186,13 +187,22 @@ _zenmaxbuilder() {
 ###---------------------------------------------------------------###
 
 _terminal_banner() {
-  echo -e "$bold
-   ┌──────────────────────────────────────────────┐
-   │  ╔═╗┌─┐┌┐┌  ╔╦╗┌─┐─┐ ┬  ╔╗ ┬ ┬┬┬  ┌┬┐┌─┐┬─┐  │
-   │  ╔═╝├┤ │││  ║║║├─┤┌┴┬┘  ╠╩╗│ │││   ││├┤ ├┬┘  │
-   │  ╚═╝└─┘┘└┘  ╩ ╩┴ ┴┴ └─  ╚═╝└─┘┴┴─┘─┴┘└─┘┴└─  │
-   │ Android Kernel Builder ∆∆ ZMB Neternels Team │
-   └──────────────────────────────────────────────┘"
+  local g b; g="$green"; b="$blue"
+  echo -e "
+ ${g}M'''''''''M${b}                   ${g}M''''''''''''M${b}
+ ${g}Mmmmmm   .M${b}                   ${g}M  mm.  mm.  M${b}
+ ${g}MMMMP  .MMM${b} .d8888b. 88d888b. ${g}M  MMM  MMM  M${b}"\
+   ".d8888b. dP.  .dP
+ ${g}MMP  .MMMMM${b} 88ooood8 88'  '88 ${g}M  MMM  MMM  M${b}"\
+   "88'  '88  '8bd8'
+ ${g}M' .MMMMMMM${b} 88.  ... 88    88 ${g}M  MMM  MMM  M${b}"\
+   "88.  .88  .d88b.
+ ${g}M         M${b} '88888P' dP    dP ${g}M  MMM  MMM  M${b}"\
+   "'88888P8 dP'  'dP
+ ${g}MMMMMMMMMMM                   MMMMMMMMMMMMMM${nc}
+
+ZenMaxBuilder (ZMB) Kernel Builder by @darkmaster Neternels Team
+----------------------------------------------------------------"
 }
 
 _terminal_colors() {
