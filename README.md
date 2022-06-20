@@ -261,7 +261,7 @@ The only change made is the addition of the selected toolchain compiler in the m
 
 - `failed to add toolchain bin to the PATH` : occurs if the `PATH` is not correctly set, please open an issue.
 
-- An error occurs when getting the kernel version : your source is not configured for the selected compiler. Change compiler or edit your `Makefile` accordingly.
+- An error occurs when getting the kernel version : in most cases your source is not configured for the selected compiler. Change compiler or edit your `Makefile` accordingly.
 
 - `kernel version not found` : same as above or issue with your source.
 
