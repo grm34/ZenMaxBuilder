@@ -261,7 +261,7 @@ _underline_prompt() {
   if [[ $(tput cols) -gt $length ]]; then
     local char; echo -ne "${yellow}\n==> "
     for (( char=1; char<=length; char++ )); do
-      echo -ne "─"
+      echo -ne "-"
     done
   fi
 }
