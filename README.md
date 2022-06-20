@@ -249,9 +249,9 @@ The only change made is the addition of the selected toolchain compiler in the m
 
 ## Common warnings and errors
 
-- An error occurs when installing dependencies : disable `AUTO_DEPENDENCIES` in `user.cfg` and install them manually.
+- An error occurs when installing a dependency : disable `AUTO_DEPENDENCIES` in `user.cfg` and install them manually.
 
-- `OS not found, some dependencies may be required` : occurs when your package manager cannot be found, you have to intall dependencies manually (an issue is welcome to add support).
+- `OS not found, some dependencies may be required` : occurs when your package manager cannot be found, you have to intall the dependencies manually (an issue is welcome to add support).
 
 - `your system does not support this prebuilt of` : occurs if the included prebuilt toolchains are not compatible with your system, you can disable linker checking in `user.cfg` but the build will fail in most cases. System compatible toolchains are required or you can try host compiler option.
 
@@ -259,11 +259,11 @@ The only change made is the addition of the selected toolchain compiler in the m
 
 - `CROSS_COMPILE may not be set correctly in Makefile` : occurs if another compiler is defined in `Makefile`. You can ignore this warning and answer yes when zmb asking you to set it up for you.
 
-- `failed to add toolchain bin to the PATH` : occurs if the PATH is not correctly set, please open an issue.
+- `failed to add toolchain bin to the PATH` : occurs if the `PATH` is not correctly set, please open an issue.
 
 - An error occurs when getting the kernel version : your source is not configured for the selected compiler. Change compiler or edit your `Makefile` accordingly.
 
-- `kernel version not found` : same as above.
+- `kernel version not found` : same as above or issue with your source.
 
 ## Reporting Issues
 
