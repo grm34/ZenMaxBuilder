@@ -38,65 +38,70 @@
 </a>
 <br><br>
 
-<a href="https://github.com/grm34/ZenMaxBuilder">
+<a href="https://ubuntu.com">
   <img src="https://img.shields.io/badge/Ubuntu-✅-blue.svg?logo=ubuntu" alt="distro">
 </a>
 
-<a href="https://github.com/grm34/ZenMaxBuilder">
+<a href="https://archlinux.org">
   <img src="https://img.shields.io/badge/ArchLinux-✅-blue.svg?logo=archlinux" alt="distro">
 </a>
 
-<a href="https://github.com/grm34/ZenMaxBuilder">
+<a href="https://www.debian.org">
   <img src="https://img.shields.io/badge/Debian-✅-blue.svg?logo=debian" alt="distro">
 </a>
 
-<a href="https://github.com/grm34/ZenMaxBuilder">
+<a href="https://getfedora.org">
   <img src="https://img.shields.io/badge/Fedora-✅-blue.svg?logo=fedora" alt="distro">
 </a>
 
-<a href="https://github.com/grm34/ZenMaxBuilder">
+<a href="https://manjaro.org">
   <img src="https://img.shields.io/badge/Manjaro-✅-blue.svg?logo=manjaro" alt="distro">
 </a>
 <br>
 
-<a href="https://github.com/grm34/ZenMaxBuilder">
+<a href="https://linuxmint.com">
   <img src="https://img.shields.io/badge/Linux Mint-✅-blue.svg?logo=linuxmint" alt="distro">
 </a>
 
-<a href="https://github.com/grm34/ZenMaxBuilder">
+<a href="https://www.redhat.com">
   <img src="https://img.shields.io/badge/RedHat-❔-blue.svg?logo=redhat" alt="distro">
 </a>
 
-<a href="https://github.com/grm34/ZenMaxBuilder">
+<a href="https://www.gentoo.org">
   <img src="https://img.shields.io/badge/Gentoo-❔-blue.svg?logo=gentoo" alt="distro">
 </a>
 
-<a href="https://github.com/grm34/ZenMaxBuilder">
+<a href="https://www.centos.org">
   <img src="https://img.shields.io/badge/CentOS-❔-blue.svg?logo=centos" alt="distro">
 </a>
 
-<a href="https://github.com/grm34/ZenMaxBuilder">
+<a href="https://www.opensuse.org">
   <img src="https://img.shields.io/badge/OpenSuse-❔-blue.svg?logo=opensuse" alt="distro">
 </a>
 <br>
 
-<a href="https://github.com/grm34/ZenMaxBuilder">
+<a href="https://www.kali.org">
   <img src="https://img.shields.io/badge/Kali Linux-✅-blue.svg?logo=kalilinux" alt="distro">
 </a>
 
-<a href="https://github.com/grm34/ZenMaxBuilder">
+<a href="https://www.blackarch.org">
   <img src="https://img.shields.io/badge/BlackArch-✅-blue.svg?logo=archlinux" alt="distro">
 </a>
 
-<a href="https://github.com/grm34/ZenMaxBuilder">
+<a href="https://termux.com">
   <img src="https://img.shields.io/badge/Termux-✅-blue.svg?logo=android" alt="distro">
 </a>
 
-<a href="https://github.com/grm34/ZenMaxBuilder">
+<a href="https://www.freebsd.org">
+  <img src="https://img.shields.io/badge/FreeBSD-❔-blue.svg?logo=freebsd" alt="distro">
+</a>
+<br>
+
+<a href="https://www.microsoft.com/en-us/windows">
   <img src="https://img.shields.io/badge/Windows-❌-blue.svg?logo=windows" alt="distro">
 </a>
 
-<a href="https://github.com/grm34/ZenMaxBuilder">
+<a href="https://www.apple.com/macos">
   <img src="https://img.shields.io/badge/MacOS-❌-blue.svg?logo=macos" alt="distro">
 </a>
 
