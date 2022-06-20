@@ -172,7 +172,7 @@ The only change made is the addition of the selected toolchain compiler in the m
 
 - `OS not found, some dependencies may be required` : occurs when your package manager cannot be found, you have to intall the dependencies manually (an issue is welcome to add support).
 
-- `your system does not support this prebuilt of` : occurs if the included prebuilt toolchains are not compatible with your system, you can disable linker checking in `user.cfg` but the build will fail in most cases. System compatible toolchains are required or you can try host compiler option.
+- `your system does not support this prebuilt of` : occurs if the included prebuilt toolchains are not compatible with your system, you can disable `HOST_LINKER` in `user.cfg` but the build will fail in most cases. System compatible toolchains are required or you can try host compiler option.
 
 - `CROSS_COMPILE not found in Makefile` : occurs if your source is configured to pass `CROSS_COMPILE` to `make` as command-line argument. You can ignore this warning except if you deactivated `MAKE_CMD_ARGS`.
 
