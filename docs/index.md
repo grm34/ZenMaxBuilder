@@ -7,7 +7,9 @@
 <img src="https://api.codiga.io/project/23638/score/svg" alt="Codescore"><img src="https://api.codiga.io/project/23638/status/svg" alt="Codequality"><img src="https://www.codefactor.io/repository/github/grm34/zenmaxbuilder/badge" alt="Codefactor"><img src="https://img.shields.io/github/forks/grm34/ZenMaxBuilder.svg?logo=github" alt="Forks"><img src="https://img.shields.io/github/stars/grm34/ZenMaxBuilder.svg?logo=github-sponsors" alt="Stars">
 <br>
 <img src="https://img.shields.io/badge/license-MIT-blue.svg?logo=keepassxc" alt="License: MIT"><img src="https://img.shields.io/github/issues/grm34/ZenMaxBuilder.svg?logo=git" alt="Issues"><img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/y/grm34/zenmaxbuilder?label=commits&logo=github"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/grm34/ZenMaxBuilder?style=flat-square&logo=Github">
-<br><br>
+<br>
+<details>
+  <summary>Some tested distros</summary>
 <img src="https://img.shields.io/badge/Ubuntu-✅-blue.svg?logo=ubuntu" alt="distro"><img src="https://img.shields.io/badge/ArchLinux-✅-blue.svg?logo=archlinux" alt="distro"><img src="https://img.shields.io/badge/Debian-✅-blue.svg?logo=debian" alt="distro"><img src="https://img.shields.io/badge/Fedora-✅-blue.svg?logo=fedora" alt="distro"><img src="https://img.shields.io/badge/Manjaro-✅-blue.svg?logo=manjaro" alt="distro">
 <br>
 <img src="https://img.shields.io/badge/Linux Mint-✅-blue.svg?logo=linuxmint" alt="distro"><img src="https://img.shields.io/badge/RedHat-❔-blue.svg?logo=redhat" alt="distro"><img src="https://img.shields.io/badge/Gentoo-❔-blue.svg?logo=gentoo" alt="distro"><img src="https://img.shields.io/badge/CentOS-❔-blue.svg?logo=centos" alt="distro"><img src="https://img.shields.io/badge/OpenSuse-❔-blue.svg?logo=opensuse" alt="distro">
@@ -15,6 +17,7 @@
 <img src="https://img.shields.io/badge/Kali Linux-✅-blue.svg?logo=kalilinux" alt="distro"><img src="https://img.shields.io/badge/BlackArch-✅-blue.svg?logo=archlinux" alt="distro"><img src="https://img.shields.io/badge/Termux-✅-blue.svg?logo=android" alt="distro"><img src="https://img.shields.io/badge/FreeBSD-❔-blue.svg?logo=freebsd" alt="distro">
 <br>
 <img src="https://img.shields.io/badge/Windows-❌-blue.svg?logo=windows" alt="distro"><img src="https://img.shields.io/badge/MacOS-❌-blue.svg?logo=macos" alt="distro">
+</details>
 
 <br>
 ## Table of Contents
