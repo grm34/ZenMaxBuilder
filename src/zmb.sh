@@ -77,7 +77,7 @@ fi
 # Absolute path
 DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 if ! cd "$DIR" || ! [[ -f ${DIR}/etc/settings.cfg ]]; then
-  echo "ERROR: ZenMaxBuilder directory not found" >&2
+  echo "ERROR: ZenMaxBuilder settings file cannot be found" >&2
   exit 2
 fi
 
@@ -110,7 +110,7 @@ if [[ -f "${DIR}/lang/${LANGUAGE}.cfg" ]]; then
 elif [[ -f "${DIR}/lang/${LANG:0:2}.cfg" ]]; then
   source "${DIR}/lang/${LANG:0:2}.cfg"
 elif ! source "${DIR}/lang/en.cfg" 2>/dev/null; then
-  echo "ERROR: language not found" >&2; exit 2
+  echo "ERROR: main language cannot be found" >&2; exit 2
 fi
 
 
