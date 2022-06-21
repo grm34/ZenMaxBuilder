@@ -92,7 +92,7 @@
 </a>
 
 <a href="https://termux.com">
-  <img src="https://img.shields.io/badge/Termux-✅-blue.svg?logo=android" alt="distro">
+  <img src="https://img.shields.io/badge/Termux-⚠️-blue.svg?logo=android" alt="distro">
 </a>
 
 <a href="https://www.freebsd.org">
@@ -257,7 +257,7 @@ The only change made is the addition of the selected toolchain compiler in the m
 
 - `CROSS_COMPILE not found in Makefile` : occurs if your source is configured to pass `CROSS_COMPILE` to `make` as command-line argument. You can ignore this warning except if you deactivated `MAKE_CMD_ARGS`.
 
-- `CROSS_COMPILE may not be set correctly in Makefile` : occurs if another compiler is defined in the main `Makefile`. You can ignore this warning and answer `yes` while zmb asking to set it up for you.
+- `CROSS_COMPILE may not be set correctly in Makefile` : occurs if another compiler is defined in the main `Makefile`. You can ignore this warning and answer `yes` while ZMB asking to set it up for you.
 
 - `failed to add toolchain bin to the PATH` : occurs if the `PATH` is not correctly set, please open an issue.
 
