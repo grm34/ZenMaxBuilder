@@ -251,15 +251,17 @@ The only change made is the addition of the selected toolchain compiler in the m
 
 - An error occurs while installing a dependency : disable `AUTO_DEPENDENCIES` in `user.cfg` and install them manually.
 
-- `OS not found, some dependencies may be required` : occurs if your package manager cannot be found, you have to intall the dependencies manually (an issue is welcome to add support).
+- `OS not found, some dependencies may be required` : occurs while your package manager cannot be found, you have to intall the dependencies manually (an issue is welcome to add support).
 
-- `your system does not support this prebuilt of` : occurs if the included prebuilt toolchains are not compatible with your system, you can disable `HOST_LINKER` in `user.cfg` but the build will fail in most cases. System compatible toolchains are required or you can try host compiler option.
+- `invalid kernel directory` : occurs while the `ARCH` option is not matching the selected kernel directory (or while `KERNEL_DIR` is not correctly set), edit `user.cfg` accordingly.
 
-- `CROSS_COMPILE not found in Makefile` : occurs if your source is configured to pass `CROSS_COMPILE` to `make` as command-line argument. You can ignore this warning except if you deactivated `MAKE_CMD_ARGS`.
+- `your system does not support this prebuilt of` : occurs while the included prebuilt toolchains are not compatible with your system, you can disable `HOST_LINKER` in `user.cfg` but the build will fail in most cases. System compatible toolchains are required or you can try host compiler option.
 
-- `CROSS_COMPILE may not be set correctly in Makefile` : occurs if another compiler is defined in the main `Makefile`. You can ignore this warning and answer `yes` while ZMB asking to set it up for you.
+- `CROSS_COMPILE not found in Makefile` : occurs while your source is configured to pass `CROSS_COMPILE` to `make` as command-line argument. You can ignore this warning except if you deactivated `MAKE_CMD_ARGS`.
 
-- `failed to add toolchain bin to the PATH` : occurs if the `PATH` is not correctly set, please open an issue.
+- `CROSS_COMPILE may not be set correctly in Makefile` : occurs while another compiler is defined in the main `Makefile`. You can ignore this warning and answer `yes` while ZMB asking to set it up for you.
+
+- `failed to add toolchain bin to the PATH` : occurs while the `PATH` is not correctly set, please open an issue.
 
 - An error occurs while getting the kernel version : in most cases your source is not configured to be built with the selected toolchain compiler. Try another compiler or answer `yes` while purposed and edit your `Makefile` accordingly.
 
