@@ -257,11 +257,11 @@ The only change made is the addition of the selected toolchain compiler in the m
 
 - `CROSS_COMPILE not found in Makefile` : occurs if your source is configured to pass `CROSS_COMPILE` to `make` as command-line argument. You can ignore this warning except if you deactivated `MAKE_CMD_ARGS`.
 
-- `CROSS_COMPILE may not be set correctly in Makefile` : occurs if another compiler is defined in `Makefile`. You can ignore this warning and answer yes when zmb asking you to set it up for you.
+- `CROSS_COMPILE may not be set correctly in Makefile` : occurs if another compiler is defined in `Makefile`. You can ignore this warning and answer yes while zmb asking to set it up for you.
 
 - `failed to add toolchain bin to the PATH` : occurs if the `PATH` is not correctly set, please open an issue.
 
-- An error occurs while getting the kernel version : in most cases your source is not configured for the selected compiler. Change compiler or edit your `Makefile` accordingly.
+- An error occurs while getting the kernel version : in most cases your source is not configured to be built with the selected toolchain compiler. Try another compiler or edit your `Makefile` accordingly.
 
 - `kernel version not found` : same as above or issue with your source.
 
