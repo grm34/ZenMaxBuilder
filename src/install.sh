@@ -16,6 +16,9 @@ elif [[ ${BASH_SOURCE[0]} != "$0" ]]; then
   return 1
 fi
 
+shopt -s progcomp
+shopt -u dirspell progcomp_alias
+
 repo="https://github.com/grm34/ZenMaxBuilder.git"
 target="${HOME}/ZenMaxBuilder"
 bin="${PREFIX/usr}/usr/bin"
