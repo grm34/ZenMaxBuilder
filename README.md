@@ -157,6 +157,7 @@ Install ZenMaxBuilder in your `HOME` :
 Uninstall ZenMaxBuilder :
 
     bash ~/ZenMaxBuilder/src/install.sh uninstall
+    rm -rf ~/ZenMaxBuilder
 
 ## Configuration
 
