@@ -69,7 +69,7 @@ If you know another language and are willing to help translate ZMB, here are the
 - Create a new pull request to submit your language.
 
 `AUTO TRANSLATION`
-- run `bash translate zmb`
+- run `bash src/translate.sh zmb`
 - Check for errors/typo. \*
 - Create a new pull request to submit your language.
 
