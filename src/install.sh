@@ -18,7 +18,7 @@ fi
 
 repo="https://github.com/grm34/ZenMaxBuilder.git"
 target="${HOME}/ZenMaxBuilder"
-bin="${PREFIX}/bin"
+bin="${PREFIX/usr}/usr/bin"
 
 case $1 in
   install)
