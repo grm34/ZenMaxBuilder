@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e -u
+set -e
 
 if ! [[ $(uname -s) =~ ^(Linux|GNU*)$ ]]; then
   echo "ERROR: run ZenMaxBuilder installer on Linux" >&2
@@ -25,12 +25,12 @@ case $1 in
     echo "-> Installing ZenMaxBuilder..."
     git clone "$repo" "$target"
     chmod 755 "${target}/src/zmb.sh"
-    ln -s "${target}/src/zmb.sh" "${bin}/zmb"
+    sudo ln -s "${target}/src/zmb.sh" "${bin}/zmb"
     echo "-> Successfully installed"
     ;;
   uninstall)
     echo "-> Uninstalling ZenMaxBuilder..."
-    rm -f "${bin}/zmb"
+    sudo rm -f "${bin}/zmb"
     echo "-> Successfully uninstalled"
     ;;
   *)
