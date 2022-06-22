@@ -87,7 +87,8 @@ if ! cd "$DIR"; then
 fi
 
 # Lockfile
-exec 201> "$(basename "$0").lock"
+lockfile="$(basename "$0")"
+exec 201> "${lockfile/.sh}.lock"
 if ! flock -n 201; then
   echo "ERROR: ZenMaxBuilder is already running" >&2
   exit 114
