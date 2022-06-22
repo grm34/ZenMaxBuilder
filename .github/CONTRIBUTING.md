@@ -46,7 +46,7 @@ If you want to contribute to ZenMaxBuilder (ZMB) project and make it better, you
 
 ZenMaxBuilder being translated into several languages, all translations are assigned as variables from a CFG file. You don't have to worry about the different translations, just add your variables in `lang/en.cfg` (which is the main language file) and run the dedicated script that will translate and add the new variables in the different translation files :
 
-    bash translate zmb
+    bash src/translate.sh zmb
 
 In case you'll add some language strings, please respect naming convention :
 
