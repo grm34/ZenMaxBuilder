@@ -46,7 +46,7 @@ elif ! [[ -f lang/en.cfg ]]; then
   exit 2
 fi
 
-# Shell settings
+# Shell options
 shopt -s progcomp
 shopt -u dirspell progcomp_alias
 
