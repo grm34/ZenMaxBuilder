@@ -94,7 +94,7 @@ if ! flock -n 201; then
   exit 114
 fi
 
-# Shell settings
+# Shell options
 shopt -s checkwinsize progcomp
 shopt -u autocd cdspell dirspell extglob progcomp_alias
 
