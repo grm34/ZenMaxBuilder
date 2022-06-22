@@ -24,7 +24,8 @@
 
 - [Overview](https://kernel-builder.com#overview)
 - [Requirements](https://kernel-builder.com#requirements)
-- [Usage](https://kernel-builder.com#usage)
+- [Installation](https://kernel-builder.com#installation)
+- [Configuration](https://kernel-builder.com#configuration)
 - [Options](https://kernel-builder.com#options)
 - [Working Structure](https://kernel-builder.com#working-structure)
 - [Toolchains](https://kernel-builder.com#toolchains)

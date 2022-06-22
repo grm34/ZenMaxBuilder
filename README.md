@@ -113,7 +113,8 @@
 
 - [Overview](#overview)
 - [Requirements](#requirements)
-- [Usage](#usage)
+- [Installation](#installation)
+- [Configuration](#configuration)
 - [Options](#options)
 - [Working Structure](#working-structure)
 - [Toolchains](#toolchains)
