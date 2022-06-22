@@ -75,7 +75,12 @@ elif [[ ${BASH_SOURCE[0]} != "$0" ]]; then
 fi
 
 # Absolute path
-DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+if [[ -f ${HOME}/ZenMaxBuilder/src/zmb.sh ]]; then
+  DIR="${HOME}/ZenMaxBuilder"
+else
+  DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" \
+    &>/dev/null && pwd)"
+fi
 if ! cd "$DIR" || ! [[ -f ${DIR}/etc/settings.cfg ]]; then
   echo "ERROR: ZenMaxBuilder settings file cannot be found" >&2
   exit 2
