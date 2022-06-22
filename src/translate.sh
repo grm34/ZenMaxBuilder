@@ -47,8 +47,8 @@ elif ! [[ -f lang/en.cfg ]]; then
 fi
 
 # Shell settings
-shopt -s checkwinsize progcomp
-shopt -u autocd cdspell dirspell extglob progcomp_alias
+shopt -s progcomp
+shopt -u dirspell progcomp_alias
 
 _sort_strings() {
   # RM duplicate strings from an array and sorts them alphabetically
