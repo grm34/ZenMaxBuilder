@@ -1816,9 +1816,9 @@ ZenMaxBuilder (ZMB) Kernel Builder by @darkmaster Neternels Team
 
 _usage() {
   echo -e "
-${bold}Usage:$nc ${green}bash zmb \
+${bold}Usage:$nc ${green}zmb \
 ${nc}[${lyellow}OPTION${nc}] [${lyellow}ARGUMENT${nc}] \
-(e.g. ${magenta}bash zmb --start${nc})
+(e.g. ${magenta}zmb --info zenfone pro${nc})
 
   ${bold}Options$nc
     -h, --help                      $MSG_HELP_H
