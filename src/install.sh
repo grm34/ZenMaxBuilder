@@ -30,7 +30,8 @@ case $1 in
     ;;
   uninstall)
     echo "-> Uninstalling ZenMaxBuilder..."
-    rm -rf "$repo" "${bin}/zmb"
+    rm -f "${bin}/zmb"
+    echo "-> Successfully uninstalled"
     ;;
   *)
     echo "ERROR: missing 'install' or 'uninstall' keyword"
