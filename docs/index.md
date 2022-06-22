@@ -41,7 +41,7 @@
 <br>
 ## Overview
 
-ZenMaxBuilder (ZMB) is a Linux kernel builder written in Bash and oriented for android devices but as well compatible for other platforms. It can be launched on any compatible Linux system (feel free to Pull Request for win/mac support). By default it uses AOSP-Clang, Eva-GCC, Proton-Clang, Neutron-Clang or Lineage-GCC but you can use any Clang or GCC toolchain you like (with LLVM and binutils included).
+ZenMaxBuilder (ZMB) is a Linux kernel builder written in Bash and oriented for android devices but as well compatible for other platforms. It can be installed on any compatible Linux system (feel free to Pull Request for win/mac support). By default it uses AOSP-Clang, Eva-GCC, Proton-Clang, Neutron-Clang or Lineage-GCC but you can use any Clang or GCC toolchain you like (with LLVM and binutils included).
 
 Find all your compilations and working folders in one place, update and maintain your kernels faster. Full logs with the possibility to restart the build after error. Automatic creation of a flashable signed ZIP for android devices (with AK3 and AOSP Keys). Real time status feedback with build sending on any group or Telegram channel. And more. The perfect tool to compile on the fly and keep fresh and clean kernel paths.
 
