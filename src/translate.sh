@@ -41,20 +41,9 @@ elif [[ $(whoami) == root ]]; then
 elif [[ ${BASH_SOURCE[0]} != "$0" ]]; then
   echo "ERROR: ZMB Translate cannot be sourced" >&2
   return 1
-fi
-
-# Absolute path
-dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
-if ! cd "$dir" || ! [[ -f ${dir}/lang/en.cfg ]]; then
-  echo "ERROR: ZenMaxBuilder directory not found" >&2
+elif ! [[ -f lang/en.cfg ]]; then
+  echo "ERROR: run ZMB Translate from ZenMaxBuilder" >&2
   exit 2
-fi
-
-# Lockfile
-exec 201> "$(basename "$0").lock"
-if ! flock -n 201; then
-  echo "ERROR: ZMB Translate is already running" >&2
-  exit 114
 fi
 
 # Shell settings
@@ -138,12 +127,12 @@ _translate_and_add_missing_strings_into_cfg() {
 # Run ZMB Translate
 if [[ $1 == zmb ]]; then
   echo "Running ZMB translate (this could take a while)..."
-  _clean_cfg_files "${dir}"/lang/*.cfg
-  _get_strings_from_cfg "${dir}"/lang/*.cfg
+  _clean_cfg_files lang/*.cfg
+  _get_strings_from_cfg lang/*.cfg
   _translate_and_add_missing_strings_into_cfg
-  _clean_cfg_files "${dir}"/lang/*.cfg
+  _clean_cfg_files lang/*.cfg
   [[ $note ]] && echo "==> done" || echo "==> nothing to translate"
 else
-  echo "ERROR: you must specify one argument"
+  echo "ERROR: you must specify 'zmb' as argument"
 fi
 
