@@ -81,8 +81,8 @@ else
   DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" \
     &>/dev/null && pwd)"
 fi
-if ! cd "$DIR" || ! [[ -f ${DIR}/etc/settings.cfg ]]; then
-  echo "ERROR: ZenMaxBuilder settings file cannot be found" >&2
+if ! cd "$DIR"; then
+  echo "ERROR: ZenMaxBuilder path cannot be found" >&2
   exit 2
 fi
 
@@ -104,8 +104,9 @@ set -m -o pipefail
 # shellcheck source=/dev/null
 if [[ -f ${DIR}/etc/user.cfg ]]; then
   source "${DIR}/etc/user.cfg"
-else
-  source "${DIR}/etc/settings.cfg"
+elif ! source "${DIR}/etc/settings.cfg" 2>/dev/null; then
+  echo "ERROR: ZenMaxBuilder settings cannot be found" >&2
+  exit 2
 fi
 
 # User language
