@@ -24,7 +24,8 @@
 
 - [Overview](https://kernel-builder.com#overview)
 - [Requirements](https://kernel-builder.com#requirements)
-- [Usage](https://kernel-builder.com#usage)
+- [Installation](https://kernel-builder.com#installation)
+- [Configuration](https://kernel-builder.com#configuration)
 - [Options](https://kernel-builder.com#options)
 - [Working Structure](https://kernel-builder.com#working-structure)
 - [Toolchains](https://kernel-builder.com#toolchains)
@@ -54,33 +55,39 @@ Find all your compilations and working folders in one place, update and maintain
 
 The installation of the missing dependencies will be offered by ZenMaxBuilder, asking you first one by one (no packages are installed without your prior consent).
 
-You can also install them manually with your favorite package manager :
+And of course, you can install them manually with your favorite package manager :
 
     bash sed wget git curl zip tar jq expect make cmake automake autoconf llvm lld lldb clang gcc binutils bison perl gperf gawk flex bc python3 zstd openssl
 
 The optional flashable zip signature with AOSP Keys requires java (JDK) which is not proposed to install by ZenMaxBuilder (openjdk recommended).
 
 <br>
-## Usage
+## Installation
 
-Clone and enter ZMB repository :
+Install ZenMaxBuilder in your `HOME` :
 
-    git clone https://github.com/grm34/ZenMaxBuilder;
-    cd ZenMaxBuilder
+    wget https://raw.githubusercontent.com/grm34/ZenMaxBuilder/zmb/src/install.sh && bash install.sh install; rm install.sh
+
+Uninstall ZenMaxBuilder :
+
+    bash ~/ZenMaxBuilder/src/install.sh uninstall
+
+<br>
+## Configuration
 
 Create a copy of [settings.cfg](https://github.com/grm34/ZenMaxBuilder/blob/zmb/etc/settings.cfg) to set your settings (optional) :
 
-    cp etc/settings.cfg etc/user.cfg;
-    vi etc/user.cfg
+    cp ~/ZenMaxBuilder/etc/settings.cfg ~/ZenMaxBuilder/etc/user.cfg
+    vi ~/ZenMaxBuilder/etc/user.cfg
 
 Start ZMB and follow instructions :
 
-    bash zmb --start
+    zmb --start
 
 <br>
 ## Options
 
-    Usage: bash zmb [OPTION] [ARGUMENT] (e.g. bash zmb --start)
+    Usage: zmb [OPTION] [ARGUMENT] (e.g. zmb --info zenfone pro)
 
     Options
         -h, --help                      show this message and exit

@@ -75,7 +75,12 @@ elif [[ ${BASH_SOURCE[0]} != "$0" ]]; then
 fi
 
 # Absolute path
-DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+if [[ -f ${HOME}/ZenMaxBuilder/src/zmb.sh ]]; then
+  DIR="${HOME}/ZenMaxBuilder"
+else
+  DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" \
+    &>/dev/null && pwd)"
+fi
 if ! cd "$DIR" || ! [[ -f ${DIR}/etc/settings.cfg ]]; then
   echo "ERROR: ZenMaxBuilder settings file cannot be found" >&2
   exit 2
@@ -1811,9 +1816,9 @@ ZenMaxBuilder (ZMB) Kernel Builder by @darkmaster Neternels Team
 
 _usage() {
   echo -e "
-${bold}Usage:$nc ${green}bash zmb \
+${bold}Usage:$nc ${green}zmb \
 ${nc}[${lyellow}OPTION${nc}] [${lyellow}ARGUMENT${nc}] \
-(e.g. ${magenta}bash zmb --start${nc})
+(e.g. ${magenta}zmb --info zenfone pro${nc})
 
   ${bold}Options$nc
     -h, --help                      $MSG_HELP_H
