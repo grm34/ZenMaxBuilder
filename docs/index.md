@@ -64,14 +64,13 @@ The optional flashable zip signature with AOSP Keys requires java (JDK) which is
 <br>
 ## Installation
 
-Install ZenMaxBuilder in your `HOME` :
+Install ZenMaxBuilder (will be installed in your `HOME`) :
 
-    wget -O zmb https://kernel-builder.com/install
-    bash zmb install; rm zmb
+    wget https://kernel-builder.com/zmb && bash zmb install; rm zmb
 
 Uninstall ZenMaxBuilder :
 
-    bash ~/ZenMaxBuilder/src/install.sh uninstall
+    bash ~/ZenMaxBuilder/docs/zmb uninstall
     rm -rf ~/ZenMaxBuilder
 
 <br>
