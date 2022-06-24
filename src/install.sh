@@ -31,7 +31,7 @@ case $1 in
     echo "-> Installing ZenMaxBuilder..."
     git clone "$repo" "$target"
     chmod 755 "${target}/src/zmb.sh"
-    sudo ln -s "${target}/src/zmb.sh" "${bin}/zmb"
+    sudo ln -f "${target}/src/zmb.sh" "${bin}/zmb"
     echo "-> Successfully installed"
     ;;
   uninstall)
