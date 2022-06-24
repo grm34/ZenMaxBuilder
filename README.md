@@ -96,7 +96,7 @@
 </a>
 
 <a href="https://www.freebsd.org">
-  <img src="https://img.shields.io/badge/FreeBSD-❔-blue.svg?logo=freebsd" alt="distro">
+  <img src="https://img.shields.io/badge/FreeBSD-❌-blue.svg?logo=freebsd" alt="distro">
 </a>
 <br>
 
