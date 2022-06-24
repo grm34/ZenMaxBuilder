@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Ensures proper use
-if ! [[ $(uname -s) =~ ^(Linux|GNU*)$ ]]; then
-  echo "ERROR: run ZenMaxBuilder Installer on Linux" >&2
+if ! [[ $(uname -s) =~ ^(Linux|GNU*|Darwin)$ ]]; then
+  echo "ERROR: run ZenMaxBuilder Installer on Linux or MacOS" >&2
   exit 1
 elif ! [[ -t 0 ]]; then
   echo "ERROR: run ZenMaxBuilder Installer from a terminal" >&2
