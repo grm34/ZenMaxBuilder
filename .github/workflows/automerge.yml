@@ -26,6 +26,7 @@ on:
 
 jobs:
   automerge:
+    if: github.repository == "grm34/ZenMaxBuilder"
     runs-on: ubuntu-latest
     steps:
       - id: automerge
