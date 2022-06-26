@@ -66,6 +66,10 @@ Install ZenMaxBuilder (will be installed in your `HOME`) :
 
     wget https://kernel-builder.com/zmb && bash zmb install; rm zmb
 
+Checking the installation :
+
+    bash ~/ZenMaxBuilder/docs/zmb check
+
 Uninstall ZenMaxBuilder :
 
     bash ~/ZenMaxBuilder/docs/zmb uninstall

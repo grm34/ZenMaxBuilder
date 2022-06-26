@@ -17,6 +17,7 @@ permissions:
 
 jobs:
   codacy-security-scan:
+    if: github.repository == 'grm34/ZenMaxBuilder'
     permissions:
       contents: read
       security-events: write
