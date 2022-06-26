@@ -119,7 +119,7 @@ _get_pm_and_missing_dependencies() {
   fi
 }
 
-# Install / uninstall
+# Install / uninstall / check
 case $1 in
   install)
     echo -ne "\n${cyan}> Search for missing dependencies...$nc"
