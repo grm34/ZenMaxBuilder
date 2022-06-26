@@ -33,6 +33,9 @@ jobs:
         uses: "pascalgn/automerge-action@v0.15.3"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          MERGE_LABELS: "automerge"
+          BASE_BRANCHES: "zmb"
           MERGE_METHOD: "squash"
+          UPDATE_METHOD: "merge"
           MERGE_REQUIRED_APPROVALS: "0"
           MERGE_FORKS: "false"
