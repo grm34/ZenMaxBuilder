@@ -1,23 +1,29 @@
 name: ZenMaxBuilder Installer
+
 on:
-  push:
-    branches: [ "${GITHUB_REF##*/}" ]
+  pull_request:
+    branches: [ "zmb" ]
+
+  workflow_dispatch:
 
 jobs:
-  docit:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@master
-    - name: Copy the installer
-      run: |
-        cp -f "./src/install.sh" "./docs/zmb"
-    - name: Commit changes
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git commit -m "Add installer changes" -a
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v3
+
+      - name: Copy the installer
+        run: |
+          cp -f "./src/install.sh" "./docs/zmb"
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Add installer changes" -a
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
