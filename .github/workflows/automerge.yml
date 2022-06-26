@@ -39,5 +39,3 @@ jobs:
           UPDATE_METHOD: "merge"
           MERGE_REQUIRED_APPROVALS: "0"
           MERGE_FORKS: "false"
-          MERGE_FILTER_AUTHOR: "grm34"
-
