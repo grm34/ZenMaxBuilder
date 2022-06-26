@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: zmb
+          ref: ${{ github.head_ref }}
           fetch-depth: 0
 
       - name: Creates new branch
@@ -37,9 +37,6 @@ jobs:
           git push origin "up2date"
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
-        with:
-          commit-message: "BOT: updates zmb installer (docs/zmb)"
-          title: "BOT: updates zmb installer (docs/zmb)"
-          body: "Signed-off-by: grm34 <jerem.pardo@tutanota.com>"
-          branch: up2date
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
+          gh pr create -B "zmb" -H "up2date" --title "BOT: updates zmb installer (docs/zmb)"
