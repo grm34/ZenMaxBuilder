@@ -122,7 +122,7 @@ case $1 in
       _confirm "Do you want to install ?" "[y/N]"
       if [[ $confirm =~ (y|Y|yes|Yes|YES) ]]; then
         [[ ${pm[0]} == _ ]] && pm=("${pm[@]:1}") &&
-          missing_deps="${missing_deps/openssl/openssl-tool}"
+          missing_deps=("${missing_deps/openssl/openssl-tool}")
         "${pm[@]}" "${missing_deps[@]}"
       fi
     fi
