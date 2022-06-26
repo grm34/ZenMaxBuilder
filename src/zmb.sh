@@ -54,7 +54,7 @@
 # - Exit: always use _exit() function to rm temp files and get logs
 # - Language: see Contributing Guidelines...
 # -------------------------------------------------------------------
-echo "-> zmb is starting..." >&2
+echo "> zmb is starting..." >&2
 
 # Ensures proper use
 if ! [[ $(uname -s) =~ ^(Linux|GNU*|Darwin)$ ]]; then

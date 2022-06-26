@@ -8,7 +8,7 @@ elif ! [[ -t 0 ]]; then
   echo "ERROR: run ZenMaxBuilder Installer from a terminal" >&2
   exit 1
 elif ! which tput &>/dev/null; then
-  echo "ERROR: tput is missing, please install ncurses" >&2
+  echo "ERROR: tput is missing, please install ncurses utils" >&2
   exit 65
 elif [[ $(whoami) == root ]]; then
   echo "ERROR: do not run ZenMaxBuilder Installer as root" >&2
