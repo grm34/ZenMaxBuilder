@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "zmb" ]
     paths:
-      - "./src/install.sh"
+      - src/install.sh
 
   workflow_dispatch:
 
@@ -15,18 +15,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.head_ref }}
+          ref: zmb
           fetch-depth: 0
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
-        with:
-          commit-message: "BOT: updates zmb installer (docs/zmb)"
-          title: "BOT: updates zmb installer (docs/zmb)"
-          body: "Signed-off-by: grm34 <jerem.pardo@tutanota.com>"
-          branch: install
+      - name: Creates new branch
+        run: |
+          git checkout -b "up2date" "zmb"
 
-      - name: Copy the installer
+      - name: Copy ZMB installer
         run: |
           cp -f "./src/install.sh" "./docs/zmb"
 
@@ -34,4 +30,13 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git commit -m "Updates ZMB installer" -a
+          git commit -m "BOT: updates zmb installer (docs/zmb)" -a
+
+      - name: Push changes
+        run: |
+          git push origin "up2date"
+
+      - name: Create Pull Request
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
+          gh pr create -B "zmb" -H "up2date" --title "BOT: updates zmb installer (docs/zmb)" --body "Signed-off-by: grm34 <jerem.pardo@tutanota.com>" --label "automerge"
