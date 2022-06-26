@@ -1,7 +1,7 @@
 name: ZenMaxBuilder Installer
 
 on:
-  pull_request:
+  push:
     branches: [ "zmb" ]
 
   workflow_dispatch:
