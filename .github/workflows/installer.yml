@@ -40,4 +40,6 @@ jobs:
       - name: Create Pull Request
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
-          gh pr create -B "zmb" -H "up2date" -f -l "automerge"
+          gh pr create -B "zmb" -H "up2date" -f
+          sleep 60
+          gh pr edit --add-label "automerge"
