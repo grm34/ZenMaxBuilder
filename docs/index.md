@@ -57,7 +57,7 @@ The installation of the missing dependencies will be proposed by the installer o
 
     bash sed wget git curl zip tar jq expect make cmake automake autoconf llvm lld lldb clang gcc binutils bison perl gperf gawk flex bc python3 zstd openssl
 
-The optional flashable zip signature with AOSP Keys requires java (JDK) which is not proposed to install by ZenMaxBuilder (openjdk recommended).
+The optional flashable zip signature with AOSP Keys requires java (JDK) which is not proposed to install (openjdk recommended).
 
 <br>
 ## Installation
