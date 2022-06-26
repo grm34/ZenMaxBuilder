@@ -1,4 +1,4 @@
-name: automerge
+name: Automerge ZenMaxBuilder PR
 
 on:
   pull_request:
