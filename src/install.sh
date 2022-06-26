@@ -42,9 +42,15 @@ if [[ -t 1 ]]; then
     green="$(tput bold setaf 2)"
     yellow="$(tput setaf 3)"
     blue="$(tput bold setaf 4)"
+    magenta="$(tput bold setaf 5)"
     cyan="$(tput setaf 6)"
   fi
 fi
+
+_note() {
+  # Usage: _warn "message"
+  echo -e "\n${magenta}Status: ${nc}${yellow}${*}$nc" >&2
+}
 
 _warn() {
   # Usage: _warn "message"
@@ -141,8 +147,26 @@ case $1 in
     sudo rm -f "${bin}/zmb"
     echo -e "\n${green}> Successfully uninstalled !$nc"
     ;;
+  check)
+    echo -ne "\n${cyan}> Search for missing dependencies...$nc"
+    _get_pm_and_missing_dependencies
+    if [[ ${missing_deps[0]} ]]; then
+      _note "the following dependencies are missing"
+      echo "${missing_deps[*]}"
+    else
+      _note "dependencies are already satisfied"
+    fi
+    echo -ne "\n${cyan}> Search for ZMB executable...$nc"
+    if [[ -f ${bin}/zmb ]]; then _note "installed in $bin"
+    else _note "no executable found in $bin"
+    fi
+    echo -ne "\n${cyan}> Search for ZMB repository...$nc"
+    if [[ -d $target ]]; then _note "found ZenMaxBuilder in $HOME"
+    else _note "no repository found in $HOME"
+    fi
+    ;;
   *)
-    _error "missing 'install' or 'uninstall' keyword"
+    _error "missing 'check' or install' or 'uninstall' keyword"
     ;;
 esac
 
