@@ -27,6 +27,8 @@ shopt -u dirspell progcomp_alias
 repo="https://github.com/grm34/ZenMaxBuilder.git"
 target="${HOME}/ZenMaxBuilder"
 bin="${PREFIX/usr}/usr/bin"
+
+# Required dependencies
 dependencies=(bash sed wget git curl zip tar jq expect make cmake
   automake autoconf llvm lld lldb clang gcc binutils bison perl
   gperf gawk flex bc python3 zstd openssl)
