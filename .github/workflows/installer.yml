@@ -10,7 +10,7 @@ on:
 
 jobs:
   update-installer:
-    if: github.repository == "grm34/ZenMaxBuilder"
+    if: github.repository == 'grm34/ZenMaxBuilder'
     runs-on: ubuntu-latest
 
     steps:
