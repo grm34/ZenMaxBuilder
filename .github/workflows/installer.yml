@@ -39,4 +39,4 @@ jobs:
       - name: Create Pull Request
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
-          gh pr create -B "zmb" -H "up2date" --title "BOT: updates zmb installer (docs/zmb)"
+          gh pr create -B "zmb" -H "up2date" --title "BOT: updates zmb installer (docs/zmb)" --body "Signed-off-by: grm34 <jerem.pardo@tutanota.com>"
