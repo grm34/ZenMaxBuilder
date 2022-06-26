@@ -1,7 +1,7 @@
 name: ZenMaxBuilder Installer
 on:
   push:
-    branches: [ zmb ]
+    branches: [ "${GITHUB_REF##*/}" ]
 
 jobs:
   docit:
