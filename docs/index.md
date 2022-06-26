@@ -53,13 +53,11 @@ Find all your compilations and working folders in one place, update and maintain
 - A minimum of knowledge in kernel compilation
 - Patience
 
-The installation of the missing dependencies will be offered by ZenMaxBuilder, asking you first one by one (no packages are installed without your prior consent).
-
-And of course, you can install them manually with your favorite package manager :
+The installation of the missing dependencies will be proposed by the installer or first install them manually with your favorite package manager (no package is installed without your prior consent) :
 
     bash sed wget git curl zip tar jq expect make cmake automake autoconf llvm lld lldb clang gcc binutils bison perl gperf gawk flex bc python3 zstd openssl
 
-The optional flashable zip signature with AOSP Keys requires java (JDK) which is not proposed to install by ZenMaxBuilder (openjdk recommended).
+The optional flashable zip signature with AOSP Keys requires java (JDK) which is not proposed to install (openjdk recommended).
 
 <br>
 ## Installation
@@ -175,10 +173,6 @@ The only change made is the addition of the selected toolchain compiler in the m
 
 <br>
 ## Common warnings and errors
-
-- An error occurs while installing a dependency : disable `AUTO_DEPENDENCIES` in `user.cfg` and install them manually.
-
-- `OS not found, some dependencies may be required` : occurs while your package manager cannot be found, you have to intall the dependencies manually (an issue is welcome to add support).
 
 - `invalid kernel directory` : occurs while the `ARCH` option is not matching the selected kernel directory (or while `KERNEL_DIR` is not correctly set), edit `user.cfg` accordingly.
 

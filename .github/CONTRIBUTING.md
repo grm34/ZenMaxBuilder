@@ -22,7 +22,7 @@ If you want to contribute to ZenMaxBuilder (ZMB) project and make it better, you
     # 11. VERSIONER.....:  displays the toolchains versions        (FUNC)
     # 12. READER........:  displays the compiled kernels           (FUNC)
     # 13. PATCHER.......:  patchs/reverts patches to a kernel      (FUNC)
-    # 14. INSTALLER.....:  dependency install management           (FUNC)
+    # 14. INSTALLER.....:  toolchains install management           (FUNC)
     # 15. UPDATER.......:  updates the script and toolchains       (FUNC)
     # 16. FINDER........:  displays mobile device specifications   (FUNC)
     # 17. HELPER........:  displays zmb help and usage             (FUNC)
