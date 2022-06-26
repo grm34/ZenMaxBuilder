@@ -33,9 +33,8 @@ jobs:
           git commit -m "BOT: updates zmb installer (docs/zmb)" -a
 
       - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          force_with_lease: true
+        run: |
+          git push origin "up2date"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
