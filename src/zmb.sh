@@ -37,7 +37,7 @@
 # 11. VERSIONER.....:  displays the toolchains versions        (FUNC)
 # 12. READER........:  displays the compiled kernels           (FUNC)
 # 13. PATCHER.......:  patchs/reverts patches to a kernel      (FUNC)
-# 14. INSTALLER.....:  dependency install management           (FUNC)
+# 14. INSTALLER.....:  toolchains install management           (FUNC)
 # 15. UPDATER.......:  updates the script and toolchains       (FUNC)
 # 16. FINDER........:  displays mobile device specifications   (FUNC)
 # 17. HELPER........:  displays zmb help and usage             (FUNC)
@@ -166,18 +166,18 @@ _zenmaxbuilder() {
   while getopts ':hsuvldprt:m:i:f:z:' zmb_option; do
     case $zmb_option in
       h)  clear; _terminal_banner; _usage; _exit 0 ;;
-      u)  _install_dep; _full_upgrade; _exit 0 ;;
-      v)  _install_dep; _tc_version_option; _exit 0 ;;
-      m)  _install_dep; _send_msg_option "$@"; _exit 0 ;;
-      f)  _install_dep; _send_file_option; _exit 0 ;;
-      z)  _install_dep; _create_zip_option; _exit 0 ;;
-      l)  _install_dep; _list_all_kernels; _exit 0 ;;
-      t)  _install_dep; _get_latest_linux_tag; _exit 0 ;;
-      p)  _install_dep; _patch patch; _exit 0 ;;
-      r)  _install_dep; _patch revert; _exit 0 ;;
-      i)  _install_dep; _device_specs_option "$@"; _exit 0 ;;
-      s)  _install_dep; _start; _exit 0 ;;
-      d)  DEBUG="True"; _install_dep; _start; _exit 0 ;;
+      u)  _full_upgrade; _exit 0 ;;
+      v)  _tc_version_option; _exit 0 ;;
+      m)  _send_msg_option "$@"; _exit 0 ;;
+      f)  _send_file_option; _exit 0 ;;
+      z)  _clone_anykernel; _create_zip_option; _exit 0 ;;
+      l)  _list_all_kernels; _exit 0 ;;
+      t)  _get_latest_linux_tag; _exit 0 ;;
+      p)  _patch patch; _exit 0 ;;
+      r)  _patch revert; _exit 0 ;;
+      i)  _device_specs_option "$@"; _exit 0 ;;
+      s)  _clone_anykernel; _start; _exit 0 ;;
+      d)  DEBUG="True"; _clone_anykernel; _start; _exit 0 ;;
       :)  _error "$MSG_ERR_MARG ${red}-$OPTARG"; _exit 1 ;;
       \?) _error "$MSG_ERR_IOPT ${red}-$OPTARG"; _exit 1 ;;
     esac
@@ -1190,17 +1190,6 @@ _ask_for_run_again() {
   [[ $confirm =~ (y|Y|yes|Yes|YES) ]] && run_again="True"
 }
 
-_ask_for_install_pkg() {
-  # Warns the user that the script may crash while NO
-  # Returns: $install_pkg
-  _confirm "$MSG_CONFIRM_PKG $1 ?" "[Y/n]"
-  if [[ $confirm =~ (n|N|no|No|NO) ]]; then
-    _warn "$MSG_WARN_DEP ${red}${dep}"; sleep 2
-  else
-    install_pkg="True"
-  fi
-}
-
 _ask_for_clone_toolchain() {
   # Warns the user and exits the script while NO
   # Returns: $clone_tc
@@ -1492,57 +1481,8 @@ _patch() {
 
 
 ###---------------------------------------------------------------###
-###      14. INSTALLER => dependency installation management      ###
+###      14. INSTALLER => toolchains installation management      ###
 ###---------------------------------------------------------------###
-
-_install_dep() {
-  # Note: gcc will not be installed on termux (not fully supported)
-  # > defines the install command of some package managers
-  # > grabs the current linux package manager
-  # > checks and installs the missing dependencies...
-  if [[ $AUTO_DEPENDENCIES == True ]]; then
-    local pm_install_cmd pm_list manager pm dep
-    declare -A pm_install_cmd=(
-      [apt]="sudo apt install -y"
-      [pkg]="_ pkg install -y"
-      [pacman]="sudo pacman -S --noconfirm"
-      [yum]="sudo yum install -y"
-      [emerge]="sudo emerge -1 -y"
-      [zypper]="sudo zypper install -y"
-      [dnf]="sudo dnf install -y"
-    )
-    pm_list=(pacman yum emerge zypper dnf pkg apt)
-    for manager in "${pm_list[@]}"; do
-      if which "$manager" &>/dev/null; then
-        IFS=" "; pm="${pm_install_cmd[$manager]}"
-        read -ra pm <<< "$pm"
-        unset IFS; break
-      fi
-    done
-    if [[ ${pm[3]} ]]; then
-      for dep in "${DEPENDENCIES[@]}"; do
-        if [[ $termux ]] && [[ $dep == gcc ]]; then
-          continue
-        else
-          [[ $dep == llvm ]] && dep="llvm-ar"
-          [[ $dep == binutils ]] && dep="ld"
-          if ! which "${dep}" &>/dev/null; then
-            [[ $dep == llvm-ar ]] && dep="llvm"
-            [[ $dep == ld ]] && dep="binutils"
-            _ask_for_install_pkg "$dep"
-            if [[ $install_pkg == True ]]; then
-              [[ ${pm[0]} == _ ]] && pm=("${pm[@]:1}")
-              "${pm[@]}" "$dep"
-            fi
-          fi
-        fi
-      done
-    else
-      _error "$MSG_ERR_OS"
-    fi
-    _clone_anykernel
-  fi
-}
 
 _clone_tc() {
   # Usage: _clone_tc "branch/version" "url" "path"
