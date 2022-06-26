@@ -140,7 +140,7 @@ Find all your compilations and working folders in one place, update and maintain
 - A minimum of knowledge in kernel compilation
 - Patience
 
-The installation of the missing dependencies will be proposed by ZenMaxBuilder installer (no packages is installed without your prior consent), and of course you can first install them manually with your favorite package manager :
+The installation of the missing dependencies will be proposed by the installer or first install them manually with your favorite package manager (no package is installed without your prior consent) :
 
     bash sed wget git curl zip tar jq expect make cmake automake autoconf llvm lld lldb clang gcc binutils bison perl gperf gawk flex bc python3 zstd openssl
 
