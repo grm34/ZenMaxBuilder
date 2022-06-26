@@ -3,6 +3,8 @@ name: ZenMaxBuilder Installer
 on:
   push:
     branches: [ "zmb" ]
+    paths:
+      - "./src/install.sh"
 
   workflow_dispatch:
 
