@@ -7,6 +7,9 @@ if ! [[ $(uname -s) =~ ^(Linux|GNU*)$ ]]; then
 elif ! [[ -t 0 ]]; then
   echo "ERROR: run ZenMaxBuilder Installer from a terminal" >&2
   exit 1
+elif ! which tput &>/dev/null; then
+  echo "ERROR: tput is missing, please install ncurses" >&2
+  exit 65
 elif [[ $(whoami) == root ]]; then
   echo "ERROR: do not run ZenMaxBuilder Installer as root" >&2
   exit 1
@@ -29,23 +32,47 @@ dependencies=(bash sed wget git curl zip tar jq expect make cmake
   gperf gawk flex bc python3 zstd openssl)
 
 # Shell colors
-#if [[ -t 1 ]]; then
-#  colors="$(tput colors)"
-#  if [[ -n $colors ]] && [[ $colors -ge 8 ]]; then
-#    bold="$(tput bold)"
-#    nc="\e[0m"
-#    red="$(tput bold setaf 1)"
-#    green="$(tput bold setaf 2)"
-#    lyellow="$(tput setaf 3)"
-#  fi
-#fi
+if [[ -t 1 ]]; then
+  colors="$(tput colors)"
+  if [[ -n $colors ]] && [[ $colors -ge 8 ]]; then
+    nc="\e[0m"
+    red="$(tput bold setaf 1)"
+    green="$(tput bold setaf 2)"
+    yellow="$(tput setaf 3)"
+    blue="$(tput bold setaf 4)"
+    cyan="$(tput setaf 6)"
+  fi
+fi
 
-_install_dependencies() {
+_warn() {
+  # Usage: _warn "message"
+  echo -e "\n${blue}Warning: ${nc}${yellow}${*}$nc" >&2
+}
+
+_error() {
+  # Usage: _error "message"
+  echo -e "\n${red}Error: ${nc}${yellow}${*}$nc" >&2
+}
+
+_confirm() {
+  # Usage: _confirm "question" "[Y/n]" (<ENTER> behavior)
+  # Returns: $confirm
+  confirm="False"
+  echo -ne "${yellow}\n==> ${cyan}${1} ${red}${2} $nc"
+  read -r confirm
+  until [[ $confirm =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO)$ ]] \
+      || [[ -z $confirm ]]; do
+    _error "enter yes or no"
+    _confirm "$@"
+  done
+}
+
+_get_pm_and_missing_dependencies() {
   # Note: gcc will not be installed on termux (not fully supported)
-  local pm_install_cmd pm_list manager pm dep termux dep_list
+  # Returns: $pm $missing_deps
+  local pm_install_cmds pm_list manager dep termux
   if which getprop &>/dev/null; then termux=1; fi
-  declare -a dep_list
-  declare -A pm_install_cmd=(
+  declare -A pm_install_cmds=(
     [apt]="sudo apt install -y"
     [pkg]="_ pkg install -y"
     [pacman]="sudo pacman -S --noconfirm"
@@ -57,12 +84,13 @@ _install_dependencies() {
   pm_list=(pacman yum emerge zypper dnf pkg apt)
   for manager in "${pm_list[@]}"; do
     if which "$manager" &>/dev/null; then
-      IFS=" "; pm="${pm_install_cmd[$manager]}"
+      IFS=" "; pm="${pm_install_cmds[$manager]}"
       read -ra pm <<< "$pm"
       unset IFS; break
     fi
   done
   if [[ ${pm[3]} ]]; then
+    missing_deps=()
     for dep in "${dependencies[@]}"; do
       if [[ $termux ]] && [[ $dep == gcc ]]; then
         continue
@@ -72,39 +100,47 @@ _install_dependencies() {
         if ! which "${dep}" &>/dev/null; then
           [[ $dep == llvm-ar ]] && dep="llvm"
           [[ $dep == ld ]] && dep="binutils"
-          dep_list+=("$dep")
-          #if [[ $install_pkg == True ]]; then
-          #  [[ ${pm[0]} == _ ]] && pm=("${pm[@]:1}")
-          #  "${pm[@]}" "$dep"
-          #fi
+          missing_deps+=("$dep")
         fi
       fi
     done
-  #else
-    #_error "$MSG_ERR_OS"
+  else
+    _warn "your package manager cannot be found,"\
+          "you have to manually install the dependencies."\
+          "More information at$cyan https://kernel-builder.com"
   fi
-  #_clone_anykernel
-  echo "${dep_list[*]}"
 }
 
 # Install / uninstall
 case $1 in
   install)
-    echo "-> Installing ZenMaxBuilder..."
+    echo -ne "\n${cyan}> Search for missing dependencies...$nc"
+    _get_pm_and_missing_dependencies
+    if [[ ${missing_deps[0]} ]]; then
+      _warn "the following dependencies are missing"
+      echo "${missing_deps[*]}"
+      _confirm "Do you want to install ?" "[y/N]"
+      if [[ $confirm =~ (y|Y|yes|Yes|YES) ]]; then
+        [[ ${pm[0]} == _ ]] && pm=("${pm[@]:1}") &&
+          missing_deps="${missing_deps/openssl/openssl-tool}"
+        "${pm[@]}" "${missing_deps[@]}"
+      fi
+    fi
+    echo -e "\n${cyan}> Downloading ZenMaxBuilder...$nc"
     git clone "$repo" "$target"
+    echo -e "\n${cyan}> Installing ZenMaxBuilder...$nc"
     chmod 755 "${target}"
     chmod +x "${target}/src/zmb.sh"
     sudo ln -f "${target}/src/zmb.sh" "${bin}/zmb"
-    _install_dependencies
-    echo "-> Successfully installed"
+    echo -e "\n${green}> Successfully installed !$nc"
     ;;
   uninstall)
-    echo "-> Uninstalling ZenMaxBuilder..."
+    echo -e "\n${cyan}> Uninstalling ZenMaxBuilder...$nc"
     sudo rm -f "${bin}/zmb"
-    echo "-> Successfully uninstalled"
+    echo -e "\n${green}> Successfully uninstalled !$nc"
     ;;
   *)
-    echo "ERROR: missing 'install' or 'uninstall' keyword"
+    _error "missing 'install' or 'uninstall' keyword"
     ;;
 esac
 
