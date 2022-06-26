@@ -221,9 +221,9 @@ _prompt() {
   # Usage: _prompt "question" "mode"
   # Mode: "1" for question and "2" for selection
   local length; length="$*"; length="$(( ${#length} - 2 ))"
-  echo -e "\n${yellow}==> ${green}${1}$nc"
+  echo -ne "\n${yellow}==> ${green}${1}$nc"
   _underline_prompt; [[ $2 == 1 ]] &&
-    echo -ne "${yellow}==> $nc" || echo -ne "$nc"
+    echo -ne "${yellow}\n==> $nc" || echo -ne "\n$nc"
 }
 
 _confirm() {
@@ -231,9 +231,9 @@ _confirm() {
   # Usage: _confirm "question" "[Y/n]" (<ENTER> behavior)
   # Returns: $confirm
   local length; length="$*"; length="${#length}"
-  echo -e "${yellow}\n==> ${green}${1} ${red}${2}$nc"
+  echo -ne "${yellow}\n==> ${green}${1} ${red}${2}$nc"
   _underline_prompt; confirm="False"
-  echo -ne "${yellow}==> $nc"; read -r confirm
+  echo -ne "${yellow}\n==> $nc"; read -r confirm
   until [[ $confirm =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO)$ ]] \
       || [[ -z $confirm ]]; do
     _error "$MSG_ERR_CONFIRM"
@@ -245,9 +245,9 @@ _underline_prompt() {
   # Underlines only while the terminal window is large
   # enough to display the prompt on a single line
   if [[ $(tput cols) -gt $length ]]; then
-    local char; echo -e "${yellow}==> "
+    local char; echo -ne "${yellow}\n==> "
     for (( char=1; char<=length; char++ )); do
-      echo -e "-"
+      echo -ne "-"
     done
   fi
 }
