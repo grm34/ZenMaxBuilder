@@ -65,7 +65,6 @@ _error() {
 _confirm() {
   # Usage: _confirm "question" "[Y/n]" (<ENTER> behavior)
   # Returns: $confirm
-  confirm="False"
   echo -ne "${yellow}\n==> ${cyan}${1} ${red}${2} $nc"
   read -r confirm
   until [[ $confirm =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO)$ ]] \
