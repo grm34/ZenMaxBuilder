@@ -41,4 +41,4 @@ jobs:
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
           gh pr create -B "zmb" -H "up2date" -f -l "automerge"
-          gh pr merge -s --auto -b "Signed-Off-by: darkmaster"
+          gh pr merge -s --auto
