@@ -1,5 +1,26 @@
 #!/usr/bin/env bash
 
+# Copyright (c) 2021-2022 darkmaster @grm34 Neternels Team
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation
+# files (the "Software"), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge,
+# publish, distribute, sublicense, and/or sell copies of the Software,
+# and to permit persons to whom the Software is furnished to do so,
+# subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 # Ensures proper use
 if ! [[ $(uname -s) =~ ^(Linux|GNU*|Darwin)$ ]]; then
   echo "ERROR: run ZenMaxBuilder Installer on Linux or MacOS" >&2
@@ -26,7 +47,7 @@ shopt -u dirspell progcomp_alias
 # Required variables
 repo="https://github.com/grm34/ZenMaxBuilder.git"
 target="${HOME}/ZenMaxBuilder"
-bin="${PREFIX/usr}/usr/bin"
+bin="${PREFIX/\/usr}/usr/bin"
 
 # Required dependencies
 dependencies=(bash sed wget git curl zip tar jq expect make cmake
@@ -65,7 +86,6 @@ _error() {
 _confirm() {
   # Usage: _confirm "question" "[Y/n]" (<ENTER> behavior)
   # Returns: $confirm
-  confirm="False"
   echo -ne "${yellow}\n==> ${cyan}${1} ${red}${2} $nc"
   read -r confirm
   until [[ $confirm =~ ^(y|n|Y|N|yes|no|Yes|No|YES|NO)$ ]] \
@@ -119,7 +139,7 @@ _get_pm_and_missing_dependencies() {
   fi
 }
 
-# Install / uninstall
+# Install - uninstall - check
 case $1 in
   install)
     echo -ne "\n${cyan}> Search for missing dependencies...$nc"

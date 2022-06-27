@@ -37,7 +37,8 @@ jobs:
         run: |
           git push origin "up2date"
 
-      - name: Create Pull Request
+      - name: Create and Merge Pull Request
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
           gh pr create -B "zmb" -H "up2date" -f -l "automerge"
+          gh pr merge -s --auto
