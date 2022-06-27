@@ -40,6 +40,16 @@ jobs:
       - name: Create Pull Request
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
-          gh pr create -B "zmb" -H "up2date" -f
+          gh pr create -B "zmb" -H "up2date" -f -l "automerge"
           sleep 60
-          gh pr edit --add-label "automerge"
+
+      - name: Squash and Merge
+        uses: "pascalgn/automerge-action@v0.15.3"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          MERGE_LABELS: "automerge"
+          BASE_BRANCHES: "zmb"
+          MERGE_METHOD: "squash"
+          UPDATE_METHOD: "merge"
+          MERGE_REQUIRED_APPROVALS: "0"
+          MERGE_FORKS: "false"
