@@ -139,8 +139,10 @@ _get_pm_and_missing_dependencies() {
   fi
 }
 
-# Install - uninstall - check
+# Options
 case $1 in
+
+  # Install dep and clone ZMB and add symlink to usr/bin
   install)
     echo -ne "\n${cyan}> Search for missing dependencies...$nc"
     _get_pm_and_missing_dependencies
@@ -162,11 +164,15 @@ case $1 in
     sudo ln -f "${target}/src/zmb.sh" "${bin}/zmb"
     echo -e "\n${green}> Successfully installed !$nc"
     ;;
+
+  # Remove symlink from usr/bin
   uninstall)
     echo -e "\n${cyan}> Uninstalling ZenMaxBuilder...$nc"
     sudo rm -f "${bin}/zmb"
     echo -e "\n${green}> Successfully uninstalled !$nc"
     ;;
+
+  # Check dep and repo and symlink
   check)
     echo -ne "\n${cyan}> Search for missing dependencies...$nc"
     _get_pm_and_missing_dependencies
@@ -185,6 +191,7 @@ case $1 in
     else _note "no repository found in $HOME"
     fi
     ;;
+
   *)
     _error "missing 'check' or install' or 'uninstall' keyword"
     ;;
