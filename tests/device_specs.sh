@@ -11,6 +11,7 @@ blue="$(tput bold setaf 4)"
 #cyan="$(tput bold setaf 6)"
 
 url="https://api-mobilespecs.azharimm.site/v2/search?query="
+[[ ! -d temp ]] && mkdir temp
 
 _find_devices() {
   local key value
