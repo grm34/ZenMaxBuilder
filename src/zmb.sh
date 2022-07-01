@@ -1580,7 +1580,7 @@ _update_git() {
       _command mv "${DIR}/etc/user.cfg" "${DIR}/etc/user.cfg_bak"
     fi
   fi
-  _command unbuffer git pull
+  _command unbuffer git pull --depth=1
 }
 
 _full_upgrade() {
