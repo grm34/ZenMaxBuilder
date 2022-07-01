@@ -1580,6 +1580,9 @@ _update_git() {
     fi
   fi
   _command unbuffer git pull --depth=1
+  [[ $1 == "$ZMB_BRANCH" ]] &&
+    sudo ln -f "${HOME}/ZenMaxBuilder/src/zmb.sh" \
+      "${PREFIX/\/usr}/usr/bin/zmb"
 }
 
 _full_upgrade() {
