@@ -54,7 +54,6 @@
 # - Exit: always use _exit() function to rm temp files and get logs
 # - Language: see Contributing Guidelines...
 # -------------------------------------------------------------------
-echo "> zmb is starting..." >&2
 
 # Ensures proper use
 if ! [[ $(uname -s) =~ ^(Linux|GNU*|Darwin)$ ]]; then
@@ -1580,7 +1579,7 @@ _update_git() {
       _command mv "${DIR}/etc/user.cfg" "${DIR}/etc/user.cfg_bak"
     fi
   fi
-  _command unbuffer git pull
+  _command unbuffer git pull --depth=1
 }
 
 _full_upgrade() {

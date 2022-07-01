@@ -69,7 +69,7 @@ if [[ -t 1 ]]; then
 fi
 
 _note() {
-  # Usage: _warn "message"
+  # Usage: _note "message"
   echo -e "\n${magenta}Status: ${nc}${yellow}${*}$nc" >&2
 }
 
