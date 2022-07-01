@@ -174,7 +174,7 @@ Start ZMB and follow instructions :
 
     zmb --start
 
-You can exit zmb at any time using `ctrl+c` or `ctrl+z` combinaison keys.
+You can exit ZMB at any time using `ctrl+c` or `ctrl+z` combinaison keys.
 
 ## Options
 
