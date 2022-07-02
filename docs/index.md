@@ -25,7 +25,7 @@
 - [Overview](https://kernel-builder.com#overview)
 - [Requirements](https://kernel-builder.com#requirements)
 - [Installation](https://kernel-builder.com#installation)
-- [Configuration](https://kernel-builder.com#configuration)
+- [Guetting Started](https://kernel-builder.com#guetting-started)
 - [Options](https://kernel-builder.com#options)
 - [Working Structure](https://kernel-builder.com#working-structure)
 - [Toolchains](https://kernel-builder.com#toolchains)
@@ -78,7 +78,7 @@ Uninstall ZenMaxBuilder :
     rm -rf ~/ZenMaxBuilder
 
 <br>
-## Configuration
+## Guetting Started
 
 Create a copy of [settings.cfg](https://github.com/grm34/ZenMaxBuilder/blob/zmb/etc/settings.cfg) to set your settings (optional) :
 

@@ -114,7 +114,7 @@
 - [Overview](#overview)
 - [Requirements](#requirements)
 - [Installation](#installation)
-- [Configuration](#configuration)
+- [Guetting Started](#guetting-started)
 - [Options](#options)
 - [Working Structure](#working-structure)
 - [Toolchains](#toolchains)
@@ -163,7 +163,7 @@ Uninstall ZenMaxBuilder :
     bash ~/ZenMaxBuilder/docs/zmb uninstall
     rm -rf ~/ZenMaxBuilder
 
-## Configuration
+## Guetting Started
 
 Create a copy of [settings.cfg](https://github.com/grm34/ZenMaxBuilder/blob/zmb/etc/settings.cfg) to set your settings (optional) :
 
