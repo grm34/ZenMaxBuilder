@@ -108,8 +108,9 @@ _get_pm_and_missing_dependencies() {
     [emerge]="sudo emerge -1 -y"
     [zypper]="sudo zypper install -y"
     [dnf]="sudo dnf install -y"
+    [brew]="sudo brew install -y"
   )
-  pm_list=(pacman yum emerge zypper dnf pkg apt)
+  pm_list=(pacman yum emerge zypper dnf brew pkg apt)
   for manager in "${pm_list[@]}"; do
     if which "$manager" &>/dev/null; then
       IFS=" "; pm="${pm_install_cmds[$manager]}"
