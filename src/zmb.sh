@@ -1581,7 +1581,7 @@ _update_git() {
   fi
   _command unbuffer git pull --depth=1
   [[ $1 == "$ZMB_BRANCH" ]] &&
-    sudo ln -f "${HOME}/ZenMaxBuilder/src/zmb.sh" \
+    sudo cp -f "${HOME}/ZenMaxBuilder/src/zmb.sh" \
       "${PREFIX/\/usr}/usr/bin/zmb"
 }
 
