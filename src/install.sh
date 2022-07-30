@@ -29,7 +29,7 @@ elif ! [[ -t 0 ]]; then
   echo "ERROR: run ZenMaxBuilder Installer from a terminal" >&2
   exit 1
 elif ! which tput &>/dev/null; then
-  echo "ERROR: tput is missing, please install ncurses utils" >&2
+  echo "ERROR: tput is missing, please install ncurses-utils" >&2
   exit 65
 elif [[ $(whoami) == root ]]; then
   echo "ERROR: do not run ZenMaxBuilder Installer as root" >&2
@@ -52,7 +52,7 @@ bin="${PREFIX/\/usr}/usr/bin"
 # Required dependencies
 dependencies=(bash sed wget git curl zip tar jq expect make cmake
   automake autoconf llvm lld lldb clang gcc binutils bison perl
-  gperf gawk flex bc python3 zstd openssl)
+  gperf gawk flex bc python3 zstd openssl sudo)
 
 # Shell colors
 if [[ -t 1 ]]; then
@@ -152,8 +152,10 @@ case $1 in
       echo "${missing_deps[*]}"
       _confirm "Do you want to install ?" "[y/N]"
       if [[ $confirm =~ (y|Y|yes|Yes|YES) ]]; then
-        [[ ${pm[0]} == _ ]] && pm=("${pm[@]:1}") &&
-          missing_deps=("${missing_deps/openssl/openssl-tool}")
+        if [[ ${pm[0]} == _ ]] && pm=("${pm[@]:1}"); then
+          missing_deps=("${missing_deps[@]/openssl/openssl-tool}")
+          missing_deps=("${missing_deps[@]/sudo/tsu}")
+        fi
         "${pm[@]}" "${missing_deps[@]}"
       fi
     fi
@@ -163,6 +165,7 @@ case $1 in
     chmod 755 "${target}"
     chmod +x "${target}/src/zmb.sh"
     sudo ln -f "${target}/src/zmb.sh" "${bin}/zmb"
+    rm -f zmb
     echo -e "\n${green}> Successfully installed !$nc"
     ;;
 
