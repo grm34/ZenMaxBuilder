@@ -148,7 +148,7 @@ The optional flashable zip signature with AOSP Keys requires java (JDK) which is
 
 ## Installation
 
-The installer simply clones the repository in your `HOME` and creates a symbolic link of the executable in `usr/bin`.
+The installer simply clones the repository in your `HOME` and creates a copy of the executable in `usr/bin`.
 
 Install ZenMaxBuilder :
 
