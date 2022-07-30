@@ -142,17 +142,17 @@ Find all your compilations and working folders in one place, update and maintain
 
 The installation of the missing dependencies will be proposed by the installer or first install them manually with your favorite package manager (no package is installed without your prior consent) :
 
-    bash sed wget git curl zip tar jq expect make cmake automake autoconf llvm lld lldb clang gcc binutils bison perl gperf gawk flex bc python3 zstd openssl
+    bash sed wget git curl zip tar jq expect make cmake automake autoconf llvm lld lldb clang gcc binutils bison perl gperf gawk flex bc python3 zstd openssl sudo
 
 The optional flashable zip signature with AOSP Keys requires java (JDK) which is not proposed to install (openjdk recommended).
 
 ## Installation
 
-The installer simply clones the repository in your `HOME` and creates a symbolic link of the executable in `usr/bin`.
+The installer simply clones the repository in your `HOME` and creates a copy of the executable in `usr/bin`.
 
 Install ZenMaxBuilder :
 
-    wget https://kernel-builder.com/zmb && bash zmb install; rm zmb
+    wget https://kernel-builder.com/zmb && bash zmb install
 
 Checking the installation :
 
