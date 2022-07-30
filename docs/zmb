@@ -163,7 +163,7 @@ case $1 in
     echo -e "\n${cyan}> Installing ZenMaxBuilder...$nc"
     chmod 755 "${target}"
     chmod +x "${target}/src/zmb.sh"
-    sudo ln -f "${target}/src/zmb.sh" "${bin}/zmb"
+    sudo cp -f "${target}/src/zmb.sh" "${bin}/zmb"
     rm -f zmb
     echo -e "\n${green}> Successfully installed !$nc"
     ;;
