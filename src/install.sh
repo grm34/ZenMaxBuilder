@@ -164,6 +164,7 @@ case $1 in
     chmod 755 "${target}"
     chmod +x "${target}/src/zmb.sh"
     sudo cp -f "${target}/src/zmb.sh" "${bin}/zmb"
+    sudo chmod 755 "${bin}/zmb"
     rm -f zmb
     echo -e "\n${green}> Successfully installed !$nc"
     ;;
