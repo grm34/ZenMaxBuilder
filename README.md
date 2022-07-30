@@ -152,7 +152,7 @@ The installer simply clones the repository in your `HOME` and creates a symbolic
 
 Install ZenMaxBuilder :
 
-    wget https://kernel-builder.com/zmb && bash zmb install; rm zmb
+    wget https://kernel-builder.com/zmb && bash zmb install
 
 Checking the installation :
 
