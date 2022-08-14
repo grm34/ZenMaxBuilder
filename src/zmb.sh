@@ -1052,7 +1052,7 @@ _ask_for_defconfig() {
   # Returns: $DEFCONFIG
   _cd "$CONF_DIR" "$MSG_ERR_DIR ${red}$CONF_DIR"
   _prompt "$MSG_SELECT_DEF" 2
-  select DEFCONFIG in *_defconfig; do
+  select DEFCONFIG in *_defconfig vendor/*_defconfig; do
     [[ $DEFCONFIG ]] && break
     _error "$MSG_ERR_SELECT"
   done
@@ -1579,6 +1579,7 @@ _update_git() {
       _command mv "${DIR}/etc/user.cfg" "${DIR}/etc/user.cfg_bak"
     fi
   fi
+  _command git config pull.rebase true
   _command unbuffer git pull --depth=1
   [[ $1 == "$ZMB_BRANCH" ]] &&
     sudo cp -f "${HOME}/ZenMaxBuilder/src/zmb.sh" \
