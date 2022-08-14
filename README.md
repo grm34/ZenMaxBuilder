@@ -158,6 +158,10 @@ Checking the installation :
 
     bash ~/ZenMaxBuilder/docs/zmb check
 
+Update ZenMaxBuilder :
+
+    zmb --update
+
 Uninstall ZenMaxBuilder :
 
     bash ~/ZenMaxBuilder/docs/zmb uninstall
