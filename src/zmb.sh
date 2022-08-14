@@ -1579,6 +1579,7 @@ _update_git() {
       _command mv "${DIR}/etc/user.cfg" "${DIR}/etc/user.cfg_bak"
     fi
   fi
+  _command git config pull.rebase true
   _command unbuffer git pull --depth=1
   [[ $1 == "$ZMB_BRANCH" ]] &&
     sudo cp -f "${HOME}/ZenMaxBuilder/src/zmb.sh" \
