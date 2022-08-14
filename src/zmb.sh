@@ -1052,7 +1052,7 @@ _ask_for_defconfig() {
   # Returns: $DEFCONFIG
   _cd "$CONF_DIR" "$MSG_ERR_DIR ${red}$CONF_DIR"
   _prompt "$MSG_SELECT_DEF" 2
-  select DEFCONFIG in *_defconfig; do
+  select DEFCONFIG in *_defconfig vendor/*_defconfig; do
     [[ $DEFCONFIG ]] && break
     _error "$MSG_ERR_SELECT"
   done
