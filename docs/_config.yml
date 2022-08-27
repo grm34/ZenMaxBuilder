@@ -1,10 +1,10 @@
 title: Android Kernel Builder
 tagline: ZenMaxBuilder (ZMB) | Android Kernel Builder
 description: ZenMaxBuilder (ZMB) by darkmaster @grm34
-url: https://kernel-builder.com
+url: https://zmb.kernel-builder.com
 author:
   name: darkmaster @grm34
-  url: https://githhub.com/grm34
+  url: https://github.com/grm34
 google_analytics: G-XRXTP3G5KE
 plugins:
   - jekyll-seo-tag
