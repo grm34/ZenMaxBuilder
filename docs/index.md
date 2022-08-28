@@ -22,21 +22,21 @@
 <br>
 ## Table of Contents
 
-- [Overview](https://kernel-builder.com#overview)
-- [Requirements](https://kernel-builder.com#requirements)
-- [Installation](https://kernel-builder.com#installation)
-- [Guetting Started](https://kernel-builder.com#guetting-started)
-- [Options](https://kernel-builder.com#options)
-- [Working Structure](https://kernel-builder.com#working-structure)
-- [Toolchains](https://kernel-builder.com#toolchains)
-- [Screenshots](https://kernel-builder.com#screenshots)
-- [More information](https://kernel-builder.com#more-information)
-- [Common warnings and errors](https://kernel-builder.com#common-warnings-and-errors)
-- [Reporting Issues](https://kernel-builder.com#reporting-issues)
-- [Contributing](https://kernel-builder.com#contributing)
-- [Help us Translate ZenMaxBuilder](https://kernel-builder.com#help-us-translate-zenmaxbuilder)
-- [License](https://kernel-builder.com#license)
-- [Credits](https://kernel-builder.com#credits)
+- [Overview](https://zmb.kernel-builder.com#overview)
+- [Requirements](https://zmb.kernel-builder.com#requirements)
+- [Installation](https://zmb.kernel-builder.com#installation)
+- [Guetting Started](https://zmb.kernel-builder.com#guetting-started)
+- [Options](https://zmb.kernel-builder.com#options)
+- [Working Structure](https://zmb.kernel-builder.com#working-structure)
+- [Toolchains](https://zmb.kernel-builder.com#toolchains)
+- [Screenshots](https://zmb.kernel-builder.com#screenshots)
+- [More information](https://zmb.kernel-builder.com#more-information)
+- [Common warnings and errors](https://zmb.kernel-builder.com#common-warnings-and-errors)
+- [Reporting Issues](https://zmb.kernel-builder.com#reporting-issues)
+- [Contributing](https://zmb.kernel-builder.com#contributing)
+- [Help us Translate ZenMaxBuilder](https://zmb.kernel-builder.com#help-us-translate-zenmaxbuilder)
+- [License](https://zmb.kernel-builder.com#license)
+- [Credits](https://zmb.kernel-builder.com#credits)
 
 <br>
 ## Overview
@@ -66,7 +66,7 @@ The installer simply clones the repository in your `HOME` and creates a copy of 
 
 Install ZenMaxBuilder :
 
-    wget https://kernel-builder.com/zmb && bash zmb install
+    wget zmb.kernel-builder.com/zmb && bash zmb install
 
 Checking the installation :
 

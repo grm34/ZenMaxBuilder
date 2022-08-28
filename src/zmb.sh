@@ -1781,7 +1781,7 @@ ${nc}[${lyellow}OPTION${nc}] [${lyellow}ARGUMENT${nc}] \
     -d, --debug                     $MSG_HELP_D
 
 ${bold}$MSG_HELP_INFO \
-${cyan}https://kernel-builder.com$nc\n"
+${cyan}https://zmb.kernel-builder.com$nc\n"
 }
 
 
