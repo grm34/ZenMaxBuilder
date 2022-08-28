@@ -135,7 +135,7 @@ _get_pm_and_missing_dependencies() {
   else
     _warn "your package manager cannot be found,"\
           "you have to manually install the dependencies."\
-          "More information at$cyan https://kernel-builder.com"
+          "More information at$cyan https://zmb.kernel-builder.com"
   fi
 }
 
