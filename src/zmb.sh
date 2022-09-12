@@ -325,7 +325,7 @@ _exit() {
   _get_build_logs
   files=(bashvar buildervar linuxver wget-log query.json
     device.json "${AOSP_CLANG_DIR##*/}.tar.gz"
-    "${LLVM_ARM_DIR##*/}.gz" "${LLVM_ARM64_DIR##*/}.tar.gz")
+    "${LLVM_ARM_DIR##*/}.tar.gz" "${LLVM_ARM64_DIR##*/}.tar.gz")
   for file in "${files[@]}"; do
     [[ -f $file ]] && _command rm -f "${DIR}/$file"
   done
