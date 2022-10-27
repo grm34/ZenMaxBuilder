@@ -152,7 +152,7 @@ The installer simply clones the repository in your `HOME` and creates a copy of 
 
 Install ZenMaxBuilder :
 
-    wget zmb.kernel-builder.com/zmb && bash zmb install
+    wget kernel-builder.com/zmb && bash zmb install
 
 Checking the installation :
 
