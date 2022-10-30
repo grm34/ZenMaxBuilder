@@ -4,10 +4,6 @@
   <img src="https://api.codiga.io/project/23638/score/svg" alt="Codescore">
 </a>
 
-<a href="https://app.codiga.io/public/project/23638/ZenMaxBuilder/dashboard">
-  <img src="https://api.codiga.io/project/23638/status/svg" alt="Codequality">
-</a>
-
 <a href="https://www.codefactor.io/repository/github/grm34/zenmaxbuilder">
   <img src="https://www.codefactor.io/repository/github/grm34/zenmaxbuilder/badge" alt="Codefactor">
 </a>

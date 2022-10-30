@@ -4,7 +4,7 @@
 
 # 🆉🅴🅽🅼🅰🆇🅱🆄🅸🅻🅳🅴🆁 📲
 
-<img src="https://api.codiga.io/project/23638/score/svg" alt="Codescore"><img src="https://api.codiga.io/project/23638/status/svg" alt="Codequality"><img src="https://www.codefactor.io/repository/github/grm34/zenmaxbuilder/badge" alt="Codefactor"><img src="https://img.shields.io/github/forks/grm34/ZenMaxBuilder.svg?logo=github" alt="Forks"><img src="https://img.shields.io/github/stars/grm34/ZenMaxBuilder.svg?logo=github-sponsors" alt="Stars">
+<img src="https://api.codiga.io/project/23638/score/svg" alt="Codescore"><img src="https://www.codefactor.io/repository/github/grm34/zenmaxbuilder/badge" alt="Codefactor"><img src="https://img.shields.io/github/forks/grm34/ZenMaxBuilder.svg?logo=github" alt="Forks"><img src="https://img.shields.io/github/stars/grm34/ZenMaxBuilder.svg?logo=github-sponsors" alt="Stars">
 <br>
 <img src="https://img.shields.io/badge/license-MIT-blue.svg?logo=keepassxc" alt="License: MIT"><img src="https://img.shields.io/github/issues/grm34/ZenMaxBuilder.svg?logo=git" alt="Issues"><img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/y/grm34/zenmaxbuilder?label=commits&logo=github"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/grm34/ZenMaxBuilder?style=flat-square&logo=Github">
 <br>
@@ -22,21 +22,21 @@
 <br>
 ## Table of Contents
 
-- [Overview](https://zmb.kernel-builder.com#overview)
-- [Requirements](https://zmb.kernel-builder.com#requirements)
-- [Installation](https://zmb.kernel-builder.com#installation)
-- [Guetting Started](https://zmb.kernel-builder.com#guetting-started)
-- [Options](https://zmb.kernel-builder.com#options)
-- [Working Structure](https://zmb.kernel-builder.com#working-structure)
-- [Toolchains](https://zmb.kernel-builder.com#toolchains)
-- [Screenshots](https://zmb.kernel-builder.com#screenshots)
-- [More information](https://zmb.kernel-builder.com#more-information)
-- [Common warnings and errors](https://zmb.kernel-builder.com#common-warnings-and-errors)
-- [Reporting Issues](https://zmb.kernel-builder.com#reporting-issues)
-- [Contributing](https://zmb.kernel-builder.com#contributing)
-- [Help us Translate ZenMaxBuilder](https://zmb.kernel-builder.com#help-us-translate-zenmaxbuilder)
-- [License](https://zmb.kernel-builder.com#license)
-- [Credits](https://zmb.kernel-builder.com#credits)
+- [Overview](https://kernel-builder.com#overview)
+- [Requirements](https://kernel-builder.com#requirements)
+- [Installation](https://kernel-builder.com#installation)
+- [Guetting Started](https://kernel-builder.com#guetting-started)
+- [Options](https://kernel-builder.com#options)
+- [Working Structure](https://kernel-builder.com#working-structure)
+- [Toolchains](https://kernel-builder.com#toolchains)
+- [Screenshots](https://kernel-builder.com#screenshots)
+- [More information](https://kernel-builder.com#more-information)
+- [Common warnings and errors](https://kernel-builder.com#common-warnings-and-errors)
+- [Reporting Issues](https://kernel-builder.com#reporting-issues)
+- [Contributing](https://kernel-builder.com#contributing)
+- [Help us Translate ZenMaxBuilder](https://kernel-builder.com#help-us-translate-zenmaxbuilder)
+- [License](https://kernel-builder.com#license)
+- [Credits](https://kernel-builder.com#credits)
 
 <br>
 ## Overview
