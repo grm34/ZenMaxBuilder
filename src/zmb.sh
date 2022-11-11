@@ -1580,7 +1580,7 @@ _update_git() {
     fi
   fi
   _command git config pull.rebase true
-  _command unbuffer git pull --depth=1
+  _command unbuffer git pull --depth=1 --allow-unrelated-histories
   [[ $1 == "$ZMB_BRANCH" ]] &&
     sudo cp -f "${HOME}/ZenMaxBuilder/src/zmb.sh" \
       "${PREFIX/\/usr}/usr/bin/zmb"
