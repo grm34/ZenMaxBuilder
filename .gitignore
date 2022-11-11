@@ -8,6 +8,7 @@ buildervar
 linuxver
 etc/user.cfg
 etc/user.cfg_bak
+etc/user.cfg_old
 tests/temp
 translate.lock
 zmb.lock
