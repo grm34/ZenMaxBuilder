@@ -1041,14 +1041,14 @@ _ask_for_kernel_dir() {
       _prompt "$MSG_ASK_KDIR" 1
       read -r -e KERNEL_DIR
     done
+    KERNEL_DIR="$(realpath "$KERNEL_DIR")"
     _cd "$DIR" "$MSG_ERR_DIR ${red}$DIR"
   fi
 }
 
 _ask_for_defconfig() {
   # Defconfig files located in <configs> (ARM)
-  # Returns: $KERNEL_DIR $CONFIG_DIR $DEFCONFIG
-  KERNEL_DIR="$(realpath "$KERNEL_DIR")"
+  # Returns: $CONFIG_DIR $DEFCONFIG
   CONF_DIR="$(realpath "${KERNEL_DIR}/arch/${ARCH}/configs")"
   _cd "$CONF_DIR" "$MSG_ERR_DIR ${red}$CONF_DIR"
   _prompt "$MSG_SELECT_DEF" 2
