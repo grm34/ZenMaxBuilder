@@ -1032,7 +1032,7 @@ _ask_for_codename() {
 _ask_for_kernel_dir() {
   # Note: we are working here from $HOME (auto completion)
   # > checks the presence of <configs> folder (ARM)
-  # Returns: $KERNEL_DIR $CONF_DIR
+  # Returns: $KERNEL_DIR
   if [[ $KERNEL_DIR == default ]]; then
     _cd "$HOME" "$MSG_ERR_DIR ${red}HOME"
     _prompt "$MSG_ASK_KDIR" 1; read -r -e KERNEL_DIR
@@ -1041,15 +1041,15 @@ _ask_for_kernel_dir() {
       _prompt "$MSG_ASK_KDIR" 1
       read -r -e KERNEL_DIR
     done
-    KERNEL_DIR="$(realpath "$KERNEL_DIR")"
-    CONF_DIR="${KERNEL_DIR}/arch/${ARCH}/configs"
     _cd "$DIR" "$MSG_ERR_DIR ${red}$DIR"
   fi
 }
 
 _ask_for_defconfig() {
   # Defconfig files located in <configs> (ARM)
-  # Returns: $DEFCONFIG
+  # Returns: $KERNEL_DIR $CONFIG_DIR $DEFCONFIG
+  KERNEL_DIR="$(realpath "$KERNEL_DIR")"
+  CONF_DIR="$(realpath "${KERNEL_DIR}/arch/${ARCH}/configs")"
   _cd "$CONF_DIR" "$MSG_ERR_DIR ${red}$CONF_DIR"
   _prompt "$MSG_SELECT_DEF" 2
   select DEFCONFIG in *_defconfig vendor/*_defconfig; do
