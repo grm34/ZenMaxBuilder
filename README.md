@@ -1,5 +1,7 @@
 # 🆉🅴🅽🅼🅰🆇🅱🆄🅸🅻🅳🅴🆁 📲
 
+> ⚠️ This project is on stand-by for the moment. Indeed, as I don't have a computer anymore, it's impossible for me to debug/test or even to update what would certainly have needed it. Keep in mind that this was originally designed to facilitate the management/build of multiple kernels maintained by experienced developers and is not and will not be a "run it and grab a coffee" tool. Kernel compilation requires a minimum of prior knowledge and this kind of tool simply does not exist.
+
 <a href="https://app.codiga.io/public/project/23638/ZenMaxBuilder/dashboard">
   <img src="https://api.codiga.io/project/23638/score/svg" alt="Codescore">
 </a>
