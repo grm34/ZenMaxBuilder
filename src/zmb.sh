@@ -113,6 +113,8 @@ fi
 # shellcheck source=/dev/null
 if [[ -f "${DIR}/lang/${LANGUAGE}.cfg" ]]; then
   source "${DIR}/lang/${LANGUAGE}.cfg"
+elif [[ -f "${DIR}/lang/${LANG:0:5}.cfg" ]]; then
+  source "${DIR}/lang/${LANG:0:5}.cfg"
 elif [[ -f "${DIR}/lang/${LANG:0:2}.cfg" ]]; then
   source "${DIR}/lang/${LANG:0:2}.cfg"
 elif ! source "${DIR}/lang/en.cfg" 2>/dev/null; then
