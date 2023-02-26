@@ -112,7 +112,7 @@
 - [Overview](#overview)
 - [Requirements](#requirements)
 - [Installation](#installation)
-- [Guetting Started](#guetting-started)
+- [Getting Started](#guetting-started)
 - [Options](#options)
 - [Working Structure](#working-structure)
 - [Toolchains](#toolchains)
